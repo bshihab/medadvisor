@@ -41,6 +41,6 @@ Then run on a physical device (microphone required).
 
 ### LLM spike (M0, third spike — "LLM Spike" tab)
 
-- [ ] First run (online): tap **Test prompt** → model downloads, then generates a sentence on-device.
+- [x] First run (online): tap **Test prompt** → model downloads, then generates a sentence on-device.
 - [ ] After download, **airplane mode**: tap **Test prompt** again → still generates (proves offline inference).
-- [ ] **Guardrail probe:** tap **Clinical probe** → model *engages* with the clinical transcript (doesn't refuse). If it refuses, note it — that decides Gemma 3n viability.
+- [x] **Guardrail probe:** model engaged with the clinical transcript and gave sensible empathy feedback — no refusal. Gemma family is viable.
