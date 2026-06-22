@@ -27,3 +27,7 @@ Models/
 *.m4a
 *.wav
 eval/transcripts/
+
+# Source materials from the director (Stanford institutional + copyrighted papers).
+# We commit the DERIVED rubric JSON, never these raw files.
+context/
