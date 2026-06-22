@@ -1,0 +1,143 @@
+{
+  "id": "inpatient",
+  "name": "Inpatient Bedside Rounds",
+  "location": "inpatient",
+  "encounterType": "Family-centered rounds (GREAT/PEARLS)",
+  "version": "0.1.0-draft",
+  "source": {
+    "author": "TBD — Dr. [Director]",
+    "framework": "GREAT/PEARLS",
+    "derivedFrom": "Stanford GREAT/I-RCCC rounding deck + COACHING Inpatient Observation form (generalized).",
+    "signedOff": false
+  },
+  "description": "DRAFT for the director to react to — NOT validated. Built on the GREAT mnemonic (Greeting, Respond to emotion via PEARLS, Elicit concerns, Assessment, Treatment plan) mapped onto the 5 universal phases. Family-centered: the patient AND family are present. Only transcript-detectable criteria included.",
+  "dimensions": [
+    {
+      "id": "opening",
+      "label": "Opening (Greeting)",
+      "description": "GREAT step G — greeting and introduction.",
+      "coaching": {
+        "whyItMatters": "A warm greeting on rounds signals respect and sets a relationship-centered tone with the patient and family.",
+        "examplePhrases": ["Good morning, how are you feeling today?", "I'm Dr. ___, part of the team looking after you."]
+      }
+    },
+    {
+      "id": "eliciting_concerns",
+      "label": "Eliciting concerns (Elicit)",
+      "description": "GREAT step E — elicit the patient/family's concerns for the day.",
+      "coaching": {
+        "whyItMatters": "Asking 'what can we do for you today?' and 'what else?' puts the patient's agenda alongside the team's.",
+        "examplePhrases": ["Your concerns are important to us. What can we do for you today?", "What else is on your mind?"]
+      }
+    },
+    {
+      "id": "empathy",
+      "label": "Responding to emotion (PEARLS)",
+      "description": "GREAT step R — respond to emotion using Partnership, Emotion, Apology/Acknowledgement, Respect, Legitimization, Support.",
+      "coaching": {
+        "whyItMatters": "Naming and responding to emotion (PEARLS) is the core of relationship-centered care.",
+        "examplePhrases": ["I can only imagine how hard this has been (Empathy).", "We're going to face this together (Partnership).", "Anyone would find this frightening (Legitimization)."]
+      }
+    },
+    {
+      "id": "plan",
+      "label": "Assessment & plan (Treatment plan for the day)",
+      "description": "GREAT steps A and T — share the assessment and the day's plan in plain language.",
+      "coaching": {
+        "whyItMatters": "Sharing 'our plan today to address your concerns and ours' aligns the team and family on the same goals.",
+        "examplePhrases": ["Our plan today to address your concerns and ours is…", "Let me explain that without the jargon."]
+      }
+    },
+    {
+      "id": "closing",
+      "label": "Closing",
+      "description": "Confirm understanding, summarize action items, and set expectations for return.",
+      "coaching": {
+        "whyItMatters": "Teach-back and clear action items prevent confusion after the team leaves the room.",
+        "examplePhrases": ["What questions do you have before we move on?", "We'll be back this afternoon to check in."]
+      }
+    }
+  ],
+  "criteria": [
+    {
+      "id": "greeting", "dimension": "opening", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician greet the patient (and family) and ask how they are feeling?",
+      "whatGoodLooksLike": "Warm greeting that opens the encounter.",
+      "exemplarQuotes": ["Good morning, how are you feeling today?"]
+    },
+    {
+      "id": "intro_role", "dimension": "opening", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician introduce themselves/the team and their role as appropriate?",
+      "whatGoodLooksLike": "Identifies who they are on the team."
+    },
+    {
+      "id": "elicit_concerns", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 3,
+      "prompt": "Did the clinician ask what the patient/family's concerns are for the day?",
+      "whatGoodLooksLike": "Explicitly invites the patient's agenda.",
+      "exemplarQuotes": ["What can we do for you today?"]
+    },
+    {
+      "id": "what_else", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician probe for additional concerns ('what else?')?",
+      "whatGoodLooksLike": "Asks again to surface further concerns."
+    },
+    {
+      "id": "include_family", "dimension": "eliciting_concerns", "responseType": "not_applicable_allowed", "weight": 1,
+      "prompt": "Did the clinician gather and include patient/family input? (N/A if no family present.)",
+      "whatGoodLooksLike": "Invites the family into the conversation as appropriate."
+    },
+    {
+      "id": "name_emotion", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 3,
+      "prompt": "Did the clinician acknowledge and respond to emotion (a PEARLS statement)?",
+      "whatGoodLooksLike": "Uses partnership/empathy/acknowledgement/respect/legitimization/support language.",
+      "exemplarQuotes": ["I can see this is a shock.", "We'll get through this together."]
+    },
+    {
+      "id": "support_respect", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician convey support, concern, and respect (verbally)?",
+      "whatGoodLooksLike": "Respectful, supportive tone toward patient and family."
+    },
+    {
+      "id": "respond_questions", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician respond well to patient/family questions?",
+      "whatGoodLooksLike": "Answers questions directly and supportively."
+    },
+    {
+      "id": "plain_language", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician use straightforward language and avoid jargon?",
+      "whatGoodLooksLike": "Explains medical concepts in everyday terms."
+    },
+    {
+      "id": "share_plan", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 3,
+      "prompt": "Did the clinician share the plan for the day, addressing the patient's concerns and the team's?",
+      "whatGoodLooksLike": "States a clear plan for the day tied to the concerns raised.",
+      "exemplarQuotes": ["Our plan today to address your concerns and ours is…"]
+    },
+    {
+      "id": "involve_decisions", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician include the patient/family in the discussion and decisions?",
+      "whatGoodLooksLike": "Invites input rather than dictating the plan."
+    },
+    {
+      "id": "teach_back", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician ensure patient/family understanding (teach-back or inviting questions)?",
+      "whatGoodLooksLike": "Checks understanding before leaving the room.",
+      "exemplarQuotes": ["What questions do you have before we move on?"]
+    },
+    {
+      "id": "action_items", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician clarify or summarize the action items / what happens next?",
+      "whatGoodLooksLike": "Summarizes concrete next steps."
+    },
+    {
+      "id": "return_plan", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician set expectations for return or how to reach the team?",
+      "whatGoodLooksLike": "Tells the patient/family when the team will return or how to get help.",
+      "exemplarQuotes": ["We'll be back this afternoon."]
+    }
+  ],
+  "scoring": {
+    "method": "per_dimension_met",
+    "bands": ["Emerging", "Developing", "Proficient"]
+  }
+}

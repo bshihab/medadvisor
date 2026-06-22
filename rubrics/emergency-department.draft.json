@@ -1,0 +1,29 @@
+{
+  "id": "emergency-department-draft",
+  "name": "Emergency Department (DRAFT)",
+  "location": "emergency-department",
+  "encounterType": "ED encounter",
+  "version": "0.0.1-draft",
+  "source": {
+    "author": "PLACEHOLDER — not from director materials",
+    "framework": "5-phase encounter arc (generalized)",
+    "derivedFrom": "GENERALIZED universal communication core. The director sent NO ED-specific material — this is a provisional draft pending his input on how ED communication differs (pace, uncertainty, high acuity, rapid rapport).",
+    "signedOff": false
+  },
+  "description": "DRAFT / UNVALIDATED. Generalized 5-phase core adapted lightly for the ED's faster, higher-acuity context. Replace with the director's ED guidance.",
+  "dimensions": [
+    { "id": "opening", "label": "Opening the encounter", "coaching": { "whyItMatters": "Even when rushed, a quick introduction and orientation reassures a frightened patient.", "examplePhrases": ["I'm Dr. ___, I'm going to be looking after you in the ED today."] } },
+    { "id": "eliciting_concerns", "label": "Eliciting concerns", "coaching": { "whyItMatters": "Quickly surfacing the main concern focuses a time-pressured encounter.", "examplePhrases": ["What's the main thing that brought you in today?"] } },
+    { "id": "empathy", "label": "Showing empathy", "coaching": { "whyItMatters": "Acknowledging fear and pain matters most when patients are most distressed.", "examplePhrases": ["I can see you're in a lot of pain — we're going to help with that."] } },
+    { "id": "plan", "label": "Discussing the plan", "coaching": { "whyItMatters": "Explaining tests, waits, and uncertainty reduces anxiety in a chaotic setting.", "examplePhrases": ["Here's what we're going to do next, and roughly how long it'll take."] } },
+    { "id": "closing", "label": "Closing the encounter", "coaching": { "whyItMatters": "Clear return precautions are critical when patients are discharged from the ED.", "examplePhrases": ["Come straight back if ___ happens."] } }
+  ],
+  "criteria": [
+    { "id": "intro_self", "dimension": "opening", "responseType": "boolean_with_evidence", "weight": 1, "prompt": "Did the clinician introduce themselves and their role?", "whatGoodLooksLike": "Brief, clear introduction." },
+    { "id": "main_concern", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 2, "prompt": "Did the clinician quickly establish the main presenting concern?", "whatGoodLooksLike": "Focuses the encounter on the chief complaint." },
+    { "id": "respond_emotion", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 2, "prompt": "Did the clinician acknowledge the patient's distress, pain, or fear?", "whatGoodLooksLike": "Names and responds to acute distress." },
+    { "id": "explain_plan", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2, "prompt": "Did the clinician explain the plan, including tests, waits, and any uncertainty, in plain language?", "whatGoodLooksLike": "Sets expectations about what happens next." },
+    { "id": "safety_net", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 2, "criticalFail": true, "prompt": "Did the clinician give clear return precautions / safety-netting?", "whatGoodLooksLike": "Explicit, actionable advice on when to return.", "requiredElements": ["[Director to specify ED return precautions]"] }
+  ],
+  "scoring": { "method": "per_dimension_met", "bands": ["Emerging", "Developing", "Proficient"] }
+}

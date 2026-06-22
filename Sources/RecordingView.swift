@@ -7,14 +7,16 @@ struct RecordingView: View {
     @StateObject private var transcriber = SpeechTranscriber()
     @StateObject private var analyzer = ConsultationAnalyzer()
     @State private var showFeedback = false
+    @State private var location: AppLocation = .outpatientClinic
 
-    // Placeholder rubric until baba's real mark schemes arrive (M1).
-    private let rubric = RubricLoader.load(named: "example-spikes-breaking-bad-news")
+    private var rubric: Rubric? { RubricLoader.load(for: location) }
 
     var body: some View {
         VStack(spacing: 32) {
             Text("MedAdvisor")
                 .font(.largeTitle.bold())
+
+            locationPicker
 
             Spacer()
 
@@ -82,6 +84,23 @@ struct RecordingView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .padding(.horizontal)
+            }
+        }
+    }
+
+    private var locationPicker: some View {
+        VStack(spacing: 4) {
+            Picker("Location", selection: $location) {
+                ForEach(AppLocation.allCases) { loc in
+                    Text(loc.rawValue).tag(loc)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: location) { _, _ in analyzer.reset() }
+
+            if location.isDraft {
+                Text("Draft rubric — pending baba's input for this location")
+                    .font(.caption2).foregroundStyle(.orange)
             }
         }
     }

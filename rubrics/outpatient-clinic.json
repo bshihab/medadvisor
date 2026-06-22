@@ -1,0 +1,155 @@
+{
+  "id": "outpatient-clinic",
+  "name": "Outpatient Clinic Visit",
+  "location": "outpatient-clinic",
+  "encounterType": "Clinic consultation (history + information-giving)",
+  "version": "0.1.0-draft",
+  "source": {
+    "author": "TBD — Dr. [Director]",
+    "framework": "5-phase encounter arc",
+    "derivedFrom": "Stanford COACHING Clinic Observation form; History-Taking & Physical-Exam best-practices guides (generalized from pediatric wording).",
+    "signedOff": false
+  },
+  "description": "DRAFT for the director to react to — NOT validated. Only criteria judgeable from a spoken transcript are included (technical exam skill, hand-washing, modesty, and preceptor-presentation items were intentionally excluded). Organized by the 5 universal phases.",
+  "dimensions": [
+    {
+      "id": "opening",
+      "label": "Opening the encounter",
+      "description": "Introduction, role, and setting a comfortable tone.",
+      "coaching": {
+        "whyItMatters": "A clear, warm opening builds trust and orients the patient before any history is taken.",
+        "examplePhrases": ["Hi, I'm Dr. ___, one of the doctors who'll be seeing you today.", "Is it alright if we talk here, or would you prefer somewhere more private?"]
+      }
+    },
+    {
+      "id": "eliciting_concerns",
+      "label": "Eliciting concerns",
+      "description": "Open-ended exploration of the complaint and the patient's agenda.",
+      "coaching": {
+        "whyItMatters": "Starting open and checking for 'what else' surfaces the real reason for the visit and prevents late-breaking concerns.",
+        "examplePhrases": ["Tell me what brought you in today.", "Can you tell me more about that?", "Is there anything else you'd like to make sure we cover today?"]
+      }
+    },
+    {
+      "id": "empathy",
+      "label": "Showing empathy",
+      "description": "Exploring the patient's perspective and responding to emotion.",
+      "coaching": {
+        "whyItMatters": "Understanding fears and expectations — and naming emotion — is what patients remember and what builds the therapeutic relationship.",
+        "examplePhrases": ["What are you most worried this could be?", "I can see this is weighing on you.", "That sounds really difficult."]
+      }
+    },
+    {
+      "id": "plan",
+      "label": "Discussing the plan",
+      "description": "Explaining information clearly and agreeing a plan together.",
+      "coaching": {
+        "whyItMatters": "Plain-language, shared decision-making improves understanding and adherence.",
+        "examplePhrases": ["Here's what I think is going on, in everyday terms…", "What matters most to you as we decide what to do next?"]
+      }
+    },
+    {
+      "id": "closing",
+      "label": "Closing the encounter",
+      "description": "Checking understanding, safety-netting, and inviting questions.",
+      "coaching": {
+        "whyItMatters": "Teach-back and clear safety-netting are the difference between a plan understood and a plan forgotten.",
+        "examplePhrases": ["Just so I know I explained it well — what will you do when you get home?", "Come back or call if ___ happens.", "What questions do you have for me?"]
+      }
+    }
+  ],
+  "criteria": [
+    {
+      "id": "intro_self", "dimension": "opening", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician introduce themselves and explain their role?",
+      "whatGoodLooksLike": "States name and role and greets the patient.",
+      "exemplarQuotes": ["Hi, I'm Dr. ___, one of the doctors looking after you today."]
+    },
+    {
+      "id": "set_tone", "dimension": "opening", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician set a comfortable, unrushed tone (e.g. acknowledging privacy/comfort)?",
+      "whatGoodLooksLike": "Appears unhurried; attends to the patient's comfort and privacy."
+    },
+    {
+      "id": "open_questions", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician begin with open-ended questions and let the patient tell their story?",
+      "whatGoodLooksLike": "Starts broad before narrowing; invites the patient to elaborate.",
+      "exemplarQuotes": ["Tell me what brought you in today.", "Can you tell me more about that?"]
+    },
+    {
+      "id": "explore_complaint", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician explore the presenting complaint thoroughly (onset, duration, severity, associated symptoms, what's been tried)?",
+      "whatGoodLooksLike": "Characterizes the complaint across its key dimensions."
+    },
+    {
+      "id": "avoid_interrupting", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician avoid interrupting and give the patient space to speak?",
+      "whatGoodLooksLike": "Lets the patient finish; does not cut them off."
+    },
+    {
+      "id": "what_else", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician check for additional concerns ('is there anything else?')?",
+      "whatGoodLooksLike": "Explicitly invites further concerns before moving on.",
+      "exemplarQuotes": ["Is there anything else you'd like to cover today?"]
+    },
+    {
+      "id": "explore_perspective", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 3,
+      "prompt": "Did the clinician explore the patient's perspective — their ideas, fears, and expectations?",
+      "whatGoodLooksLike": "Asks what the patient thinks is going on, what worries them, or what they're hoping for.",
+      "exemplarQuotes": ["What are you most worried this could be?"]
+    },
+    {
+      "id": "respond_emotion", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 3,
+      "prompt": "Did the clinician acknowledge and respond to the patient's emotions?",
+      "whatGoodLooksLike": "Names or validates the emotion; responds rather than rushing past it.",
+      "exemplarQuotes": ["I can see this is worrying you.", "Take your time."]
+    },
+    {
+      "id": "support_respect", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician convey support, concern, and respect throughout?",
+      "whatGoodLooksLike": "Warm, respectful language; conveys that the patient is heard."
+    },
+    {
+      "id": "explain_exam", "dimension": "empathy", "responseType": "not_applicable_allowed", "weight": 1,
+      "prompt": "If a physical exam occurred, did the clinician explain what they were doing and check comfort? (N/A if no exam.)",
+      "whatGoodLooksLike": "Narrates the exam and minimizes surprise/discomfort verbally."
+    },
+    {
+      "id": "plain_language", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician explain things in plain language, avoiding jargon?",
+      "whatGoodLooksLike": "Uses everyday words; defines any necessary medical terms."
+    },
+    {
+      "id": "accurate_info", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician give accurate, appropriate information about the condition and options?",
+      "whatGoodLooksLike": "Information given is correct and relevant; avoids false reassurance or overstated certainty.",
+      "requiredElements": ["[Director to specify any must-state facts for common clinic presentations]"]
+    },
+    {
+      "id": "shared_plan", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician discuss a clear plan and involve the patient in decisions?",
+      "whatGoodLooksLike": "Lays out next steps and invites the patient's preferences."
+    },
+    {
+      "id": "check_understanding", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 2,
+      "prompt": "Did the clinician check the patient's understanding (e.g. teach-back)?",
+      "whatGoodLooksLike": "Asks the patient to restate the plan in their own words.",
+      "exemplarQuotes": ["Just so I know I explained it well, what will you do when you get home?"]
+    },
+    {
+      "id": "safety_net", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 2, "criticalFail": true,
+      "prompt": "Did the clinician safety-net (what to watch for, when and how to seek help)?",
+      "whatGoodLooksLike": "Gives explicit, actionable return precautions.",
+      "requiredElements": ["[Director to specify mandatory safety-net items]"]
+    },
+    {
+      "id": "invite_questions", "dimension": "closing", "responseType": "boolean_with_evidence", "weight": 1,
+      "prompt": "Did the clinician invite final questions before closing?",
+      "whatGoodLooksLike": "Explicitly asks what questions the patient has."
+    }
+  ],
+  "scoring": {
+    "method": "per_dimension_met",
+    "bands": ["Emerging", "Developing", "Proficient"]
+  }
+}

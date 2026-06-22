@@ -2,38 +2,36 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://medadvisor.app/schemas/rubric.schema.json",
   "title": "MedAdvisor Encounter Rubric",
-  "description": "One rubric per encounter type. Encodes a medical educator's mark scheme as behavioral, evidence-bearing criteria. This is the source of truth — the model applies it, it does not invent criteria.",
+  "description": "One rubric per location. Organized by the 5 universal encounter phases (opening, eliciting concerns, empathy, plan, closing). Encodes a medical educator's mark scheme as behavioral, transcript-detectable, evidence-bearing criteria. The rubric is the source of truth — the model applies it, it does not invent criteria. Only include criteria judgeable from a spoken transcript.",
   "type": "object",
-  "required": ["id", "name", "encounterType", "version", "source", "criteria", "scoring"],
+  "required": ["id", "name", "location", "version", "source", "dimensions", "criteria", "scoring"],
   "additionalProperties": false,
   "properties": {
-    "id": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "location": {
       "type": "string",
-      "description": "Stable slug, e.g. 'spikes-breaking-bad-news'",
-      "pattern": "^[a-z0-9-]+$"
+      "description": "Clinical setting this rubric applies to.",
+      "enum": ["outpatient-clinic", "inpatient", "emergency-department", "operating-room"]
     },
-    "name": { "type": "string", "description": "Human-readable name" },
-    "encounterType": {
-      "type": "string",
-      "description": "The clinical scenario this rubric covers, e.g. 'Breaking bad news'"
-    },
-    "version": { "type": "string", "description": "Semver, bumped on any criterion change. Lets a score be tied to an exact rubric version." },
+    "encounterType": { "type": "string", "description": "Optional finer-grained label, e.g. 'family-centered rounds'." },
+    "version": { "type": "string", "description": "Semver; bump on any criterion change so a score ties to an exact rubric version." },
     "source": {
       "type": "object",
-      "description": "Attribution + sign-off. Proves the rubric is the director's framework.",
       "required": ["author", "signedOff"],
       "additionalProperties": false,
       "properties": {
-        "author": { "type": "string", "description": "Director's name" },
-        "framework": { "type": "string", "description": "Underlying model, e.g. 'SPIKES', 'Calgary-Cambridge', 'NURSE', 'bespoke'" },
-        "signedOff": { "type": "boolean", "description": "True once the director confirms 'yes, this is my framework'" },
+        "author": { "type": "string" },
+        "framework": { "type": "string", "description": "e.g. 'GREAT/PEARLS', 'Calgary-Cambridge', 'bespoke'" },
+        "derivedFrom": { "type": "string", "description": "Which director materials this was distilled from." },
+        "signedOff": { "type": "boolean", "description": "True once the director confirms 'yes, this is my framework'." },
         "signedOffDate": { "type": "string", "format": "date" }
       }
     },
     "description": { "type": "string" },
     "dimensions": {
       "type": "array",
-      "description": "Top-level scoring axes, e.g. communication vs clinical conduct.",
+      "description": "The 5 encounter phases. Each criterion belongs to one.",
       "items": {
         "type": "object",
         "required": ["id", "label"],
@@ -41,65 +39,43 @@
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
           "label": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "coaching": {
+            "type": "object",
+            "description": "Goal-setting content for this phase (used by goal-setting mode).",
+            "additionalProperties": false,
+            "properties": {
+              "whyItMatters": { "type": "string" },
+              "examplePhrases": { "type": "array", "items": { "type": "string" } }
+            }
+          }
         }
       }
     },
     "criteria": {
       "type": "array",
       "minItems": 1,
-      "description": "The behavioral items. Each is a yes/no judgment the model must back with a quote.",
       "items": {
         "type": "object",
         "required": ["id", "dimension", "prompt", "responseType", "weight"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-          "dimension": { "type": "string", "description": "References a dimensions[].id" },
-          "prompt": {
-            "type": "string",
-            "description": "The behavioral question, phrased so a clear answer is yes/no. E.g. 'Did the clinician check the patient's prior understanding before sharing the news?'"
-          },
+          "dimension": { "type": "string", "description": "References a dimensions[].id." },
+          "prompt": { "type": "string", "description": "Behavioral yes/no question, judgeable from the transcript." },
           "responseType": {
             "type": "string",
-            "enum": ["boolean_with_evidence", "scaled_with_evidence", "not_applicable_allowed"],
-            "description": "boolean_with_evidence is the default and most reliable for small models."
+            "enum": ["boolean_with_evidence", "not_applicable_allowed"]
           },
-          "scale": {
-            "type": "object",
-            "description": "Only for scaled_with_evidence. Keep anchors behavioral.",
-            "required": ["min", "max", "anchors"],
-            "additionalProperties": false,
-            "properties": {
-              "min": { "type": "integer" },
-              "max": { "type": "integer" },
-              "anchors": {
-                "type": "object",
-                "description": "Map of score -> what that score behaviorally means",
-                "additionalProperties": { "type": "string" }
-              }
-            }
-          },
-          "weight": { "type": "number", "minimum": 0, "description": "Relative importance within its dimension" },
-          "whatGoodLooksLike": {
-            "type": "string",
-            "description": "Concrete description the model is told to look for. Director-authored."
-          },
+          "weight": { "type": "number", "minimum": 0 },
+          "whatGoodLooksLike": { "type": "string" },
           "requiredElements": {
             "type": "array",
-            "description": "For clinical-conduct items: the SPECIFIC things that must be addressed (e.g. red flags), spelled out by the director so the model checks presence rather than recalling medicine from its weights.",
+            "description": "Specific things that must be addressed (director-specified, so the model checks presence rather than recalling medicine).",
             "items": { "type": "string" }
           },
-          "exemplarQuotes": {
-            "type": "array",
-            "description": "Optional example transcript phrases that would satisfy this criterion. Improves model matching and is great few-shot material.",
-            "items": { "type": "string" }
-          },
-          "criticalFail": {
-            "type": "boolean",
-            "default": false,
-            "description": "If true, failing this caps the overall score (safety-critical items, e.g. missed red flag)."
-          }
+          "exemplarQuotes": { "type": "array", "items": { "type": "string" } },
+          "criticalFail": { "type": "boolean", "default": false, "description": "If true, failing this is flagged separately and is not averaged away (e.g. safety-netting)." }
         }
       }
     },
@@ -110,10 +86,14 @@
       "properties": {
         "method": {
           "type": "string",
-          "enum": ["weighted_dimension", "checklist_percentage"],
-          "description": "weighted_dimension = per-dimension weighted average; checklist_percentage = % of criteria met."
+          "enum": ["per_dimension_met", "weighted"],
+          "description": "per_dimension_met = show X-of-Y met per phase + coarse band (NOT a single 0-100). Director's forms are formative, not graded."
         },
-        "passThreshold": { "type": "number", "description": "Optional overall pass line agreed with the director." }
+        "bands": {
+          "type": "array",
+          "description": "Coarse proficiency bands instead of a precise percentage.",
+          "items": { "type": "string" }
+        }
       }
     }
   }
