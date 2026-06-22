@@ -1,0 +1,129 @@
+{
+  "$schema": "../rubric.schema.json",
+  "encounterType": "breaking-bad-news",
+  "displayName": "Breaking Bad News",
+  "version": "0.1.0",
+  "author": "TBD — medical director",
+  "signedOff": false,
+  "frameworks": ["SPIKES", "NURSE"],
+  "_note": "PLACEHOLDER built from public SPIKES/NURSE frameworks. Intended as a strawman for the director to correct, not a finished rubric. Replace statements/weights/clinicalContext with his actual mark scheme.",
+  "clinicalContext": {
+    "redFlags": [
+      "Patient signals they do not want full information (must respect)",
+      "Signs of acute distress requiring the conversation to pause",
+      "Safeguarding/suicidality cues after disclosure"
+    ],
+    "keyInformationToConvey": [
+      "The diagnosis in plain language",
+      "What it means for the patient in practical terms",
+      "Immediate next steps and who they can contact"
+    ],
+    "commonPitfalls": [
+      "Jargon when delivering the diagnosis",
+      "Delivering knowledge before checking what the patient already understands",
+      "Filling silence instead of allowing the patient to react"
+    ]
+  },
+  "dimensions": [
+    { "id": "setup", "displayName": "Setting & Setup", "weight": 1, "description": "Preparing the encounter (S in SPIKES)." },
+    { "id": "communication", "displayName": "Communication & Clarity", "weight": 2, "description": "Perception, Invitation, Knowledge, Strategy." },
+    { "id": "empathy", "displayName": "Empathy & Emotion", "weight": 2, "description": "Responding to emotion (E in SPIKES / NURSE)." },
+    { "id": "clinical-conduct", "displayName": "Clinical Conduct", "weight": 2, "description": "Accuracy, safety, and appropriate next steps." }
+  ],
+  "criteria": [
+    {
+      "id": "bbn-private-setting",
+      "dimension": "setup",
+      "statement": "Established a private, uninterrupted setting and confirmed the right people were present.",
+      "scoreType": "binary",
+      "weight": 1,
+      "requiresEvidence": true,
+      "positiveExample": "\"Let's go somewhere private — would you like anyone with you?\"",
+      "negativeExample": "Launches into the news in a corridor."
+    },
+    {
+      "id": "bbn-assess-perception",
+      "dimension": "communication",
+      "statement": "Asked what the patient already understands about their situation before giving new information.",
+      "scoreType": "binary",
+      "weight": 2,
+      "requiresEvidence": true,
+      "guidance": "The 'P' in SPIKES — must precede delivering the diagnosis.",
+      "positiveExample": "\"Before I share the results, what's your understanding of why we did the scan?\"",
+      "negativeExample": "Gives results with no prior check."
+    },
+    {
+      "id": "bbn-invitation",
+      "dimension": "communication",
+      "statement": "Sought the patient's preference for how much detail they wanted.",
+      "scoreType": "binary",
+      "weight": 1,
+      "requiresEvidence": true,
+      "positiveExample": "\"Some people want every detail, others the headline — what works for you?\""
+    },
+    {
+      "id": "bbn-warning-shot",
+      "dimension": "communication",
+      "statement": "Gave a warning shot before delivering the diagnosis.",
+      "scoreType": "binary",
+      "weight": 2,
+      "requiresEvidence": true,
+      "positiveExample": "\"I'm afraid I have some difficult news.\"",
+      "negativeExample": "States the diagnosis with no lead-in."
+    },
+    {
+      "id": "bbn-plain-language",
+      "dimension": "communication",
+      "statement": "Delivered the diagnosis in plain language, free of unexplained jargon.",
+      "scoreType": "partial",
+      "weight": 2,
+      "requiresEvidence": true,
+      "guidance": "Partial credit if mostly clear but one or two unexplained terms slipped in.",
+      "negativeExample": "\"The biopsy shows a malignant neoplasm with nodal involvement.\""
+    },
+    {
+      "id": "bbn-pause-silence",
+      "dimension": "empathy",
+      "statement": "Paused after the news to let the patient react, rather than continuing immediately.",
+      "scoreType": "binary",
+      "weight": 2,
+      "requiresEvidence": true
+    },
+    {
+      "id": "bbn-name-emotion",
+      "dimension": "empathy",
+      "statement": "Named or acknowledged the patient's emotion (NURSE: Naming).",
+      "scoreType": "partial",
+      "weight": 2,
+      "requiresEvidence": true,
+      "positiveExample": "\"I can see this is a shock.\""
+    },
+    {
+      "id": "bbn-accurate",
+      "dimension": "clinical-conduct",
+      "statement": "Information given was clinically accurate and not misleading.",
+      "scoreType": "binary",
+      "weight": 3,
+      "requiresEvidence": true,
+      "guidance": "Flag for human review if uncertain — do not guess clinical accuracy."
+    },
+    {
+      "id": "bbn-next-steps",
+      "dimension": "clinical-conduct",
+      "statement": "Gave a concrete next step and a point of contact before closing.",
+      "scoreType": "binary",
+      "weight": 2,
+      "requiresEvidence": true,
+      "positiveExample": "\"I'll call you Monday after we discuss your case at the team meeting; here's my number.\""
+    },
+    {
+      "id": "bbn-safety-net",
+      "dimension": "clinical-conduct",
+      "statement": "Checked on the patient's immediate wellbeing/support before ending (safety-net).",
+      "scoreType": "na-able",
+      "weight": 1,
+      "requiresEvidence": true,
+      "appliesWhen": "patient showed significant distress"
+    }
+  ]
+}

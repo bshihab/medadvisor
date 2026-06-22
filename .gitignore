@@ -1,0 +1,29 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+xcuserdata/
+
+# XcodeGen generates the project locally — keep project.yml in git, not the project
+*.xcodeproj
+
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Packages/
+
+# Models (large; downloaded/managed out of band, never committed)
+*.gguf
+*.mlmodelc
+*.task
+Models/
+
+# Local secrets / data — never commit recordings or transcripts
+*.m4a
+*.wav
+eval/transcripts/
