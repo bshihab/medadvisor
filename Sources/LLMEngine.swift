@@ -39,13 +39,25 @@ final class LLMEngine {
                 context: context
             ) { tokens in
                 if tokens.count % 16 == 0 {
-                    let text = context.tokenizer.decode(tokens: tokens)
+                    let text = Self.clean(context.tokenizer.decode(tokens: tokens))
                     Task { @MainActor in onPartial(text) }
                 }
                 return tokens.count >= maxTokens ? .stop : .more
             }
-            return gen.output
+            return Self.clean(gen.output)
         }
+    }
+
+    /// Strip Gemma chat-template markers that can bleed into generated text,
+    /// and cut anything after an end-of-turn marker.
+    private static func clean(_ s: String) -> String {
+        var text = s
+        for marker in ["<end_of_turn>", "<eos>", "<start_of_turn>"] {
+            if let range = text.range(of: marker) {
+                text = String(text[..<range.lowerBound])
+            }
+        }
+        return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     enum LLMError: Error, LocalizedError {
