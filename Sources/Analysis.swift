@@ -30,6 +30,10 @@ enum PromptBuilder {
 
         return """
         You are an experienced clinical communication tutor assessing a doctor's consultation.
+
+        The transcript is a SINGLE UNLABELED stream with no speaker tags. First infer which turns \
+        are the clinician's vs the patient's from context. Assess ONLY the clinician's communication.
+
         Evaluate the transcript against EACH rubric criterion below. For each one: decide if it \
         was met, quote the supporting line from the transcript as evidence, and give one short, \
         actionable improvement tip.
