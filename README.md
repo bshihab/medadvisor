@@ -34,7 +34,7 @@ Then run on a physical device (microphone required).
 
 ## M0 verification
 
-- [ ] Builds and runs on a physical device.
-- [ ] Tap record → live meter responds to voice; timer counts up.
-- [ ] Stop → tap **Transcribe on-device** → transcript text appears.
+- [x] Builds and runs on a physical device.
+- [x] Tap record → live meter responds to voice; timer counts up.
+- [x] Stop → tap **Transcribe on-device** → transcript text appears.
 - [ ] **Airplane mode:** record 60s + transcribe → file saved locally and transcript still works; zero network egress (watch with a network monitor). This is the privacy gate.
