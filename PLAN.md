@@ -72,6 +72,15 @@ Each milestone passes or fails on an objective check — a number, a file you ca
 - [ ] On-disk inspection: stored feedback is ciphertext; raw audio + raw transcript are gone after processing.
 - [ ] Every feedback item cites a transcript quote — no free-floating claims.
 
+### M2.5 — Speaker diarization · ~Weeks 4–5
+**Goal:** know which words are the *doctor's*. Apple's STT returns one unlabeled stream; without speaker separation the model only guesses who's speaking, which undermines trustworthy assessment.
+**Build:** on-device diarization (FluidAudio or sherpa-onnx) to segment audio by speaker → labeled transcript ("Clinician:" / "Patient:"). Plus optional **doctor voice enrollment** (record the doctor's voice once so the app reliably identifies the clinician across all encounters). Feeds the labeled transcript into the analyzer instead of the raw stream.
+**Verify independently:**
+- [ ] Transcript shows speaker labels that match a manual listen-through on a 2-speaker recording.
+- [ ] Diarization runs fully on-device (airplane-mode egress test still zero bytes).
+- [ ] After enrollment, the clinician's turns are correctly attributed across ≥3 recordings.
+- [ ] Analyzer scores only the clinician's turns (no patient speech mistaken for the doctor).
+
 ### M3 — Eval harness + model bake-off · ~Weeks 4–5
 **Goal:** pick the model on data, not vibes.
 **Build:** a script that runs the gold-set transcripts through the pipeline and computes agreement between model and director scores (per-criterion accuracy + overall correlation); run **Gemma 3n vs MedGemma 4B vs Qwen2.5-7B**.
