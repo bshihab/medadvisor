@@ -4,7 +4,12 @@ import SwiftUI
 struct MedAdvisorApp: App {
     var body: some Scene {
         WindowGroup {
-            RecordingView()
+            TabView {
+                RecordingView()
+                    .tabItem { Label("Record", systemImage: "mic") }
+                LLMSpikeView()
+                    .tabItem { Label("LLM Spike", systemImage: "brain") }
+            }
         }
     }
 }

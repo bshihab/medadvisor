@@ -5,12 +5,22 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
 
+packages:
+  MLXSwiftExamples:
+    url: https://github.com/ml-explore/mlx-swift-examples
+    branch: main
+
 targets:
   MedAdvisor:
     type: application
     platform: iOS
     sources:
       - Sources
+    dependencies:
+      - package: MLXSwiftExamples
+        product: MLXLLM
+      - package: MLXSwiftExamples
+        product: MLXLMCommon
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

@@ -38,3 +38,9 @@ Then run on a physical device (microphone required).
 - [x] Tap record → live meter responds to voice; timer counts up.
 - [x] Stop → tap **Transcribe on-device** → transcript text appears.
 - [ ] **Airplane mode:** record 60s + transcribe → file saved locally and transcript still works; zero network egress (watch with a network monitor). This is the privacy gate.
+
+### LLM spike (M0, third spike — "LLM Spike" tab)
+
+- [ ] First run (online): tap **Test prompt** → model downloads, then generates a sentence on-device.
+- [ ] After download, **airplane mode**: tap **Test prompt** again → still generates (proves offline inference).
+- [ ] **Guardrail probe:** tap **Clinical probe** → model *engages* with the clinical transcript (doesn't refuse). If it refuses, note it — that decides Gemma 3n viability.
