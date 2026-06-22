@@ -36,4 +36,5 @@ Then run on a physical device (microphone required).
 
 - [ ] Builds and runs on a physical device.
 - [ ] Tap record → live meter responds to voice; timer counts up.
-- [ ] **Airplane mode:** record 60s → file saved locally; zero network egress (watch with a network monitor).
+- [ ] Stop → tap **Transcribe on-device** → transcript text appears.
+- [ ] **Airplane mode:** record 60s + transcribe → file saved locally and transcript still works; zero network egress (watch with a network monitor). This is the privacy gate.

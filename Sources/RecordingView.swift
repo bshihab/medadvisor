@@ -4,9 +4,10 @@ import SwiftUI
 /// Proves on-device capture works (verify in airplane mode).
 struct RecordingView: View {
     @StateObject private var recorder = AudioRecorder()
+    @StateObject private var transcriber = SpeechTranscriber()
 
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 32) {
             Text("MedAdvisor")
                 .font(.largeTitle.bold())
 
@@ -22,6 +23,8 @@ struct RecordingView: View {
 
             recordButton
 
+            transcriptSection
+
             Spacer()
 
             if !recorder.recordings.isEmpty {
@@ -31,7 +34,10 @@ struct RecordingView: View {
             }
         }
         .padding()
-        .onAppear { recorder.requestPermission() }
+        .onAppear {
+            recorder.requestPermission()
+            transcriber.requestPermission()
+        }
         .alert("Microphone access needed",
                isPresented: $recorder.permissionDenied) {
             Button("OK", role: .cancel) {}
@@ -40,8 +46,35 @@ struct RecordingView: View {
         }
     }
 
+    @ViewBuilder
+    private var transcriptSection: some View {
+        if let latest = recorder.recordings.first, !recorder.isRecording {
+            switch transcriber.state {
+            case .idle:
+                Button("Transcribe on-device") { transcriber.transcribe(url: latest) }
+                    .buttonStyle(.bordered)
+            case .transcribing:
+                ProgressView("Transcribing on-device…")
+            case .done(let text):
+                ScrollView {
+                    Text(text.isEmpty ? "(no speech detected)" : text)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                }
+                .frame(maxHeight: 180)
+                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal)
+            case .unavailable(let reason):
+                Text(reason)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal)
+            }
+        }
+    }
+
     private var recordButton: some View {
-        Button(action: recorder.toggle) {
+        Button(action: toggleRecording) {
             ZStack {
                 Circle()
                     .fill(recorder.isRecording ? Color.red : Color.accentColor)
@@ -52,6 +85,13 @@ struct RecordingView: View {
             }
         }
         .accessibilityLabel(recorder.isRecording ? "Stop recording" : "Start recording")
+    }
+
+    private func toggleRecording() {
+        if !recorder.isRecording {
+            transcriber.reset()   // clear any previous transcript before a new take
+        }
+        recorder.toggle()
     }
 
     private func timeString(_ t: TimeInterval) -> String {
