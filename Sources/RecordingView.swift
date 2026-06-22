@@ -105,8 +105,10 @@ struct RecordingView: View {
             }
         case .redacting:
             ProgressView("Removing identifiers…")
-        case .analyzing:
-            ProgressView("Analyzing on-device… (this can take a bit)")
+        case .scoring(let done, let total):
+            ProgressView("Scoring criterion \(done + 1) of \(total)…")
+        case .summarizing:
+            ProgressView("Writing summary…")
         case .done:
             Button("View feedback") { showFeedback = true }
                 .buttonStyle(.borderedProminent)

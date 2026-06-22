@@ -12,18 +12,9 @@ struct FeedbackView: View {
                     Section("Summary") { Text(summary) }
                 }
 
-                if !feedback.perCriterion.isEmpty {
-                    Section("Criteria") {
-                        ForEach(feedback.perCriterion) { result in
-                            criterionRow(result)
-                        }
-                    }
-                } else {
-                    // JSON parse fell back — show the raw model output so nothing is hidden.
-                    Section("Model output (unparsed)") {
-                        Text(feedback.rawOutput)
-                            .font(.caption.monospaced())
-                            .textSelection(.enabled)
+                Section("Criteria (\(metCount)/\(feedback.perCriterion.count) met)") {
+                    ForEach(feedback.perCriterion) { result in
+                        criterionRow(result)
                     }
                 }
             }
@@ -52,6 +43,10 @@ struct FeedbackView: View {
             }
         }
         .padding(.vertical, 2)
+    }
+
+    private var metCount: Int {
+        feedback.perCriterion.filter { $0.met }.count
     }
 
     private func criterionText(_ id: String) -> String {
