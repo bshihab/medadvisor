@@ -5,6 +5,11 @@ import SwiftUI
 struct RecordingView: View {
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var transcriber = SpeechTranscriber()
+    @StateObject private var analyzer = ConsultationAnalyzer()
+    @State private var showFeedback = false
+
+    // Placeholder rubric until baba's real mark schemes arrive (M1).
+    private let rubric = RubricLoader.load(named: "example-spikes-breaking-bad-news")
 
     var body: some View {
         VStack(spacing: 32) {
@@ -38,6 +43,11 @@ struct RecordingView: View {
             recorder.requestPermission()
             transcriber.requestPermission()
         }
+        .sheet(isPresented: $showFeedback) {
+            if case .done(let feedback) = analyzer.state, let rubric {
+                FeedbackView(feedback: feedback, rubric: rubric)
+            }
+        }
         .alert("Microphone access needed",
                isPresented: $recorder.permissionDenied) {
             Button("OK", role: .cancel) {}
@@ -56,13 +66,16 @@ struct RecordingView: View {
             case .transcribing:
                 ProgressView("Transcribing on-device…")
             case .done(let text):
-                ScrollView {
-                    Text(text.isEmpty ? "(no speech detected)" : text)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
+                VStack(spacing: 12) {
+                    ScrollView {
+                        Text(text.isEmpty ? "(no speech detected)" : text)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                    }
+                    .frame(maxHeight: 160)
+                    .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                    analyzeControls(transcript: text)
                 }
-                .frame(maxHeight: 180)
-                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal)
             case .unavailable(let reason):
                 Text(reason)
@@ -70,6 +83,35 @@ struct RecordingView: View {
                     .foregroundStyle(.red)
                     .padding(.horizontal)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func analyzeControls(transcript: String) -> some View {
+        switch analyzer.state {
+        case .idle:
+            Button("Analyze consultation") {
+                guard let rubric else { return }
+                Task {
+                    await analyzer.analyze(transcript: transcript, rubric: rubric)
+                    if case .done = analyzer.state { showFeedback = true }
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(rubric == nil)
+            if rubric == nil {
+                Text("Rubric not bundled — check project resources.")
+                    .font(.caption).foregroundStyle(.red)
+            }
+        case .redacting:
+            ProgressView("Removing identifiers…")
+        case .analyzing:
+            ProgressView("Analyzing on-device… (this can take a bit)")
+        case .done:
+            Button("View feedback") { showFeedback = true }
+                .buttonStyle(.borderedProminent)
+        case .error(let message):
+            Text(message).font(.caption).foregroundStyle(.red)
         }
     }
 
@@ -90,6 +132,7 @@ struct RecordingView: View {
     private func toggleRecording() {
         if !recorder.isRecording {
             transcriber.reset()   // clear any previous transcript before a new take
+            analyzer.reset()
         }
         recorder.toggle()
     }

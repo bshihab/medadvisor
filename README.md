@@ -44,3 +44,13 @@ Then run on a physical device (microphone required).
 - [x] First run (online): tap **Test prompt** → model downloads, then generates a sentence on-device.
 - [ ] After download, **airplane mode**: tap **Test prompt** again → still generates (proves offline inference).
 - [x] **Guardrail probe:** model engaged with the clinical transcript and gave sensible empathy feedback — no refusal. Gemma family is viable.
+
+## M2 — end-to-end slice (Record tab)
+
+Record → transcribe → **Analyze consultation**: PHI redaction → score against the bundled draft SPIKES rubric → feedback sheet.
+
+- [ ] Record a role-played consultation, transcribe, tap **Analyze consultation**.
+- [ ] Feedback sheet shows per-criterion results (met/unmet + evidence quote + tip).
+- [ ] Runs in airplane mode after the model is cached (full pipeline offline).
+
+Note: uses `rubrics/example-spikes-breaking-bad-news.json` (placeholder) until baba's mark schemes replace it. Analysis on the 2B spike model can take a while — expected; speed comes with model/runtime tuning later.
