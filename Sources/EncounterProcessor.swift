@@ -34,13 +34,13 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(liveTranscript: String, url: URL, rubric: Rubric) async {
-        var transcript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // Fallback to a file-based pass only if the live transcript came back empty.
+        // File-based recognition is the proven primary source; fall back to the
+        // live transcript if it returns nothing.
+        stage = .transcribing
+        var transcript = ((try? await transcriber.transcribe(url: url))?.text ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         if transcript.isEmpty {
-            stage = .transcribing
-            transcript = ((try? await transcriber.transcribe(url: url))?.text ?? "")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+            transcript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         guard !transcript.isEmpty else {

@@ -61,10 +61,16 @@ final class AudioRecorder: NSObject, ObservableObject {
         let input = engine.inputNode
         let format = input.outputFormat(forBus: 0)
 
-        // File for later diarization / accurate transcription.
+        // File for accurate transcription. Use AAC/.m4a — the format Apple's
+        // file-based recognizer reads reliably (a float .caf came back empty).
         let url = Self.makeFileURL()
+        let fileSettings: [String: Any] = [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: format.sampleRate,
+            AVNumberOfChannelsKey: format.channelCount
+        ]
         do {
-            file = try AVAudioFile(forWriting: url, settings: format.settings)
+            file = try AVAudioFile(forWriting: url, settings: fileSettings)
         } catch {
             print("Audio file error: \(error)")
             return
@@ -183,6 +189,6 @@ final class AudioRecorder: NSObject, ObservableObject {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let stamp = ISO8601DateFormatter().string(from: Date())
             .replacingOccurrences(of: ":", with: "-")
-        return docs.appendingPathComponent("encounter-\(stamp).caf")
+        return docs.appendingPathComponent("encounter-\(stamp).m4a")
     }
 }
