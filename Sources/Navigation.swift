@@ -25,6 +25,7 @@ struct HomeView: View {
                              systemImage: "mic.fill",
                              tint: .accentColor)
                 }
+                .buttonStyle(.plain)
 
                 NavigationLink {
                     LocationSelectionView(mode: .goalSetting)
@@ -34,6 +35,7 @@ struct HomeView: View {
                              systemImage: "target",
                              tint: .green)
                 }
+                .buttonStyle(.plain)
 
                 NavigationLink {
                     HistoryView()
@@ -43,6 +45,7 @@ struct HomeView: View {
                              systemImage: "clock.arrow.circlepath",
                              tint: .indigo)
                 }
+                .buttonStyle(.plain)
 
                 Spacer()
 
@@ -77,6 +80,7 @@ struct LocationSelectionView: View {
                     } label: {
                         LocationCard(location: location)
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding()
@@ -110,14 +114,20 @@ struct ModeCard: View {
                 .frame(width: 56, height: 56)
                 .background(tint, in: RoundedRectangle(cornerRadius: 14))
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.headline)
-                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Spacer()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer(minLength: 0)
         }
         .padding()
         .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
-        .foregroundStyle(.primary)
     }
 }
 
@@ -126,8 +136,14 @@ struct LocationCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(location.rawValue).font(.headline)
-            Text(location.blurb).font(.subheadline).foregroundStyle(.secondary)
+            Text(location.rawValue)
+                .font(.headline)
+                .foregroundStyle(.primary)
+            Text(location.blurb)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
             if location.isDraft {
                 Text(location.draftNote)
                     .font(.caption2)
@@ -137,6 +153,5 @@ struct LocationCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
-        .foregroundStyle(.primary)
     }
 }
