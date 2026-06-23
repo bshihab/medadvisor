@@ -1,14 +1,17 @@
 import Foundation
 
-/// Orchestrates the full on-device pipeline for one recording:
-/// transcribe → diarize → merge into a speaker-labeled transcript → redact →
-/// score each criterion → summary.
+/// Orchestrates the on-device pipeline for one recording:
+/// use the live transcript → redact → score each criterion → summary.
+///
+/// We use the LIVE transcript (captured during recording) as the source of
+/// truth — the separate file-based pass proved unreliable on the engine-written
+/// audio. Diarization/speaker labels are parked until we have reliable word
+/// timings + voice enrollment; the model infers roles from the transcript.
 @MainActor
 final class EncounterProcessor: ObservableObject {
     enum Stage: Equatable {
         case idle
         case transcribing
-        case identifyingSpeakers
         case redacting
         case scoring(done: Int, total: Int)
         case summarizing
@@ -18,11 +21,9 @@ final class EncounterProcessor: ObservableObject {
 
     @Published var stage: Stage = .idle
     @Published var labeledTranscript: String = ""
-    /// Redacted version (what we persist + show in history).
     @Published var redactedTranscript: String = ""
 
     private let transcriber = SpeechTranscriber()
-    private let diarizer = DiarizationService()
 
     func requestPermissions() { transcriber.requestPermission() }
 
@@ -32,30 +33,28 @@ final class EncounterProcessor: ObservableObject {
         redactedTranscript = ""
     }
 
-    func process(url: URL, rubric: Rubric) async {
-        do {
+    func process(liveTranscript: String, url: URL, rubric: Rubric) async {
+        var transcript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Fallback to a file-based pass only if the live transcript came back empty.
+        if transcript.isEmpty {
             stage = .transcribing
-            let transcription = try await transcriber.transcribe(url: url)
+            transcript = ((try? await transcriber.transcribe(url: url))?.text ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
 
-            stage = .identifyingSpeakers
-            var transcript = transcription.text
-            // Only apply speaker labels when diarization genuinely separated ≥2
-            // speakers AND we have usable word timings. Otherwise a collapsed
-            // "all Speaker 1" labeling would confuse the model and tank the score,
-            // so we fall back to the clean transcript and let it infer roles.
-            if let segments = try? await diarizer.diarize(url: url) {
-                let distinctSpeakers = Set(segments.map { $0.speakerId }).count
-                let timingsUsable = transcription.words.contains { $0.start > 0 }
-                if distinctSpeakers >= 2 && timingsUsable {
-                    transcript = TranscriptMerger.labeled(words: transcription.words, segments: segments)
-                }
-            }
-            labeledTranscript = transcript
+        guard !transcript.isEmpty else {
+            stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")
+            return
+        }
 
-            stage = .redacting
-            let redacted = PHIRedactor.redact(transcript)
-            redactedTranscript = redacted
+        labeledTranscript = transcript
 
+        stage = .redacting
+        let redacted = PHIRedactor.redact(transcript)
+        redactedTranscript = redacted
+
+        do {
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             for (index, criterion) in rubric.criteria.enumerated() {
@@ -73,7 +72,7 @@ final class EncounterProcessor: ObservableObject {
 
             stage = .done(ConsultationFeedback(perCriterion: results, summary: summary))
         } catch {
-            stage = .error(error.localizedDescription)
+            stage = .error("Analysis failed: \(error.localizedDescription)")
         }
     }
 }

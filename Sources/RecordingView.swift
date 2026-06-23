@@ -121,8 +121,6 @@ struct RecordingView: View {
             }
         case .transcribing:
             ProgressView("Transcribing on-device…")
-        case .identifyingSpeakers:
-            ProgressView("Identifying speakers…")
         case .redacting:
             ProgressView("Removing identifiers…")
         case .scoring(let done, let total):
@@ -146,7 +144,7 @@ struct RecordingView: View {
     private func runProcessing(url: URL) {
         guard let rubric else { return }
         Task {
-            await processor.process(url: url, rubric: rubric)
+            await processor.process(liveTranscript: recorder.liveText, url: url, rubric: rubric)
             if case .done(let feedback) = processor.stage {
                 let record = ConsultationRecord(
                     id: UUID().uuidString,
