@@ -39,9 +39,16 @@ final class EncounterProcessor: ObservableObject {
 
             stage = .identifyingSpeakers
             var transcript = transcription.text
-            // Diarization is best-effort: if it fails, fall back to the plain transcript.
-            if let segments = try? await diarizer.diarize(url: url), !segments.isEmpty {
-                transcript = TranscriptMerger.labeled(words: transcription.words, segments: segments)
+            // Only apply speaker labels when diarization genuinely separated ≥2
+            // speakers AND we have usable word timings. Otherwise a collapsed
+            // "all Speaker 1" labeling would confuse the model and tank the score,
+            // so we fall back to the clean transcript and let it infer roles.
+            if let segments = try? await diarizer.diarize(url: url) {
+                let distinctSpeakers = Set(segments.map { $0.speakerId }).count
+                let timingsUsable = transcription.words.contains { $0.start > 0 }
+                if distinctSpeakers >= 2 && timingsUsable {
+                    transcript = TranscriptMerger.labeled(words: transcription.words, segments: segments)
+                }
             }
             labeledTranscript = transcript
 
