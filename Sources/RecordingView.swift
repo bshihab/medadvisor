@@ -27,6 +27,8 @@ struct RecordingView: View {
 
             recordButton
 
+            liveFeed
+
             processSection
 
             Spacer()
@@ -58,6 +60,23 @@ struct RecordingView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Confirm the patient has given consent to be recorded before you begin. Audio is processed on-device and deleted after analysis.")
+        }
+    }
+
+    // MARK: - Live feed
+
+    @ViewBuilder
+    private var liveFeed: some View {
+        if recorder.isRecording {
+            ScrollView {
+                Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
+                    .padding()
+            }
+            .frame(maxHeight: 150)
+            .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal)
         }
     }
 
