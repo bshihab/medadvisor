@@ -27,6 +27,10 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var startedAt: Date?
     private var timer: Timer?
 
+    /// Text committed from finalized segments. The live display is this plus the
+    /// current in-progress partial — so the transcript grows across pauses.
+    private var accumulatedText = ""
+
     func requestPermission() {
         AVAudioApplication.requestRecordPermission { granted in
             DispatchQueue.main.async { self.permissionDenied = !granted }
@@ -69,17 +73,8 @@ final class AudioRecorder: NSObject, ObservableObject {
 
         // Live on-device transcript — ONLY if on-device recognition is supported,
         // so we never stream audio to a server.
-        let req = SFSpeechAudioBufferRecognitionRequest()
-        req.shouldReportPartialResults = true
-        request = req
-        if let recognizer, recognizer.isAvailable, recognizer.supportsOnDeviceRecognition {
-            req.requiresOnDeviceRecognition = true
-            task = recognizer.recognitionTask(with: req) { [weak self] result, _ in
-                guard let self, let result else { return }
-                let text = result.bestTranscription.formattedString
-                DispatchQueue.main.async { self.liveText = text }
-            }
-        }
+        accumulatedText = ""
+        startRecognition()
 
         input.installTap(onBus: 0, bufferSize: 2048, format: format) { [weak self] buffer, _ in
             guard let self else { return }
@@ -123,6 +118,43 @@ final class AudioRecorder: NSObject, ObservableObject {
         elapsed = 0
         startedAt = nil
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    /// Starts (or restarts) an on-device recognition task. We restart after each
+    /// finalized segment (which the recognizer emits on a pause) so the live
+    /// transcript keeps accumulating instead of resetting.
+    private func startRecognition() {
+        guard let recognizer, recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else { return }
+        let req = SFSpeechAudioBufferRecognitionRequest()
+        req.shouldReportPartialResults = true
+        req.requiresOnDeviceRecognition = true
+        request = req
+        task = recognizer.recognitionTask(with: req) { [weak self] result, error in
+            guard let self else { return }
+            if let result {
+                let partial = result.bestTranscription.formattedString
+                let combined: String
+                if self.accumulatedText.isEmpty { combined = partial }
+                else if partial.isEmpty { combined = self.accumulatedText }
+                else { combined = self.accumulatedText + " " + partial }
+                DispatchQueue.main.async { self.liveText = combined }
+                if result.isFinal {
+                    self.accumulatedText = combined
+                    self.restartRecognition()
+                }
+            } else if error != nil {
+                self.restartRecognition()
+            }
+        }
+    }
+
+    private func restartRecognition() {
+        DispatchQueue.main.async {
+            guard self.isRecording else { return }
+            self.task = nil
+            self.request = nil
+            self.startRecognition()
+        }
     }
 
     private func startTimer() {
