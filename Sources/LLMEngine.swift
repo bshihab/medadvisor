@@ -50,7 +50,7 @@ final class LLMEngine {
 
     /// Strip Gemma chat-template markers that can bleed into generated text,
     /// and cut anything after an end-of-turn marker.
-    private static func clean(_ s: String) -> String {
+    nonisolated private static func clean(_ s: String) -> String {
         var text = s
         for marker in ["<end_of_turn>", "<eos>", "<start_of_turn>"] {
             if let range = text.range(of: marker) {
