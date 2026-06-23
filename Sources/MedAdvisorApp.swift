@@ -4,7 +4,7 @@ import SwiftUI
 struct MedAdvisorApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            RootView()
         }
     }
 }

@@ -10,6 +10,7 @@ struct FeedbackView: View {
 
     private enum Tab: Hashable { case feedback, transcript }
     @State private var tab: Tab = .feedback
+    @ObservedObject private var goals = GoalStore.shared
 
     var body: some View {
         NavigationStack {
@@ -53,13 +54,13 @@ struct FeedbackView: View {
                 } header: { header("Critical — address these first") }
             }
 
-            ForEach(rubric.dimensions) { dimension in
+            ForEach(orderedDimensions) { dimension in
                 let results = resultsFor(dimension)
                 if !results.isEmpty {
                     Section {
                         ForEach(results) { criterionRow($0) }
                     } header: {
-                        header("\(dimension.label) — \(metCount(results))/\(results.count) met")
+                        pinnedHeader(dimension, results: results)
                     }
                 }
             }
@@ -105,6 +106,26 @@ struct FeedbackView: View {
             .font(.subheadline.weight(.bold))
             .foregroundStyle(.primary)
             .textCase(nil)   // stop List's default uppercase
+    }
+
+    /// Section header that flags the pinned focus phase with an orange pin.
+    @ViewBuilder
+    private func pinnedHeader(_ dimension: Dimension, results: [CriterionResult]) -> some View {
+        HStack(spacing: 6) {
+            if goals.isPinned(dimension.id) {
+                Image(systemName: "pin.fill").foregroundStyle(.orange)
+            }
+            header("\(dimension.label) — \(metCount(results))/\(results.count) met")
+        }
+    }
+
+    /// Pinned phase first, then the rubric's order.
+    private var orderedDimensions: [Dimension] {
+        rubric.dimensions.sorted { a, b in
+            let ap = goals.isPinned(a.id) ? 0 : 1
+            let bp = goals.isPinned(b.id) ? 0 : 1
+            return ap < bp
+        }
     }
 
     // MARK: - Helpers

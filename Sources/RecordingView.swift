@@ -8,6 +8,7 @@ struct RecordingView: View {
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var processor = EncounterProcessor()
     @State private var showFeedback = false
+    @State private var showCheckmark = false
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
 
@@ -60,6 +61,11 @@ struct RecordingView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Confirm the patient has given consent to be recorded before you begin. Audio is processed on-device and deleted after analysis.")
+        }
+        .overlay {
+            if showCheckmark {
+                CheckmarkOverlay().transition(.opacity)
+            }
         }
     }
 
@@ -120,7 +126,13 @@ struct RecordingView: View {
         case .redacting:
             ProgressView("Removing identifiers…")
         case .scoring(let done, let total):
-            ProgressView("Scoring criterion \(done + 1) of \(total)…")
+            VStack(spacing: 8) {
+                ProgressView(value: Double(done), total: Double(total))
+                    .progressViewStyle(.linear)
+                    .animation(.easeInOut, value: done)
+                Text("Analyzing \(done + 1) of \(total)…")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         case .summarizing:
             ProgressView("Writing summary…")
         case .done:
@@ -144,6 +156,9 @@ struct RecordingView: View {
                     feedback: feedback)
                 FeedbackStore.shared.add(record)
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis
+                withAnimation { showCheckmark = true }
+                try? await Task.sleep(nanoseconds: 1_600_000_000)
+                withAnimation { showCheckmark = false }
                 showFeedback = true
             }
         }

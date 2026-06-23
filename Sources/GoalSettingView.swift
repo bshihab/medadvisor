@@ -6,6 +6,7 @@ import SwiftUI
 struct GoalSettingView: View {
     let location: AppLocation
 
+    @ObservedObject private var goals = GoalStore.shared
     private var rubric: Rubric? { RubricLoader.load(for: location) }
 
     var body: some View {
@@ -21,9 +22,19 @@ struct GoalSettingView: View {
                     DisclosureGroup {
                         coachingContent(dimension)
                     } label: {
-                        Text(dimension.label)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
+                        HStack {
+                            Text(dimension.label)
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Button {
+                                goals.toggle(dimension.id)
+                            } label: {
+                                Image(systemName: goals.isPinned(dimension.id) ? "pin.fill" : "pin")
+                                    .foregroundStyle(goals.isPinned(dimension.id) ? .orange : .secondary)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
             } else {
