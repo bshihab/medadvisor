@@ -29,6 +29,12 @@ final class AudioRecorder: NSObject, ObservableObject {
         isRecording ? stop() : start()
     }
 
+    /// Deletes a recorded file from disk (called after analysis — we don't keep raw audio).
+    func deleteRecording(_ url: URL) {
+        try? FileManager.default.removeItem(at: url)
+        recordings.removeAll { $0 == url }
+    }
+
     private func start() {
         let session = AVAudioSession.sharedInstance()
         do {

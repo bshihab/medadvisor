@@ -9,6 +9,8 @@ struct RecordingView: View {
     @StateObject private var transcriber = SpeechTranscriber()
     @StateObject private var analyzer = ConsultationAnalyzer()
     @State private var showFeedback = false
+    @State private var consentConfirmed = false
+    @State private var showConsentDialog = false
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
 
@@ -54,6 +56,17 @@ struct RecordingView: View {
         } message: {
             Text("Enable microphone access in Settings to record consultations.")
         }
+        .confirmationDialog("Patient consent",
+                            isPresented: $showConsentDialog,
+                            titleVisibility: .visible) {
+            Button("The patient has consented to recording") {
+                consentConfirmed = true
+                startRecording()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Confirm the patient has given consent to be recorded before you begin. Audio is processed on-device and deleted after analysis.")
+        }
     }
 
     @ViewBuilder
@@ -94,7 +107,17 @@ struct RecordingView: View {
                 guard let rubric else { return }
                 Task {
                     await analyzer.analyze(transcript: transcript, rubric: rubric)
-                    if case .done = analyzer.state { showFeedback = true }
+                    if case .done(let feedback) = analyzer.state {
+                        let record = ConsultationRecord(
+                            id: UUID().uuidString,
+                            date: Date(),
+                            locationRaw: location.rawValue,
+                            feedback: feedback)
+                        FeedbackStore.shared.add(record)
+                        // Privacy: delete the raw audio now that analysis is complete.
+                        if let url = recorder.recordings.first { recorder.deleteRecording(url) }
+                        showFeedback = true
+                    }
                 }
             }
             .buttonStyle(.borderedProminent)
@@ -132,10 +155,21 @@ struct RecordingView: View {
     }
 
     private func toggleRecording() {
-        if !recorder.isRecording {
-            transcriber.reset()   // clear any previous transcript before a new take
-            analyzer.reset()
+        if recorder.isRecording {
+            recorder.toggle()   // stop
+            return
         }
+        // Starting: require patient consent once per session.
+        guard consentConfirmed else {
+            showConsentDialog = true
+            return
+        }
+        startRecording()
+    }
+
+    private func startRecording() {
+        transcriber.reset()   // clear any previous transcript before a new take
+        analyzer.reset()
         recorder.toggle()
     }
 

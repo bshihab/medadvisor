@@ -35,6 +35,15 @@ struct HomeView: View {
                              tint: .green)
                 }
 
+                NavigationLink {
+                    HistoryView()
+                } label: {
+                    ModeCard(title: "History",
+                             subtitle: "Review your past feedback and progress",
+                             systemImage: "clock.arrow.circlepath",
+                             tint: .indigo)
+                }
+
                 Spacer()
 
                 NavigationLink("Developer: on-device LLM test") {

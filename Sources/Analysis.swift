@@ -10,7 +10,7 @@ struct CriterionResult: Codable, Equatable, Identifiable {
 }
 
 /// The full feedback for one consultation.
-struct ConsultationFeedback: Equatable {
+struct ConsultationFeedback: Equatable, Codable {
     let perCriterion: [CriterionResult]
     let summary: String?
 }
