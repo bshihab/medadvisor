@@ -19,10 +19,23 @@ enum AppLocation: String, CaseIterable, Identifiable {
         }
     }
 
-    /// True for locations the director hasn't supplied material for yet.
+    /// Short description shown on the location-selection card.
+    var blurb: String {
+        switch self {
+        case .outpatientClinic:    return "A scheduled clinic visit — history taking and explaining a plan."
+        case .inpatient:           return "Bedside rounds on the ward or ICU — talking with the patient and family."
+        case .emergencyDepartment: return "A fast, high-acuity emergency encounter."
+        case .operatingRoom:       return "Peri-operative and pre-op patient communication."
+        }
+    }
+
+    /// True for locations with no source material distilled into the rubric yet.
     var isDraft: Bool {
         self == .emergencyDepartment || self == .operatingRoom
     }
+
+    /// Note shown for draft locations.
+    var draftNote: String { "No reference info yet — generalized draft" }
 }
 
 /// Swift model of a rubric (subset of rubric.schema.json — Codable ignores keys

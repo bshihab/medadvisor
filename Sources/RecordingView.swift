@@ -3,21 +3,17 @@ import SwiftUI
 /// M0 UI: a clean start/stop control with a live input-level meter and elapsed time.
 /// Proves on-device capture works (verify in airplane mode).
 struct RecordingView: View {
+    let location: AppLocation
+
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var transcriber = SpeechTranscriber()
     @StateObject private var analyzer = ConsultationAnalyzer()
     @State private var showFeedback = false
-    @State private var location: AppLocation = .outpatientClinic
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
 
     var body: some View {
         VStack(spacing: 32) {
-            Text("MedAdvisor")
-                .font(.largeTitle.bold())
-
-            locationPicker
-
             Spacer()
 
             LevelMeter(level: recorder.level)
@@ -41,6 +37,8 @@ struct RecordingView: View {
             }
         }
         .padding()
+        .navigationTitle(location.rawValue)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             recorder.requestPermission()
             transcriber.requestPermission()
@@ -84,23 +82,6 @@ struct RecordingView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .padding(.horizontal)
-            }
-        }
-    }
-
-    private var locationPicker: some View {
-        VStack(spacing: 4) {
-            Picker("Location", selection: $location) {
-                ForEach(AppLocation.allCases) { loc in
-                    Text(loc.rawValue).tag(loc)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: location) { _, _ in analyzer.reset() }
-
-            if location.isDraft {
-                Text("Draft rubric — pending baba's input for this location")
-                    .font(.caption2).foregroundStyle(.orange)
             }
         }
     }
@@ -182,5 +163,5 @@ private struct LevelMeter: View {
 }
 
 #Preview {
-    RecordingView()
+    RecordingView(location: .outpatientClinic)
 }
