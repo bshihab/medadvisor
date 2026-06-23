@@ -21,7 +21,9 @@ struct GoalSettingView: View {
                     DisclosureGroup {
                         coachingContent(dimension)
                     } label: {
-                        Text(dimension.label).font(.headline)
+                        Text(dimension.label)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
                     }
                 }
             } else {
@@ -29,6 +31,7 @@ struct GoalSettingView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .listStyle(.plain)
         .navigationTitle("Set a Goal")
         .navigationBarTitleDisplayMode(.inline)
     }

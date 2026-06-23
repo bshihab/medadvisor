@@ -46,11 +46,14 @@ struct HomeView: View {
 
                 Spacer()
 
-                NavigationLink("Developer: on-device LLM test") {
+                NavigationLink {
                     LLMSpikeView()
+                } label: {
+                    Text("Developer: on-device LLM test")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .buttonStyle(.plain)
             }
             .padding()
         }

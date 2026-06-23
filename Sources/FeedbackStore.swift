@@ -6,6 +6,8 @@ struct ConsultationRecord: Codable, Identifiable, Equatable {
     let id: String
     let date: Date
     let locationRaw: String
+    /// Redacted, speaker-labeled transcript (optional for older records).
+    var transcript: String?
     let feedback: ConsultationFeedback
 
     var location: AppLocation? { AppLocation(rawValue: locationRaw) }

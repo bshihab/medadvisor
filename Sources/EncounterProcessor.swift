@@ -18,6 +18,8 @@ final class EncounterProcessor: ObservableObject {
 
     @Published var stage: Stage = .idle
     @Published var labeledTranscript: String = ""
+    /// Redacted version (what we persist + show in history).
+    @Published var redactedTranscript: String = ""
 
     private let transcriber = SpeechTranscriber()
     private let diarizer = DiarizationService()
@@ -27,6 +29,7 @@ final class EncounterProcessor: ObservableObject {
     func reset() {
         stage = .idle
         labeledTranscript = ""
+        redactedTranscript = ""
     }
 
     func process(url: URL, rubric: Rubric) async {
@@ -44,6 +47,7 @@ final class EncounterProcessor: ObservableObject {
 
             stage = .redacting
             let redacted = PHIRedactor.redact(transcript)
+            redactedTranscript = redacted
 
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
