@@ -27,8 +27,8 @@ final class DiarizationService {
         let result = try await manager.process(audio: samples)
         return result.segments.map {
             SpeakerSegment(speakerId: "\($0.speakerId)",
-                           start: $0.startTimeSeconds,
-                           end: $0.endTimeSeconds)
+                           start: Double($0.startTimeSeconds),
+                           end: Double($0.endTimeSeconds))
         }
     }
 }
