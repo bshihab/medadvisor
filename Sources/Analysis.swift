@@ -68,7 +68,11 @@ enum FeedbackParser {
                 comment = String(line.dropFirst("tip:".count)).trimmingCharacters(in: .whitespaces)
             }
         }
-        if let e = evidence, e.isEmpty || e.lowercased() == "none" { evidence = nil }
+        // Strip surrounding quotes the model often adds (we add our own in the UI).
+        if var e = evidence {
+            e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
+            evidence = (e.isEmpty || e.lowercased() == "none") ? nil : e
+        }
         return CriterionResult(criterionId: criterionId, met: met, evidence: evidence, comment: comment)
     }
 }
