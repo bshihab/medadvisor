@@ -10,6 +10,9 @@ packages:
     url: https://github.com/ml-explore/mlx-swift-examples
     # main does NOT expose MLXLLM/MLXLMCommon as products — only tagged releases do.
     exactVersion: 2.29.1
+  FluidAudio:
+    url: https://github.com/FluidInference/FluidAudio
+    exactVersion: 0.15.4
 
 targets:
   MedAdvisor:
@@ -24,6 +27,8 @@ targets:
         product: MLXLLM
       - package: MLXSwiftExamples
         product: MLXLMCommon
+      - package: FluidAudio
+        product: FluidAudio
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

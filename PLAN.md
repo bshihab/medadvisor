@@ -74,7 +74,7 @@ Each milestone passes or fails on an objective check — a number, a file you ca
 
 ### M2.5 — Speaker diarization · ~Weeks 4–5
 **Goal:** know which words are the *doctor's*. Apple's STT returns one unlabeled stream; without speaker separation the model only guesses who's speaking, which undermines trustworthy assessment.
-**Build:** on-device diarization (FluidAudio or sherpa-onnx) to segment audio by speaker → labeled transcript ("Clinician:" / "Patient:"). Plus optional **doctor voice enrollment** (record the doctor's voice once so the app reliably identifies the clinician across all encounters). Feeds the labeled transcript into the analyzer instead of the raw stream.
+**Build:** on-device diarization (FluidAudio offline/Pyannote pipeline) to segment audio by speaker → labeled transcript ("Speaker 1:" / "Speaker 2:", merged with Apple STT word timings). Feeds the labeled transcript into the analyzer instead of the raw stream. **Still TODO:** doctor **voice enrollment** (record the doctor's voice once so the app knows which speaker is the clinician — currently the LLM infers it from labeled turns).
 **Verify independently:**
 - [ ] Transcript shows speaker labels that match a manual listen-through on a 2-speaker recording.
 - [ ] Diarization runs fully on-device (airplane-mode egress test still zero bytes).

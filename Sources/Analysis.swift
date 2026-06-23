@@ -73,46 +73,5 @@ enum FeedbackParser {
     }
 }
 
-/// Orchestrates the pipeline: redact → score each criterion → summary.
-@MainActor
-final class ConsultationAnalyzer: ObservableObject {
-    enum State: Equatable {
-        case idle
-        case redacting
-        case scoring(done: Int, total: Int)
-        case summarizing
-        case done(ConsultationFeedback)
-        case error(String)
-    }
-
-    @Published var state: State = .idle
-
-    func reset() { state = .idle }
-
-    func analyze(transcript: String, rubric: Rubric) async {
-        state = .redacting
-        let redacted = PHIRedactor.redact(transcript)
-
-        var results: [CriterionResult] = []
-        let total = rubric.criteria.count
-        for (index, criterion) in rubric.criteria.enumerated() {
-            state = .scoring(done: index, total: total)
-            let prompt = PromptBuilder.criterionPrompt(criterion: criterion, transcript: redacted)
-            do {
-                let raw = try await LLMEngine.shared.generate(prompt: prompt, maxTokens: 180)
-                results.append(FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id))
-            } catch {
-                state = .error("Analysis failed: \(error.localizedDescription)")
-                return
-            }
-        }
-
-        state = .summarizing
-        let summary = try? await LLMEngine.shared.generate(
-            prompt: PromptBuilder.summaryPrompt(rubric: rubric, results: results),
-            maxTokens: 160
-        )
-
-        state = .done(ConsultationFeedback(perCriterion: results, summary: summary))
-    }
-}
+// The pipeline is orchestrated by EncounterProcessor (transcribe → diarize →
+// redact → score), which reuses PromptBuilder and FeedbackParser above.

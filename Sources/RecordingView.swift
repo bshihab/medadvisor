@@ -1,13 +1,12 @@
 import SwiftUI
 
-/// M0 UI: a clean start/stop control with a live input-level meter and elapsed time.
-/// Proves on-device capture works (verify in airplane mode).
+/// Recording mode: record an encounter, then run the full on-device pipeline
+/// (transcribe → diarize → score) and show feedback.
 struct RecordingView: View {
     let location: AppLocation
 
     @StateObject private var recorder = AudioRecorder()
-    @StateObject private var transcriber = SpeechTranscriber()
-    @StateObject private var analyzer = ConsultationAnalyzer()
+    @StateObject private var processor = EncounterProcessor()
     @State private var showFeedback = false
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
@@ -15,7 +14,7 @@ struct RecordingView: View {
     private var rubric: Rubric? { RubricLoader.load(for: location) }
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 28) {
             Spacer()
 
             LevelMeter(level: recorder.level)
@@ -28,30 +27,23 @@ struct RecordingView: View {
 
             recordButton
 
-            transcriptSection
+            processSection
 
             Spacer()
-
-            if !recorder.recordings.isEmpty {
-                Text("\(recorder.recordings.count) recording(s) saved on device")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
         }
         .padding()
         .navigationTitle(location.rawValue)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             recorder.requestPermission()
-            transcriber.requestPermission()
+            processor.requestPermissions()
         }
         .sheet(isPresented: $showFeedback) {
-            if case .done(let feedback) = analyzer.state, let rubric {
+            if case .done(let feedback) = processor.stage, let rubric {
                 FeedbackView(feedback: feedback, rubric: rubric)
             }
         }
-        .alert("Microphone access needed",
-               isPresented: $recorder.permissionDenied) {
+        .alert("Microphone access needed", isPresented: $recorder.permissionDenied) {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Enable microphone access in Settings to record consultations.")
@@ -69,63 +61,43 @@ struct RecordingView: View {
         }
     }
 
+    // MARK: - Process section
+
     @ViewBuilder
-    private var transcriptSection: some View {
+    private var processSection: some View {
         if let latest = recorder.recordings.first, !recorder.isRecording {
-            switch transcriber.state {
-            case .idle:
-                Button("Transcribe on-device") { transcriber.transcribe(url: latest) }
-                    .buttonStyle(.bordered)
-            case .transcribing:
-                ProgressView("Transcribing on-device…")
-            case .done(let text):
-                VStack(spacing: 12) {
+            VStack(spacing: 12) {
+                stageView(url: latest)
+
+                if !processor.labeledTranscript.isEmpty {
                     ScrollView {
-                        Text(text.isEmpty ? "(no speech detected)" : text)
+                        Text(processor.labeledTranscript)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                     }
                     .frame(maxHeight: 160)
                     .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                    analyzeControls(transcript: text)
                 }
-                .padding(.horizontal)
-            case .unavailable(let reason):
-                Text(reason)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-                    .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
     }
 
     @ViewBuilder
-    private func analyzeControls(transcript: String) -> some View {
-        switch analyzer.state {
+    private func stageView(url: URL) -> some View {
+        switch processor.stage {
         case .idle:
-            Button("Analyze consultation") {
-                guard let rubric else { return }
-                Task {
-                    await analyzer.analyze(transcript: transcript, rubric: rubric)
-                    if case .done(let feedback) = analyzer.state {
-                        let record = ConsultationRecord(
-                            id: UUID().uuidString,
-                            date: Date(),
-                            locationRaw: location.rawValue,
-                            feedback: feedback)
-                        FeedbackStore.shared.add(record)
-                        // Privacy: delete the raw audio now that analysis is complete.
-                        if let url = recorder.recordings.first { recorder.deleteRecording(url) }
-                        showFeedback = true
-                    }
-                }
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(rubric == nil)
+            Button("Transcribe & analyze") { runProcessing(url: url) }
+                .buttonStyle(.borderedProminent)
+                .disabled(rubric == nil)
             if rubric == nil {
                 Text("Rubric not bundled — check project resources.")
                     .font(.caption).foregroundStyle(.red)
             }
+        case .transcribing:
+            ProgressView("Transcribing on-device…")
+        case .identifyingSpeakers:
+            ProgressView("Identifying speakers…")
         case .redacting:
             ProgressView("Removing identifiers…")
         case .scoring(let done, let total):
@@ -139,6 +111,25 @@ struct RecordingView: View {
             Text(message).font(.caption).foregroundStyle(.red)
         }
     }
+
+    private func runProcessing(url: URL) {
+        guard let rubric else { return }
+        Task {
+            await processor.process(url: url, rubric: rubric)
+            if case .done(let feedback) = processor.stage {
+                let record = ConsultationRecord(
+                    id: UUID().uuidString,
+                    date: Date(),
+                    locationRaw: location.rawValue,
+                    feedback: feedback)
+                FeedbackStore.shared.add(record)
+                recorder.deleteRecording(url)   // privacy: drop raw audio after analysis
+                showFeedback = true
+            }
+        }
+    }
+
+    // MARK: - Recording controls
 
     private var recordButton: some View {
         Button(action: toggleRecording) {
@@ -159,7 +150,6 @@ struct RecordingView: View {
             recorder.toggle()   // stop
             return
         }
-        // Starting: require patient consent once per session.
         guard consentConfirmed else {
             showConsentDialog = true
             return
@@ -168,8 +158,7 @@ struct RecordingView: View {
     }
 
     private func startRecording() {
-        transcriber.reset()   // clear any previous transcript before a new take
-        analyzer.reset()
+        processor.reset()
         recorder.toggle()
     }
 
