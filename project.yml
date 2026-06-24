@@ -13,6 +13,9 @@ packages:
   FluidAudio:
     url: https://github.com/FluidInference/FluidAudio
     exactVersion: 0.15.4
+  WhisperKit:
+    url: https://github.com/argmaxinc/WhisperKit
+    exactVersion: 1.0.0
 
 targets:
   MedAdvisor:
@@ -29,6 +32,8 @@ targets:
         product: MLXLMCommon
       - package: FluidAudio
         product: FluidAudio
+      - package: WhisperKit
+        product: WhisperKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

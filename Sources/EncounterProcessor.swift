@@ -23,9 +23,9 @@ final class EncounterProcessor: ObservableObject {
     @Published var labeledTranscript: String = ""
     @Published var redactedTranscript: String = ""
 
-    private let transcriber = SpeechTranscriber()
+    private let whisper = WhisperTranscriber()
 
-    func requestPermissions() { transcriber.requestPermission() }
+    func requestPermissions() {}   // WhisperKit needs no speech-auth; mic is handled by the recorder
 
     func reset() {
         stage = .idle
@@ -34,10 +34,10 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(liveTranscript: String, url: URL, rubric: Rubric) async {
-        // File-based recognition is the proven primary source; fall back to the
-        // live transcript if it returns nothing.
+        // WhisperKit is the primary source; fall back to the live Apple transcript
+        // if Whisper returns nothing.
         stage = .transcribing
-        var transcript = ((try? await transcriber.transcribe(url: url))?.text ?? "")
+        var transcript = ((try? await whisper.transcribe(url: url)) ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         if transcript.isEmpty {
             transcript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
