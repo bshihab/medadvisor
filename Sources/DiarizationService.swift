@@ -15,14 +15,11 @@ struct SpeakerSegment: Equatable {
 /// If it doesn't compile, paste the errors and we'll adjust the call sites.
 @MainActor
 final class DiarizationService {
-    private let manager = OfflineDiarizerManager(config: OfflineDiarizerConfig())
-    private var prepared = false
-
+    /// Loads the diarizer, processes, and releases it on return so its model
+    /// isn't held in memory while the LLM runs.
     func diarize(url: URL) async throws -> [SpeakerSegment] {
-        if !prepared {
-            try await manager.prepareModels()
-            prepared = true
-        }
+        let manager = OfflineDiarizerManager(config: OfflineDiarizerConfig())
+        try await manager.prepareModels()
         let samples = try AudioLoader.loadSamples(url: url, sampleRate: 16_000)
         let result = try await manager.process(audio: samples)
         return result.segments.map {

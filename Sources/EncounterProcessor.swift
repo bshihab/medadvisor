@@ -1,17 +1,17 @@
 import Foundation
 
 /// Orchestrates the on-device pipeline for one recording:
-/// use the live transcript → redact → score each criterion → summary.
+/// transcribe (WhisperKit) → diarize (FluidAudio) → conversation turns →
+/// redact → score each criterion → summary.
 ///
-/// We use the LIVE transcript (captured during recording) as the source of
-/// truth — the separate file-based pass proved unreliable on the engine-written
-/// audio. Diarization/speaker labels are parked until we have reliable word
-/// timings + voice enrollment; the model infers roles from the transcript.
+/// Models are loaded ONE AT A TIME (Whisper, then diarizer, then LLM) and each
+/// is released before the next to stay under the phone's memory ceiling.
 @MainActor
 final class EncounterProcessor: ObservableObject {
     enum Stage: Equatable {
         case idle
         case transcribing
+        case identifyingSpeakers
         case redacting
         case scoring(done: Int, total: Int)
         case summarizing
@@ -20,47 +20,61 @@ final class EncounterProcessor: ObservableObject {
     }
 
     @Published var stage: Stage = .idle
-    @Published var labeledTranscript: String = ""
     @Published var redactedTranscript: String = ""
+    /// Redacted, speaker-labeled turns for the chat view (empty if 1 speaker).
+    @Published var transcriptTurns: [TranscriptTurn] = []
 
     private let whisper = WhisperTranscriber()
+    private let diarizer = DiarizationService()
 
-    func requestPermissions() {}   // WhisperKit needs no speech-auth; mic is handled by the recorder
+    func requestPermissions() {}
 
     func reset() {
         stage = .idle
-        labeledTranscript = ""
         redactedTranscript = ""
+        transcriptTurns = []
     }
 
     func process(liveTranscript: String, url: URL, rubric: Rubric) async {
-        // WhisperKit is the primary source; fall back to the live Apple transcript
-        // if Whisper returns nothing.
+        // 1) Transcribe with WhisperKit (released on return).
         stage = .transcribing
-        var transcript = ((try? await whisper.transcribe(url: url)) ?? "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        if transcript.isEmpty {
-            transcript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
+        let whisperResult = (try? await whisper.transcribe(url: url))
+            ?? WhisperResult(text: "", segments: [])
+        var flatTranscript = whisperResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if flatTranscript.isEmpty {
+            flatTranscript = liveTranscript.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-
-        guard !transcript.isEmpty else {
+        guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")
             return
         }
 
-        labeledTranscript = transcript
+        // 2) Diarize and build conversation turns — only if ≥2 speakers found.
+        stage = .identifyingSpeakers
+        var rawTurns: [TranscriptTurn] = []
+        if !whisperResult.segments.isEmpty,
+           let speakers = try? await diarizer.diarize(url: url),
+           SpeakerMerger.distinctSpeakerCount(speakers) >= 2 {
+            rawTurns = SpeakerMerger.turns(segments: whisperResult.segments, speakers: speakers)
+            // Use the labeled turns as the transcript the model sees.
+            flatTranscript = rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+        }
 
+        // 3) Redact (for the LLM and for storage/display).
         stage = .redacting
-        let redacted = PHIRedactor.redact(transcript)
-        redactedTranscript = redacted
+        redactedTranscript = PHIRedactor.redact(flatTranscript)
+        transcriptTurns = rawTurns.map {
+            TranscriptTurn(speaker: $0.speaker, text: PHIRedactor.redact($0.text))
+        }
 
+        // 4) Score each criterion (LLM loads here, after the others are freed).
         do {
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             for (index, criterion) in rubric.criteria.enumerated() {
                 stage = .scoring(done: index, total: total)
                 let raw = try await LLMEngine.shared.generate(
-                    prompt: PromptBuilder.criterionPrompt(criterion: criterion, transcript: redacted),
+                    prompt: PromptBuilder.criterionPrompt(criterion: criterion, transcript: redactedTranscript),
                     maxTokens: 180)
                 results.append(FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id))
             }

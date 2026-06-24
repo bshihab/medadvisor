@@ -43,7 +43,9 @@ struct RecordingView: View {
         }
         .sheet(isPresented: $showFeedback) {
             if case .done(let feedback) = processor.stage, let rubric {
-                FeedbackView(feedback: feedback, rubric: rubric, transcript: processor.redactedTranscript)
+                FeedbackView(feedback: feedback, rubric: rubric,
+                             transcript: processor.redactedTranscript,
+                             turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns)
             }
         }
         .alert("Microphone access needed", isPresented: $recorder.permissionDenied) {
@@ -121,6 +123,8 @@ struct RecordingView: View {
             }
         case .transcribing:
             ProgressView("Transcribing on-device…")
+        case .identifyingSpeakers:
+            ProgressView("Identifying speakers…")
         case .redacting:
             ProgressView("Removing identifiers…")
         case .scoring(let done, let total):
@@ -151,6 +155,7 @@ struct RecordingView: View {
                     date: Date(),
                     locationRaw: location.rawValue,
                     transcript: processor.redactedTranscript,
+                    turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
                     feedback: feedback)
                 FeedbackStore.shared.add(record)
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis

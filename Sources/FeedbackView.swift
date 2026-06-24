@@ -7,6 +7,11 @@ struct FeedbackView: View {
     let feedback: ConsultationFeedback
     let rubric: Rubric
     var transcript: String? = nil
+    var turns: [TranscriptTurn]? = nil
+
+    private var hasTranscript: Bool {
+        (turns?.isEmpty == false) || (transcript?.isEmpty == false)
+    }
 
     private enum Tab: Hashable { case feedback, transcript }
     @State private var tab: Tab = .feedback
@@ -15,7 +20,7 @@ struct FeedbackView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if transcript != nil {
+                if hasTranscript {
                     Picker("View", selection: $tab) {
                         Text("Feedback").tag(Tab.feedback)
                         Text("Transcript").tag(Tab.transcript)
@@ -68,14 +73,19 @@ struct FeedbackView: View {
         .listStyle(.plain)
     }
 
+    @ViewBuilder
     private var transcriptView: some View {
-        ScrollView {
-            Text(transcript ?? "")
-                .font(.body)
-                .foregroundStyle(.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .textSelection(.enabled)
-                .padding()
+        if let turns, !turns.isEmpty {
+            ChatTranscriptView(turns: turns)
+        } else {
+            ScrollView {
+                Text(transcript ?? "")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .textSelection(.enabled)
+                    .padding()
+            }
         }
     }
 
