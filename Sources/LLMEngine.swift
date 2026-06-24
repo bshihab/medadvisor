@@ -10,8 +10,10 @@ final class LLMEngine {
     static let shared = LLMEngine()
     private init() {}
 
-    /// Small model to prove the pipeline; swap to Gemma 3n / larger quant later.
-    let modelId = "mlx-community/gemma-2-2b-it-4bit"
+    /// On-device model. Qwen2.5-3B follows the per-criterion format far better
+    /// than the 2B spike model, at a similar (~1.7GB) footprint. Final choice is
+    /// pending the M3 eval vs the director's gold scores.
+    let modelId = "mlx-community/Qwen2.5-3B-Instruct-4bit"
 
     private var container: ModelContainer?
     var isLoaded: Bool { container != nil }
@@ -52,7 +54,9 @@ final class LLMEngine {
     /// and cut anything after an end-of-turn marker.
     nonisolated private static func clean(_ s: String) -> String {
         var text = s
-        for marker in ["<end_of_turn>", "<eos>", "<start_of_turn>"] {
+        // Strip chat-template markers from any model family (Gemma, Qwen, etc.).
+        for marker in ["<end_of_turn>", "<eos>", "<start_of_turn>",
+                       "<|im_end|>", "<|im_start|>", "<|endoftext|>"] {
             if let range = text.range(of: marker) {
                 text = String(text[..<range.lowerBound])
             }
