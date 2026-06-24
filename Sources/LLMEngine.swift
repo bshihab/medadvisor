@@ -10,10 +10,10 @@ final class LLMEngine {
     static let shared = LLMEngine()
     private init() {}
 
-    /// On-device model. Qwen2.5-3B follows the per-criterion format far better
-    /// than the 2B spike model, at a similar (~1.7GB) footprint. Final choice is
-    /// pending the M3 eval vs the director's gold scores.
-    let modelId = "mlx-community/Qwen2.5-3B-Instruct-4bit"
+    /// On-device model. Qwen2.5-1.5B (~870MB) fits the phone's per-app memory
+    /// limit (we can't use the increased-memory entitlement) while still
+    /// following the per-criterion format well. Final choice pending the M3 eval.
+    let modelId = "mlx-community/Qwen2.5-1.5B-Instruct-4bit"
 
     private var container: ModelContainer?
     var isLoaded: Bool { container != nil }

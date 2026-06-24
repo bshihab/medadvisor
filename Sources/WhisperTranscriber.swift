@@ -9,9 +9,9 @@ import WhisperKit
 /// differs in this version, paste the error and we'll adjust.
 @MainActor
 final class WhisperTranscriber {
-    /// English base model — good accuracy/speed on-device. Bump to "small.en"
-    /// for higher accuracy at the cost of speed.
-    private let modelName = "base.en"
+    /// Smallest English model — lowest memory + fastest on-device. Bump to
+    /// "base.en"/"small.en" for more accuracy once memory headroom allows.
+    private let modelName = "tiny.en"
 
     /// Loads Whisper, transcribes, and releases it on return — so the Whisper
     /// model is NOT held in memory while the LLM runs (avoids OOM crashes).
