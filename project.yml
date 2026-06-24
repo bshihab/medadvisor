@@ -21,10 +21,6 @@ targets:
   MedAdvisor:
     type: application
     platform: iOS
-    entitlements:
-      path: Sources/MedAdvisor.entitlements
-      properties:
-        com.apple.developer.kernel.increased-memory-limit: true
     sources:
       - Sources
       - path: rubrics
