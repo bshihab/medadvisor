@@ -36,7 +36,7 @@ struct ChatTranscriptView: View {
                                : AnyShapeStyle(Color.accentColor),
                         in: RoundedRectangle(cornerRadius: 16)
                     )
-                    .foregroundStyle(isLeft ? .primary : .white)
+                    .foregroundStyle(isLeft ? Color.primary : Color.white)
             }
 
             if isLeft { Spacer(minLength: 44) }
