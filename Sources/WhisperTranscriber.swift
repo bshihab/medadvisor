@@ -9,18 +9,14 @@ import WhisperKit
 /// differs in this version, paste the error and we'll adjust.
 @MainActor
 final class WhisperTranscriber {
-    private var pipe: WhisperKit?
-
     /// English base model — good accuracy/speed on-device. Bump to "small.en"
     /// for higher accuracy at the cost of speed.
     private let modelName = "base.en"
 
+    /// Loads Whisper, transcribes, and releases it on return — so the Whisper
+    /// model is NOT held in memory while the LLM runs (avoids OOM crashes).
     func transcribe(url: URL) async throws -> String {
-        if pipe == nil {
-            pipe = try await WhisperKit(WhisperKitConfig(model: modelName))
-        }
-        guard let pipe else { return "" }
-
+        let pipe = try await WhisperKit(WhisperKitConfig(model: modelName))
         let results = try await pipe.transcribe(audioPath: url.path)
         return results
             .map { $0.text }

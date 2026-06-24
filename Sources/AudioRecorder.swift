@@ -27,9 +27,11 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var startedAt: Date?
     private var timer: Timer?
 
-    /// Text committed from finalized segments. The live display is this plus the
-    /// current in-progress partial — so the transcript grows across pauses.
+    /// Text committed from finalized segments, plus the current in-progress
+    /// partial. The live display is their combination — so the transcript grows
+    /// across pauses instead of resetting.
     private var accumulatedText = ""
+    private var currentPartial = ""
 
     func requestPermission() {
         AVAudioApplication.requestRecordPermission { granted in
@@ -80,6 +82,7 @@ final class AudioRecorder: NSObject, ObservableObject {
         // Live on-device transcript — ONLY if on-device recognition is supported,
         // so we never stream audio to a server.
         accumulatedText = ""
+        currentPartial = ""
         startRecognition()
 
         input.installTap(onBus: 0, bufferSize: 2048, format: format) { [weak self] buffer, _ in
@@ -138,20 +141,31 @@ final class AudioRecorder: NSObject, ObservableObject {
         task = recognizer.recognitionTask(with: req) { [weak self] result, error in
             guard let self else { return }
             if let result {
-                let partial = result.bestTranscription.formattedString
-                let combined: String
-                if self.accumulatedText.isEmpty { combined = partial }
-                else if partial.isEmpty { combined = self.accumulatedText }
-                else { combined = self.accumulatedText + " " + partial }
+                self.currentPartial = result.bestTranscription.formattedString
+                let combined = self.combinedText()
                 DispatchQueue.main.async { self.liveText = combined }
                 if result.isFinal {
-                    self.accumulatedText = combined
+                    self.commitPartial()
                     self.restartRecognition()
                 }
             } else if error != nil {
+                // The recognizer often errors on a pause — commit what we have
+                // BEFORE restarting so the text isn't wiped.
+                self.commitPartial()
                 self.restartRecognition()
             }
         }
+    }
+
+    private func combinedText() -> String {
+        if accumulatedText.isEmpty { return currentPartial }
+        if currentPartial.isEmpty { return accumulatedText }
+        return accumulatedText + " " + currentPartial
+    }
+
+    private func commitPartial() {
+        accumulatedText = combinedText()
+        currentPartial = ""
     }
 
     private func restartRecognition() {
