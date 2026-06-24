@@ -95,16 +95,6 @@ struct RecordingView: View {
         if let latest = recorder.recordings.first, !recorder.isRecording {
             VStack(spacing: 12) {
                 stageView(url: latest)
-
-                if !processor.labeledTranscript.isEmpty {
-                    ScrollView {
-                        Text(processor.labeledTranscript)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                    }
-                    .frame(maxHeight: 160)
-                    .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                }
             }
             .padding(.horizontal)
         }
