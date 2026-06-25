@@ -15,6 +15,9 @@ struct RootView: View {
 
             NavigationStack { InsightsView() }
                 .tabItem { Label("Insights", systemImage: "lightbulb") }
+
+            SettingsView()
+                .tabItem { Label("Settings", systemImage: "gearshape") }
         }
     }
 }

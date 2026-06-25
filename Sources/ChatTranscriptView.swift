@@ -29,6 +29,7 @@ struct ChatTranscriptView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 Text(turn.text)
+                    .textSelection(.enabled)   // long-press to select/copy
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(

@@ -29,17 +29,25 @@ final class WhisperTranscriber {
         let segments = results
             .flatMap { $0.segments }
             .map {
-                WhisperSegment(text: $0.text.trimmingCharacters(in: .whitespaces),
+                WhisperSegment(text: Self.cleanTokens($0.text),
                                start: Double($0.start),
                                end: Double($0.end))
             }
             .filter { !$0.text.isEmpty }
 
-        let text = results
-            .map { $0.text }
-            .joined(separator: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let text = Self.cleanTokens(results.map { $0.text }.joined(separator: " "))
 
         return WhisperResult(text: text, segments: segments)
+    }
+
+    /// Strips Whisper special/timestamp tokens like `<|0.00|>`, `<|en|>`, and
+    /// stray `<7>` / `<>` that otherwise show up around sentences.
+    private static func cleanTokens(_ s: String) -> String {
+        var t = s
+        t = t.replacingOccurrences(of: "<\\|[^>]*\\|>", with: "", options: .regularExpression)
+        t = t.replacingOccurrences(of: "<[^>]*>", with: "", options: .regularExpression)
+        // Collapse any double spaces left behind.
+        t = t.replacingOccurrences(of: "  +", with: " ", options: .regularExpression)
+        return t.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

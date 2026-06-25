@@ -36,7 +36,20 @@ struct FeedbackView: View {
             }
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if tab == .transcript && !shareText.isEmpty {
+                    ShareLink(item: shareText)
+                }
+            }
         }
+    }
+
+    /// Full transcript as plain text for the Share button.
+    private var shareText: String {
+        if let turns, !turns.isEmpty {
+            return turns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+        }
+        return transcript ?? ""
     }
 
     // MARK: - Feedback list
