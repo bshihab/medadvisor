@@ -76,14 +76,23 @@ struct RecordingView: View {
     @ViewBuilder
     private var liveFeed: some View {
         if recorder.isRecording {
-            ScrollView {
-                Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
-                    .padding()
+            ScrollViewReader { proxy in
+                ScrollView {
+                    Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
+                        .padding()
+                    // Invisible anchor we scroll to as text grows.
+                    Color.clear.frame(height: 1).id("liveBottom")
+                }
+                .frame(maxHeight: 280)
+                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                .onChange(of: recorder.liveText) { _, _ in
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        proxy.scrollTo("liveBottom", anchor: .bottom)
+                    }
+                }
             }
-            .frame(maxHeight: 150)
-            .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
         }
     }
