@@ -49,15 +49,29 @@ final class EncounterProcessor: ObservableObject {
             return
         }
 
-        // 2) Diarize and build conversation turns — only if ≥2 speakers found.
+        // 2) Diarize and build conversation turns. We ALWAYS produce turns so the
+        //    transcript is always a chat: one-sided if a single speaker, two-sided
+        //    if diarization separated ≥2 voices.
         stage = .identifyingSpeakers
         var rawTurns: [TranscriptTurn] = []
-        if !whisperResult.segments.isEmpty,
-           let speakers = try? await diarizer.diarize(url: url),
-           SpeakerMerger.distinctSpeakerCount(speakers) >= 2 {
-            rawTurns = SpeakerMerger.turns(segments: whisperResult.segments, speakers: speakers)
-            // Use the labeled turns as the transcript the model sees.
-            flatTranscript = rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+        let speakers = (try? await diarizer.diarize(url: url)) ?? []
+
+        if !whisperResult.segments.isEmpty {
+            if SpeakerMerger.distinctSpeakerCount(speakers) >= 2 {
+                rawTurns = SpeakerMerger.turns(segments: whisperResult.segments, speakers: speakers)
+                // Two speakers → label the transcript the model sees.
+                flatTranscript = rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+            } else {
+                // One speaker → one bubble per Whisper segment, all on one side.
+                rawTurns = whisperResult.segments.map {
+                    TranscriptTurn(speaker: "Speaker 1", text: $0.text)
+                }
+            }
+        }
+        // Last resort (e.g. fell back to the live transcript with no segments):
+        // still show a single bubble rather than a plain block.
+        if rawTurns.isEmpty {
+            rawTurns = [TranscriptTurn(speaker: "Speaker 1", text: flatTranscript)]
         }
 
         // 3) Redact (for the LLM and for storage/display).
