@@ -1,4 +1,5 @@
 import Foundation
+import MLX
 import MLXLLM
 import MLXLMCommon
 
@@ -26,6 +27,9 @@ final class LLMEngine {
 
     func ensureLoaded(progress: @escaping (Double) -> Void = { _ in }) async throws {
         if container != nil { return }
+        // Cap MLX's buffer cache so freed memory returns to the OS instead of
+        // being retained — keeps peak memory down to avoid the iOS app-memory kill.
+        MLX.GPU.set(cacheLimit: 32 * 1024 * 1024)
         let config = ModelConfiguration(id: modelId)
         container = try await LLMModelFactory.shared.loadContainer(configuration: config) { p in
             Task { @MainActor in progress(p.fractionCompleted) }
