@@ -18,6 +18,12 @@ final class LLMEngine {
     private var container: ModelContainer?
     var isLoaded: Bool { container != nil }
 
+    /// Frees the model from memory. Call before loading other big models
+    /// (Whisper, diarizer) so they don't coexist and exceed the memory limit.
+    func unload() {
+        container = nil
+    }
+
     func ensureLoaded(progress: @escaping (Double) -> Void = { _ in }) async throws {
         if container != nil { return }
         let config = ModelConfiguration(id: modelId)

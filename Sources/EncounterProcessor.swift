@@ -36,6 +36,10 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(liveTranscript: String, url: URL, rubric: Rubric) async {
+        // Free any LLM still resident from a previous analysis BEFORE loading
+        // Whisper/diarizer — only one big model should be in memory at a time.
+        LLMEngine.shared.unload()
+
         // 1) Transcribe with WhisperKit (released on return).
         stage = .transcribing
         let whisperResult = (try? await whisper.transcribe(url: url))
