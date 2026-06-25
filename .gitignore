@@ -31,3 +31,7 @@ eval/transcripts/
 # Source materials from the director (Stanford institutional + copyrighted papers).
 # We commit the DERIVED rubric JSON, never these raw files.
 context/
+
+# Local llama package build artifacts
+llama-binary/.build/
+llama-binary/.swiftpm/

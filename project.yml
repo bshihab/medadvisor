@@ -6,10 +6,8 @@ options:
   createIntermediateGroups: true
 
 packages:
-  MLXSwiftExamples:
-    url: https://github.com/ml-explore/mlx-swift-examples
-    # main does NOT expose MLXLLM/MLXLMCommon as products — only tagged releases do.
-    exactVersion: 2.29.1
+  llama-binary:
+    path: llama-binary
   FluidAudio:
     url: https://github.com/FluidInference/FluidAudio
     exactVersion: 0.15.4
@@ -26,10 +24,8 @@ targets:
       - path: rubrics
         buildPhase: resources
     dependencies:
-      - package: MLXSwiftExamples
-        product: MLXLLM
-      - package: MLXSwiftExamples
-        product: MLXLMCommon
+      - package: llama-binary
+        product: llama
       - package: FluidAudio
         product: FluidAudio
       - package: WhisperKit

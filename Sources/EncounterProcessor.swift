@@ -13,6 +13,7 @@ final class EncounterProcessor: ObservableObject {
         case transcribing
         case identifyingSpeakers
         case redacting
+        case preparingModel(Double)   // first-run model download (fraction 0...1)
         case scoring(done: Int, total: Int)
         case summarizing
         case done(ConsultationFeedback)
@@ -87,6 +88,11 @@ final class EncounterProcessor: ObservableObject {
 
         // 4) Score each criterion (LLM loads here, after the others are freed).
         do {
+            // Ensure the model is downloaded (first run ~2.5GB) and loaded.
+            try await LLMEngine.shared.ensureLoaded { fraction in
+                self.stage = .preparingModel(fraction)
+            }
+
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             for (index, criterion) in rubric.criteria.enumerated() {

@@ -126,6 +126,13 @@ struct RecordingView: View {
             ProgressView("Identifying speakers…")
         case .redacting:
             ProgressView("Removing identifiers…")
+        case .preparingModel(let fraction):
+            VStack(spacing: 8) {
+                ProgressView(value: fraction)
+                Text(fraction < 0.001 ? "Preparing AI model…"
+                                      : "Downloading AI model (one time)… \(Int(fraction * 100))%")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         case .scoring(let done, let total):
             VStack(spacing: 8) {
                 ProgressView(value: Double(done), total: Double(total))
