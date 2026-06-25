@@ -9,13 +9,14 @@ enum AppLocation: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Bundled rubric filename (without .json).
+    /// Bundled rubric filename (without .json). Per the director, the Emergency
+    /// Department and perioperative/OR encounters use the Inpatient framework.
     var rubricFile: String {
         switch self {
         case .outpatientClinic:    return "outpatient-clinic"
-        case .inpatient:           return "inpatient"
-        case .emergencyDepartment: return "emergency-department.draft"
-        case .operatingRoom:       return "operating-room.draft"
+        case .inpatient,
+             .emergencyDepartment,
+             .operatingRoom:       return "inpatient"
         }
     }
 
@@ -24,18 +25,10 @@ enum AppLocation: String, CaseIterable, Identifiable {
         switch self {
         case .outpatientClinic:    return "A scheduled clinic visit — history taking and explaining a plan."
         case .inpatient:           return "Bedside rounds on the ward or ICU — talking with the patient and family."
-        case .emergencyDepartment: return "A fast, high-acuity emergency encounter."
-        case .operatingRoom:       return "Peri-operative and pre-op patient communication."
+        case .emergencyDepartment: return "A fast, high-acuity emergency encounter (inpatient framework)."
+        case .operatingRoom:       return "Peri-operative patient communication (inpatient framework)."
         }
     }
-
-    /// True for locations with no source material distilled into the rubric yet.
-    var isDraft: Bool {
-        self == .emergencyDepartment || self == .operatingRoom
-    }
-
-    /// Note shown for draft locations.
-    var draftNote: String { "No reference info yet — generalized draft" }
 }
 
 /// Swift model of a rubric (subset of rubric.schema.json — Codable ignores keys

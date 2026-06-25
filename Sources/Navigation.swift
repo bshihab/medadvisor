@@ -55,11 +55,6 @@ struct LocationCard: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-            if location.isDraft {
-                Text(location.draftNote)
-                    .font(.caption2)
-                    .foregroundStyle(.orange)
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
