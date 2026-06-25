@@ -78,23 +78,48 @@ struct RecordingView: View {
         if recorder.isRecording {
             ScrollViewReader { proxy in
                 ScrollView {
-                    Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
-                        .padding()
-                    // Invisible anchor we scroll to as text grows.
-                    Color.clear.frame(height: 1).id("liveBottom")
-                }
-                .frame(maxHeight: 280)
-                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                .onChange(of: recorder.liveText) { _, _ in
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        proxy.scrollTo("liveBottom", anchor: .bottom)
+                    VStack(spacing: 8) {
+                        if recorder.liveUtterances.isEmpty && recorder.livePartial.isEmpty {
+                            Text("Listening…")
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 8)
+                        }
+                        ForEach(Array(recorder.liveUtterances.enumerated()), id: \.offset) { _, phrase in
+                            liveBubble(phrase, forming: false)
+                        }
+                        if !recorder.livePartial.isEmpty {
+                            liveBubble(recorder.livePartial, forming: true)
+                        }
+                        Color.clear.frame(height: 1).id("liveBottom")
                     }
+                    .padding(12)
                 }
+                .frame(maxHeight: 300)
+                .onChange(of: recorder.livePartial) { _, _ in scrollLive(proxy) }
+                .onChange(of: recorder.liveUtterances.count) { _, _ in scrollLive(proxy) }
             }
             .padding(.horizontal)
         }
+    }
+
+    private func scrollLive(_ proxy: ScrollViewProxy) {
+        withAnimation(.easeOut(duration: 0.2)) {
+            proxy.scrollTo("liveBottom", anchor: .bottom)
+        }
+    }
+
+    private func liveBubble(_ text: String, forming: Bool) -> some View {
+        HStack {
+            Text(text)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.secondary.opacity(forming ? 0.12 : 0.2),
+                           in: RoundedRectangle(cornerRadius: 16))
+                .foregroundStyle(.primary)
+            Spacer(minLength: 40)
+        }
+        .opacity(forming ? 0.65 : 1)
     }
 
     // MARK: - Process section

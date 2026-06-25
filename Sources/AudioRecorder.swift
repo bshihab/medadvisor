@@ -13,6 +13,10 @@ final class AudioRecorder: NSObject, ObservableObject {
     @Published var level: Float = 0
     @Published var elapsed: TimeInterval = 0
     @Published var liveText: String = ""
+    /// Finalized phrases (one per pause) — rendered as chat bubbles during recording.
+    @Published var liveUtterances: [String] = []
+    /// The phrase currently being spoken (a "forming" bubble).
+    @Published var livePartial: String = ""
     @Published var recordings: [URL] = []
     @Published var permissionDenied = false
 
@@ -83,6 +87,8 @@ final class AudioRecorder: NSObject, ObservableObject {
         // so we never stream audio to a server.
         accumulatedText = ""
         currentPartial = ""
+        liveUtterances = []
+        livePartial = ""
         startRecognition()
 
         input.installTap(onBus: 0, bufferSize: 2048, format: format) { [weak self] buffer, _ in
@@ -141,18 +147,25 @@ final class AudioRecorder: NSObject, ObservableObject {
         task = recognizer.recognitionTask(with: req) { [weak self] result, error in
             guard let self else { return }
             if let result {
-                self.currentPartial = result.bestTranscription.formattedString
-                let combined = self.combinedText()
-                DispatchQueue.main.async { self.liveText = combined }
-                if result.isFinal {
-                    self.commitPartial()
-                    self.restartRecognition()
+                let text = result.bestTranscription.formattedString
+                let isFinal = result.isFinal
+                // All live state is updated on main so @Published is safe.
+                DispatchQueue.main.async {
+                    self.currentPartial = text
+                    self.livePartial = text
+                    self.liveText = self.combinedText()
+                    if isFinal {
+                        self.commitPartial()
+                        self.restartRecognition()
+                    }
                 }
             } else if error != nil {
                 // The recognizer often errors on a pause — commit what we have
                 // BEFORE restarting so the text isn't wiped.
-                self.commitPartial()
-                self.restartRecognition()
+                DispatchQueue.main.async {
+                    self.commitPartial()
+                    self.restartRecognition()
+                }
             }
         }
     }
@@ -163,9 +176,13 @@ final class AudioRecorder: NSObject, ObservableObject {
         return accumulatedText + " " + currentPartial
     }
 
+    /// Called on main. Turns the in-progress phrase into a finalized bubble.
     private func commitPartial() {
+        let phrase = currentPartial.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !phrase.isEmpty { liveUtterances.append(phrase) }
         accumulatedText = combinedText()
         currentPartial = ""
+        livePartial = ""
     }
 
     private func restartRecognition() {
