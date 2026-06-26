@@ -2,11 +2,46 @@ import Foundation
 
 /// Result for one rubric criterion.
 struct CriterionResult: Codable, Equatable, Identifiable {
+    /// done = did it well (✓), partial = attempted, could improve (⚠️), missed = not done (✗)
+    enum Status: String, Codable { case met, partial, missed }
+
     var id: String { criterionId }
     let criterionId: String
-    let met: Bool
+    let status: Status
     let evidence: String?
     let comment: String?
+
+    init(criterionId: String, status: Status, evidence: String?, comment: String?) {
+        self.criterionId = criterionId
+        self.status = status
+        self.evidence = evidence
+        self.comment = comment
+    }
+
+    // Backward-compatible decode: older saved records used `met: Bool`.
+    enum CodingKeys: String, CodingKey { case criterionId, status, evidence, comment, met }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        criterionId = try c.decode(String.self, forKey: .criterionId)
+        evidence = try c.decodeIfPresent(String.self, forKey: .evidence)
+        comment = try c.decodeIfPresent(String.self, forKey: .comment)
+        if let s = try c.decodeIfPresent(Status.self, forKey: .status) {
+            status = s
+        } else if let met = try c.decodeIfPresent(Bool.self, forKey: .met) {
+            status = met ? .met : .missed
+        } else {
+            status = .missed
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(criterionId, forKey: .criterionId)
+        try c.encode(status, forKey: .status)
+        try c.encodeIfPresent(evidence, forKey: .evidence)
+        try c.encodeIfPresent(comment, forKey: .comment)
+    }
 }
 
 /// The full feedback for one consultation.
@@ -30,8 +65,13 @@ enum PromptBuilder {
 
         QUESTION: \(c.prompt)
         \(extras)
+        Decide the result:
+        - "done" = the clinician clearly did this well
+        - "partial" = the clinician attempted it but it was incomplete or could be better
+        - "missed" = the clinician did not do this at all
+
         Answer in EXACTLY three lines and nothing else:
-        MET: yes or no
+        RESULT: done, partial, or missed
         EVIDENCE: a short quote from the transcript, or none
         TIP: one short, specific improvement tip
 
@@ -41,7 +81,7 @@ enum PromptBuilder {
     }
 
     static func summaryPrompt(rubric: Rubric, results: [CriterionResult]) -> String {
-        let met = results.filter { $0.met }.count
+        let met = results.filter { $0.status == .met }.count
         return """
         A doctor met \(met) of \(results.count) criteria in a \(rubric.encounterType) consultation. \
         In 2 sentences, summarize how they did overall and the single most important thing to \
@@ -53,15 +93,21 @@ enum PromptBuilder {
 /// Tolerant line parser for the 3-line per-criterion answer.
 enum FeedbackParser {
     static func parseCriterion(raw: String, criterionId: String) -> CriterionResult {
-        var met = false
+        var status: CriterionResult.Status = .missed
         var evidence: String?
         var comment: String?
 
         for rawLine in raw.split(whereSeparator: \.isNewline) {
             let line = rawLine.trimmingCharacters(in: .whitespaces)
             let lower = line.lowercased()
-            if lower.hasPrefix("met:") {
-                met = lower.contains("yes")
+            if lower.hasPrefix("result:") || lower.hasPrefix("met:") {
+                if lower.contains("partial") {
+                    status = .partial
+                } else if lower.contains("done") || lower.contains("yes") {
+                    status = .met
+                } else if lower.contains("missed") || lower.contains("no") {
+                    status = .missed
+                }
             } else if lower.hasPrefix("evidence:") {
                 evidence = String(line.dropFirst("evidence:".count)).trimmingCharacters(in: .whitespaces)
             } else if lower.hasPrefix("tip:") {
@@ -73,7 +119,7 @@ enum FeedbackParser {
             e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
             evidence = (e.isEmpty || e.lowercased() == "none") ? nil : e
         }
-        return CriterionResult(criterionId: criterionId, met: met, evidence: evidence, comment: comment)
+        return CriterionResult(criterionId: criterionId, status: status, evidence: evidence, comment: comment)
     }
 }
 

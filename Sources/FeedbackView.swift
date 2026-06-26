@@ -108,8 +108,8 @@ struct FeedbackView: View {
     private func criterionRow(_ result: CriterionResult) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top, spacing: 8) {
-                Image(systemName: result.met ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-                    .foregroundStyle(result.met ? .green : .orange)
+                Image(systemName: icon(for: result.status).name)
+                    .foregroundStyle(icon(for: result.status).color)
                 Text(criterionText(result.criterionId))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
@@ -163,9 +163,20 @@ struct FeedbackView: View {
         feedback.perCriterion.filter { criterion(for: $0.criterionId)?.dimension == dimension.id }
     }
     private func metCount(_ results: [CriterionResult]) -> Int {
-        results.filter { $0.met }.count
+        results.filter { $0.status == .met }.count
     }
     private var criticalMisses: [CriterionResult] {
-        feedback.perCriterion.filter { !$0.met && (criterion(for: $0.criterionId)?.criticalFail ?? false) }
+        feedback.perCriterion.filter {
+            $0.status == .missed && (criterion(for: $0.criterionId)?.criticalFail ?? false)
+        }
+    }
+
+    /// Icon + colour per status: done ✓ green, partial ⚠️ orange, missed ✗ red.
+    private func icon(for status: CriterionResult.Status) -> (name: String, color: Color) {
+        switch status {
+        case .met:     return ("checkmark.circle.fill", .green)
+        case .partial: return ("exclamationmark.circle.fill", .orange)
+        case .missed:  return ("xmark.circle.fill", .red)
+        }
     }
 }

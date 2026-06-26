@@ -54,6 +54,6 @@ struct HistoryView: View {
     }
 
     private func metCount(_ record: ConsultationRecord) -> Int {
-        record.feedback.perCriterion.filter { $0.met }.count
+        record.feedback.perCriterion.filter { $0.status == .met }.count
     }
 }

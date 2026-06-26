@@ -34,7 +34,7 @@ final class InsightsEngine: ObservableObject {
         for record in records {
             for criterion in record.feedback.perCriterion {
                 total += 1
-                if criterion.met {
+                if criterion.status == .met {
                     met += 1
                     if let evidence = criterion.evidence, !evidence.isEmpty, strengths.count < 6 {
                         strengths.append(evidence)
