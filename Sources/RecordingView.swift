@@ -76,50 +76,12 @@ struct RecordingView: View {
     @ViewBuilder
     private var liveFeed: some View {
         if recorder.isRecording {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(spacing: 8) {
-                        if recorder.liveUtterances.isEmpty && recorder.livePartial.isEmpty {
-                            Text("Listening…")
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 8)
-                        }
-                        ForEach(Array(recorder.liveUtterances.enumerated()), id: \.offset) { _, phrase in
-                            liveBubble(phrase, forming: false)
-                        }
-                        if !recorder.livePartial.isEmpty {
-                            liveBubble(recorder.livePartial, forming: true)
-                        }
-                        Color.clear.frame(height: 1).id("liveBottom")
-                    }
-                    .padding(12)
-                }
-                .frame(maxHeight: 300)
-                .onChange(of: recorder.livePartial) { _, _ in scrollLive(proxy) }
-                .onChange(of: recorder.liveUtterances.count) { _, _ in scrollLive(proxy) }
-            }
-            .padding(.horizontal)
+            Label("Recording — the full transcript appears after you stop.",
+                  systemImage: "waveform")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
         }
-    }
-
-    private func scrollLive(_ proxy: ScrollViewProxy) {
-        withAnimation(.easeOut(duration: 0.2)) {
-            proxy.scrollTo("liveBottom", anchor: .bottom)
-        }
-    }
-
-    private func liveBubble(_ text: String, forming: Bool) -> some View {
-        HStack {
-            Text(text)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color.secondary.opacity(forming ? 0.12 : 0.2),
-                           in: RoundedRectangle(cornerRadius: 16))
-                .foregroundStyle(.primary)
-            Spacer(minLength: 40)
-        }
-        .opacity(forming ? 0.65 : 1)
     }
 
     // MARK: - Process section
@@ -179,7 +141,7 @@ struct RecordingView: View {
     private func runProcessing(url: URL) {
         guard let rubric else { return }
         Task {
-            await processor.process(liveTranscript: recorder.liveText, url: url, rubric: rubric)
+            await processor.process(url: url, rubric: rubric)
             if case .done(let feedback) = processor.stage {
                 let record = ConsultationRecord(
                     id: UUID().uuidString,
