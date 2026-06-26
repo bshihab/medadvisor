@@ -60,8 +60,9 @@ enum PromptBuilder {
             extras += "Must address: \(req.joined(separator: "; "))\n"
         }
         return """
-        You are a clinical communication tutor. The transcript below is a single \
-        unlabeled stream — infer who the clinician is and assess ONLY the clinician.
+        You are a clinical communication tutor. In the transcript below, assess ONLY \
+        the Doctor's communication — ignore the Patient's lines entirely. (If the \
+        transcript has a single unlabeled speaker, treat that speaker as the clinician.)
 
         QUESTION: \(c.prompt)
         \(extras)
@@ -74,6 +75,20 @@ enum PromptBuilder {
         RESULT: done, partial, or missed
         EVIDENCE: a short quote from the transcript, or none
         TIP: one short, specific improvement tip
+
+        TRANSCRIPT:
+        \(transcript)
+        """
+    }
+
+    /// Asks the LLM which speaker label is the doctor/clinician.
+    static func doctorIdentificationPrompt(transcript: String) -> String {
+        """
+        Below is a medical consultation transcript with speakers labeled. Identify which \
+        speaker is the doctor/clinician (the one taking the history, examining, explaining, \
+        and giving the plan — not the patient).
+
+        Reply with ONLY the speaker label and nothing else, for example: Speaker 1
 
         TRANSCRIPT:
         \(transcript)

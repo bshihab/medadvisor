@@ -79,20 +79,36 @@ final class EncounterProcessor: ObservableObject {
             rawTurns = [TranscriptTurn(speaker: "Speaker 1", text: flatTranscript)]
         }
 
-        // 3) Redact (for the LLM and for storage/display).
-        stage = .redacting
-        redactedTranscript = PHIRedactor.redact(flatTranscript)
-        transcriptTurns = rawTurns.map {
-            TranscriptTurn(speaker: $0.speaker, text: PHIRedactor.redact($0.text))
-        }
-
-        // 4) Score each criterion (LLM loads here, after the others are freed).
+        // 3) Load the LLM (Whisper + diarizer are freed by now; first run
+        //    downloads ~2.5GB).
         do {
-            // Ensure the model is downloaded (first run ~2.5GB) and loaded.
             try await LLMEngine.shared.ensureLoaded { fraction in
                 self.stage = .preparingModel(fraction)
             }
 
+            // 4) If two voices were separated, ask the LLM which speaker is the
+            //    doctor, then relabel turns Doctor/Patient so we score ONLY the
+            //    doctor's lines (and the chat shows Doctor/Patient).
+            if SpeakerMerger.distinctSpeakerCount(speakers) >= 2, !rawTurns.isEmpty {
+                stage = .identifyingSpeakers
+                let labeled = rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+                let answer = (try? await LLMEngine.shared.generate(
+                    prompt: PromptBuilder.doctorIdentificationPrompt(transcript: labeled),
+                    maxTokens: 16)) ?? ""
+                rawTurns = relabelDoctor(rawTurns, from: answer)
+            }
+            flatTranscript = rawTurns.isEmpty
+                ? flatTranscript
+                : rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
+
+            // 5) Redact (for the LLM and for storage/display).
+            stage = .redacting
+            redactedTranscript = PHIRedactor.redact(flatTranscript)
+            transcriptTurns = rawTurns.map {
+                TranscriptTurn(speaker: $0.speaker, text: PHIRedactor.redact($0.text))
+            }
+
+            // 6) Score each criterion against the doctor's communication.
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             for (index, criterion) in rubric.criteria.enumerated() {
@@ -111,6 +127,23 @@ final class EncounterProcessor: ObservableObject {
             stage = .done(ConsultationFeedback(perCriterion: results, summary: summary))
         } catch {
             stage = .error("Analysis failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Relabels turns to Doctor/Patient based on the LLM's "which speaker is the
+    /// doctor" answer. Falls back to the original labels if it can't tell.
+    private func relabelDoctor(_ turns: [TranscriptTurn], from answer: String) -> [TranscriptTurn] {
+        let labels = Set(turns.map { $0.speaker })
+        let lower = answer.lowercased()
+
+        var doctorLabel = labels.first { lower.contains($0.lowercased()) }
+        if doctorLabel == nil {
+            if lower.contains("1") { doctorLabel = labels.first { $0.contains("1") } }
+            else if lower.contains("2") { doctorLabel = labels.first { $0.contains("2") } }
+        }
+        guard let doctor = doctorLabel else { return turns }
+        return turns.map {
+            TranscriptTurn(speaker: $0.speaker == doctor ? "Doctor" : "Patient", text: $0.text)
         }
     }
 }
