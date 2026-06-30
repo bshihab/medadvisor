@@ -25,8 +25,15 @@ final class EncounterProcessor: ObservableObject {
     /// Redacted, speaker-labeled turns for the chat view (empty if 1 speaker).
     @Published var transcriptTurns: [TranscriptTurn] = []
 
-    private let whisper = WhisperTranscriber()
     private let diarizer = DiarizationService()
+
+    /// Picks the speech engine at runtime so we can A/B without rebuilding.
+    /// Toggle lives in Settings ("useParakeet").
+    private var transcriber: any Transcribing {
+        UserDefaults.standard.bool(forKey: "useParakeet")
+            ? ParakeetTranscriber()
+            : WhisperTranscriber()
+    }
 
     func requestPermissions() {}
 
@@ -43,8 +50,8 @@ final class EncounterProcessor: ObservableObject {
 
         // 1) Transcribe the whole file with WhisperKit (released on return).
         stage = .transcribing
-        let whisperResult = (try? await whisper.transcribe(url: url))
-            ?? WhisperResult(text: "", segments: [])
+        let whisperResult = (try? await transcriber.transcribe(url: url))
+            ?? TranscriptResult(text: "", segments: [])
         var flatTranscript = whisperResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")

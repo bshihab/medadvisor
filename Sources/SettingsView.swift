@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var downloading = false
     @State private var progress: Double = 0
     @State private var errorMessage: String?
+    @AppStorage("useParakeet") private var useParakeet = false
 
     var body: some View {
         NavigationStack {
@@ -42,6 +43,19 @@ struct SettingsView: View {
                     Text("AI Model")
                 } footer: {
                     Text("Downloaded once over Wi-Fi, then stored on your device. Recording and feedback work offline after that.")
+                }
+
+                Section {
+                    Picker("Speech engine", selection: $useParakeet) {
+                        Text("Whisper (small.en)").tag(false)
+                        Text("Parakeet (NVIDIA)").tag(true)
+                    }
+                } header: {
+                    Text("Transcription")
+                } footer: {
+                    Text(useParakeet
+                         ? "Parakeet TDT — usually fewer errors and sharper speaker timing. Downloads ~600 MB once."
+                         : "WhisperKit small.en. Switch to Parakeet to compare accuracy on a recording.")
                 }
 
                 Section("Privacy") {
