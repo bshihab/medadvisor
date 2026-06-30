@@ -19,8 +19,11 @@ struct WhisperResult: Equatable {
 /// memory while other models (diarization, LLM) run.
 @MainActor
 final class WhisperTranscriber {
-    /// Smallest English model — lowest memory + fastest on-device.
-    private let modelName = "tiny.en"
+    /// English model. `small.en` (~244M) is the accuracy/speed sweet spot on
+    /// modern iPhones — far fewer errors than tiny.en. Whisper is released
+    /// before the LLM loads and runs on the ANE, so we have the memory headroom.
+    /// (Step up to "large-v3-turbo" for max accuracy at a few extra seconds.)
+    private let modelName = "small.en"
 
     func transcribe(url: URL) async throws -> WhisperResult {
         let pipe = try await WhisperKit(WhisperKitConfig(model: modelName))
