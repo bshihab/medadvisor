@@ -18,7 +18,13 @@ final class DiarizationService {
     /// Loads the diarizer, processes, and releases it on return so its model
     /// isn't held in memory while the LLM runs.
     func diarize(url: URL) async throws -> [SpeakerSegment] {
-        let manager = OfflineDiarizerManager(config: OfflineDiarizerConfig())
+        // A consultation is a 2-person conversation (doctor + patient), so tell
+        // the diarizer to expect exactly 2 speakers. Without this it guesses the
+        // count from the audio and — especially with similar/synthetic voices —
+        // often collapses everything into one speaker.
+        var config = OfflineDiarizerConfig()
+        config.clustering.numSpeakers = 2
+        let manager = OfflineDiarizerManager(config: config)
         try await manager.prepareModels()
         let samples = try AudioLoader.loadSamples(url: url, sampleRate: 16_000)
         let result = try await manager.process(audio: samples)
