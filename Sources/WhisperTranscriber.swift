@@ -13,7 +13,9 @@ final class WhisperTranscriber: Transcribing {
     private let modelName = "small.en"
 
     func transcribe(url: URL) async throws -> TranscriptResult {
-        let pipe = try await WhisperKit(WhisperKitConfig(model: modelName))
+        // Download into a directory we own so Settings can detect/delete it.
+        let pipe = try await WhisperKit(WhisperKitConfig(model: modelName,
+                                                         downloadBase: ModelPaths.whisperBase))
         let results = try await pipe.transcribe(audioPath: url.path)
 
         let segments = results

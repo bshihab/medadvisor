@@ -8,11 +8,13 @@ struct RecordingView: View {
 
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var processor = EncounterProcessor()
+    @ObservedObject private var models = ModelManager.shared
     @State private var showFeedback = false
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
+    private var llmReady: Bool { models.isInstalled(.llm) }
 
     private var isProcessing: Bool {
         switch processor.stage {
@@ -87,6 +89,17 @@ struct RecordingView: View {
             recordingControls
         } else if let latest = recorder.recordings.first {
             finishedControls(url: latest)
+        } else if !llmReady {
+            Image(systemName: "arrow.down.circle")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+            Text("Download the AI model to record")
+                .font(.headline)
+            Text("Go to Settings and download MedGemma (one time). Recording needs it to give feedback.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
         } else {
             idleRecordButton
             Text("Tap to record the consultation")
