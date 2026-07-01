@@ -24,6 +24,11 @@ final class DiarizationService {
         // often collapses everything into one speaker.
         var config = OfflineDiarizerConfig()
         config.clustering.numSpeakers = 2
+        // Finer temporal resolution (default 0.2 → 0.1) so fast, natural
+        // turn-taking and short interjections get their own speaker segments
+        // instead of being lumped into the neighboring turn. Costs ~2x diarizer
+        // time; worth it for real conversational pace.
+        config.segmentation.stepRatio = 0.1
         let manager = OfflineDiarizerManager(config: config)
         try await manager.prepareModels()
         let samples = try AudioLoader.loadSamples(url: url, sampleRate: 16_000)
