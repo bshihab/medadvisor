@@ -82,7 +82,7 @@ struct RecordingView: View {
             Label(recorder.isPaused ? "Paused" : "Recording",
                   systemImage: recorder.isPaused ? "pause.circle" : "waveform")
                 .font(.subheadline)
-                .foregroundStyle(recorder.isPaused ? .secondary : .red)
+                .foregroundStyle(recorder.isPaused ? Color.secondary : Color.red)
 
             recordingControls
         } else if let latest = recorder.recordings.first {
