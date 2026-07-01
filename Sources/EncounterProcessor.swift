@@ -125,7 +125,8 @@ final class EncounterProcessor: ObservableObject {
                 let raw = try await LLMEngine.shared.generate(
                     prompt: PromptBuilder.criterionPrompt(criterion: criterion, transcript: redactedTranscript),
                     maxTokens: 180)
-                let result = FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id)
+                let result = FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id,
+                                                           transcript: redactedTranscript)
                 results.append(result)
                 liveResults.append(result)
             }
