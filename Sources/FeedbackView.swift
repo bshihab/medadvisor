@@ -207,20 +207,8 @@ struct FeedbackView: View {
     private var metFraction: Double {
         overallTotal == 0 ? 0 : Double(overallMet) / Double(overallTotal)
     }
-    private var bandLabel: String {
-        switch metFraction {
-        case ..<0.4:  return "Emerging"
-        case ..<0.75: return "Developing"
-        default:      return "Proficient"
-        }
-    }
-    private var bandColor: Color {
-        switch metFraction {
-        case ..<0.4:  return .red
-        case ..<0.75: return .orange
-        default:      return .green
-        }
-    }
+    private var bandLabel: String { ScoreBand.label(metFraction) }
+    private var bandColor: Color { ScoreBand.color(metFraction) }
 
     private func criterion(for id: String) -> Criterion? {
         rubric.criteria.first { $0.id == id }
@@ -259,24 +247,3 @@ struct FeedbackView: View {
     }
 }
 
-/// A thin stacked proportion bar: met (green) / partial (orange) / missed (red).
-private struct ScoreBar: View {
-    let met: Int
-    let partial: Int
-    let missed: Int
-
-    var body: some View {
-        GeometryReader { geo in
-            let total = CGFloat(max(1, met + partial + missed))
-            HStack(spacing: 0) {
-                Rectangle().fill(.green)
-                    .frame(width: geo.size.width * CGFloat(met) / total)
-                Rectangle().fill(.orange)
-                    .frame(width: geo.size.width * CGFloat(partial) / total)
-                Rectangle().fill(.red)
-                    .frame(width: geo.size.width * CGFloat(missed) / total)
-            }
-        }
-        .clipShape(Capsule())
-    }
-}
