@@ -7,7 +7,10 @@ import Foundation
 @MainActor
 final class AudioRecorder: NSObject, ObservableObject {
     @Published var isRecording = false
+    @Published var isPaused = false
     @Published var level: Float = 0
+    /// Rolling buffer of recent levels for the scrolling waveform (newest last).
+    @Published var waveform: [Float] = []
     @Published var elapsed: TimeInterval = 0
     @Published var recordings: [URL] = []
     @Published var permissionDenied = false
@@ -15,6 +18,10 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var recorder: AVAudioRecorder?
     private var meterTimer: Timer?
     private var startedAt: Date?
+    /// Elapsed time banked across pauses (the current running span is added live).
+    private var bankedElapsed: TimeInterval = 0
+
+    private static let maxWaveformSamples = 120
 
     func requestPermission() {
         AVAudioApplication.requestRecordPermission { granted in
@@ -23,6 +30,29 @@ final class AudioRecorder: NSObject, ObservableObject {
     }
 
     func toggle() { isRecording ? stop() : start() }
+
+    /// Pause without finishing the recording; audio resumes into the same file.
+    func pause() {
+        guard isRecording, !isPaused else { return }
+        recorder?.pause()
+        if let startedAt { bankedElapsed += Date().timeIntervalSince(startedAt) }
+        startedAt = nil
+        meterTimer?.invalidate()
+        meterTimer = nil
+        level = 0
+        isPaused = true
+    }
+
+    /// Resume a paused recording.
+    func resume() {
+        guard isRecording, isPaused else { return }
+        recorder?.record()
+        startedAt = Date()
+        isPaused = false
+        startMetering()
+    }
+
+    func togglePause() { isPaused ? resume() : pause() }
 
     /// Deletes a recorded file (called after analysis — no raw audio kept).
     func deleteRecording(_ url: URL) {
@@ -48,6 +78,9 @@ final class AudioRecorder: NSObject, ObservableObject {
             r.record()
             recorder = r
             startedAt = Date()
+            bankedElapsed = 0
+            waveform = []
+            isPaused = false
             isRecording = true
             startMetering()
         } catch {
@@ -62,9 +95,12 @@ final class AudioRecorder: NSObject, ObservableObject {
         meterTimer?.invalidate()
         meterTimer = nil
         isRecording = false
+        isPaused = false
         level = 0
         elapsed = 0
         startedAt = nil
+        bankedElapsed = 0
+        waveform = []
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 
@@ -78,8 +114,16 @@ final class AudioRecorder: NSObject, ObservableObject {
         guard let recorder else { return }
         recorder.updateMeters()
         let db = recorder.averagePower(forChannel: 0)
-        level = max(0, min(1, pow(10, db / 20)))
-        if let startedAt { elapsed = Date().timeIntervalSince(startedAt) }
+        let normalized = max(0, min(1, pow(10, db / 20)))
+        level = normalized
+
+        waveform.append(normalized)
+        if waveform.count > Self.maxWaveformSamples {
+            waveform.removeFirst(waveform.count - Self.maxWaveformSamples)
+        }
+
+        let running = startedAt.map { Date().timeIntervalSince($0) } ?? 0
+        elapsed = bankedElapsed + running
     }
 
     private static func makeFileURL() -> URL {

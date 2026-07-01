@@ -1,38 +1,35 @@
 import SwiftUI
 
-/// Recording mode: record an encounter, then run the full on-device pipeline
-/// (transcribe → diarize → score) and show feedback.
+/// Recording mode: record an encounter (pause/resume supported), then run the
+/// full on-device pipeline (transcribe → diarize → score) with the rubric
+/// filling in live, and show feedback.
 struct RecordingView: View {
     let location: AppLocation
 
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var processor = EncounterProcessor()
     @State private var showFeedback = false
-    @State private var showCheckmark = false
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
 
+    private var isProcessing: Bool {
+        switch processor.stage {
+        case .idle, .done, .error: return false
+        default: return true
+        }
+    }
+
     var body: some View {
-        VStack(spacing: 28) {
-            Spacer()
-
-            LevelMeter(level: recorder.level)
-                .frame(height: 12)
-                .padding(.horizontal, 40)
-
-            Text(timeString(recorder.elapsed))
-                .font(.system(.title2, design: .monospaced))
-                .foregroundStyle(.secondary)
-
-            recordButton
-
-            liveFeed
-
-            processSection
-
-            Spacer()
+        VStack(spacing: 24) {
+            if isProcessing {
+                processingSection
+            } else {
+                Spacer()
+                recordingSection
+                Spacer()
+            }
         }
         .padding()
         .navigationTitle(location.rawValue)
@@ -64,79 +61,178 @@ struct RecordingView: View {
         } message: {
             Text("Confirm the patient has given consent to be recorded before you begin. Audio is processed on-device and deleted after analysis.")
         }
-        .overlay {
-            if showCheckmark {
-                CheckmarkOverlay().transition(.opacity)
-            }
-        }
     }
 
-    // MARK: - Live feed
+    // MARK: - Recording section
 
     @ViewBuilder
-    private var liveFeed: some View {
+    private var recordingSection: some View {
+        Text(timeString(recorder.elapsed))
+            .font(.system(size: 56, weight: .light, design: .rounded))
+            .monospacedDigit()
+            .foregroundStyle(recorder.isRecording ? .primary : .secondary)
+            .contentTransition(.numericText())
+
         if recorder.isRecording {
-            Label("Recording — the full transcript appears after you stop.",
-                  systemImage: "waveform")
+            WaveformView(levels: recorder.waveform,
+                         color: recorder.isPaused ? .secondary : .red)
+                .frame(height: 96)
+                .padding(.horizontal, 8)
+
+            Label(recorder.isPaused ? "Paused" : "Recording",
+                  systemImage: recorder.isPaused ? "pause.circle" : "waveform")
+                .font(.subheadline)
+                .foregroundStyle(recorder.isPaused ? .secondary : .red)
+
+            recordingControls
+        } else if let latest = recorder.recordings.first {
+            finishedControls(url: latest)
+        } else {
+            idleRecordButton
+            Text("Tap to record the consultation")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .padding(.horizontal)
         }
     }
 
-    // MARK: - Process section
-
-    @ViewBuilder
-    private var processSection: some View {
-        if let latest = recorder.recordings.first, !recorder.isRecording {
-            VStack(spacing: 12) {
-                stageView(url: latest)
+    /// Idle → big red record button (Voice Memos style).
+    private var idleRecordButton: some View {
+        Button(action: toggleRecording) {
+            ZStack {
+                Circle()
+                    .fill(.red)
+                    .frame(width: 88, height: 88)
+                Image(systemName: "mic.fill")
+                    .font(.system(size: 34))
+                    .foregroundStyle(.white)
             }
-            .padding(.horizontal)
+        }
+        .accessibilityLabel("Start recording")
+    }
+
+    /// Recording → Pause/Resume (glass) + Stop (red square).
+    private var recordingControls: some View {
+        HStack(spacing: 44) {
+            Button { recorder.togglePause() } label: {
+                Image(systemName: recorder.isPaused ? "play.fill" : "pause.fill")
+                    .font(.system(size: 24))
+                    .frame(width: 64, height: 64)
+            }
+            .glassButton()
+            .clipShape(Circle())
+            .accessibilityLabel(recorder.isPaused ? "Resume" : "Pause")
+
+            Button(action: finishRecording) {
+                ZStack {
+                    Circle()
+                        .strokeBorder(.red.opacity(0.35), lineWidth: 4)
+                        .frame(width: 74, height: 74)
+                    RoundedRectangle(cornerRadius: 7)
+                        .fill(.red)
+                        .frame(width: 30, height: 30)
+                }
+            }
+            .accessibilityLabel("Stop recording")
+        }
+        .padding(.top, 8)
+    }
+
+    /// Stopped, ready to analyze.
+    @ViewBuilder
+    private func finishedControls(url: URL) -> some View {
+        VStack(spacing: 14) {
+            switch processor.stage {
+            case .done:
+                Button("View feedback") { showFeedback = true }
+                    .glassButton(prominent: true)
+            case .error(let message):
+                Text(message).font(.callout).foregroundStyle(.red)
+                Button("Try again") { processor.reset() }
+                    .glassButton()
+            default:
+                if !ModelDownloader.shared.isDownloaded {
+                    modelHint
+                }
+                Button("Transcribe & analyze") { runProcessing(url: url) }
+                    .glassButton(prominent: true)
+                    .disabled(rubric == nil)
+                Button("Record again") {
+                    recorder.deleteRecording(url)
+                    processor.reset()
+                }
+                .glassButton()
+                if rubric == nil {
+                    Text("Rubric not bundled — check project resources.")
+                        .font(.caption).foregroundStyle(.red)
+                }
+            }
         }
     }
 
+    private var modelHint: some View {
+        Label {
+            Text("The AI model isn't downloaded yet. Download it in **Settings**, or tap Analyze to download now (~2.5 GB, one time).")
+        } icon: {
+            Image(systemName: "arrow.down.circle")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.leading)
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    // MARK: - Processing section (live rubric)
+
     @ViewBuilder
-    private func stageView(url: URL) -> some View {
+    private var processingSection: some View {
         switch processor.stage {
-        case .idle:
-            Button("Transcribe & analyze") { runProcessing(url: url) }
-                .buttonStyle(.borderedProminent)
-                .disabled(rubric == nil)
-            if rubric == nil {
-                Text("Rubric not bundled — check project resources.")
-                    .font(.caption).foregroundStyle(.red)
-            }
         case .transcribing:
-            ProgressView("Transcribing on-device…")
+            centeredProgress("Transcribing on-device…")
         case .identifyingSpeakers:
-            ProgressView("Identifying speakers…")
+            centeredProgress("Identifying speakers…")
         case .redacting:
-            ProgressView("Removing identifiers…")
+            centeredProgress("Removing identifiers…")
         case .preparingModel(let fraction):
-            VStack(spacing: 8) {
-                ProgressView(value: fraction)
+            VStack(spacing: 12) {
+                Spacer()
+                ProgressView(value: fraction).frame(maxWidth: 260)
                 Text(fraction < 0.001 ? "Preparing AI model…"
                                       : "Downloading AI model (one time)… \(Int(fraction * 100))%")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.callout).foregroundStyle(.secondary)
+                Spacer()
             }
         case .scoring(let done, let total):
             VStack(spacing: 8) {
-                ProgressView(value: Double(done), total: Double(total))
-                    .progressViewStyle(.linear)
-                    .animation(.easeInOut, value: done)
-                Text("Analyzing \(done + 1) of \(total)…")
+                Text("Analyzing the consultation")
+                    .font(.headline)
+                Text("\(done) of \(total) checked")
                     .font(.caption).foregroundStyle(.secondary)
+                if let rubric {
+                    LiveScoringView(rubric: rubric, results: processor.liveResults)
+                }
             }
         case .summarizing:
-            ProgressView("Writing summary…")
-        case .done:
-            Button("View feedback") { showFeedback = true }
-                .buttonStyle(.borderedProminent)
-        case .error(let message):
-            Text(message).font(.caption).foregroundStyle(.red)
+            VStack(spacing: 8) {
+                if let rubric {
+                    LiveScoringView(rubric: rubric, results: processor.liveResults)
+                }
+                ProgressView("Writing summary…").padding(.bottom)
+            }
+        default:
+            EmptyView()
         }
     }
+
+    private func centeredProgress(_ title: String) -> some View {
+        VStack {
+            Spacer()
+            ProgressView(title)
+            Spacer()
+        }
+    }
+
+    // MARK: - Actions
 
     private func runProcessing(url: URL) {
         guard let rubric else { return }
@@ -152,35 +248,12 @@ struct RecordingView: View {
                     feedback: feedback)
                 FeedbackStore.shared.add(record)
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis
-                withAnimation { showCheckmark = true }
-                try? await Task.sleep(nanoseconds: 1_600_000_000)
-                withAnimation { showCheckmark = false }
                 showFeedback = true
             }
         }
     }
 
-    // MARK: - Recording controls
-
-    private var recordButton: some View {
-        Button(action: toggleRecording) {
-            ZStack {
-                Circle()
-                    .fill(recorder.isRecording ? Color.red : Color.accentColor)
-                    .frame(width: 96, height: 96)
-                Image(systemName: recorder.isRecording ? "stop.fill" : "mic.fill")
-                    .font(.system(size: 36))
-                    .foregroundStyle(.white)
-            }
-        }
-        .accessibilityLabel(recorder.isRecording ? "Stop recording" : "Start recording")
-    }
-
     private func toggleRecording() {
-        if recorder.isRecording {
-            recorder.toggle()   // stop
-            return
-        }
         guard consentConfirmed else {
             showConsentDialog = true
             return
@@ -193,26 +266,14 @@ struct RecordingView: View {
         recorder.toggle()
     }
 
+    /// Stop and finalize the recording (ready to analyze).
+    private func finishRecording() {
+        recorder.toggle()
+    }
+
     private func timeString(_ t: TimeInterval) -> String {
         let total = Int(t)
         return String(format: "%02d:%02d", total / 60, total % 60)
-    }
-}
-
-/// Simple animated amplitude bar.
-private struct LevelMeter: View {
-    let level: Float
-
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Color.secondary.opacity(0.2))
-                Capsule()
-                    .fill(Color.green)
-                    .frame(width: geo.size.width * CGFloat(level))
-                    .animation(.linear(duration: 0.05), value: level)
-            }
-        }
     }
 }
 

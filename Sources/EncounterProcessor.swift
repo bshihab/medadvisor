@@ -24,6 +24,8 @@ final class EncounterProcessor: ObservableObject {
     @Published var redactedTranscript: String = ""
     /// Redacted, speaker-labeled turns for the chat view (empty if 1 speaker).
     @Published var transcriptTurns: [TranscriptTurn] = []
+    /// Per-criterion results as they're scored — drives the live-filling rubric.
+    @Published var liveResults: [CriterionResult] = []
 
     private let diarizer = DiarizationService()
 
@@ -41,6 +43,7 @@ final class EncounterProcessor: ObservableObject {
         stage = .idle
         redactedTranscript = ""
         transcriptTurns = []
+        liveResults = []
     }
 
     func process(url: URL, rubric: Rubric) async {
@@ -113,6 +116,8 @@ final class EncounterProcessor: ObservableObject {
             }
 
             // 6) Score each criterion against the doctor's communication.
+            //    Publish each result as it lands so the UI fills in live.
+            liveResults = []
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             for (index, criterion) in rubric.criteria.enumerated() {
@@ -120,7 +125,9 @@ final class EncounterProcessor: ObservableObject {
                 let raw = try await LLMEngine.shared.generate(
                     prompt: PromptBuilder.criterionPrompt(criterion: criterion, transcript: redactedTranscript),
                     maxTokens: 180)
-                results.append(FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id))
+                let result = FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id)
+                results.append(result)
+                liveResults.append(result)
             }
 
             stage = .summarizing
