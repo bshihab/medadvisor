@@ -16,7 +16,7 @@ final class ParakeetTranscriber: Transcribing {
     func transcribe(url: URL) async throws -> TranscriptResult {
         // `.v2` = English-only, highest recall. (`.v3` = 25-language multilingual.)
         // Download into a directory we own so Settings can detect/delete it.
-        let models = try await AsrModels.downloadAndLoad(to: ModelPaths.parakeetBase, version: .v2)
+        let models = try await AsrModels.downloadAndLoad(to: AppModelPaths.parakeetBase, version: .v2)
         let asr = AsrManager()
         try await asr.loadModels(models)
 

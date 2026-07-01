@@ -3,7 +3,7 @@ import Foundation
 /// Directories we own for the on-device speech models, so we can reliably check
 /// whether they're installed and delete them. (The LLM is managed separately by
 /// ModelDownloader, which owns its .gguf file.)
-enum ModelPaths {
+enum AppModelPaths {
     static var base: URL {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Models", isDirectory: true)
@@ -56,16 +56,16 @@ final class ModelManager: ObservableObject {
     func isInstalled(_ model: ManagedModel) -> Bool {
         switch model {
         case .llm:      return ModelDownloader.shared.isDownloaded
-        case .whisper:  return Self.directoryHasContents(ModelPaths.whisperBase)
-        case .parakeet: return Self.directoryHasContents(ModelPaths.parakeetBase)
+        case .whisper:  return Self.directoryHasContents(AppModelPaths.whisperBase)
+        case .parakeet: return Self.directoryHasContents(AppModelPaths.parakeetBase)
         }
     }
 
     func delete(_ model: ManagedModel) {
         switch model {
         case .llm:      try? FileManager.default.removeItem(at: ModelDownloader.shared.localURL)
-        case .whisper:  try? FileManager.default.removeItem(at: ModelPaths.whisperBase)
-        case .parakeet: try? FileManager.default.removeItem(at: ModelPaths.parakeetBase)
+        case .whisper:  try? FileManager.default.removeItem(at: AppModelPaths.whisperBase)
+        case .parakeet: try? FileManager.default.removeItem(at: AppModelPaths.parakeetBase)
         }
         revision += 1
     }
