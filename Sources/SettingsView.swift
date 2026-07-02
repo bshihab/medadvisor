@@ -7,8 +7,14 @@ struct SettingsView: View {
     @State private var progress: Double = 0
     @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
-    @AppStorage("useParakeet") private var useParakeet = false
+    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.whisper.rawValue
     @ObservedObject private var models = ModelManager.shared
+
+    /// Apple's engine only appears on iOS 26+.
+    private var engineChoices: [TranscriptionEngine] {
+        if #available(iOS 26.0, *) { return TranscriptionEngine.allCases }
+        return [.whisper, .parakeet]
+    }
 
     var body: some View {
         NavigationStack {
@@ -25,16 +31,15 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Picker("Speech engine", selection: $useParakeet) {
-                        Text("Whisper (small.en)").tag(false)
-                        Text("Parakeet (NVIDIA)").tag(true)
+                    Picker("Speech engine", selection: $engine) {
+                        ForEach(engineChoices) { choice in
+                            Text(choice.title).tag(choice.rawValue)
+                        }
                     }
                 } header: {
                     Text("Transcription")
                 } footer: {
-                    Text(useParakeet
-                         ? "Parakeet TDT — usually fewer errors and sharper speaker timing."
-                         : "WhisperKit small.en. Switch to Parakeet to compare accuracy on a recording.")
+                    Text((TranscriptionEngine(rawValue: engine) ?? .whisper).subtitle)
                 }
 
                 Section("Privacy") {

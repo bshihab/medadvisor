@@ -30,11 +30,17 @@ final class EncounterProcessor: ObservableObject {
     private let diarizer = DiarizationService()
 
     /// Picks the speech engine at runtime so we can A/B without rebuilding.
-    /// Toggle lives in Settings ("useParakeet").
+    /// Selection lives in Settings ("transcriptionEngine").
     private var transcriber: any Transcribing {
-        UserDefaults.standard.bool(forKey: "useParakeet")
-            ? ParakeetTranscriber()
-            : WhisperTranscriber()
+        switch TranscriptionEngine.current {
+        case .parakeet:
+            return ParakeetTranscriber()
+        case .apple:
+            if #available(iOS 26.0, *) { return AppleSpeechTranscriber() }
+            return WhisperTranscriber()   // fallback below iOS 26
+        case .whisper:
+            return WhisperTranscriber()
+        }
     }
 
     func requestPermissions() {}
