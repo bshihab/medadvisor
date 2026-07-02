@@ -91,7 +91,7 @@ struct SettingsView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 } else {
-                    Button("Download (~2.5 GB, one time)") { downloadLLM() }
+                    Button("Download (~4.3 GB, one time)") { downloadLLM() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
                 }

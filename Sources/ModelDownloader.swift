@@ -1,12 +1,15 @@
 import Foundation
 
-/// Downloads the MedGemma 4B GGUF model once into the app's Documents folder,
-/// then runs fully offline. (Same model Localabs uses.)
+/// Downloads the Qwen2.5-7B-Instruct GGUF model once into the app's Documents
+/// folder, then runs fully offline. Chosen over MedGemma 4B after benchmarking:
+/// our task is rubric-APPLYING (judgment/instruction-following), where Qwen 7B
+/// is far more accurate — MedGemma 4B chronically over-scored. See
+/// tools/llm-benchmark/README.md.
 final class ModelDownloader: NSObject, @unchecked Sendable {
     static let shared = ModelDownloader()
 
-    private let remoteURL = URL(string: "https://huggingface.co/unsloth/medgemma-4b-it-GGUF/resolve/main/medgemma-4b-it-Q4_K_M.gguf")!
-    private let fileName = "medgemma-4b-it-Q4_K_M.gguf"
+    private let remoteURL = URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!
+    private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
 
     private var continuation: CheckedContinuation<URL, Error>?
     private var onProgress: ((Double) -> Void)?

@@ -4,6 +4,18 @@ On-device AI feedback for medical trainees on their patient consultations. Recor
 
 See [PLAN.md](PLAN.md) for milestones and the privacy verification gate.
 
+## On-device model choices (benchmarked)
+
+Everything runs on the phone. The models were chosen by **benchmarking, not by label** — see [`tools/stt-benchmark`](tools/stt-benchmark) (speech) and [`tools/llm-benchmark`](tools/llm-benchmark) (rubric scoring).
+
+| Job | Model | Why |
+|---|---|---|
+| **Rubric scoring (LLM)** | **Qwen 2.5-7B-Instruct** (Q4, ~4.3 GB, llama.cpp) | Balanced judge — **3.3% over-score / 96% accuracy** on the realistic test. Replaced MedGemma 4B, which rubber-stamped (**53% over-score**). |
+| Transcription | WhisperKit `small.en` / Parakeet / Apple SpeechAnalyzer (selectable) | All ≥ good enough (~1–3% WER); pick by download size / iOS version. |
+| Diarization | FluidAudio (pyannote community-1, CoreML/ANE) | Best on-device option; `numSpeakers = 2` for consultations. |
+
+**Key finding:** for rubric *scoring*, the task is judgment + instruction-following, **not** medical knowledge (the rubric supplies that) — so a strong *general* 7B (Qwen) beat the *medical* MedGemma 4B decisively. Full results + method in [`tools/llm-benchmark/README.md`](tools/llm-benchmark/README.md).
+
 ## Repo layout
 
 ```

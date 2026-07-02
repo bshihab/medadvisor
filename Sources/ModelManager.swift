@@ -21,7 +21,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .llm:      return "MedGemma 4B"
+        case .llm:      return "Qwen 2.5-7B"
         case .whisper:  return "Whisper (small.en)"
         case .parakeet: return "Parakeet"
         }
@@ -35,7 +35,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
     }
     var approxSize: String {
         switch self {
-        case .llm:      return "~2.5 GB"
+        case .llm:      return "~4.3 GB"
         case .whisper:  return "~480 MB"
         case .parakeet: return "~600 MB"
         }

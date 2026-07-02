@@ -95,7 +95,7 @@ struct RecordingView: View {
                 .foregroundStyle(.secondary)
             Text("Download the AI model to record")
                 .font(.headline)
-            Text("Go to Settings and download MedGemma (one time). Recording needs it to give feedback.")
+            Text("Go to Settings and download the AI model (one time). Recording needs it to give feedback.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -184,7 +184,7 @@ struct RecordingView: View {
 
     private var modelHint: some View {
         Label {
-            Text("The AI model isn't downloaded yet. Download it in **Settings**, or tap Analyze to download now (~2.5 GB, one time).")
+            Text("The AI model isn't downloaded yet. Download it in **Settings**, or tap Analyze to download now (~4.3 GB, one time).")
         } icon: {
             Image(systemName: "arrow.down.circle")
         }

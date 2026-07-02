@@ -117,44 +117,91 @@ enum PromptBuilder {
 /// Tolerant line parser for the 3-line per-criterion answer.
 enum FeedbackParser {
     static func parseCriterion(raw: String, criterionId: String, transcript: String) -> CriterionResult {
-        var status: CriterionResult.Status = .missed
-        var evidence: String?
-        var comment: String?
+        let lines = raw.split(whereSeparator: \.isNewline)
+            .map { String($0) }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
 
-        for rawLine in raw.split(whereSeparator: \.isNewline) {
-            let line = rawLine.trimmingCharacters(in: .whitespaces)
-            let lower = line.lowercased()
-            if lower.hasPrefix("result:") || lower.hasPrefix("met:") {
-                // Order matters: check "missed"/"not done" BEFORE "done" so a
-                // phrase like "not done" isn't misread as met.
-                if lower.contains("partial") {
-                    status = .partial
-                } else if lower.contains("missed") || lower.contains("not done")
-                            || lower.contains(" no") || lower.hasSuffix("no") {
-                    status = .missed
-                } else if lower.contains("done") || lower.contains("yes") {
-                    status = .met
-                }
-            } else if lower.hasPrefix("evidence:") {
-                evidence = String(line.dropFirst("evidence:".count)).trimmingCharacters(in: .whitespaces)
-            } else if lower.hasPrefix("tip:") {
-                comment = String(line.dropFirst("tip:".count)).trimmingCharacters(in: .whitespaces)
+        // Result: the first line that clearly states a verdict — robust to models
+        // that DROP the RESULT: label or add markdown (a bare "done", "**done**",
+        // "1. done"). Qwen and others don't follow the exact format, and requiring
+        // the label silently zeroed them out (everything read as missed).
+        var status: CriterionResult.Status = .missed
+        var resultIndex: Int?
+        for (i, line) in lines.enumerated() {
+            if let kw = keyword(clean(line)) {
+                status = kw
+                resultIndex = i
+                break
             }
         }
-        // Strip surrounding quotes the model often adds (we add our own in the UI).
+        if resultIndex == nil {   // last resort: search anywhere
+            let low = raw.lowercased()
+            if low.contains("partial") { status = .partial }
+            else if low.contains("missed") || low.contains("not done") { status = .missed }
+            else if low.contains("done") || low.contains("yes") { status = .met }
+        }
+
+        // Evidence: an EVIDENCE: line if present, else the text between the result
+        // line and the TIP line (models that drop labels put the quote there).
+        var evidence: String?
+        var comment: String?
+        for line in lines {
+            let c = clean(line).lowercased()
+            if c.hasPrefix("evidence") { evidence = value(after: line) }
+            else if c.hasPrefix("tip") { comment = value(after: line) }
+        }
+        if evidence == nil, let idx = resultIndex, idx + 1 < lines.count {
+            var mid: [String] = []
+            for line in lines[(idx + 1)...] {
+                if clean(line).lowercased().hasPrefix("tip") { break }
+                mid.append(clean(line))
+            }
+            let cand = mid.joined(separator: " ")
+                .trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
+            if !cand.isEmpty { evidence = cand }
+        }
         if var e = evidence {
             e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
             evidence = (e.isEmpty || e.lowercased() == "none") ? nil : e
         }
 
-        // Guardrail against small-model over-scoring: a "met" MUST be backed by a
-        // quote that actually appears in the transcript. No/hallucinated evidence
-        // → downgrade to missed. (This is what fixes "said nothing → 9/16 met".)
+        // Guardrail against over-scoring: a "met" MUST be backed by a quote that
+        // actually appears in the transcript. No/hallucinated evidence → missed.
         if status == .met, !isSupported(evidence, by: transcript) {
             status = .missed
         }
 
         return CriterionResult(criterionId: criterionId, status: status, evidence: evidence, comment: comment)
+    }
+
+    /// Strip markdown, list markers, and a leading label so we can read the value.
+    private static func clean(_ line: String) -> String {
+        var s = line.trimmingCharacters(in: .whitespaces)
+        s = s.replacingOccurrences(of: "^[*\\-•>#\\s]+", with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: "^\\d+[.)]\\s*", with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: "*", with: "").trimmingCharacters(in: .whitespaces)
+        let low = s.lowercased()
+        for pfx in ["result:", "met:", "verdict:", "answer:", "score:"] where low.hasPrefix(pfx) {
+            return String(s.dropFirst(pfx.count)).trimmingCharacters(in: .whitespaces)
+        }
+        return s
+    }
+
+    /// Map a cleaned line to a status if it clearly states one.
+    /// Order matters: check missed/not-done BEFORE done.
+    private static func keyword(_ s: String) -> CriterionResult.Status? {
+        let low = s.lowercased()
+        if low.hasPrefix("partial") { return .partial }
+        if low.hasPrefix("missed") || low.hasPrefix("not done") || low == "no" || low == "no." { return .missed }
+        if low.hasPrefix("done") || low.hasPrefix("met") || low == "yes" || low == "yes." { return .met }
+        return nil
+    }
+
+    private static func value(after line: String) -> String? {
+        guard let idx = line.firstIndex(of: ":") else { return nil }
+        let v = String(line[line.index(after: idx)...])
+            .trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
+        return v.isEmpty ? nil : v
     }
 
     /// True only if the evidence quote is genuinely grounded in the transcript:

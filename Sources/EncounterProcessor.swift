@@ -93,7 +93,7 @@ final class EncounterProcessor: ObservableObject {
         }
 
         // 3) Load the LLM (Whisper + diarizer are freed by now; first run
-        //    downloads ~2.5GB).
+        //    downloads ~4.3GB).
         do {
             try await LLMEngine.shared.ensureLoaded { fraction in
                 self.stage = .preparingModel(fraction)

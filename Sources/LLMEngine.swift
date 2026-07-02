@@ -1,8 +1,9 @@
 import Foundation
 
-/// Shared on-device LLM. Runs MedGemma 4B via llama.cpp (LlamaContext).
-/// llama.cpp mmaps the weights, so a 4B model fits under the iOS app-memory
-/// limit without the increased-memory entitlement (MLX could not).
+/// Shared on-device LLM. Runs Qwen2.5-7B-Instruct via llama.cpp (LlamaContext).
+/// llama.cpp mmaps the weights, so a 7B Q4 model (~4.3GB) fits under the iOS
+/// app-memory limit without the increased-memory entitlement (MLX could not).
+/// Qwen chosen over MedGemma 4B after benchmarking (see tools/llm-benchmark).
 @MainActor
 final class LLMEngine {
     static let shared = LLMEngine()
@@ -15,7 +16,7 @@ final class LLMEngine {
     /// Frees the model from memory.
     func unload() { llama = nil }
 
-    /// Ensures the model is downloaded (first run, ~2.5GB) and loaded.
+    /// Ensures the model is downloaded (first run, ~4.3GB) and loaded.
     /// `progress` reports the download fraction (0...1).
     func ensureLoaded(progress: @escaping (Double) -> Void = { _ in }) async throws {
         if llama != nil { return }
@@ -30,8 +31,8 @@ final class LLMEngine {
         try await ensureLoaded()
         guard let llama else { throw LLMError.notLoaded }
 
-        // MedGemma is Gemma-based — wrap the prompt in Gemma's chat template.
-        let formatted = "<start_of_turn>user\n\(prompt)<end_of_turn>\n<start_of_turn>model\n"
+        // Qwen uses the ChatML template — wrong markers = garbage output.
+        let formatted = "<|im_start|>user\n\(prompt)<|im_end|>\n<|im_start|>assistant\n"
 
         var output = ""
         for await piece in llama.predict(prompt: formatted, maxTokens: maxTokens) {
@@ -43,7 +44,7 @@ final class LLMEngine {
 
     nonisolated private static func clean(_ s: String) -> String {
         var text = s
-        for marker in ["<end_of_turn>", "<eos>", "<start_of_turn>"] {
+        for marker in ["<|im_end|>", "<|endoftext|>", "<|im_start|>"] {
             if let range = text.range(of: marker) {
                 text = String(text[..<range.lowerBound])
             }
