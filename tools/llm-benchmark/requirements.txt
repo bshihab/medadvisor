@@ -1,0 +1,2 @@
+# LLM benchmark — much lighter than the STT one (no torch/whisper/parakeet).
+mlx-lm>=0.20

@@ -1,0 +1,19 @@
+{
+  "_comment": "For each rubric criterion: a Doctor line that clearly SATISFIES it (met) plus a short Patient reply. A transcript INCLUDES the snippet when the criterion is labeled 'met' and OMITS it entirely when labeled 'missed'. Kept distinct to minimize one snippet accidentally satisfying another criterion.",
+  "intro_self": {"doctor": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.", "patient": "Hi doctor, nice to meet you."},
+  "set_tone": {"doctor": "Please make yourself comfortable — we've got plenty of time and it's just the two of us in here.", "patient": "Thanks, that helps."},
+  "open_questions": {"doctor": "So, in your own words, tell me what's been going on.", "patient": "Well, I've been getting these headaches for a couple of weeks."},
+  "explore_complaint": {"doctor": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?", "patient": "About two weeks ago, worse in the afternoons, and screens make it worse."},
+  "avoid_interrupting": {"doctor": "Please, go on and take your time — I'm listening, there's no rush.", "patient": "Okay, well it also comes with a bit of tiredness."},
+  "what_else": {"doctor": "Before we move on, is there anything else that's been worrying you that we haven't covered?", "patient": "No, I think that's everything."},
+  "explore_perspective": {"doctor": "What do you think might be causing it, and is there anything in particular you're worried it could be?", "patient": "I was worried it might be something serious, like a tumour."},
+  "respond_emotion": {"doctor": "I can see this has been really frightening for you, and that's completely understandable.", "patient": "Yeah, it has been, thank you."},
+  "support_respect": {"doctor": "You've done exactly the right thing coming in, and we'll work through this together.", "patient": "I appreciate that."},
+  "explain_exam": {"doctor": "I'm just going to check your blood pressure and look in your eyes now — let me know if anything feels uncomfortable.", "patient": "Sure, go ahead."},
+  "plain_language": {"doctor": "In simple terms, it's the muscles around your head tightening up — nothing dangerous.", "patient": "Oh, that makes sense."},
+  "accurate_info": {"doctor": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.", "patient": "Okay, that's reassuring."},
+  "shared_plan": {"doctor": "There are a couple of options — we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?", "patient": "Let's try the screen breaks first."},
+  "check_understanding": {"doctor": "Just so I know I've explained it clearly, could you tell me back what the plan is?", "patient": "Take breaks from screens, use paracetamol, and come back if it gets worse."},
+  "safety_net": {"doctor": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.", "patient": "Understood, I'll do that."},
+  "invite_questions": {"doctor": "Before we finish up, what questions do you have for me?", "patient": "No, I think you've covered everything, thank you."}
+}
