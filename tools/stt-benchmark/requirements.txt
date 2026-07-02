@@ -1,0 +1,11 @@
+# Core
+jiwer>=3.0            # WER metric
+soundfile>=0.12       # read WAVs
+numpy>=1.24
+
+# Transcription engines (Apple Silicon)
+mlx-whisper>=0.4      # Whisper on MLX
+parakeet-mlx>=0.2     # NVIDIA Parakeet on MLX
+
+# LLM (speaker attribution) — same MedGemma GGUF the app uses
+llama-cpp-python>=0.3
