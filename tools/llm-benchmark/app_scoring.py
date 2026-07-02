@@ -45,22 +45,68 @@ def build_prompt(criterion: dict, transcript: str) -> str:
     return STRICT_PROMPT.format(prompt=criterion["prompt"], extras=extras, transcript=transcript)
 
 
+def _clean(line: str) -> str:
+    """Strip markdown, list markers, and leading label so we can read the value."""
+    s = line.strip().lstrip("*-•> \t")
+    s = re.sub(r"^\d+[.)]\s*", "", s)          # "1. " / "1) "
+    s = s.replace("*", "").strip()
+    low = s.lower()
+    for pfx in ("result:", "met:", "verdict:", "answer:", "score:"):
+        if low.startswith(pfx):
+            return s[len(pfx):].strip()
+    return s
+
+
+def _keyword(s: str):
+    """Map a cleaned line to a status if it clearly states one, else None.
+    Order matters: check missed/not-done before done (so 'not done' → missed)."""
+    low = s.lower()
+    if low.startswith("partial"):
+        return "partial"
+    if low.startswith("missed") or low.startswith("not done") or low in ("no", "no."):
+        return "missed"
+    if low.startswith("done") or low.startswith("met") or low in ("yes", "yes."):
+        return "met"
+    return None
+
+
 def parse_criterion(raw: str, transcript: str):
-    """Returns (status, evidence). status in {met, partial, missed}."""
-    status, evidence = "missed", None
-    for line in raw.splitlines():
-        low = line.strip().lower()
-        if low.startswith("result:") or low.startswith("met:"):
-            if "partial" in low:
-                status = "partial"
-            elif "missed" in low or "not done" in low or low.endswith(" no") or low.endswith("no"):
-                status = "missed"
-            elif "done" in low or "yes" in low:
-                status = "met"
-        elif low.startswith("evidence:"):
-            evidence = line.split(":", 1)[1].strip().strip(" \t\"'“”")
-            if evidence.lower() == "none" or not evidence:
-                evidence = None
+    """Returns (status, evidence). Robust to bare / **bold** / labeled formats —
+    models often drop the RESULT:/EVIDENCE: labels, which must not zero them out."""
+    lines = [l for l in (ln.rstrip() for ln in raw.splitlines()) if l.strip()]
+
+    status, result_idx = None, None
+    for i, line in enumerate(lines):
+        kw = _keyword(_clean(line))
+        if kw is not None:
+            status, result_idx = kw, i
+            break
+    if status is None:  # last resort: search anywhere
+        low = raw.lower()
+        status = ("partial" if "partial" in low
+                  else "missed" if ("missed" in low or "not done" in low)
+                  else "met" if ("done" in low or "yes" in low)
+                  else "missed")
+
+    # Evidence: prefer an EVIDENCE: line; else take the text between the result
+    # line and the TIP line (models that drop labels put the quote there).
+    evidence = None
+    for line in lines:
+        if _clean(line).lower().startswith("evidence") or line.strip().lower().startswith("evidence:"):
+            evidence = line.split(":", 1)[-1].strip().strip(" \t\"'“”")
+            break
+    if evidence is None and result_idx is not None:
+        mid = []
+        for line in lines[result_idx + 1:]:
+            if _clean(line).lower().startswith("tip"):
+                break
+            mid.append(_clean(line))
+        cand = " ".join(mid).strip().strip(" \t\"'“”")
+        if cand:
+            evidence = cand
+    if evidence and evidence.lower() == "none":
+        evidence = None
+
     # Guardrail: a "met" must be grounded in the transcript, else downgrade.
     if status == "met" and not _supported(evidence, transcript):
         status = "missed"
