@@ -59,23 +59,29 @@ def main():
     RESULTS.mkdir(exist_ok=True)
     results = {e.name: [] for e in engines}
 
+    total_runs = len(dataset) * args.runs
     for e in engines:
         print(f"\n=== {e.name} ===")
         t0 = time.time()
+        done = 0
         for conv in dataset:
             wav = str(DATA / "audio" / f"{conv['id']}.wav")
             for r in range(args.runs):
+                done += 1
                 try:
+                    ti = time.time()
                     hyp = e.transcribe(wav)
                     score = wer(conv["flat"], hyp)
+                    print(f"  [{done:>3}/{total_runs}] {conv['id']} run{r}: "
+                          f"WER={score*100:5.1f}%  ({time.time()-ti:4.1f}s)")
                 except Exception as ex:
-                    print(f"  {conv['id']} run{r} FAILED: {ex}")
+                    print(f"  [{done:>3}/{total_runs}] {conv['id']} run{r} FAILED: {ex}")
                     continue
                 results[e.name].append(
                     {"id": conv["id"], "run": r, "wer": score,
                      "n_turns": conv["n_turns"], "bucket": bucket(conv["n_turns"])})
         dt = time.time() - t0
-        print(f"  done in {dt:.0f}s ({len(results[e.name])} runs)")
+        print(f"  {e.name} done in {dt:.0f}s ({len(results[e.name])} runs)")
 
     (RESULTS / "stt.json").write_text(json.dumps(results, indent=2))
     print_summary(results)

@@ -94,15 +94,18 @@ def main():
         return generate(model, tokenizer, prompt=text, max_tokens=1024, verbose=False)
 
     RESULTS.mkdir(exist_ok=True)
+    total = len(dataset) * args.runs
     rows = []
     for conv in dataset:
         for r in range(args.runs):
+            import time
+            ti = time.time()
             hyp = run_llm(PROMPT.format(flat=conv["flat"]))
             sep, role = score(conv["turns"], hyp)
             rows.append({"id": conv["id"], "run": r, "n_turns": conv["n_turns"],
                          "separation": sep, "role": role})
-        if len(rows) % 10 == 0:
-            print(f"  {len(rows)} done…")
+            print(f"  [{len(rows):>3}/{total}] {conv['id']} ({conv['n_turns']} turns): "
+                  f"separation={sep*100:5.1f}%  role={role*100:5.1f}%  ({time.time()-ti:4.1f}s)")
 
     (RESULTS / "attribution.json").write_text(json.dumps(rows, indent=2))
     summarize(rows)
