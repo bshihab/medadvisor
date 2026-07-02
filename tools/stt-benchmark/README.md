@@ -24,7 +24,7 @@ Tests, on your Mac laptop, the two questions we discussed:
 | **Whisper** | `mlx-whisper` (Apple Silicon) | `small.en`, same tier as the app |
 | **Parakeet** | `parakeet-mlx` (Apple Silicon) | TDT v2/v3, same family as the app |
 | **Apple** | `apple/AppleTranscribe.swift` | **macOS 26 only**, run separately |
-| **LLM** | `llama-cpp-python` + MedGemma 4B `Q4_K_M` GGUF | same model as the app |
+| **LLM** | `mlx-lm` + MedGemma 4B (MLX) | same model family as the app; MLX runtime |
 
 ## Setup
 
@@ -35,13 +35,8 @@ pip install -r requirements.txt
 brew install ffmpeg     # audio decoding for the STT libs
 ```
 
-Download the same LLM the app uses (once):
-
-```bash
-pip install huggingface_hub
-huggingface-cli download unsloth/medgemma-4b-it-GGUF \
-  medgemma-4b-it-Q4_K_M.gguf --local-dir ./models
-```
+Model weights download automatically on first run (Whisper/Parakeet from
+`bench_stt.py`, MedGemma from `bench_llm_attribution.py`) — no manual download.
 
 ## Run
 
@@ -52,13 +47,16 @@ python generate_dataset.py --n 100
 # 2) Whisper vs Parakeet, 3 runs each (writes results/stt.json + prints table)
 python bench_stt.py --runs 3
 
-# 3) LLM-only attribution with MedGemma (writes results/attribution.json)
-python bench_llm_attribution.py --model ./models/medgemma-4b-it-Q4_K_M.gguf
+# 3) LLM-only attribution with MedGemma (auto-downloads the MLX model)
+python bench_llm_attribution.py
 
 # 4) (optional) Apple, on macOS 26 — transcribe the same audio, then score it
 swift apple/AppleTranscribe.swift data/audio results/apple_raw.json
 python score_apple.py            # computes Apple's WER against ground truth
 ```
+
+> If the default MedGemma MLX model id 404s, pass `--model <id>` — search
+> huggingface.co/mlx-community for a `medgemma-4b-it` build (e.g. 4bit/8bit).
 
 ## Reading the results
 

@@ -7,5 +7,7 @@ numpy>=1.24
 mlx-whisper>=0.4      # Whisper on MLX
 parakeet-mlx>=0.2     # NVIDIA Parakeet on MLX
 
-# LLM (speaker attribution) — same MedGemma GGUF the app uses
-llama-cpp-python>=0.3
+# LLM (speaker attribution) — MedGemma via MLX (prebuilt wheels, no compile).
+# Same model family as the app; runtime differs (MLX here vs llama.cpp in-app),
+# which is fine for measuring attribution accuracy.
+mlx-lm>=0.20

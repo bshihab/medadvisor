@@ -9,12 +9,13 @@ Metrics (word-level, aligned to ground truth via difflib):
   separation accuracy = best of the two Doctor/Patient label mappings
   role accuracy       = as-labeled (also got which is the Doctor right)
 
-Uses the same MedGemma 4B Q4_K_M GGUF the app uses, via llama-cpp-python.
+Uses MedGemma 4B via mlx-lm (prebuilt for Apple Silicon; same model family as
+the app, which runs the GGUF via llama.cpp — fine for measuring attribution).
 """
 import argparse, difflib, json, re
 from pathlib import Path
 
-from llama_cpp import Llama
+from mlx_lm import load, generate
 
 HERE = Path(__file__).parent
 DATA = HERE / "data"
@@ -77,25 +78,26 @@ def score(turns, hyp_text):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", required=True, help="path to MedGemma GGUF")
+    ap.add_argument("--model", default="mlx-community/medgemma-4b-it-4bit",
+                    help="MLX model id (auto-downloads). If this 404s, search "
+                         "huggingface.co/mlx-community for a medgemma-4b-it build.")
     ap.add_argument("--runs", type=int, default=1,
                     help="temp=0 is deterministic, so 1 is usually enough")
     args = ap.parse_args()
 
     dataset = json.loads((DATA / "dataset.json").read_text())
-    llm = Llama(model_path=args.model, n_ctx=4096, verbose=False)
+    model, tokenizer = load(args.model)
 
-    def generate(prompt: str) -> str:
-        wrapped = f"<start_of_turn>user\n{prompt}<end_of_turn>\n<start_of_turn>model\n"
-        out = llm(wrapped, max_tokens=1024, temperature=0.0,
-                  stop=["<end_of_turn>"])
-        return out["choices"][0]["text"]
+    def run_llm(prompt: str) -> str:
+        messages = [{"role": "user", "content": prompt}]
+        text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+        return generate(model, tokenizer, prompt=text, max_tokens=1024, verbose=False)
 
     RESULTS.mkdir(exist_ok=True)
     rows = []
     for conv in dataset:
         for r in range(args.runs):
-            hyp = generate(PROMPT.format(flat=conv["flat"]))
+            hyp = run_llm(PROMPT.format(flat=conv["flat"]))
             sep, role = score(conv["turns"], hyp)
             rows.append({"id": conv["id"], "run": r, "n_turns": conv["n_turns"],
                          "separation": sep, "role": role})
