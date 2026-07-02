@@ -1,0 +1,35 @@
+[
+  {
+    "id": "good_headache",
+    "note": "A strong outpatient consult — most criteria met, natural flow.",
+    "flat": "Doctor: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\nPatient: Thank you.\nDoctor: So, tell me in your own words — what's brought you in today?\nPatient: I've been getting these headaches for about three weeks, and honestly it's starting to scare me a bit.\nDoctor: I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more — when did they start, where do you feel them, and does anything make them better or worse?\nPatient: They're at the front of my head, usually late afternoon, and worse when I've been on the computer. Paracetamol takes the edge off.\nDoctor: Thank you. Can I ask what you think might be going on, or whether there's something in particular you're worried it could be?\nPatient: I suppose I'm frightened it might be something serious, like a brain tumour. My aunt had one.\nDoctor: That's a really understandable worry, and I'm glad you've told me — we'll work through this properly together.\nDoctor: I'd like to examine you now — I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\nPatient: Okay, that's fine.\nDoctor: Everything I'm seeing is reassuring. In plain terms, this fits what we call tension-type headache — the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\nPatient: Oh, okay, that's a relief.\nDoctor: We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\nPatient: I'd rather try the breaks and painkillers first.\nDoctor: That sounds very sensible. Just so I know I've explained it clearly, could you tell me back what the plan is?\nPatient: Take regular breaks from screens, use paracetamol when needed, and come back if it doesn't settle.\nDoctor: Perfect. And importantly — if the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.\nPatient: Understood, thank you.\nDoctor: Before we finish, what questions do you have for me?\nPatient: No, I think you've covered everything. Thanks so much.",
+    "labels": {
+      "intro_self": "met", "set_tone": "met", "open_questions": "met", "explore_complaint": "met",
+      "avoid_interrupting": "met", "what_else": "missed", "explore_perspective": "met", "respond_emotion": "met",
+      "support_respect": "met", "explain_exam": "met", "plain_language": "met", "accurate_info": "met",
+      "shared_plan": "met", "check_understanding": "met", "safety_net": "met", "invite_questions": "met"
+    }
+  },
+  {
+    "id": "rushed_cough",
+    "note": "A rushed consult — some competent history but no rapport, jargon, no shared plan.",
+    "flat": "Doctor: Right, what seems to be the problem?\nPatient: I've had this cough for a couple of weeks and—\nDoctor: Any fever? Chest pain? Coughing anything up?\nPatient: Um, no fever, no blood, just a dry cough, mostly at night.\nDoctor: Smoker?\nPatient: I quit last year.\nDoctor: Okay. It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\nPatient: Right... is there anything I can do?\nDoctor: Honey and warm drinks. Come back if it's not gone in a month.\nPatient: Okay.\nDoctor: Anything else? No? Great, take care.",
+    "labels": {
+      "intro_self": "missed", "set_tone": "missed", "open_questions": "missed", "explore_complaint": "met",
+      "avoid_interrupting": "missed", "what_else": "met", "explore_perspective": "missed", "respond_emotion": "missed",
+      "support_respect": "missed", "explain_exam": "missed", "plain_language": "missed", "accurate_info": "met",
+      "shared_plan": "missed", "check_understanding": "missed", "safety_net": "missed", "invite_questions": "missed"
+    }
+  },
+  {
+    "id": "poor_lowmood",
+    "note": "A poor consult — brusque, constant interruptions, prescribes with no rapport, info, or safety-net.",
+    "flat": "Doctor: Next. Name and date of birth?\nPatient: Sarah, third of March 1990. I've been feeling really down lately and—\nDoctor: How long?\nPatient: A few months, I guess. It's been hard to—\nDoctor: Sleeping okay? Appetite?\nPatient: Not really, I—\nDoctor: Right. Sounds like low mood. I'll start you on an antidepressant, take one a day.\nPatient: Oh. Okay. Will it—\nDoctor: Any allergies? No? Here's the prescription. Next patient, please.",
+    "labels": {
+      "intro_self": "missed", "set_tone": "missed", "open_questions": "missed", "explore_complaint": "missed",
+      "avoid_interrupting": "missed", "what_else": "missed", "explore_perspective": "missed", "respond_emotion": "missed",
+      "support_respect": "missed", "explain_exam": "missed", "plain_language": "missed", "accurate_info": "missed",
+      "shared_plan": "missed", "check_understanding": "missed", "safety_net": "missed", "invite_questions": "missed"
+    }
+  }
+]
