@@ -5,7 +5,7 @@ Each conversation is transcribed `--runs` times per engine (default 3 → 300
 runs/engine for 100 convos). Reports mean WER overall and by conversation
 length bucket. Writes results/stt.json.
 """
-import argparse, json, time
+import argparse, json, re, time
 from pathlib import Path
 
 import jiwer
@@ -16,19 +16,24 @@ HERE = Path(__file__).parent
 DATA = HERE / "data"
 RESULTS = HERE / "results"
 
-# Normalize both sides the same way before scoring.
-_NORM = jiwer.Compose([
-    jiwer.ToLowerCase(),
-    jiwer.RemovePunctuation(),
-    jiwer.RemoveMultipleSpaces(),
-    jiwer.Strip(),
-    jiwer.ReduceToListOfListOfWords(),
-])
+_PUNCT = re.compile(r"[^a-z0-9\s]")
+_WS = re.compile(r"\s+")
+
+
+def _norm(s: str) -> str:
+    """Lowercase, drop punctuation, collapse whitespace — applied to both sides
+    so scoring is version-independent (jiwer 4.x dropped transform kwargs)."""
+    s = _PUNCT.sub(" ", s.lower())
+    return _WS.sub(" ", s).strip()
 
 
 def wer(ref: str, hyp: str) -> float:
-    return jiwer.wer(ref, hyp,
-                     truth_transform=_NORM, hypothesis_transform=_NORM)
+    ref_n, hyp_n = _norm(ref), _norm(hyp)
+    if not ref_n:
+        return 0.0
+    if not hyp_n:
+        return 1.0
+    return jiwer.wer(ref_n, hyp_n)
 
 
 def bucket(n_turns: int) -> str:
