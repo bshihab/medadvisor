@@ -3,12 +3,14 @@ import AVFoundation
 import Speech
 
 /// On-device speech-to-text via Apple's SpeechAnalyzer (iOS 26+). No model
-/// download — the OS ships/downloads the assets. We request per-run audio time
-/// ranges so the transcript still carries timestamps for diarization alignment.
+/// download — the OS ships/downloads the assets.
 ///
-/// Built on the same SpeechAnalyzer flow proven in tools/stt-benchmark. If the
-/// timestamp attribute yields nothing, we fall back to a single whole-file
-/// segment so transcription still works (single-speaker view).
+/// Built on the exact SpeechAnalyzer flow proven in tools/stt-benchmark
+/// (AppleTranscribe.swift), which compiled and ran. NOTE: this version does NOT
+/// extract per-word timestamps yet (the `.audioTimeRange` attribute API didn't
+/// resolve on the iOS SDK), so it returns one whole-file segment. That means the
+/// 2-speaker diarization split won't align well when Apple is the engine — use
+/// Whisper/Parakeet for multi-speaker recordings until word timing is wired up.
 @available(iOS 26.0, *)
 @MainActor
 final class AppleSpeechTranscriber: Transcribing {
@@ -17,7 +19,7 @@ final class AppleSpeechTranscriber: Transcribing {
             locale: Locale(identifier: "en-US"),
             transcriptionOptions: [],
             reportingOptions: [],
-            attributeOptions: [.audioTimeRange])
+            attributeOptions: [])
         let analyzer = SpeechAnalyzer(modules: [transcriber])
 
         // Ensure the on-device model assets are installed (one time).
@@ -25,18 +27,10 @@ final class AppleSpeechTranscriber: Transcribing {
             try await request.downloadAndInstall()
         }
 
-        // Collect text + timed word fragments as results stream in.
         var fullText = ""
-        var fragments: [(text: String, start: Double, end: Double)] = []
         let collector = Task {
             for try await result in transcriber.results {
-                let attributed = result.text
-                fullText += String(attributed.characters)
-                for run in attributed.runs {
-                    guard let range = run.audioTimeRange else { continue }
-                    let piece = String(attributed[run.range].characters)
-                    fragments.append((piece, range.start.seconds, range.end.seconds))
-                }
+                fullText += String(result.text.characters)
             }
         }
 
@@ -49,42 +43,8 @@ final class AppleSpeechTranscriber: Transcribing {
         _ = try await collector.value
 
         let text = fullText.trimmingCharacters(in: .whitespacesAndNewlines)
-        var segments = Self.groupIntoSegments(fragments)
-        if segments.isEmpty, !text.isEmpty {
-            let duration = Double(file.length) / file.fileFormat.sampleRate
-            segments = [TranscriptSegment(text: text, start: 0, end: duration)]
-        }
+        let duration = Double(file.length) / max(1, file.fileFormat.sampleRate)
+        let segments = text.isEmpty ? [] : [TranscriptSegment(text: text, start: 0, end: duration)]
         return TranscriptResult(text: text, segments: segments)
-    }
-
-    /// Group timed fragments into phrase-level segments (pause > 0.8s, sentence
-    /// end, or ~24 words) so the diarizer can align by midpoint.
-    private static func groupIntoSegments(
-        _ fragments: [(text: String, start: Double, end: Double)]
-    ) -> [TranscriptSegment] {
-        guard !fragments.isEmpty else { return [] }
-        var segments: [TranscriptSegment] = []
-        var buffer: [(text: String, start: Double, end: Double)] = []
-
-        func flush() {
-            guard let first = buffer.first, let last = buffer.last else { return }
-            let text = buffer.map { $0.text }.joined()
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            if !text.isEmpty {
-                segments.append(TranscriptSegment(text: text, start: first.start, end: last.end))
-            }
-            buffer.removeAll(keepingCapacity: true)
-        }
-
-        for frag in fragments {
-            if let last = buffer.last {
-                let gap = frag.start - last.end
-                let ends = last.text.hasSuffix(".") || last.text.hasSuffix("?") || last.text.hasSuffix("!")
-                if gap > 0.8 || ends || buffer.count >= 24 { flush() }
-            }
-            buffer.append(frag)
-        }
-        flush()
-        return segments
     }
 }

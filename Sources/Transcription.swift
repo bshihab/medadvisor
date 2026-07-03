@@ -45,10 +45,12 @@ enum TranscriptionEngine: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The currently-selected engine. Defaults to Apple's on-device
-    /// SpeechAnalyzer (iOS 26) — no download, fastest, most battery-efficient.
+    /// The currently-selected engine. Defaults to Whisper for now — it gives the
+    /// timed segments the diarizer needs for the Doctor/Patient split. Apple
+    /// SpeechAnalyzer is selectable but lacks per-word timing until that's wired
+    /// up (single-speaker only for now).
     static var current: TranscriptionEngine {
         TranscriptionEngine(rawValue:
-            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .apple
+            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .whisper
     }
 }

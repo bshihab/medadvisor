@@ -7,7 +7,7 @@ struct SettingsView: View {
     @State private var progress: Double = 0
     @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
-    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.apple.rawValue
+    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.whisper.rawValue
     @ObservedObject private var models = ModelManager.shared
 
     /// Apple's engine only appears on iOS 26+.
