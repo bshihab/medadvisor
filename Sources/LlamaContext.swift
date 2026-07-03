@@ -32,13 +32,13 @@ public final class LlamaContext: @unchecked Sendable {
         }
 
         var ctxParams = llama_context_default_params()
-        // Qwen 7B is memory-heavy on-device, so keep the buffers lean:
-        // - n_ctx 3072 still holds one criterion + a consultation transcript
-        //   (~1.5-2k tokens) + the short output, but halves the KV cache vs 4096.
-        // - n_batch 512 (not 4096) shrinks the prompt-processing compute buffer
-        //   a lot; the prompt is just processed in a few chunks instead.
+        // Qwen 7B: n_ctx 3072 holds a criterion + a consultation transcript
+        // (~1.5-2k tokens) + short output while halving the KV cache vs 4096.
+        // n_batch 2048 processes the transcript prompt in ~1 pass (n_batch=512 was
+        // ~4x slower per criterion); we have ample memory headroom on-device
+        // because the weights are mmap'd (they don't count against the app limit).
         ctxParams.n_ctx = 3072
-        ctxParams.n_batch = 512
+        ctxParams.n_batch = 2048
         ctxParams.n_threads = Int32(max(1, ProcessInfo.processInfo.processorCount - 1))
         ctxParams.n_threads_batch = ctxParams.n_threads
 
