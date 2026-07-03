@@ -2,7 +2,13 @@ import SwiftUI
 
 /// App root: a tab bar. Record is the hero; Goals, History, Insights are tabs.
 struct RootView: View {
+    @AppStorage("showMemoryHUD") private var showMemoryHUD = false
+
     var body: some View {
+        tabs.memoryHUD(showMemoryHUD)
+    }
+
+    private var tabs: some View {
         TabView {
             RecordTab()
                 .tabItem { Label("Record", systemImage: "mic.fill") }

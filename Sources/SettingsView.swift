@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
     @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.whisper.rawValue
+    @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @ObservedObject private var models = ModelManager.shared
 
     /// Apple's engine only appears on iOS 26+.
@@ -46,6 +47,12 @@ struct SettingsView: View {
                     Label("Audio and transcripts never leave your device.",
                           systemImage: "lock.fill")
                         .font(.subheadline)
+                }
+
+                Section {
+                    Toggle("Show memory usage", isOn: $showMemoryHUD)
+                } footer: {
+                    Text("Live overlay of the app's memory footprint + headroom before iOS kills it — for diagnosing the on-device model memory ceiling.")
                 }
             }
             .navigationTitle("Settings")
