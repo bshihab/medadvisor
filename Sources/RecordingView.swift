@@ -34,6 +34,7 @@ struct RecordingView: View {
             }
         }
         .padding()
+        .background { gradeGradient }
         .navigationTitle(location.rawValue)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -108,6 +109,23 @@ struct RecordingView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    /// Soft grading-palette gradient (green → orange → red) rising from the
+    /// bottom half of the screen, Live Voicemail-style. Purely decorative.
+    private var gradeGradient: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+            LinearGradient(colors: [.green, .orange, .red],
+                           startPoint: .leading, endPoint: .trailing)
+                .blur(radius: 60)
+                .opacity(0.38)
+                .mask(LinearGradient(colors: [.clear, .black],
+                                     startPoint: .top, endPoint: .bottom))
+                .frame(height: 400)
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
     }
 
     /// Live transcript, Live Voicemail-style: big bold text floating on the
