@@ -29,6 +29,53 @@ wrongly marked "met" (the "feedback rubber-stamps everything" complaint):
 | **MedGemma 4B** (was default) | 2.5 GB | **53%** | 94% | 65% | too lenient — rubber-stamps |
 | Gemma 4 E4B | 8.8 GB | 0% | 0% | 63% | broken output + too big — out |
 
+### Raw benchmark output (verbatim)
+
+Qwen 2.5-7B — realistic test:
+```
+============ REALISTIC SCORING SUMMARY ============
+model:        mlx-community/Qwen2.5-7B-Instruct-4bit
+accuracy:      95.8%   (46/48)
+over-score:     3.3%   (1/30 MISSED wrongly marked met)  ← lower better
+recall(met):   94.4%   (17/18 MET correctly marked met)   ← higher better
+```
+
+Gemma 3 4B — realistic test:
+```
+============ REALISTIC SCORING SUMMARY ============
+model:        mlx-community/gemma-3-4b-it-4bit
+accuracy:      81.2%   (39/48)
+over-score:     3.3%   (1/30 MISSED wrongly marked met)  ← lower better
+recall(met):   55.6%   (10/18 MET correctly marked met)   ← higher better
+```
+
+MedGemma 4B (was the app default) — realistic test:
+```
+============ REALISTIC SCORING SUMMARY ============
+model:        mlx-community/medgemma-4b-it-4bit
+accuracy:      64.6%   (31/48)
+over-score:    53.3%   (16/30 MISSED wrongly marked met)  ← lower better
+recall(met):   94.4%   (17/18 MET correctly marked met)   ← higher better
+```
+
+Gemma 4 E4B — realistic test (broken output — marked everything missed; also 8.8 GB):
+```
+============ REALISTIC SCORING SUMMARY ============
+model:        mlx-community/gemma-4-e4b-it-OptiQ-4bit
+accuracy:      62.5%   (30/48)
+over-score:     0.0%   (0/30 MISSED wrongly marked met)  ← lower better
+recall(met):    0.0%   (0/18 MET correctly marked met)   ← higher better
+```
+
+MedGemma 4B — larger snippet test (240 decisions), confirming the over-scoring:
+```
+================ SCORING SUMMARY ================
+model:        mlx-community/medgemma-4b-it-4bit
+accuracy:      59.6%   (143/240)
+over-score:    81.2%   (91/112 MISSED criteria wrongly marked met)  ← lower is better
+recall(met):   95.3%   (122/128 MET criteria correctly marked met)   ← higher is better
+```
+
 ### What we learned
 - **The model was the problem, not the app or prompt.** MedGemma 4B marked ~half
   of absent behaviors as "met" — that's why the feedback felt untrustworthy.
