@@ -52,16 +52,14 @@ struct RecordingView: View {
         } message: {
             Text("Enable microphone access in Settings to record consultations.")
         }
-        .confirmationDialog("Patient consent",
-                            isPresented: $showConsentDialog,
-                            titleVisibility: .visible) {
-            Button("The patient has consented to recording") {
+        .alert("Patient consent", isPresented: $showConsentDialog) {
+            Button("Reject", role: .cancel) {}
+            Button("Accept") {
                 consentConfirmed = true
                 startRecording()
             }
-            Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Confirm the patient has given consent to be recorded before you begin. Audio is processed on-device and deleted after analysis.")
+            Text("Confirm the patient has consented to being recorded before you begin. Audio is processed on-device and deleted after analysis.")
         }
     }
 
