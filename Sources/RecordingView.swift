@@ -34,7 +34,8 @@ struct RecordingView: View {
             }
         }
         .padding()
-        .background { gradeGradient }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)   // fill the screen so
+        .background { gradeGradient }                        // the glow spans edge-to-edge
         .navigationTitle(location.rawValue)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
