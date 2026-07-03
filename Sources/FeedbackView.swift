@@ -37,8 +37,9 @@ struct FeedbackView: View {
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if tab == .transcript && !shareText.isEmpty {
-                    ShareLink(item: shareText)
+                let item = (tab == .transcript) ? shareText : feedbackShareText
+                if !item.isEmpty {
+                    ShareLink(item: item)
                 }
             }
         }
@@ -50,6 +51,30 @@ struct FeedbackView: View {
             return turns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
         }
         return transcript ?? ""
+    }
+
+    /// The whole feedback as plain text — summary + every criterion's status,
+    /// evidence, and tip, grouped by phase. Easy to copy/paste and share.
+    private var feedbackShareText: String {
+        var out = "MedAdvisor feedback — \(rubric.name)\n"
+        out += "\(overallMet) of \(overallTotal) done · \(bandLabel)\n"
+        if let summary = feedback.summary, !summary.isEmpty {
+            out += "\nSummary: \(summary)\n"
+        }
+        for dim in orderedDimensions {
+            let results = resultsFor(dim)
+            guard !results.isEmpty else { continue }
+            out += "\n\(dim.label) — \(metCount(results))/\(results.count)\n"
+            for r in results {
+                let mark = switch r.status {
+                    case .met: "[✓]"; case .partial: "[~]"; case .missed: "[✗]"
+                }
+                out += "  \(mark) \(criterionText(r.criterionId))\n"
+                if let e = r.evidence, !e.isEmpty { out += "      evidence: \"\(e)\"\n" }
+                if let c = r.comment, !c.isEmpty { out += "      tip: \(c)\n" }
+            }
+        }
+        return out
     }
 
     // MARK: - Feedback (card layout)
