@@ -45,9 +45,10 @@ enum TranscriptionEngine: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The currently-selected engine (defaults to Whisper).
+    /// The currently-selected engine. Defaults to Apple's on-device
+    /// SpeechAnalyzer (iOS 26) — no download, fastest, most battery-efficient.
     static var current: TranscriptionEngine {
         TranscriptionEngine(rawValue:
-            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .whisper
+            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .apple
     }
 }
