@@ -117,7 +117,8 @@ struct FeedbackView: View {
 
             if let summary = feedback.summary, !summary.isEmpty {
                 Text(summary)
-                    .font(.subheadline)
+                    .font(.title3.weight(.semibold))
+                    .lineSpacing(4)
                     .foregroundStyle(.primary)
             }
         }
@@ -213,11 +214,12 @@ struct FeedbackView: View {
         } else {
             ScrollView {
                 Text(transcript ?? "")
-                    .font(.body)
+                    .font(.title3.weight(.semibold))
+                    .lineSpacing(5)
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)
-                    .padding()
+                    .padding(24)
             }
         }
     }

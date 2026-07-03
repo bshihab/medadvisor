@@ -35,7 +35,8 @@ struct ChatTranscriptView: View {
                         .padding(.horizontal, 6)
                 }
                 Text(turn.text)
-                    .font(.body)
+                    .font(.body.weight(.semibold))
+                    .lineSpacing(3)
                     .textSelection(.enabled)
                     .foregroundStyle(isLeft ? Color.primary : Color.white)
                     .padding(.horizontal, 14)

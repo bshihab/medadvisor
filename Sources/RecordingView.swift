@@ -118,6 +118,7 @@ struct RecordingView: View {
             Spacer(minLength: 0)
             LinearGradient(colors: [.green, .orange, .red],
                            startPoint: .leading, endPoint: .trailing)
+                .scaleEffect(x: 1.7, y: 1.4)   // push the blur's faded edges offscreen
                 .blur(radius: 60)
                 .opacity(0.38)
                 .mask(LinearGradient(colors: [.clear, .black],
