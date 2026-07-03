@@ -21,8 +21,10 @@ final class AudioRecorder: NSObject, ObservableObject {
     @Published var elapsed: TimeInterval = 0
     @Published var recordings: [URL] = []
     @Published var permissionDenied = false
-    /// Live on-screen transcript while recording (Apple engine only).
-    @Published var liveText: String = ""
+    /// Live transcript while recording (Apple engine only): finalized paragraphs
+    /// plus the in-progress (volatile) tail, styled separately Live Voicemail-style.
+    @Published var liveFinal: String = ""
+    @Published var liveVolatile: String = ""
     /// True when live transcription is active this session.
     @Published var liveActive = false
 
@@ -106,7 +108,8 @@ final class AudioRecorder: NSObject, ObservableObject {
             startedAt = Date()
             bankedElapsed = 0
             waveform = []
-            liveText = ""
+            liveFinal = ""
+            liveVolatile = ""
             finalizedText = ""
             isPaused = false
             isRecording = true
@@ -196,11 +199,16 @@ final class AudioRecorder: NSObject, ObservableObject {
                     for try await result in t.results {
                         guard let self else { return }
                         let piece = String(result.text.characters)
+                            .trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !piece.isEmpty else { continue }
                         if result.isFinal {
-                            self.finalizedText += piece + " "
-                            self.liveText = self.finalizedText
+                            // Each finalized chunk becomes its own paragraph,
+                            // like Live Voicemail's phrase blocks.
+                            self.finalizedText += (self.finalizedText.isEmpty ? "" : "\n\n") + piece
+                            self.liveFinal = self.finalizedText
+                            self.liveVolatile = ""
                         } else {
-                            self.liveText = self.finalizedText + piece
+                            self.liveVolatile = piece
                         }
                     }
                 } catch {

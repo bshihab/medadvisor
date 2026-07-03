@@ -110,20 +110,45 @@ struct RecordingView: View {
         }
     }
 
-    /// Live transcript shown while recording with the Apple engine.
+    /// Live transcript, Live Voicemail-style: big bold text floating on the
+    /// screen (no card), finalized phrases as paragraphs, the in-progress tail
+    /// dimmed, auto-scrolled so the newest words stay visible.
     private var liveTranscript: some View {
-        ScrollView {
-            Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
-                .font(.callout)
-                .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .textSelection(.enabled)
-                .animation(.default, value: recorder.liveText)
+        ScrollViewReader { proxy in
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    if recorder.liveFinal.isEmpty && recorder.liveVolatile.isEmpty {
+                        Text("Listening…")
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    } else {
+                        (Text(recorder.liveFinal)
+                         + Text(recorder.liveFinal.isEmpty || recorder.liveVolatile.isEmpty ? "" : "\n\n")
+                         + Text(recorder.liveVolatile).foregroundColor(.secondary))
+                            .font(.title3.weight(.semibold))
+                            .lineSpacing(5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    Color.clear.frame(height: 1).id("live-bottom")
+                }
+                .padding(.horizontal, 24)
+            }
+            .frame(maxHeight: 200)
+            .mask(
+                LinearGradient(stops: [.init(color: .clear, location: 0),
+                                       .init(color: .black, location: 0.12),
+                                       .init(color: .black, location: 1)],
+                               startPoint: .top, endPoint: .bottom)
+            )
+            .onChange(of: recorder.liveFinal) {
+                withAnimation(.easeOut(duration: 0.2)) {
+                    proxy.scrollTo("live-bottom", anchor: .bottom)
+                }
+            }
+            .onChange(of: recorder.liveVolatile) {
+                proxy.scrollTo("live-bottom", anchor: .bottom)
+            }
         }
-        .frame(maxHeight: 140)
-        .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-        .padding(.horizontal, 8)
     }
 
     /// Idle → big red record button (Voice Memos style).
