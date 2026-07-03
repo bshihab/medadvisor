@@ -84,6 +84,10 @@ struct RecordingView: View {
                 .font(.subheadline)
                 .foregroundStyle(recorder.isPaused ? Color.secondary : Color.red)
 
+            if recorder.liveActive {
+                liveTranscript
+            }
+
             recordingControls
         } else if let latest = recorder.recordings.first {
             finishedControls(url: latest)
@@ -104,6 +108,22 @@ struct RecordingView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    /// Live transcript shown while recording with the Apple engine.
+    private var liveTranscript: some View {
+        ScrollView {
+            Text(recorder.liveText.isEmpty ? "Listening…" : recorder.liveText)
+                .font(.callout)
+                .foregroundStyle(recorder.liveText.isEmpty ? .secondary : .primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .textSelection(.enabled)
+                .animation(.default, value: recorder.liveText)
+        }
+        .frame(maxHeight: 140)
+        .padding(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 8)
     }
 
     /// Idle → big red record button (Voice Memos style).

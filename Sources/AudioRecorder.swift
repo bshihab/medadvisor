@@ -1,9 +1,16 @@
 import AVFoundation
 import Foundation
+import Speech
 
-/// Records an encounter to a clean AAC `.m4a` using AVAudioRecorder — the
-/// standard, reliable way to capture audio (no audio-engine / Apple live-STT
-/// flakiness). WhisperKit transcribes the whole file afterward.
+/// Records an encounter via AVAudioEngine. One mic tap does two things:
+///  1. writes the audio to a file (the priority — feeds diarization + the
+///     accurate post-stop transcription), and
+///  2. when the Apple engine is selected, streams the audio to SpeechAnalyzer
+///     (iOS 26) for a LIVE on-screen transcript.
+///
+/// The live-transcription path is wrapped defensively: if any part of it fails,
+/// the recording still completes normally. (SpeechAnalyzer is the modern
+/// long-form streaming engine — not the old flaky SFSpeechRecognizer.)
 @MainActor
 final class AudioRecorder: NSObject, ObservableObject {
     @Published var isRecording = false
@@ -14,14 +21,27 @@ final class AudioRecorder: NSObject, ObservableObject {
     @Published var elapsed: TimeInterval = 0
     @Published var recordings: [URL] = []
     @Published var permissionDenied = false
+    /// Live on-screen transcript while recording (Apple engine only).
+    @Published var liveText: String = ""
+    /// True when live transcription is active this session.
+    @Published var liveActive = false
 
-    private var recorder: AVAudioRecorder?
-    private var meterTimer: Timer?
+    private let engine = AVAudioEngine()
+    private var file: AVAudioFile?
+    private var currentURL: URL?
     private var startedAt: Date?
-    /// Elapsed time banked across pauses (the current running span is added live).
     private var bankedElapsed: TimeInterval = 0
 
     private static let maxWaveformSamples = 120
+
+    // Live transcription (SpeechAnalyzer)
+    private var transcriber: SpeechTranscriber?
+    private var analyzer: SpeechAnalyzer?
+    private var inputBuilder: AsyncStream<AnalyzerInput>.Continuation?
+    private var analyzerFormat: AVAudioFormat?
+    private var converter: AVAudioConverter?
+    private var recognizerTask: Task<Void, Never>?
+    private var finalizedText = ""
 
     func requestPermission() {
         AVAudioApplication.requestRecordPermission { granted in
@@ -31,25 +51,18 @@ final class AudioRecorder: NSObject, ObservableObject {
 
     func toggle() { isRecording ? stop() : start() }
 
-    /// Pause without finishing the recording; audio resumes into the same file.
     func pause() {
         guard isRecording, !isPaused else { return }
-        recorder?.pause()
         if let startedAt { bankedElapsed += Date().timeIntervalSince(startedAt) }
         startedAt = nil
-        meterTimer?.invalidate()
-        meterTimer = nil
         level = 0
         isPaused = true
     }
 
-    /// Resume a paused recording.
     func resume() {
         guard isRecording, isPaused else { return }
-        recorder?.record()
         startedAt = Date()
         isPaused = false
-        startMetering()
     }
 
     func togglePause() { isPaused ? resume() : pause() }
@@ -60,42 +73,68 @@ final class AudioRecorder: NSObject, ObservableObject {
         recordings.removeAll { $0 == url }
     }
 
+    // MARK: - Start / stop
+
     private func start() {
-        let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(.record, mode: .default)
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
             try session.setActive(true)
 
+            let input = engine.inputNode
+            let format = input.outputFormat(forBus: 0)
+
+            // File to write (WAV/PCM — read reliably by WhisperKit/diarizer later).
             let url = Self.makeFileURL()
-            let settings: [String: Any] = [
-                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 44_100,
-                AVNumberOfChannelsKey: 1,
-                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-            ]
-            let r = try AVAudioRecorder(url: url, settings: settings)
-            r.isMeteringEnabled = true
-            r.record()
-            recorder = r
+            file = try AVAudioFile(forWriting: url, settings: format.settings)
+            currentURL = url
+
+            // Optional live transcription (Apple engine only). Best-effort.
+            let wantLive = (TranscriptionEngine.current == .apple)
+            if wantLive, #available(iOS 26.0, *) {
+                Task { await self.setupLiveTranscription() }
+            }
+
+            input.installTap(onBus: 0, bufferSize: 4096, format: format) { [weak self] buffer, _ in
+                guard let self else { return }
+                Task { @MainActor in self.handle(buffer) }
+            }
+
+            engine.prepare()
+            try engine.start()
+
             startedAt = Date()
             bankedElapsed = 0
             waveform = []
+            liveText = ""
+            finalizedText = ""
             isPaused = false
             isRecording = true
-            startMetering()
         } catch {
             print("Recording failed to start: \(error)")
         }
     }
 
     private func stop() {
-        recorder?.stop()
-        if let url = recorder?.url { recordings.insert(url, at: 0) }
-        recorder = nil
-        meterTimer?.invalidate()
-        meterTimer = nil
+        engine.inputNode.removeTap(onBus: 0)
+        engine.stop()
+
+        // Finish the file.
+        file = nil
+        if let url = currentURL { recordings.insert(url, at: 0) }
+        currentURL = nil
+
+        // Finish live transcription.
+        inputBuilder?.finish()
+        inputBuilder = nil
+        let analyzer = self.analyzer
+        Task { try? await analyzer?.finalizeAndFinishThroughEndOfInput() }
+        recognizerTask?.cancel(); recognizerTask = nil
+        transcriber = nil; self.analyzer = nil; converter = nil; analyzerFormat = nil
+
         isRecording = false
         isPaused = false
+        liveActive = false
         level = 0
         elapsed = 0
         startedAt = nil
@@ -104,32 +143,114 @@ final class AudioRecorder: NSObject, ObservableObject {
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 
-    private func startMetering() {
-        meterTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
-            Task { @MainActor in self?.updateMeter() }
-        }
-    }
+    // MARK: - Per-buffer handling (main actor)
 
-    private func updateMeter() {
-        guard let recorder else { return }
-        recorder.updateMeters()
-        let db = recorder.averagePower(forChannel: 0)
-        let normalized = max(0, min(1, pow(10, db / 20)))
-        level = normalized
+    private func handle(_ buffer: AVAudioPCMBuffer) {
+        guard isRecording, !isPaused else { return }
 
-        waveform.append(normalized)
+        // 1) Write to file (the priority).
+        try? file?.write(from: buffer)
+
+        // 2) Meter + waveform + elapsed.
+        level = Self.rms(buffer)
+        waveform.append(level)
         if waveform.count > Self.maxWaveformSamples {
             waveform.removeFirst(waveform.count - Self.maxWaveformSamples)
         }
-
         let running = startedAt.map { Date().timeIntervalSince($0) } ?? 0
         elapsed = bankedElapsed + running
+
+        // 3) Feed live transcription (best-effort).
+        if let inputBuilder, let analyzerFormat {
+            if let converted = Self.convert(buffer, to: analyzerFormat, using: &converter) {
+                inputBuilder.yield(AnalyzerInput(buffer: converted))
+            }
+        }
+    }
+
+    // MARK: - Live transcription setup
+
+    @available(iOS 26.0, *)
+    private func setupLiveTranscription() async {
+        do {
+            let t = SpeechTranscriber(locale: Locale.current,
+                                      transcriptionOptions: [],
+                                      reportingOptions: [.volatileResults],
+                                      attributeOptions: [])
+            if let req = try await AssetInventory.assetInstallationRequest(supporting: [t]) {
+                try await req.downloadAndInstall()
+            }
+            let a = SpeechAnalyzer(modules: [t])
+            let fmt = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [t])
+            let (stream, builder) = AsyncStream<AnalyzerInput>.makeStream()
+            try await a.start(inputSequence: stream)
+
+            self.transcriber = t
+            self.analyzer = a
+            self.analyzerFormat = fmt
+            self.inputBuilder = builder
+            self.liveActive = true
+
+            self.recognizerTask = Task { [weak self] in
+                do {
+                    for try await result in t.results {
+                        guard let self else { return }
+                        let piece = String(result.text.characters)
+                        if result.isFinal {
+                            self.finalizedText += piece + " "
+                            self.liveText = self.finalizedText
+                        } else {
+                            self.liveText = self.finalizedText + piece
+                        }
+                    }
+                } catch {
+                    // Live text is cosmetic — ignore failures, recording continues.
+                }
+            }
+        } catch {
+            // Setup failed → no live text, but recording is unaffected.
+            liveActive = false
+        }
+    }
+
+    // MARK: - Helpers
+
+    private static func rms(_ buffer: AVAudioPCMBuffer) -> Float {
+        guard let data = buffer.floatChannelData else { return 0 }
+        let n = Int(buffer.frameLength)
+        guard n > 0 else { return 0 }
+        var sum: Float = 0
+        for i in 0..<n { let s = data[0][i]; sum += s * s }
+        let rms = (sum / Float(n)).squareRoot()
+        return max(0, min(1, rms * 20))
+    }
+
+    /// Convert a mic buffer to the analyzer's format (cached converter).
+    private static func convert(_ buffer: AVAudioPCMBuffer,
+                                to format: AVAudioFormat,
+                                using converter: inout AVAudioConverter?) -> AVAudioPCMBuffer? {
+        if converter == nil || converter?.outputFormat != format {
+            converter = AVAudioConverter(from: buffer.format, to: format)
+        }
+        guard let converter else { return nil }
+        let ratio = format.sampleRate / buffer.format.sampleRate
+        let capacity = AVAudioFrameCount(Double(buffer.frameLength) * ratio) + 1024
+        guard let out = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: capacity) else { return nil }
+        var supplied = false
+        var err: NSError?
+        converter.convert(to: out, error: &err) { _, status in
+            if supplied { status.pointee = .noDataNow; return nil }
+            supplied = true
+            status.pointee = .haveData
+            return buffer
+        }
+        return err == nil ? out : nil
     }
 
     private static func makeFileURL() -> URL {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let stamp = ISO8601DateFormatter().string(from: Date())
             .replacingOccurrences(of: ":", with: "-")
-        return docs.appendingPathComponent("encounter-\(stamp).m4a")
+        return docs.appendingPathComponent("encounter-\(stamp).wav")
     }
 }
