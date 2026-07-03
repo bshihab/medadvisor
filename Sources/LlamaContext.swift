@@ -32,11 +32,13 @@ public final class LlamaContext: @unchecked Sendable {
         }
 
         var ctxParams = llama_context_default_params()
-        // 4096 is plenty for one criterion + a consultation transcript (~1-2k
-        // tokens) + the short output. Smaller than Localabs' 6144 to keep the
-        // KV cache memory down.
-        ctxParams.n_ctx = 4096
-        ctxParams.n_batch = 4096
+        // Qwen 7B is memory-heavy on-device, so keep the buffers lean:
+        // - n_ctx 3072 still holds one criterion + a consultation transcript
+        //   (~1.5-2k tokens) + the short output, but halves the KV cache vs 4096.
+        // - n_batch 512 (not 4096) shrinks the prompt-processing compute buffer
+        //   a lot; the prompt is just processed in a few chunks instead.
+        ctxParams.n_ctx = 3072
+        ctxParams.n_batch = 512
         ctxParams.n_threads = Int32(max(1, ProcessInfo.processInfo.processorCount - 1))
         ctxParams.n_threads_batch = ctxParams.n_threads
 
