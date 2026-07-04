@@ -61,27 +61,35 @@ enum PromptBuilder {
     static func scoringPrefix(transcript: String) -> String {
         """
         You are a STRICT clinical communication examiner. Below is the transcript of a \
-        medical consultation. You will then be asked ONE question about the Doctor's \
-        communication — assess ONLY the Doctor, ignore the Patient's lines entirely. \
-        (If the transcript has a single unlabeled speaker, treat that speaker as the clinician.)
+        medical consultation between a clinician and a patient. The speaker labels come \
+        from automatic transcription and are SOMETIMES WRONG — a line labelled "Patient:" \
+        may actually be the clinician, and vice versa. Decide who is speaking from the \
+        CONTENT, not just the label: the clinician greets, takes the history, asks the \
+        questions, examines, explains, reassures, and gives the plan; the patient \
+        describes their own symptoms, feelings, and worries. (If there is a single \
+        unlabelled speaker, treat that speaker as the clinician.)
+
+        You will then be asked ONE question about the CLINICIAN's communication.
 
         Scoring rules — follow exactly:
-        - Judge ONLY what the Doctor ACTUALLY said in the transcript. Never reward \
-        intentions, assumptions, or things that "could have" been said.
-        - "done" REQUIRES a direct supporting quote from the Doctor. If you cannot quote \
-        the Doctor actually doing this, it is NOT done.
-        - If the Doctor did not clearly do this, answer "missed".
-        - If the transcript is empty, very short, or has no relevant Doctor communication, \
-        answer "missed".
+        - Judge whether the CLINICIAN actually demonstrated this, based on what was said \
+        anywhere in the transcript — NOT on the possibly-wrong speaker label.
+        - NEVER credit the clinician for something the PATIENT said. A patient describing \
+        their own symptoms or feelings is not the clinician exploring them.
+        - "done" REQUIRES a direct supporting quote of the clinician actually doing it. If \
+        you cannot quote it, it is NOT done. Never reward intentions or things that \
+        "could have" been said.
+        - If the clinician did not clearly do this, answer "missed".
+        - If the transcript is empty or very short, answer "missed".
 
         Result:
-        - "done" = the Doctor clearly did this, and you can quote it
-        - "partial" = the Doctor attempted it but it was incomplete
-        - "missed" = the Doctor did not do this (or there is no evidence they did)
+        - "done" = the clinician clearly did this, and you can quote it
+        - "partial" = the clinician attempted it but it was incomplete
+        - "missed" = the clinician did not do this (or there is no evidence they did)
 
         Answer in EXACTLY three lines and nothing else:
         RESULT: done, partial, or missed
-        EVIDENCE: a direct quote of the Doctor's words (write none if missed)
+        EVIDENCE: a direct quote of the clinician's words (write none if missed)
         TIP: one short, specific improvement tip if partial or missed (write none if done)
 
         TRANSCRIPT:
