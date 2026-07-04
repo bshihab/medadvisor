@@ -96,33 +96,66 @@ struct FeedbackView: View {
         .background(Color(.systemGroupedBackground))
     }
 
-    /// Top card: big done/total, band pill, proportion bar, summary prose.
+    /// Top card: the per-dimension breakdown is the hero (a labelled meter per
+    /// phase). The overall band + done/total is kept, but small and secondary.
     private var scoreCard: some View {
         card {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text("\(overallMet)")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                    .foregroundStyle(bandColor)
-                Text("of \(overallTotal) done")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-                Spacer()
+            HStack(alignment: .firstTextBaseline) {
                 Text(bandLabel)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.title2.weight(.bold))
                     .foregroundStyle(bandColor)
-                    .padding(.horizontal, 12).padding(.vertical, 6)
-                    .background(bandColor.opacity(0.15), in: Capsule())
+                Spacer()
+                Text("\(overallMet)/\(overallTotal)")
+                    .font(.subheadline.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
             }
 
-            ScoreBar(met: overallMet, partial: overallPartial, missed: overallMissed)
-                .frame(height: 10)
+            VStack(spacing: 12) {
+                ForEach(orderedDimensions) { dimension in
+                    let results = resultsFor(dimension)
+                    if !results.isEmpty { dimensionMeter(dimension, results) }
+                }
+            }
+            .padding(.top, 2)
 
             if let summary = feedback.summary, !summary.isEmpty {
                 Text(summary)
-                    .font(.title3.weight(.semibold))
-                    .lineSpacing(4)
-                    .foregroundStyle(.primary)
+                    .font(.callout)
+                    .lineSpacing(3)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 2)
             }
+        }
+    }
+
+    /// One dimension's meter: label + met/applicable + a colored progress bar.
+    private func dimensionMeter(_ dimension: Dimension, _ results: [CriterionResult]) -> some View {
+        let applicable = results.filter { $0.status != .notApplicable }.count
+        let met = metCount(results)
+        let fraction = applicable == 0 ? 0 : Double(met) / Double(applicable)
+        let tint = applicable == 0 ? Color.gray : ScoreBand.color(fraction)
+        return VStack(alignment: .leading, spacing: 5) {
+            HStack(spacing: 6) {
+                Text(dimension.label)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.primary)
+                if goals.isPinned(dimension.id) {
+                    Image(systemName: "pin.fill").font(.caption2).foregroundStyle(.orange)
+                }
+                Spacer()
+                Text(applicable == 0 ? "N/A" : "\(met)/\(applicable)")
+                    .font(.caption.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(tint)
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.secondary.opacity(0.15))
+                    Capsule().fill(tint).frame(width: geo.size.width * CGFloat(fraction))
+                }
+            }
+            .frame(height: 6)
         }
     }
 

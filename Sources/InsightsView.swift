@@ -10,6 +10,16 @@ struct SessionPoint: Codable, Equatable, Identifiable {
     var metFraction: Double { total == 0 ? 0 : Double(met) / Double(total) }
 }
 
+/// Aggregate met-rate for one rubric dimension across the reviewed sessions,
+/// for the "by skill area" bar chart.
+struct DimensionScore: Codable, Equatable, Identifiable {
+    let id: String       // dimension id
+    let label: String
+    let met: Int
+    let total: Int
+    var fraction: Double { total == 0 ? 0 : Double(met) / Double(total) }
+}
+
 /// A generated insight report over a date range. Persisted so it survives
 /// relaunches and can be regenerated.
 struct Insights: Codable, Equatable {
@@ -22,6 +32,7 @@ struct Insights: Codable, Equatable {
     let toDate: Date
     let trend: [SessionPoint]    // chronological (oldest first)
     let improvementPoints: Double?   // change in met% first-half → second-half
+    let dimensionScores: [DimensionScore]?   // per-skill-area aggregate (optional/back-compat)
 }
 
 /// Persists the single most-recent insight (encrypted at rest).
@@ -90,6 +101,28 @@ final class InsightsEngine: ObservableObject {
             }
         }
 
+        // Per-dimension aggregate across all reviewed sessions (N/A excluded),
+        // in each rubric's dimension order.
+        var dimAgg: [String: (label: String, met: Int, total: Int)] = [:]
+        var dimOrder: [String] = []
+        for record in records {
+            guard let rubric = RubricLoader.load(for: record.location ?? .outpatientClinic) else { continue }
+            if dimOrder.isEmpty { dimOrder = rubric.dimensions.map(\.id) }
+            let dimOf = Dictionary(rubric.criteria.map { ($0.id, $0.dimension) }, uniquingKeysWith: { a, _ in a })
+            let labelOf = Dictionary(rubric.dimensions.map { ($0.id, $0.label) }, uniquingKeysWith: { a, _ in a })
+            for criterion in record.feedback.perCriterion where criterion.status != .notApplicable {
+                guard let dimId = dimOf[criterion.criterionId] else { continue }
+                var entry = dimAgg[dimId] ?? (labelOf[dimId] ?? dimId, 0, 0)
+                entry.total += 1
+                if criterion.status == .met { entry.met += 1 }
+                dimAgg[dimId] = entry
+            }
+        }
+        let dimensionScores: [DimensionScore] = dimOrder.compactMap { id in
+            guard let e = dimAgg[id] else { return nil }
+            return DimensionScore(id: id, label: e.label, met: e.met, total: e.total)
+        }
+
         let improvement = Self.improvementPoints(trend)
         let prompt = """
         You are a supportive clinical communication coach. A doctor completed \(records.count) \
@@ -115,7 +148,8 @@ final class InsightsEngine: ObservableObject {
                                     generatedAt: Date(),
                                     fromDate: from, toDate: to,
                                     trend: trend,
-                                    improvementPoints: improvement)
+                                    improvementPoints: improvement,
+                                    dimensionScores: dimensionScores)
             latest = insights
             InsightStore.shared.save(insights)
         } catch {
@@ -219,6 +253,17 @@ struct InsightsView: View {
             trendChart(insights.trend)
         }
 
+        // By skill area — per-dimension bars
+        if let dims = insights.dimensionScores, !dims.isEmpty {
+            card {
+                Text("By skill area")
+                    .font(.subheadline.weight(.bold))
+                Text("Average done-rate across these sessions")
+                    .font(.caption).foregroundStyle(.secondary)
+                dimensionChart(dims)
+            }
+        }
+
         // Narrative
         card {
             Text("Coach's summary").font(.subheadline.weight(.bold))
@@ -253,6 +298,27 @@ struct InsightsView: View {
         }
         .chartYScale(domain: 0...100)
         .frame(height: 180)
+    }
+
+    /// Horizontal bars, one per rubric dimension, colored by score band.
+    private func dimensionChart(_ dims: [DimensionScore]) -> some View {
+        Chart(dims) { dim in
+            BarMark(
+                x: .value("Done %", dim.fraction * 100),
+                y: .value("Skill area", dim.label)
+            )
+            .foregroundStyle(ScoreBand.color(dim.fraction))
+            .cornerRadius(4)
+            .annotation(position: .trailing, alignment: .leading) {
+                Text("\(dim.met)/\(dim.total)")
+                    .font(.caption2.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .chartXScale(domain: 0...100)
+        .chartXAxis { AxisMarks(values: [0, 50, 100]) }
+        .frame(height: CGFloat(dims.count) * 38 + 20)
     }
 
     private func metric(_ value: String, _ label: String) -> some View {
