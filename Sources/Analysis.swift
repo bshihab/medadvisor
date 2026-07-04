@@ -96,18 +96,27 @@ enum PromptBuilder {
         if let req = c.requiredElements, !req.isEmpty {
             extras += "Must address: \(req.joined(separator: "; "))\n"
         }
-        // Criteria that only apply in some encounters (e.g. explaining a physical
-        // exam) may be answered "n/a" so an absent exam isn't scored as a failure.
-        if c.responseType == "not_applicable_allowed" {
-            extras += "If this did not occur at all in the consultation (e.g. no physical " +
-                      "examination took place), answer RESULT: n/a (evidence none, tip none).\n"
-        }
         return """
 
 
         QUESTION: \(c.prompt)
         \(extras)
         Answer now in the exact three-line format.
+        """
+    }
+
+    /// Yes/no gate for criteria that only apply in some encounters (N/A-allowed).
+    /// Reuses the cached transcript prefix. A "no" → the criterion is N/A and is
+    /// not scored (so e.g. an absent physical exam isn't marked as a failure).
+    static func applicabilityGateSuffix(criterion c: Criterion) -> String {
+        """
+
+
+        The next question only applies in SOME consultations: "\(c.prompt)"
+        Ignore whether it was done well. First: did the situation it asks about \
+        (for example, an actual physical examination) genuinely take place in this \
+        consultation's transcript?
+        Answer with ONLY one word: yes or no.
         """
     }
 

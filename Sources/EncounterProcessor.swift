@@ -118,6 +118,24 @@ final class EncounterProcessor: ObservableObject {
             for (index, criterion) in rubric.criteria.enumerated() {
                 stage = .scoring(done: index, total: total)
                 let t0 = Date()
+
+                // N/A gate: criteria that only apply in some encounters (e.g. the
+                // physical-exam one) get a cheap yes/no check first — a "no" marks
+                // them Not Applicable (gray) instead of scoring them as a miss.
+                if criterion.responseType == "not_applicable_allowed" {
+                    let gate = (try? await LLMEngine.shared.generate(
+                        sharedPrefix: sharedPrefix,
+                        suffix: PromptBuilder.applicabilityGateSuffix(criterion: criterion),
+                        maxTokens: 6)) ?? ""
+                    if gate.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("no") {
+                        let na = CriterionResult(criterionId: criterion.id, status: .notApplicable,
+                                                 evidence: nil, comment: nil)
+                        results.append(na); liveResults.append(na)
+                        print(String(format: "[Scoring] %@ N/A (%.1fs)", criterion.id, Date().timeIntervalSince(t0)))
+                        continue
+                    }
+                }
+
                 let raw = try await LLMEngine.shared.generate(
                     sharedPrefix: sharedPrefix,
                     suffix: PromptBuilder.criterionSuffix(criterion: criterion),

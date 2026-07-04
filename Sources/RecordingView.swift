@@ -59,7 +59,11 @@ struct RecordingView: View {
             recorder.requestPermission()
             processor.requestPermissions()
         }
-        .sheet(isPresented: $showFeedback) {
+        .sheet(isPresented: $showFeedback, onDismiss: {
+            // Back to a fresh record screen (the record button), not stuck on
+            // the finished "View feedback" state.
+            processor.reset()
+        }) {
             if case .done(let feedback) = processor.stage, let rubric {
                 FeedbackView(feedback: feedback, rubric: rubric,
                              transcript: processor.redactedTranscript,
