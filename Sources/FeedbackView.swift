@@ -34,9 +34,6 @@ struct FeedbackView: View {
                 case .transcript: transcriptView
                 }
             }
-            // One ombre behind everything so the content softly blurs under the
-            // nav bar (no hard seam under the title) and both tabs share a look.
-            .ambientGradient([.teal, .blue, .indigo])
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -96,6 +93,7 @@ struct FeedbackView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
     }
 
     /// Top card: the per-dimension breakdown is the hero (a labelled meter per

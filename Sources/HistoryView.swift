@@ -21,7 +21,6 @@ struct HistoryView: View {
             }
         }
         .navigationTitle("History")
-        .ambientGradient([.indigo, .purple, .pink])
         .toolbar { toolbarContent }
         .sheet(item: $selected) { record in
             if let location = record.location, let rubric = RubricLoader.load(for: location) {
@@ -53,6 +52,7 @@ struct HistoryView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+        .background(Color(.systemGroupedBackground))
     }
 
     private func row(_ record: ConsultationRecord) -> some View {
@@ -151,11 +151,6 @@ struct HistoryView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground),
-                    in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(Color.primary.opacity(0.14), lineWidth: 1)
-        )
+        .glassSurface(in: RoundedRectangle(cornerRadius: 16))
     }
 }

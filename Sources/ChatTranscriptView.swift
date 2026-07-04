@@ -26,6 +26,7 @@ struct ChatTranscriptView: View {
             }
             .padding(20)
         }
+        .background(Color(.systemGroupedBackground))
     }
 
     /// Distinct color per speaker so the left gutter reads at a glance.
