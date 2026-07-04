@@ -34,9 +34,10 @@ struct RecordHome: View {
         NavigationStack {
             RecordingView(location: location,
                           onTapLocation: { showLocationPicker = true })
-                // Rebuild cleanly if the location changes (only possible while
-                // idle, since the chip is hidden during recording).
-                .id(location)
+                // Note: no .id(location) here — it forced a full rebuild that made
+                // the picker sheet vanish instead of animating away. The rubric is
+                // derived from `location` live, and recorder/processor don't depend
+                // on it, so a plain value change is enough.
                 .settingsGear()
                 .sheet(isPresented: $showLocationPicker) {
                     LocationPickerSheet(selectedRaw: $locationRaw)

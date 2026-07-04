@@ -180,7 +180,7 @@ struct InsightsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 if engine.isGenerating {
-                    GeneratingPulse(title: "Reviewing your consultations…")
+                    GeneratingInsights(title: "Reviewing your consultations…")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 48)
                 } else if let insights = engine.latest {

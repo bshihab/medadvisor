@@ -15,11 +15,9 @@ import Speech
 final class AudioRecorder: NSObject, ObservableObject {
     @Published var isRecording = false
     @Published var isPaused = false
-    /// Stopped for review: the "Transcribe & analyze" screen is showing but the
-    /// recording is only PAUSED under the hood (engine kept alive), so the timer
-    /// stays frozen at the recorded length and the user can resume. Only
-    /// finishReview()/discardReview() actually finalize the file.
-    @Published var isFinished = false
+    /// The length of the just-finished recording, so the analyze screen can show
+    /// how long it was even though `elapsed` resets to 0 on stop.
+    @Published var lastDuration: TimeInterval = 0
     @Published var level: Float = 0
     /// Rolling buffer of recent levels for the scrolling waveform (newest last).
     @Published var waveform: [Float] = []
@@ -95,36 +93,6 @@ final class AudioRecorder: NSObject, ObservableObject {
 
     func togglePause() { isPaused ? resume() : pause() }
 
-    // MARK: - Stop-for-review (resumable)
-
-    /// The red Stop button: pause under the hood and show the review/analyze
-    /// screen. The engine stays alive so the user can resume if they meant to
-    /// pause, and the timer stays frozen at the recorded length.
-    func stopForReview() {
-        guard isRecording, !isFinished else { return }
-        pause()
-        isFinished = true
-    }
-
-    /// The "back" button on the review screen: continue recording.
-    func resumeFromReview() {
-        guard isFinished else { return }
-        isFinished = false
-        resume()
-    }
-
-    /// Finalize the reviewed recording for analysis; returns the saved file URL.
-    func finishReview() -> URL? {
-        stop()
-        return recordings.first
-    }
-
-    /// Discard the reviewed recording (Record again).
-    func discardReview() {
-        stop()
-        if let url = recordings.first { deleteRecording(url) }
-    }
-
     /// Deletes a recorded file (called after analysis — no raw audio kept).
     func deleteRecording(_ url: URL) {
         try? FileManager.default.removeItem(at: url)
@@ -179,7 +147,6 @@ final class AudioRecorder: NSObject, ObservableObject {
             liveLines = []
             finalizedText = ""
             isPaused = false
-            isFinished = false
             isRecording = true
         } catch {
             print("Recording failed to start: \(error)")
@@ -207,9 +174,9 @@ final class AudioRecorder: NSObject, ObservableObject {
 
         isRecording = false
         isPaused = false
-        isFinished = false
         liveActive = false
         level = 0
+        lastDuration = elapsed   // remember the length for the analyze screen
         elapsed = 0
         startedAt = nil
         bankedElapsed = 0

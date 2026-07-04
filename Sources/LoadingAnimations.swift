@@ -1,76 +1,81 @@
 import SwiftUI
 
-/// Pulsing waveform bars — used while the recording is being transcribed /
-/// speakers identified / redacted (before the rubric's check-mark animation).
-/// The bars undulate in a travelling wave, tinted with the grade palette.
+/// Apple-style audio activity bars — uniform accent-colored bars that pulse
+/// symmetrically, like the system voice/audio indicator (no rainbow). Shown
+/// while transcribing / identifying speakers / redacting. Uses repeatForever
+/// animations (driven by the render server, off the main thread) so it stays
+/// smooth even while the speech model is doing heavy work.
 struct ProcessingWave: View {
-    var colors: [Color] = [.green, .orange, .red]
+    var tint: Color = .accentColor
     var title: String
     private let bars = 5
+    @State private var animate = false
 
     var body: some View {
         VStack(spacing: 22) {
-            TimelineView(.animation) { timeline in
-                let t = timeline.date.timeIntervalSinceReferenceDate
-                HStack(spacing: 7) {
-                    ForEach(0..<bars, id: \.self) { i in
-                        Capsule()
-                            .fill(LinearGradient(colors: colors,
-                                                 startPoint: .top, endPoint: .bottom))
-                            .frame(width: 9, height: barHeight(i, t))
-                    }
+            HStack(spacing: 6) {
+                ForEach(0..<bars, id: \.self) { i in
+                    Capsule()
+                        .fill(tint)
+                        .frame(width: 6, height: 26)
+                        .scaleEffect(y: animate ? 1.0 : 0.28, anchor: .center)
+                        .animation(.easeInOut(duration: 0.5)
+                            .repeatForever(autoreverses: true)
+                            .delay(Double(i) * 0.13), value: animate)
                 }
-                .frame(height: 64, alignment: .center)
             }
+            .frame(height: 56)
             Text(title)
                 .font(.callout.weight(.medium))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .contentTransition(.opacity)
-                .animation(.easeInOut, value: title)
         }
-    }
-
-    private func barHeight(_ i: Int, _ t: Double) -> CGFloat {
-        let phase = t * 3.2 + Double(i) * 0.6
-        return CGFloat(16 + 30 * (0.5 + 0.5 * sin(phase)))
+        .onAppear { animate = true }
     }
 }
 
-/// Rotating gradient ring with a breathing sparkle core — used while Insights
-/// is being generated. Deliberately different from ProcessingWave; tinted with
-/// the Insights palette.
-struct GeneratingPulse: View {
-    var colors: [Color] = [.teal, .blue, .indigo]
+/// "Insights forming" — a little bar chart whose bars grow/settle and a couple
+/// of skeleton table rows, so it reads like a graph + table being built rather
+/// than a generic spinner. repeatForever → smooth and off the main thread.
+struct GeneratingInsights: View {
+    var tint: Color = .accentColor
     var title: String
+    @State private var grow = false
+    private let heights: [CGFloat] = [0.5, 0.85, 0.35, 0.7, 0.95]
 
     var body: some View {
-        VStack(spacing: 22) {
-            TimelineView(.animation) { timeline in
-                let t = timeline.date.timeIntervalSinceReferenceDate
-                let rotation = Angle.degrees((t * 110).truncatingRemainder(dividingBy: 360))
-                let pulse = CGFloat(0.82 + 0.18 * sin(t * 2.2))
-                ZStack {
-                    Circle()
-                        .trim(from: 0, to: 0.72)
-                        .stroke(
-                            AngularGradient(colors: colors + [colors.first ?? .blue],
-                                            center: .center),
-                            style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                        .frame(width: 56, height: 56)
-                        .rotationEffect(rotation)
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 22))
-                        .foregroundStyle(LinearGradient(colors: colors,
-                                                        startPoint: .top, endPoint: .bottom))
-                        .scaleEffect(pulse)
+        VStack(spacing: 18) {
+            // Forming bar chart.
+            HStack(alignment: .bottom, spacing: 8) {
+                ForEach(0..<heights.count, id: \.self) { i in
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(tint.opacity(0.85))
+                        .frame(width: 16, height: 58 * (grow ? heights[i] : 0.08))
+                        .animation(.easeInOut(duration: 0.7)
+                            .repeatForever(autoreverses: true)
+                            .delay(Double(i) * 0.1), value: grow)
                 }
-                .frame(height: 64)
             }
+            .frame(height: 58, alignment: .bottom)
+
+            // Forming table rows (skeleton).
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(0..<3, id: \.self) { i in
+                    Capsule()
+                        .fill(Color.secondary.opacity(grow ? 0.28 : 0.08))
+                        .frame(width: 170 - CGFloat(i) * 30, height: 8)
+                        .animation(.easeInOut(duration: 0.9)
+                            .repeatForever(autoreverses: true)
+                            .delay(Double(i) * 0.15), value: grow)
+                }
+            }
+
             Text(title)
                 .font(.callout.weight(.medium))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .padding(.top, 4)
         }
+        .onAppear { grow = true }
     }
 }

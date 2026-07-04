@@ -33,8 +33,8 @@ struct RecordingView: View {
         case .done: return "done"
         case .error: return "error"
         default:
-            if recorder.isFinished { return "finished" }
             if recorder.isRecording { return "recording" }
+            if recorder.recordings.first != nil { return "finished" }
             return "idle"
         }
     }
@@ -86,7 +86,7 @@ struct RecordingView: View {
 
     @ViewBuilder
     private var recordingSection: some View {
-        Text(timeString(recorder.elapsed))
+        Text(timeString(shownTime))
             .font(.system(size: 56, weight: .light, design: .rounded))
             .monospacedDigit()
             .foregroundStyle(recorder.isRecording ? .primary : .secondary)
@@ -288,13 +288,20 @@ struct RecordingView: View {
         .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
-    /// True while the review/analyze screen (or the finished feedback) should
-    /// show instead of the recording controls.
+    /// True while the analyze screen (or the finished feedback) should show
+    /// instead of the recording controls.
     private var reviewPhase: Bool {
-        if recorder.isFinished { return true }
         if case .done = processor.stage { return true }
         if case .error = processor.stage { return true }
-        return false
+        return !recorder.isRecording && recorder.recordings.first != nil
+    }
+
+    /// The timer value to show: live while recording, the recorded length once
+    /// stopped, 00:00 when idle.
+    private var shownTime: TimeInterval {
+        if recorder.isRecording { return recorder.elapsed }
+        if reviewPhase { return recorder.lastDuration }
+        return 0
     }
 
     /// Stopped for review, ready to analyze (or done/errored).
@@ -311,7 +318,7 @@ struct RecordingView: View {
                 Button("Try again") { processor.reset() }
                     .glassButton()
             default:
-                // Review the transcript captured so far before committing.
+                // Preview the transcript captured so far before committing.
                 if !recorder.liveLines.isEmpty { reviewTranscript }
 
                 if !ModelDownloader.shared.isDownloaded {
@@ -319,7 +326,7 @@ struct RecordingView: View {
                 }
                 // Primary action — big, full-width, hard to miss.
                 Button {
-                    if let url = recorder.finishReview() { runProcessing(url: url) }
+                    if let url = recorder.recordings.first { runProcessing(url: url) }
                 } label: {
                     Label("Transcribe & analyze", systemImage: "sparkles")
                         .font(.title3.weight(.semibold))
@@ -330,18 +337,10 @@ struct RecordingView: View {
                 .controlSize(.large)
                 .disabled(rubric == nil)
 
-                // Secondary actions — go back (if Stop was a mis-tap) or discard.
-                HStack(spacing: 20) {
-                    Button {
-                        recorder.resumeFromReview()
-                    } label: {
-                        Label("Back to recording", systemImage: "chevron.backward")
-                    }
-                    Spacer()
-                    Button("Record again") {
-                        recorder.discardReview()
-                        processor.reset()
-                    }
+                // Secondary action — discard and start over.
+                Button("Record again") {
+                    if let url = recorder.recordings.first { recorder.deleteRecording(url) }
+                    processor.reset()
                 }
                 .font(.callout.weight(.medium))
                 .buttonStyle(.plain)
@@ -475,10 +474,9 @@ struct RecordingView: View {
         recorder.toggle()
     }
 
-    /// The red Stop button: pause for review (resumable) and show the analyze
-    /// screen. The recording is only finalized when the user taps Analyze.
+    /// The red Stop button: stop and finalize the recording (ready to analyze).
     private func finishRecording() {
-        recorder.stopForReview()
+        recorder.toggle()
     }
 
     private func timeString(_ t: TimeInterval) -> String {
