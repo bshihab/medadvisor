@@ -79,8 +79,8 @@ enum PromptBuilder {
 
         Answer in EXACTLY three lines and nothing else:
         RESULT: done, partial, or missed
-        EVIDENCE: a direct quote of the Doctor's words, or the word none
-        TIP: one short, specific improvement tip
+        EVIDENCE: a direct quote of the Doctor's words (write none if missed)
+        TIP: one short, specific improvement tip if partial or missed (write none if done)
 
         TRANSCRIPT:
         \(transcript)
@@ -176,6 +176,9 @@ enum FeedbackParser {
         if var e = evidence {
             e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
             evidence = (e.isEmpty || e.lowercased() == "none") ? nil : e
+        }
+        if let c = comment, c.lowercased() == "none" || c.isEmpty {
+            comment = nil
         }
 
         // Guardrail against over-scoring: a "met" MUST be backed by a quote that

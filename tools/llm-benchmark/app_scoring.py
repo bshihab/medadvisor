@@ -28,8 +28,8 @@ Result:
 
 Answer in EXACTLY three lines and nothing else:
 RESULT: done, partial, or missed
-EVIDENCE: a direct quote of the Doctor's words, or the word none
-TIP: one short, specific improvement tip
+EVIDENCE: a direct quote of the Doctor's words (write none if missed)
+TIP: one short, specific improvement tip if partial or missed (write none if done)
 
 TRANSCRIPT:
 {transcript}"""

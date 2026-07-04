@@ -132,10 +132,14 @@ final class EncounterProcessor: ObservableObject {
             let sharedPrefix = PromptBuilder.scoringPrefix(transcript: redactedTranscript)
             for (index, criterion) in rubric.criteria.enumerated() {
                 stage = .scoring(done: index, total: total)
+                let t0 = Date()
                 let raw = try await LLMEngine.shared.generate(
                     sharedPrefix: sharedPrefix,
                     suffix: PromptBuilder.criterionSuffix(criterion: criterion),
                     maxTokens: 180)
+                // Timing: criterion 0 pays the transcript prefill; 1+ should be
+                // decode-only if prefix caching is working.
+                print(String(format: "[Scoring] %@ took %.1fs", criterion.id, Date().timeIntervalSince(t0)))
                 let result = FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id,
                                                            transcript: redactedTranscript)
                 results.append(result)
