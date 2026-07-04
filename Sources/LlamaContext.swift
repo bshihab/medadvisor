@@ -71,15 +71,31 @@ public final class LlamaContext: @unchecked Sendable {
 
     private var currentPredictTask: Task<Void, Never>?
 
+    // Prefix caching: the shared examiner-instructions + transcript prefix is
+    // decoded ONCE and its KV state kept; each per-criterion call then rewinds
+    // to the end of the prefix and processes only the short question suffix.
+    // Re-prefilling the identical transcript 16x dominated scoring time.
+    private var cachedPrefix: String?
+    private var cachedPrefixTokenCount: Int32 = 0
+
     /// Streams generated token pieces. Concatenate them for the full response.
     public func predict(prompt: String, maxTokens: Int = 512) -> AsyncStream<String> {
+        enqueue { self.runPredict(prompt: prompt, maxTokens: maxTokens, onToken: $0) }
+    }
+
+    /// Streams a completion for `prefix + suffix`, reusing the prefix's KV state
+    /// across calls when `prefix` is unchanged (identical tokens → identical
+    /// output distribution; only the redundant prompt processing is skipped).
+    public func predict(prefix: String, suffix: String, maxTokens: Int = 512) -> AsyncStream<String> {
+        enqueue { self.runPredictCached(prefix: prefix, suffix: suffix, maxTokens: maxTokens, onToken: $0) }
+    }
+
+    private func enqueue(_ body: @escaping (@escaping (String) -> Void) -> Void) -> AsyncStream<String> {
         let prior = currentPredictTask
         return AsyncStream { continuation in
-            let task = Task.detached(priority: .userInitiated) { [self] in
+            let task = Task.detached(priority: .userInitiated) {
                 if let prior { _ = await prior.value }
-                self.runPredict(prompt: prompt, maxTokens: maxTokens) { piece in
-                    continuation.yield(piece)
-                }
+                body { continuation.yield($0) }
                 continuation.finish()
             }
             self.currentPredictTask = task
@@ -88,27 +104,59 @@ public final class LlamaContext: @unchecked Sendable {
     }
 
     private func runPredict(prompt: String, maxTokens: Int, onToken: (String) -> Void) {
-        // Each call independent — clear residual KV + sampler state.
+        // Independent call — clear residual KV (invalidates any cached prefix).
         llama_memory_clear(llama_get_memory(context), true)
+        cachedPrefix = nil
+        cachedPrefixTokenCount = 0
         llama_sampler_reset(sampler)
 
-        let promptCStr = Array(prompt.utf8CString)
-        let nCtx = Int32(llama_n_ctx(context))
-        var promptTokens = [llama_token](repeating: 0, count: Int(nCtx))
-        let nPromptTokens = llama_tokenize(
-            vocab, promptCStr, Int32(promptCStr.count - 1),
-            &promptTokens, nCtx,
-            true,  // add_bos
-            true   // parse_special — required for Gemma <start_of_turn> markers
-        )
-        guard nPromptTokens > 0 else {
-            print("[LlamaContext] Tokenize failed (\(nPromptTokens), n_ctx=\(nCtx)) — prompt likely too long.")
-            return
+        guard decode(text: prompt, addBOS: true) != nil else { return }
+        generateLoop(maxTokens: maxTokens, onToken: onToken)
+    }
+
+    private func runPredictCached(prefix: String, suffix: String, maxTokens: Int, onToken: (String) -> Void) {
+        llama_sampler_reset(sampler)
+        let memory = llama_get_memory(context)
+
+        if cachedPrefix == prefix, cachedPrefixTokenCount > 0 {
+            // Rewind to the end of the prefix: drop the previous call's suffix
+            // + generated tokens, keep the expensive transcript state.
+            llama_memory_seq_rm(memory, 0, cachedPrefixTokenCount, -1)
+        } else {
+            llama_memory_clear(memory, true)
+            cachedPrefix = nil
+            cachedPrefixTokenCount = 0
+            guard let n = decode(text: prefix, addBOS: true) else { return }
+            cachedPrefix = prefix
+            cachedPrefixTokenCount = n
         }
 
-        var promptBatch = llama_batch_get_one(&promptTokens, nPromptTokens)
-        guard llama_decode(context, promptBatch) == 0 else { return }
+        guard decode(text: suffix, addBOS: false) != nil else { return }
+        generateLoop(maxTokens: maxTokens, onToken: onToken)
+    }
 
+    /// Tokenizes and decodes `text`, continuing from the current KV state.
+    /// Returns the token count, or nil on failure.
+    private func decode(text: String, addBOS: Bool) -> Int32? {
+        let cstr = Array(text.utf8CString)
+        let nCtx = Int32(llama_n_ctx(context))
+        var tokens = [llama_token](repeating: 0, count: Int(nCtx))
+        let n = llama_tokenize(
+            vocab, cstr, Int32(cstr.count - 1),
+            &tokens, nCtx,
+            addBOS,
+            true   // parse_special — required for chat-template markers
+        )
+        guard n > 0 else {
+            print("[LlamaContext] Tokenize failed (\(n), n_ctx=\(nCtx)) — text likely too long.")
+            return nil
+        }
+        var batch = llama_batch_get_one(&tokens, n)
+        guard llama_decode(context, batch) == 0 else { return nil }
+        return n
+    }
+
+    private func generateLoop(maxTokens: Int, onToken: (String) -> Void) {
         var generated = 0
         while generated < maxTokens {
             if Task.isCancelled { return }

@@ -122,14 +122,19 @@ final class EncounterProcessor: ObservableObject {
             }
 
             // 6) Score each criterion against the doctor's communication.
+            //    The shared prefix (instructions + transcript) is prefilled once
+            //    and its KV state reused for all 16 criteria (prefix caching) —
+            //    each call only processes the short question suffix.
             //    Publish each result as it lands so the UI fills in live.
             liveResults = []
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
+            let sharedPrefix = PromptBuilder.scoringPrefix(transcript: redactedTranscript)
             for (index, criterion) in rubric.criteria.enumerated() {
                 stage = .scoring(done: index, total: total)
                 let raw = try await LLMEngine.shared.generate(
-                    prompt: PromptBuilder.criterionPrompt(criterion: criterion, transcript: redactedTranscript),
+                    sharedPrefix: sharedPrefix,
+                    suffix: PromptBuilder.criterionSuffix(criterion: criterion),
                     maxTokens: 180)
                 let result = FeedbackParser.parseCriterion(raw: raw, criterionId: criterion.id,
                                                            transcript: redactedTranscript)

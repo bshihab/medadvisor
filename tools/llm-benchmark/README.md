@@ -95,6 +95,38 @@ recall(met):   95.3%   (122/128 MET criteria correctly marked met)   ← higher 
 **Decision:** app LLM switched **MedGemma 4B → Qwen 2.5-7B-Instruct**. Follow-ups:
 few-shot exemplars + the director's gold-score calibration (the true validation).
 
+## Experiment: RAG scoring hypothesis (2026-07-03) — rejected by the data
+
+**Hypothesis (Bilal):** instead of feeding the LLM the whole transcript 16×
+(once per criterion), embed the transcript's turns once, retrieve the top-k
+most relevant turns per criterion, and score against only those excerpts —
+cutting per-call tokens (→ on-device time + heat for 15-minute visits).
+
+**Test:** `bench_rag.py` — same cases, same model (Qwen 2.5-7B), same metrics;
+`--mode full` vs `--mode rag` (MiniLM embeddings, top-6 turns).
+
+**Result (realistic set, verbatim):**
+```
+========== FULL / realistic ==========        ========== RAG / realistic ==========
+accuracy:      95.8%   (46/48)                accuracy:      79.2%   (38/48)
+over-score:     3.3%   (1/30)                 over-score:     0.0%   (0/30)
+recall(met):   94.4%   (17/18)                recall(met):   44.4%   (8/18)
+avg prompt:      585 tokens/call              avg prompt:      406 tokens/call
+avg latency:     2.3 s/call                   avg latency:     1.8 s/call
+```
+
+**Verdict:** retrieval misses the evidence turns often enough that the model —
+correctly following its "no quote, no credit" rule — marks genuinely-done
+behaviors as missed: **recall halved (94% → 44%)** for only a **31% token
+saving**. Content criteria (accurate_info, explore_complaint, safety_net)
+degraded most; structural ones (set_tone, what_else) held. A "you didn't do X"
+verdict on something the doctor did is a trust-killer, so pure RAG scoring is
+out. **Chosen fix instead: KV prefix caching** — process the shared
+instructions+transcript once and reuse the model state across all 16 criteria;
+identical tokens → identical accuracy, with the prefill cost paid once instead
+of 16×. (RAG could be revisited as a hybrid — retrieval first, full-transcript
+re-check for "missed" verdicts — if prefix caching ever proves insufficient.)
+
 ## Setup (light — no torch/whisper)
 
 ```bash

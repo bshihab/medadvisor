@@ -53,19 +53,16 @@ struct ConsultationFeedback: Equatable, Codable {
 /// Prompts. We score ONE criterion per call — small on-device models are far
 /// more reliable answering a single narrow question than filling a big schema.
 enum PromptBuilder {
-    static func criterionPrompt(criterion c: Criterion, transcript: String) -> String {
-        var extras = ""
-        if let good = c.whatGoodLooksLike { extras += "Good looks like: \(good)\n" }
-        if let req = c.requiredElements, !req.isEmpty {
-            extras += "Must address: \(req.joined(separator: "; "))\n"
-        }
-        return """
-        You are a STRICT clinical communication examiner. In the transcript below, assess ONLY \
-        the Doctor's communication — ignore the Patient's lines entirely. (If the \
-        transcript has a single unlabeled speaker, treat that speaker as the clinician.)
+    /// Shared scoring prefix — identical for all 16 criteria, so the LLM's KV
+    /// state for it (including the expensive transcript) is computed once and
+    /// reused via prefix caching. The per-criterion QUESTION goes in the suffix.
+    static func scoringPrefix(transcript: String) -> String {
+        """
+        You are a STRICT clinical communication examiner. Below is the transcript of a \
+        medical consultation. You will then be asked ONE question about the Doctor's \
+        communication — assess ONLY the Doctor, ignore the Patient's lines entirely. \
+        (If the transcript has a single unlabeled speaker, treat that speaker as the clinician.)
 
-        QUESTION: \(c.prompt)
-        \(extras)
         Scoring rules — follow exactly:
         - Judge ONLY what the Doctor ACTUALLY said in the transcript. Never reward \
         intentions, assumptions, or things that "could have" been said.
@@ -87,6 +84,22 @@ enum PromptBuilder {
 
         TRANSCRIPT:
         \(transcript)
+        """
+    }
+
+    /// Short per-criterion suffix appended after the cached prefix.
+    static func criterionSuffix(criterion c: Criterion) -> String {
+        var extras = ""
+        if let good = c.whatGoodLooksLike { extras += "Good looks like: \(good)\n" }
+        if let req = c.requiredElements, !req.isEmpty {
+            extras += "Must address: \(req.joined(separator: "; "))\n"
+        }
+        return """
+
+
+        QUESTION: \(c.prompt)
+        \(extras)
+        Answer now in the exact three-line format.
         """
     }
 

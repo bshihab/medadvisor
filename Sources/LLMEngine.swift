@@ -42,6 +42,28 @@ final class LLMEngine {
         return Self.clean(output)
     }
 
+    /// Generate against a shared cached prefix + short per-call suffix.
+    /// The prefix's KV state (e.g. examiner instructions + the transcript) is
+    /// computed once and reused across calls with the same prefix — cutting
+    /// per-criterion prompt processing to just the question. Identical tokens
+    /// to a plain `generate(prompt: prefix + suffix)`, so accuracy is unchanged.
+    func generate(sharedPrefix: String, suffix: String,
+                  maxTokens: Int = 512,
+                  onPartial: @escaping (String) -> Void = { _ in }) async throws -> String {
+        try await ensureLoaded()
+        guard let llama else { throw LLMError.notLoaded }
+
+        let prefix = "<|im_start|>user\n" + sharedPrefix
+        let fullSuffix = suffix + "<|im_end|>\n<|im_start|>assistant\n"
+
+        var output = ""
+        for await piece in llama.predict(prefix: prefix, suffix: fullSuffix, maxTokens: maxTokens) {
+            output += piece
+            onPartial(Self.clean(output))
+        }
+        return Self.clean(output)
+    }
+
     nonisolated private static func clean(_ s: String) -> String {
         var text = s
         for marker in ["<|im_end|>", "<|endoftext|>", "<|im_start|>"] {

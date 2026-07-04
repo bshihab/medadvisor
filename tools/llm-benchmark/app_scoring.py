@@ -1,15 +1,17 @@
 """Faithful Python port of the app's per-criterion scoring — the STRICT prompt
-(Analysis.swift PromptBuilder.criterionPrompt) plus the tolerant parser and the
+(Analysis.swift scoringPrefix + criterionSuffix) plus the tolerant parser and the
 evidence guardrail (FeedbackParser.parseCriterion). Keep this in sync with the
 Swift so the benchmark measures what actually ships."""
 import re
 
-STRICT_PROMPT = """You are a STRICT clinical communication examiner. In the transcript below, assess ONLY \
-the Doctor's communication — ignore the Patient's lines entirely. (If the \
-transcript has a single unlabeled speaker, treat that speaker as the clinician.)
+# Mirrors the app's PREFIX-CACHED prompt order (Analysis.swift): the shared
+# prefix (instructions + transcript) comes FIRST, the per-criterion question
+# LAST — so the transcript's KV state can be reused across all 16 criteria.
+SCORING_PREFIX = """You are a STRICT clinical communication examiner. Below is the transcript of a \
+medical consultation. You will then be asked ONE question about the Doctor's \
+communication — assess ONLY the Doctor, ignore the Patient's lines entirely. \
+(If the transcript has a single unlabeled speaker, treat that speaker as the clinician.)
 
-QUESTION: {prompt}
-{extras}
 Scoring rules — follow exactly:
 - Judge ONLY what the Doctor ACTUALLY said in the transcript. Never reward \
 intentions, assumptions, or things that "could have" been said.
@@ -30,8 +32,13 @@ EVIDENCE: a direct quote of the Doctor's words, or the word none
 TIP: one short, specific improvement tip
 
 TRANSCRIPT:
-{transcript}
-"""
+{transcript}"""
+
+CRITERION_SUFFIX = """
+
+QUESTION: {prompt}
+{extras}
+Answer now in the exact three-line format."""
 
 
 def build_prompt(criterion: dict, transcript: str) -> str:
@@ -42,7 +49,8 @@ def build_prompt(criterion: dict, transcript: str) -> str:
     req = criterion.get("requiredElements")
     if req:
         extras += "Must address: " + "; ".join(req) + "\n"
-    return STRICT_PROMPT.format(prompt=criterion["prompt"], extras=extras, transcript=transcript)
+    return (SCORING_PREFIX.format(transcript=transcript)
+            + CRITERION_SUFFIX.format(prompt=criterion["prompt"], extras=extras))
 
 
 def _clean(line: str) -> str:
