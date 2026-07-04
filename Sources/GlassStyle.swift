@@ -25,4 +25,50 @@ extension View {
             self.background(.ultraThinMaterial, in: shape)
         }
     }
+
+    /// Adds a soft ambient gradient glow behind this view (same Live-Voicemail
+    /// look as the recording screen). Pass a different palette per screen.
+    func ambientGradient(_ colors: [Color], opacity: Double = 0.38) -> some View {
+        background(AmbientGlow(colors: colors, opacity: opacity))
+    }
+
+    /// Adds a Settings gear button (top-trailing) that presents Settings — used
+    /// now that Settings is a gear rather than a tab.
+    func settingsGear() -> some View { modifier(SettingsGearModifier()) }
+}
+
+/// A soft gradient glow rising from the bottom of the screen. Purely
+/// decorative; ignores hit-testing so it never blocks touches.
+struct AmbientGlow: View {
+    var colors: [Color]
+    var opacity: Double = 0.38
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+            LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing)
+                .scaleEffect(x: 1.7, y: 1.4)   // push the blur's faded edges offscreen
+                .blur(radius: 60)
+                .opacity(opacity)
+                .mask(LinearGradient(colors: [.clear, .black],
+                                     startPoint: .top, endPoint: .bottom))
+                .frame(height: 400)
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+    }
+}
+
+private struct SettingsGearModifier: ViewModifier {
+    @State private var show = false
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { show = true } label: { Image(systemName: "gearshape") }
+                        .accessibilityLabel("Settings")
+                }
+            }
+            .sheet(isPresented: $show) { SettingsView() }
+    }
 }

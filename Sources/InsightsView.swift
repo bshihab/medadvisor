@@ -160,8 +160,8 @@ struct InsightsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
         .navigationTitle("Insights")
+        .ambientGradient([.teal, .blue, .indigo])
         .onAppear {
             engine.loadSaved()
             setDefaultRange()

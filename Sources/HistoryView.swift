@@ -32,10 +32,10 @@ struct HistoryView: View {
                     }
                     .padding()
                 }
-                .background(Color(.systemGroupedBackground))
             }
         }
         .navigationTitle("History")
+        .ambientGradient([.indigo, .purple, .pink])
         .sheet(item: $selected) { record in
             if let location = record.location, let rubric = RubricLoader.load(for: location) {
                 FeedbackView(feedback: record.feedback, rubric: rubric,

@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// App root: a tab bar. Record is the hero — it opens straight onto the
-/// recording screen (no intermediate screen); Goals, History, Insights are tabs.
+/// App root: two tabs. Record is the hero — it opens straight onto the recording
+/// screen; Progress combines the old History, Insights, and Goals into one hub.
+/// Settings is a gear on each screen rather than a tab.
 struct RootView: View {
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
 
@@ -14,17 +15,8 @@ struct RootView: View {
             RecordHome()
                 .tabItem { Label("Record", systemImage: "mic.fill") }
 
-            NavigationStack { LocationSelectionView(mode: .goalSetting) }
-                .tabItem { Label("Goals", systemImage: "target") }
-
-            NavigationStack { HistoryView() }
-                .tabItem { Label("History", systemImage: "clock") }
-
-            NavigationStack { InsightsView() }
-                .tabItem { Label("Insights", systemImage: "lightbulb") }
-
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+            ProgressHome()
+                .tabItem { Label("Progress", systemImage: "chart.line.uptrend.xyaxis") }
         }
     }
 }
@@ -45,6 +37,7 @@ struct RecordHome: View {
                 // Rebuild cleanly if the location changes (only possible while
                 // idle, since the chip is hidden during recording).
                 .id(location)
+                .settingsGear()
                 .sheet(isPresented: $showLocationPicker) {
                     LocationPickerSheet(selectedRaw: $locationRaw)
                         .presentationDetents([.medium, .large])
