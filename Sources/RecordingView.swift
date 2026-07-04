@@ -26,6 +26,19 @@ struct RecordingView: View {
         }
     }
 
+    /// The visible phase of the screen — drives a single fluid animation when we
+    /// move between recording, the just-stopped buttons, processing, and done.
+    private var phaseKey: String {
+        switch processor.stage {
+        case .done: return "done"
+        case .error: return "error"
+        default:
+            if recorder.isRecording { return "recording" }
+            if recorder.recordings.first != nil { return "finished" }
+            return "idle"
+        }
+    }
+
     var body: some View {
         VStack(spacing: 24) {
             if isProcessing {
@@ -36,6 +49,7 @@ struct RecordingView: View {
                 Spacer()
             }
         }
+        .animation(.smooth(duration: 0.38), value: phaseKey)
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)   // fill the screen so
         .background { gradeGradient }                        // the glow spans edge-to-edge
@@ -271,16 +285,18 @@ struct RecordingView: View {
             .accessibilityLabel("Stop recording")
         }
         .padding(.top, 8)
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
     /// Stopped, ready to analyze.
     @ViewBuilder
     private func finishedControls(url: URL) -> some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 16) {
             switch processor.stage {
             case .done:
                 Button("View feedback") { showFeedback = true }
                     .glassButton(prominent: true)
+                    .controlSize(.large)
             case .error(let message):
                 Text(message).font(.callout).foregroundStyle(.red)
                 Button("Try again") { processor.reset() }
@@ -289,20 +305,35 @@ struct RecordingView: View {
                 if !ModelDownloader.shared.isDownloaded {
                     modelHint
                 }
-                Button("Transcribe & analyze") { runProcessing(url: url) }
-                    .glassButton(prominent: true)
-                    .disabled(rubric == nil)
+                // Primary action — big, full-width, hard to miss.
+                Button { runProcessing(url: url) } label: {
+                    Label("Transcribe & analyze", systemImage: "sparkles")
+                        .font(.title3.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                }
+                .glassButton(prominent: true)
+                .controlSize(.large)
+                .disabled(rubric == nil)
+
+                // Secondary action — quieter.
                 Button("Record again") {
                     recorder.deleteRecording(url)
                     processor.reset()
                 }
-                .glassButton()
+                .font(.callout.weight(.medium))
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+
                 if rubric == nil {
                     Text("Rubric not bundled — check project resources.")
                         .font(.caption).foregroundStyle(.red)
                 }
             }
         }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
     private var modelHint: some View {
