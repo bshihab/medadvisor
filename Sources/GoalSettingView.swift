@@ -81,6 +81,7 @@ struct GoalSettingView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassSurface(in: RoundedRectangle(cornerRadius: 22))
+        .glassHairline(22)
         .overlay(
             RoundedRectangle(cornerRadius: 22)
                 .strokeBorder(pinned ? Color.orange.opacity(0.6) : .clear, lineWidth: 2)

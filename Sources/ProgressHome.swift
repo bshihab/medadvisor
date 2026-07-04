@@ -142,6 +142,7 @@ struct ProgressHome: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .glassHairline(14)
     }
 
     private func sectionCard<C: View>(title: String, systemImage: String,
@@ -157,5 +158,6 @@ struct ProgressHome: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .glassHairline(16)
     }
 }

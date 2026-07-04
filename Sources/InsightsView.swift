@@ -377,6 +377,7 @@ struct InsightsView: View {
             .padding(16)
             .background(Color(.secondarySystemGroupedBackground),
                         in: RoundedRectangle(cornerRadius: 16))
+            .glassHairline(16)
     }
 
     /// Default the picker to span from the earliest saved consultation to today.

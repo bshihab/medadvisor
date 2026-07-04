@@ -152,5 +152,6 @@ struct HistoryView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassSurface(in: RoundedRectangle(cornerRadius: 16))
+        .glassHairline(16)
     }
 }

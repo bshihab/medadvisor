@@ -35,6 +35,18 @@ extension View {
     /// Adds a Settings gear button (top-trailing) that presents Settings — used
     /// now that Settings is a gear rather than a tab.
     func settingsGear() -> some View { modifier(SettingsGearModifier()) }
+
+    /// A faint glass-edge hairline — brighter at the top like a highlight — that
+    /// gives material/glass cards more definition. Pass the card's corner radius.
+    func glassHairline(_ cornerRadius: CGFloat) -> some View {
+        overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(
+                    LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.08)],
+                                   startPoint: .top, endPoint: .bottom),
+                    lineWidth: 0.75)
+        )
+    }
 }
 
 /// A soft gradient glow rising from the bottom of the screen. Purely
