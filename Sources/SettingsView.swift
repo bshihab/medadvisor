@@ -54,6 +54,14 @@ struct SettingsView: View {
                 } footer: {
                     Text("Live overlay of the app's memory footprint + headroom before iOS kills it — for diagnosing the on-device model memory ceiling.")
                 }
+
+                Section("Developer") {
+                    NavigationLink {
+                        LLMSpikeView()
+                    } label: {
+                        Label("On-device LLM test", systemImage: "hammer")
+                    }
+                }
             }
             .navigationTitle("Settings")
             .confirmationDialog("Delete this model?",

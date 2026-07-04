@@ -5,6 +5,9 @@ import SwiftUI
 /// filling in live, and show feedback.
 struct RecordingView: View {
     let location: AppLocation
+    /// When set, the idle screen shows a tappable location chip (opens the
+    /// slide-up location picker on the home screen). nil = no chip.
+    var onTapLocation: (() -> Void)? = nil
 
     @StateObject private var recorder = AudioRecorder()
     @StateObject private var processor = EncounterProcessor()
@@ -105,6 +108,21 @@ struct RecordingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
         } else {
+            if let onTapLocation {
+                Button(action: onTapLocation) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "mappin.circle.fill")
+                        Text(location.rawValue).fontWeight(.semibold)
+                        Image(systemName: "chevron.down").font(.caption2.weight(.bold))
+                    }
+                    .font(.subheadline)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(.ultraThinMaterial, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .tint(.primary)
+            }
             idleRecordButton
             Text("Tap to record the consultation")
                 .font(.subheadline)
