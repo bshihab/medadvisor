@@ -14,7 +14,7 @@ struct TranscriptResult: Equatable {
     let segments: [TranscriptSegment]
 }
 
-/// Engine-agnostic transcription. WhisperTranscriber and ParakeetTranscriber
+/// Engine-agnostic transcription. WhisperTranscriber and AppleSpeechTranscriber
 /// both conform, so EncounterProcessor can switch engines at runtime (A/B).
 @MainActor
 protocol Transcribing {
@@ -27,30 +27,28 @@ typealias WhisperResult = TranscriptResult
 
 /// The selectable speech-to-text engines (persisted in UserDefaults).
 enum TranscriptionEngine: String, CaseIterable, Identifiable {
-    case whisper, parakeet, apple
+    case apple, whisper
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .whisper:  return "Whisper (small.en)"
-        case .parakeet: return "Parakeet (NVIDIA)"
         case .apple:    return "Apple (on-device)"
+        case .whisper:  return "Whisper (small.en)"
         }
     }
     var subtitle: String {
         switch self {
-        case .whisper:  return "iOS 17+ · downloads ~480 MB once"
-        case .parakeet: return "iOS 17+ · downloads ~600 MB once · fast"
         case .apple:    return "iOS 26 · no download · fastest, most battery-efficient"
+        case .whisper:  return "iOS 17+ · downloads ~480 MB once"
         }
     }
 
-    /// The currently-selected engine. Defaults to Whisper for now — it gives the
-    /// timed segments the diarizer needs for the Doctor/Patient split. Apple
-    /// SpeechAnalyzer is selectable but lacks per-word timing until that's wired
-    /// up (single-speaker only for now).
+    /// The currently-selected engine. Defaults to Apple — its transcription is
+    /// accurate and needs no download. Speaker separation no longer depends on
+    /// the engine's timed segments: the LLM tags Doctor/Patient from the text
+    /// (see SpeakerAttribution + PromptBuilder.speakerAttributionPrompt).
     static var current: TranscriptionEngine {
         TranscriptionEngine(rawValue:
-            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .whisper
+            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .apple
     }
 }

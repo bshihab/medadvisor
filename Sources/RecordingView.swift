@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Recording mode: record an encounter (pause/resume supported), then run the
-/// full on-device pipeline (transcribe → diarize → score) with the rubric
+/// full on-device pipeline (transcribe → attribute → score) with the rubric
 /// filling in live, and show feedback.
 struct RecordingView: View {
     let location: AppLocation

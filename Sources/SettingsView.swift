@@ -1,20 +1,20 @@
 import SwiftUI
 
 /// Settings — manage the on-device models (download the LLM up front; see status
-/// of and delete any of the three models) and pick the transcription engine.
+/// of and delete any managed model) and pick the transcription engine.
 struct SettingsView: View {
     @State private var downloading = false
     @State private var progress: Double = 0
     @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
-    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.whisper.rawValue
+    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.apple.rawValue
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @ObservedObject private var models = ModelManager.shared
 
-    /// Apple's engine only appears on iOS 26+.
+    /// Apple's engine only appears on iOS 26+; below that, Whisper only.
     private var engineChoices: [TranscriptionEngine] {
         if #available(iOS 26.0, *) { return TranscriptionEngine.allCases }
-        return [.whisper, .parakeet]
+        return [.whisper]
     }
 
     var body: some View {

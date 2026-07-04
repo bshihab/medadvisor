@@ -2,59 +2,60 @@ import Foundation
 
 /// One speaker's turn in the conversation.
 struct TranscriptTurn: Codable, Equatable {
-    let speaker: String   // "Speaker 1" / "Speaker 2" (or "Doctor"/"Patient" after enrollment)
+    let speaker: String   // "Doctor" / "Patient", or "Speaker 1" for a solo recording
     let text: String
 }
 
-/// Aligns Whisper transcript segments with diarization speaker segments and
-/// groups them into conversation turns (for the chat UI + a labeled transcript).
-enum SpeakerMerger {
-    static func turns(segments whisper: [WhisperSegment], speakers: [SpeakerSegment]) -> [TranscriptTurn] {
-        guard !whisper.isEmpty, !speakers.isEmpty else { return [] }
+/// Speaker separation without diarization: we split the (single-speaker) ASR
+/// transcript into short utterances, ask the LLM to tag each Doctor/Patient
+/// (see PromptBuilder.speakerAttributionPrompt), then merge consecutive
+/// same-role utterances back into turns. This replaced FluidAudio diarization,
+/// which was unreliable and needed timed segments the Apple engine doesn't give.
+enum SpeakerAttribution {
+    /// The utterance units to label. Prefer the engine's own timed segments
+    /// (Whisper); fall back to sentence-splitting the flat text (Apple returns
+    /// one segment, so this is where its utterances come from).
+    static func utterances(from result: TranscriptResult) -> [String] {
+        let fromSegments = result.segments
+            .map { $0.text.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        if fromSegments.count >= 2 { return fromSegments }
+        return sentences(result.text)
+    }
 
-        // Map raw speaker ids to friendly, stable labels in order of appearance.
-        var labelFor: [String: String] = [:]
-        func label(_ id: String) -> String {
-            if let existing = labelFor[id] { return existing }
-            let new = "Speaker \(labelFor.count + 1)"
-            labelFor[id] = new
-            return new
-        }
-
-        func midpoint(_ s: SpeakerSegment) -> Double { (s.start + s.end) / 2 }
-        func speaker(atMidpoint mid: Double) -> String {
-            if let hit = speakers.first(where: { mid >= $0.start && mid <= $0.end }) {
-                return hit.speakerId
+    /// Split flat text into sentence-ish utterances on ., ?, ! boundaries.
+    /// Keeps the terminator; drops empties.
+    static func sentences(_ text: String) -> [String] {
+        var out: [String] = []
+        var current = ""
+        for ch in text {
+            current.append(ch)
+            if ch == "." || ch == "?" || ch == "!" {
+                let trimmed = current.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty { out.append(trimmed) }
+                current = ""
             }
-            var best = speakers[0]
-            var bestDistance = abs(midpoint(best) - mid)
-            for candidate in speakers.dropFirst() {
-                let distance = abs(midpoint(candidate) - mid)
-                if distance < bestDistance {
-                    best = candidate
-                    bestDistance = distance
-                }
-            }
-            return best.speakerId
         }
+        let tail = current.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !tail.isEmpty { out.append(tail) }
+        return out
+    }
 
+    /// Merge consecutive utterances that share a role into turns. `roles` is
+    /// aligned to `utterances`; a nil role inherits the previous turn's speaker
+    /// (models occasionally skip a line).
+    static func turns(utterances: [String], roles: [String?]) -> [TranscriptTurn] {
         var turns: [TranscriptTurn] = []
-        for segment in whisper {
-            let mid = (segment.start + segment.end) / 2
-            let speakerLabel = label(speaker(atMidpoint: mid))
-
-            if let last = turns.last, last.speaker == speakerLabel {
-                turns[turns.count - 1] = TranscriptTurn(speaker: speakerLabel,
-                                                        text: last.text + " " + segment.text)
+        for (i, text) in utterances.enumerated() {
+            let role = roles.indices.contains(i) ? roles[i] : nil
+            let speaker = role ?? turns.last?.speaker ?? "Doctor"
+            if let last = turns.last, last.speaker == speaker {
+                turns[turns.count - 1] = TranscriptTurn(speaker: speaker,
+                                                        text: last.text + " " + text)
             } else {
-                turns.append(TranscriptTurn(speaker: speakerLabel, text: segment.text))
+                turns.append(TranscriptTurn(speaker: speaker, text: text))
             }
         }
         return turns
-    }
-
-    /// Number of distinct speakers in the diarization output.
-    static func distinctSpeakerCount(_ speakers: [SpeakerSegment]) -> Int {
-        Set(speakers.map { $0.speakerId }).count
     }
 }

@@ -3,7 +3,7 @@ import WhisperKit
 
 /// On-device speech-to-text via WhisperKit (Whisper through Core ML).
 /// Loads the model, transcribes, and releases it on return so it isn't held in
-/// memory while other models (diarization, LLM) run.
+/// memory while the LLM runs.
 @MainActor
 final class WhisperTranscriber: Transcribing {
     /// English model. `small.en` (~244M) is the accuracy/speed sweet spot on

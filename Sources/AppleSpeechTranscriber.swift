@@ -8,9 +8,9 @@ import Speech
 /// Built on the exact SpeechAnalyzer flow proven in tools/stt-benchmark
 /// (AppleTranscribe.swift), which compiled and ran. NOTE: this version does NOT
 /// extract per-word timestamps yet (the `.audioTimeRange` attribute API didn't
-/// resolve on the iOS SDK), so it returns one whole-file segment. That means the
-/// 2-speaker diarization split won't align well when Apple is the engine — use
-/// Whisper/Parakeet for multi-speaker recordings until word timing is wired up.
+/// resolve on the iOS SDK), so it returns one whole-file segment. Speaker
+/// separation no longer needs those timings — SpeakerAttribution sentence-splits
+/// the flat text and the LLM tags Doctor/Patient — so Apple is the default.
 @available(iOS 26.0, *)
 @MainActor
 final class AppleSpeechTranscriber: Transcribing {

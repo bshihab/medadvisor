@@ -8,9 +8,6 @@ options:
 packages:
   llama-binary:
     path: llama-binary
-  FluidAudio:
-    url: https://github.com/FluidInference/FluidAudio
-    exactVersion: 0.15.4
   WhisperKit:
     url: https://github.com/argmaxinc/WhisperKit
     exactVersion: 1.0.0
@@ -26,8 +23,6 @@ targets:
     dependencies:
       - package: llama-binary
         product: llama
-      - package: FluidAudio
-        product: FluidAudio
       - package: WhisperKit
         product: WhisperKit
     settings:

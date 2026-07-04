@@ -103,18 +103,47 @@ enum PromptBuilder {
         """
     }
 
-    /// Asks the LLM which speaker label is the doctor/clinician.
-    static func doctorIdentificationPrompt(transcript: String) -> String {
-        """
-        Below is a medical consultation transcript with speakers labeled. Identify which \
-        speaker is the doctor/clinician (the one taking the history, examining, explaining, \
-        and giving the plan — not the patient).
+    /// Speaker attribution WITHOUT diarization: give the LLM the numbered
+    /// utterances (in order) and have it tag each Doctor/Patient. Fixed
+    /// boundaries (the model only classifies, never guesses where turns break)
+    /// avoid the phase-slips that whole-transcript reconstruction produced.
+    /// Output is tiny ("1: D\n2: P…"), so it's fast on the already-loaded LLM.
+    static func speakerAttributionPrompt(utterances: [String]) -> String {
+        let numbered = utterances.enumerated()
+            .map { "\($0.offset + 1). \($0.element)" }
+            .joined(separator: "\n")
+        return """
+        These are numbered utterances from a two-person doctor-patient consultation, \
+        in chronological order. Some are the Doctor speaking, some are the Patient. \
+        Label EVERY numbered utterance as D (Doctor) or P (Patient). The doctor asks \
+        questions, examines, explains, and gives the plan; the patient describes their \
+        symptoms and feelings. Speakers usually alternate, but one speaker can have \
+        several utterances in a row.
 
-        Reply with ONLY the speaker label and nothing else, for example: Speaker 1
+        Output ONLY one line per number in the form "N: D" or "N: P". Nothing else.
 
-        TRANSCRIPT:
-        \(transcript)
+        UTTERANCES:
+        \(numbered)
         """
+    }
+
+    /// Parses the attribution reply ("1: D", "2: P", …) into a role per
+    /// utterance, aligned to `count`. Missing/garbled lines stay nil (the merger
+    /// inherits the previous speaker). Returns Doctor/Patient strings.
+    static func parseAttribution(_ raw: String, count: Int) -> [String?] {
+        var roles = [String?](repeating: nil, count: count)
+        for line in raw.split(whereSeparator: \.isNewline) {
+            // Match "<n> : <D|P>" allowing markdown/punctuation around them.
+            guard let numMatch = line.range(of: "\\d+", options: .regularExpression),
+                  let n = Int(line[numMatch]), n >= 1, n <= count else { continue }
+            let rest = line[numMatch.upperBound...].lowercased()
+            if rest.contains("p") && !rest.contains("d") { roles[n - 1] = "Patient" }
+            else if rest.contains("d") && !rest.contains("p") { roles[n - 1] = "Doctor" }
+            else if let d = rest.firstIndex(of: "d"), let p = rest.firstIndex(of: "p") {
+                roles[n - 1] = d < p ? "Doctor" : "Patient"
+            }
+        }
+        return roles
     }
 
     static func summaryPrompt(rubric: Rubric, results: [CriterionResult]) -> String {
@@ -251,5 +280,5 @@ enum FeedbackParser {
     }
 }
 
-// The pipeline is orchestrated by EncounterProcessor (transcribe → diarize →
-// redact → score), which reuses PromptBuilder and FeedbackParser above.
+// The pipeline is orchestrated by EncounterProcessor (transcribe → LLM speaker
+// attribution → redact → score), which reuses PromptBuilder and FeedbackParser.

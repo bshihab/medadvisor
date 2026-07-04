@@ -3,8 +3,8 @@ import Foundation
 import Speech
 
 /// Records an encounter via AVAudioEngine. One mic tap does two things:
-///  1. writes the audio to a file (the priority — feeds diarization + the
-///     accurate post-stop transcription), and
+///  1. writes the audio to a file (the priority — feeds the accurate
+///     post-stop transcription), and
 ///  2. when the Apple engine is selected, streams the audio to SpeechAnalyzer
 ///     (iOS 26) for a LIVE on-screen transcript.
 ///

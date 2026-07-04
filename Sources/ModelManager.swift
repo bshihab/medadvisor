@@ -11,33 +11,29 @@ enum AppModelPaths {
         return dir
     }
     static var whisperBase: URL { base.appendingPathComponent("whisper", isDirectory: true) }
-    static var parakeetBase: URL { base.appendingPathComponent("parakeet", isDirectory: true) }
 }
 
-/// The three on-device models the app manages.
+/// The on-device models the app manages.
 enum ManagedModel: String, CaseIterable, Identifiable {
-    case llm, whisper, parakeet
+    case llm, whisper
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .llm:      return "Qwen 2.5-7B"
         case .whisper:  return "Whisper (small.en)"
-        case .parakeet: return "Parakeet"
         }
     }
     var role: String {
         switch self {
         case .llm:      return "AI feedback"
         case .whisper:  return "Speech-to-text"
-        case .parakeet: return "Speech-to-text"
         }
     }
     var approxSize: String {
         switch self {
         case .llm:      return "~4.3 GB"
         case .whisper:  return "~480 MB"
-        case .parakeet: return "~600 MB"
         }
     }
     /// The LLM is downloaded up front; the speech models download automatically
@@ -57,7 +53,6 @@ final class ModelManager: ObservableObject {
         switch model {
         case .llm:      return ModelDownloader.shared.isDownloaded
         case .whisper:  return Self.directoryHasContents(AppModelPaths.whisperBase)
-        case .parakeet: return Self.directoryHasContents(AppModelPaths.parakeetBase)
         }
     }
 
@@ -65,7 +60,6 @@ final class ModelManager: ObservableObject {
         switch model {
         case .llm:      try? FileManager.default.removeItem(at: ModelDownloader.shared.localURL)
         case .whisper:  try? FileManager.default.removeItem(at: AppModelPaths.whisperBase)
-        case .parakeet: try? FileManager.default.removeItem(at: AppModelPaths.parakeetBase)
         }
         revision += 1
     }
