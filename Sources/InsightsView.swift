@@ -246,10 +246,6 @@ struct InsightsView: View {
 
     private func trendChart(_ points: [SessionPoint]) -> some View {
         Chart(points) { point in
-            LineMark(x: .value("Date", point.date),
-                     y: .value("Done %", point.metFraction * 100))
-                .interpolationMethod(.catmullRom)
-                .foregroundStyle(.blue)
             PointMark(x: .value("Date", point.date),
                       y: .value("Done %", point.metFraction * 100))
                 .foregroundStyle(ScoreBand.color(point.metFraction))
