@@ -131,15 +131,42 @@ struct RecordingView: View {
     }
 
     /// Soft grading-palette gradient (green → orange → red) rising from the
-    /// bottom half of the screen, Live Voicemail-style. Purely decorative.
+    /// bottom of the screen, Live Voicemail-style. While recording it becomes
+    /// alive: it swells and brightens with the mic level and drifts slowly, so
+    /// louder speech visibly pushes the glow outward. Calm/static when idle.
     private var gradeGradient: some View {
+        Group {
+            if recorder.isRecording && !recorder.isPaused {
+                TimelineView(.animation) { timeline in
+                    let t = timeline.date.timeIntervalSinceReferenceDate
+                    let lvl = CGFloat(max(0, min(1, recorder.level)))
+                    // Swell + brighten with volume; drift amplitude also grows
+                    // with volume so louder speech moves the glow more. Tunable.
+                    gradientLayer(scaleX: 1.7 + lvl * 0.5,
+                                  scaleY: 1.4 + lvl * 0.7,
+                                  opacity: 0.34 + Double(lvl) * 0.30,
+                                  dx: CGFloat(sin(t * 0.8)) * (16 + lvl * 42),
+                                  dy: CGFloat(cos(t * 0.6)) * (8 + lvl * 22))
+                        .animation(.easeOut(duration: 0.18), value: lvl)
+                }
+            } else {
+                gradientLayer(scaleX: 1.7, scaleY: 1.4, opacity: 0.38, dx: 0, dy: 0)
+            }
+        }
+    }
+
+    /// The gradient layer itself, parameterized so idle (static) and recording
+    /// (level-driven) states share one definition.
+    private func gradientLayer(scaleX: CGFloat, scaleY: CGFloat,
+                               opacity: Double, dx: CGFloat, dy: CGFloat) -> some View {
         VStack(spacing: 0) {
             Spacer(minLength: 0)
             LinearGradient(colors: [.green, .orange, .red],
                            startPoint: .leading, endPoint: .trailing)
-                .scaleEffect(x: 1.7, y: 1.4)   // push the blur's faded edges offscreen
+                .scaleEffect(x: scaleX, y: scaleY)   // push the blur's faded edges offscreen
                 .blur(radius: 60)
-                .opacity(0.38)
+                .opacity(opacity)
+                .offset(x: dx, y: dy)
                 .mask(LinearGradient(colors: [.clear, .black],
                                      startPoint: .top, endPoint: .bottom))
                 .frame(height: 400)
@@ -148,37 +175,37 @@ struct RecordingView: View {
         .allowsHitTesting(false)
     }
 
-    /// Live transcript, Live Voicemail-style: big bold text floating on the
-    /// screen (no card), finalized phrases as paragraphs, the in-progress tail
-    /// dimmed, auto-scrolled so the newest words stay visible.
+    /// Live transcript, Live Voicemail-style: big bold text with a timestamp
+    /// column on the left (the gaps between timestamps reveal the pauses), the
+    /// in-progress tail dimmed, auto-scrolled so the newest words stay visible.
     private var liveTranscript: some View {
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 0) {
-                    if recorder.liveFinal.isEmpty && recorder.liveVolatile.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    if recorder.liveLines.isEmpty && recorder.liveVolatile.isEmpty {
                         Text("Listening…")
                             .font(.title3.weight(.semibold))
                             .foregroundStyle(.tertiary)
                     } else {
-                        (Text(recorder.liveFinal)
-                         + Text(recorder.liveFinal.isEmpty || recorder.liveVolatile.isEmpty ? "" : "\n\n")
-                         + Text(recorder.liveVolatile).foregroundColor(.secondary))
-                            .font(.title3.weight(.semibold))
-                            .lineSpacing(5)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        ForEach(recorder.liveLines) { line in
+                            liveRow(time: line.time, text: line.text, dimmed: false)
+                        }
+                        if !recorder.liveVolatile.isEmpty {
+                            liveRow(time: recorder.elapsed, text: recorder.liveVolatile, dimmed: true)
+                        }
                     }
                     Color.clear.frame(height: 1).id("live-bottom")
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 20)
             }
-            .frame(maxHeight: 200)
+            .frame(maxHeight: 220)
             .mask(
                 LinearGradient(stops: [.init(color: .clear, location: 0),
                                        .init(color: .black, location: 0.12),
                                        .init(color: .black, location: 1)],
                                startPoint: .top, endPoint: .bottom)
             )
-            .onChange(of: recorder.liveFinal) {
+            .onChange(of: recorder.liveLines.count) {
                 withAnimation(.easeOut(duration: 0.2)) {
                     proxy.scrollTo("live-bottom", anchor: .bottom)
                 }
@@ -186,6 +213,21 @@ struct RecordingView: View {
             .onChange(of: recorder.liveVolatile) {
                 proxy.scrollTo("live-bottom", anchor: .bottom)
             }
+        }
+    }
+
+    /// One live-transcript line: mm:ss timestamp on the left, phrase on the right.
+    private func liveRow(time: TimeInterval, text: String, dimmed: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(timeString(time))
+                .font(.caption.weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(dimmed ? .tertiary : .secondary)
+                .frame(width: 46, alignment: .trailing)
+            Text(text)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(dimmed ? Color.secondary : Color.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

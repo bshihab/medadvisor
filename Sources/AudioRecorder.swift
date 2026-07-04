@@ -25,8 +25,18 @@ final class AudioRecorder: NSObject, ObservableObject {
     /// plus the in-progress (volatile) tail, styled separately Live Voicemail-style.
     @Published var liveFinal: String = ""
     @Published var liveVolatile: String = ""
+    /// Finalized lines with the elapsed time they landed at, so the live view can
+    /// show a timestamp on the left and the gaps between them reveal the pauses.
+    @Published var liveLines: [LiveLine] = []
     /// True when live transcription is active this session.
     @Published var liveActive = false
+
+    /// One finalized live-transcript line, stamped with when it landed.
+    struct LiveLine: Identifiable, Equatable {
+        let id: Int
+        let time: TimeInterval   // seconds since recording started
+        let text: String
+    }
 
     private let engine = AVAudioEngine()
     private var currentURL: URL?
@@ -131,6 +141,7 @@ final class AudioRecorder: NSObject, ObservableObject {
             waveform = []
             liveFinal = ""
             liveVolatile = ""
+            liveLines = []
             finalizedText = ""
             isPaused = false
             isRecording = true
@@ -166,6 +177,7 @@ final class AudioRecorder: NSObject, ObservableObject {
         startedAt = nil
         bankedElapsed = 0
         waveform = []
+        liveVolatile = ""
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 
@@ -214,9 +226,12 @@ final class AudioRecorder: NSObject, ObservableObject {
                         guard !piece.isEmpty else { continue }
                         if result.isFinal {
                             // Each finalized chunk becomes its own paragraph,
-                            // like Live Voicemail's phrase blocks.
+                            // like Live Voicemail's phrase blocks — stamped with
+                            // the current elapsed time for the left-hand column.
                             self.finalizedText += (self.finalizedText.isEmpty ? "" : "\n\n") + piece
                             self.liveFinal = self.finalizedText
+                            self.liveLines.append(LiveLine(id: self.liveLines.count,
+                                                           time: self.elapsed, text: piece))
                             self.liveVolatile = ""
                         } else {
                             self.liveVolatile = piece
