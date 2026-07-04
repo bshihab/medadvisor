@@ -1,11 +1,13 @@
 import SwiftUI
 
-/// A Voice Memos-style scrolling waveform: vertical capsule bars for recent
+/// A Voice Memos-style scrolling waveform: symmetric rounded bars for recent
 /// audio levels, newest on the right, mirrored around the vertical center.
+/// Bar heights animate with a gentle ease so the wave flows smoothly leftward
+/// instead of snapping between samples.
 struct WaveformView: View {
     let levels: [Float]
     var color: Color = .red
-    var barCount: Int = 46
+    var barCount: Int = 42
 
     var body: some View {
         GeometryReader { geo in
@@ -13,15 +15,16 @@ struct WaveformView: View {
             let spacing: CGFloat = 3
             let barWidth = max(2, (geo.size.width - spacing * CGFloat(barCount - 1)) / CGFloat(barCount))
             HStack(alignment: .center, spacing: spacing) {
-                ForEach(Array(bars.enumerated()), id: \.offset) { _, lvl in
+                ForEach(bars.indices, id: \.self) { i in
                     Capsule()
                         .fill(color)
                         .frame(width: barWidth,
-                               height: max(3, CGFloat(shape(lvl)) * geo.size.height))
+                               height: max(barWidth, CGFloat(shape(bars[i])) * geo.size.height))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .animation(.linear(duration: 0.06), value: levels.count)
+            // Ease each bar toward its neighbour's value → a smooth leftward flow.
+            .animation(.easeOut(duration: 0.16), value: levels.count)
         }
     }
 

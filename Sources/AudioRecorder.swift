@@ -190,7 +190,9 @@ final class AudioRecorder: NSObject, ObservableObject {
     private func updateMeter(_ newLevel: Float) {
         guard isRecording, !isPaused else { return }
         level = newLevel
-        waveform.append(newLevel)
+        // Light exponential smoothing so spikes don't make the bars jump.
+        let smoothed = (waveform.last ?? newLevel) * 0.4 + newLevel * 0.6
+        waveform.append(smoothed)
         if waveform.count > Self.maxWaveformSamples {
             waveform.removeFirst(waveform.count - Self.maxWaveformSamples)
         }
