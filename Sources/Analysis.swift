@@ -164,14 +164,17 @@ enum FeedbackParser {
             else if c.hasPrefix("tip") { comment = value(after: line) }
         }
         if evidence == nil, let idx = resultIndex, idx + 1 < lines.count {
-            var mid: [String] = []
+            // Take only the FIRST plausible line after the verdict — joining
+            // everything up to TIP glued stray verdict/none/tip words into the
+            // quote when the model mashed its lines together.
             for line in lines[(idx + 1)...] {
-                if clean(line).lowercased().hasPrefix("tip") { break }
-                mid.append(clean(line))
+                let c = clean(line)
+                let low = c.lowercased()
+                if low.hasPrefix("tip") { break }
+                if keyword(c) != nil || low == "none" || c.isEmpty { continue }
+                evidence = c.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
+                break
             }
-            let cand = mid.joined(separator: " ")
-                .trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
-            if !cand.isEmpty { evidence = cand }
         }
         if var e = evidence {
             e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))

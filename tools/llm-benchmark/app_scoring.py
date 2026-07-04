@@ -104,14 +104,17 @@ def parse_criterion(raw: str, transcript: str):
             evidence = line.split(":", 1)[-1].strip().strip(" \t\"'“”")
             break
     if evidence is None and result_idx is not None:
-        mid = []
+        # First plausible line only — joining all lines glued stray
+        # verdict/none/tip words into the quote.
         for line in lines[result_idx + 1:]:
-            if _clean(line).lower().startswith("tip"):
+            c = _clean(line)
+            low = c.lower()
+            if low.startswith("tip"):
                 break
-            mid.append(_clean(line))
-        cand = " ".join(mid).strip().strip(" \t\"'“”")
-        if cand:
-            evidence = cand
+            if _keyword(c) is not None or low == "none" or not c:
+                continue
+            evidence = c.strip(" \t\"'“”")
+            break
     if evidence and evidence.lower() == "none":
         evidence = None
 
