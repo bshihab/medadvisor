@@ -23,7 +23,10 @@ extension ConsultationFeedback {
     var metCount: Int { perCriterion.filter { $0.status == .met }.count }
     var partialCount: Int { perCriterion.filter { $0.status == .partial }.count }
     var missedCount: Int { perCriterion.filter { $0.status == .missed }.count }
-    var total: Int { perCriterion.count }
+    var naCount: Int { perCriterion.filter { $0.status == .notApplicable }.count }
+    /// Applicable criteria only — N/A (e.g. no exam) is excluded so an absent
+    /// exam doesn't count against the score (12/16 → 12/15).
+    var total: Int { perCriterion.filter { $0.status != .notApplicable }.count }
     var metFraction: Double { total == 0 ? 0 : Double(metCount) / Double(total) }
 }
 

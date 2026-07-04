@@ -77,9 +77,10 @@ struct LiveScoringView: View {
 
     static func icon(for status: CriterionResult.Status) -> (name: String, color: Color) {
         switch status {
-        case .met:     return ("checkmark.circle.fill", .green)
-        case .partial: return ("exclamationmark.circle.fill", .orange)
-        case .missed:  return ("xmark.circle.fill", .red)
+        case .met:           return ("checkmark.circle.fill", .green)
+        case .partial:       return ("exclamationmark.circle.fill", .orange)
+        case .missed:        return ("xmark.circle.fill", .red)
+        case .notApplicable: return ("minus.circle.fill", .gray)
         }
     }
 }

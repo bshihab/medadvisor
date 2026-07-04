@@ -64,10 +64,12 @@ struct FeedbackView: View {
         for dim in orderedDimensions {
             let results = resultsFor(dim)
             guard !results.isEmpty else { continue }
-            out += "\n\(dim.label) — \(metCount(results))/\(results.count)\n"
+            let applicable = results.filter { $0.status != .notApplicable }.count
+            out += "\n\(dim.label) — \(metCount(results))/\(applicable)\n"
             for r in results {
                 let mark = switch r.status {
                     case .met: "[✓]"; case .partial: "[~]"; case .missed: "[✗]"
+                    case .notApplicable: "[–]"
                 }
                 out += "  \(mark) \(criterionText(r.criterionId))\n"
                 if let e = r.evidence, !e.isEmpty { out += "      evidence: \"\(e)\"\n" }
@@ -154,7 +156,7 @@ struct FeedbackView: View {
                 }
                 Text(dimension.label).font(.headline)
                 Spacer()
-                Text("\(metCount(results))/\(results.count)")
+                Text("\(metCount(results))/\(results.filter { $0.status != .notApplicable }.count)")
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
@@ -229,7 +231,8 @@ struct FeedbackView: View {
     private var overallMet: Int { feedback.perCriterion.filter { $0.status == .met }.count }
     private var overallPartial: Int { feedback.perCriterion.filter { $0.status == .partial }.count }
     private var overallMissed: Int { feedback.perCriterion.filter { $0.status == .missed }.count }
-    private var overallTotal: Int { feedback.perCriterion.count }
+    // Applicable criteria only — N/A (e.g. no exam) is left out of the score.
+    private var overallTotal: Int { feedback.perCriterion.filter { $0.status != .notApplicable }.count }
 
     private var metFraction: Double {
         overallTotal == 0 ? 0 : Double(overallMet) / Double(overallTotal)
@@ -264,12 +267,14 @@ struct FeedbackView: View {
         }
     }
 
-    /// Icon + colour per status: done ✓ green, partial ⚠️ orange, missed ✗ red.
+    /// Icon + colour per status: done ✓ green, partial ⚠️ orange, missed ✗ red,
+    /// N/A – gray (didn't apply, e.g. no exam).
     private func icon(for status: CriterionResult.Status) -> (name: String, color: Color) {
         switch status {
-        case .met:     return ("checkmark.circle.fill", .green)
-        case .partial: return ("exclamationmark.circle.fill", .orange)
-        case .missed:  return ("xmark.circle.fill", .red)
+        case .met:           return ("checkmark.circle.fill", .green)
+        case .partial:       return ("exclamationmark.circle.fill", .orange)
+        case .missed:        return ("xmark.circle.fill", .red)
+        case .notApplicable: return ("minus.circle.fill", .gray)
         }
     }
 }

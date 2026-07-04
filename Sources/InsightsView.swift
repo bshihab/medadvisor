@@ -77,6 +77,7 @@ final class InsightsEngine: ObservableObject {
         var improvements: [String] = []
         for record in records {
             for criterion in record.feedback.perCriterion {
+                if criterion.status == .notApplicable { continue }   // not an assessed behavior
                 total += 1
                 if criterion.status == .met {
                     met += 1

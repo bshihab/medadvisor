@@ -2,8 +2,10 @@ import Foundation
 
 /// Result for one rubric criterion.
 struct CriterionResult: Codable, Equatable, Identifiable {
-    /// done = did it well (✓), partial = attempted, could improve (⚠️), missed = not done (✗)
-    enum Status: String, Codable { case met, partial, missed }
+    /// done = did it well (✓), partial = attempted (⚠️), missed = not done (✗),
+    /// notApplicable = this criterion didn't apply to the encounter (–, gray;
+    /// e.g. no physical exam took place). N/A is excluded from the score.
+    enum Status: String, Codable { case met, partial, missed, notApplicable }
 
     var id: String { criterionId }
     let criterionId: String
@@ -94,6 +96,12 @@ enum PromptBuilder {
         if let req = c.requiredElements, !req.isEmpty {
             extras += "Must address: \(req.joined(separator: "; "))\n"
         }
+        // Criteria that only apply in some encounters (e.g. explaining a physical
+        // exam) may be answered "n/a" so an absent exam isn't scored as a failure.
+        if c.responseType == "not_applicable_allowed" {
+            extras += "If this did not occur at all in the consultation (e.g. no physical " +
+                      "examination took place), answer RESULT: n/a (evidence none, tip none).\n"
+        }
         return """
 
 
@@ -148,8 +156,10 @@ enum PromptBuilder {
 
     static func summaryPrompt(rubric: Rubric, results: [CriterionResult]) -> String {
         let met = results.filter { $0.status == .met }.count
+        // N/A criteria (e.g. no exam) aren't part of the denominator.
+        let applicable = results.filter { $0.status != .notApplicable }.count
         return """
-        A doctor met \(met) of \(results.count) criteria in a \(rubric.encounterType) consultation. \
+        A doctor met \(met) of \(applicable) criteria in a \(rubric.encounterType) consultation. \
         In 2 sentences, summarize how they did overall and the single most important thing to \
         improve next time. Plain prose, no lists.
         """
@@ -158,7 +168,8 @@ enum PromptBuilder {
 
 /// Tolerant line parser for the 3-line per-criterion answer.
 enum FeedbackParser {
-    static func parseCriterion(raw: String, criterionId: String, transcript: String) -> CriterionResult {
+    static func parseCriterion(raw: String, criterionId: String, transcript: String,
+                               allowsNA: Bool = false) -> CriterionResult {
         let lines = raw.split(whereSeparator: \.isNewline)
             .map { String($0) }
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
@@ -178,10 +189,14 @@ enum FeedbackParser {
         }
         if resultIndex == nil {   // last resort: search anywhere
             let low = raw.lowercased()
-            if low.contains("partial") { status = .partial }
+            if low.contains("n/a") || low.contains("not applicable") { status = .notApplicable }
+            else if low.contains("partial") { status = .partial }
             else if low.contains("missed") || low.contains("not done") { status = .missed }
             else if low.contains("done") || low.contains("yes") { status = .met }
         }
+
+        // N/A is only honored for criteria that allow it; otherwise it's a miss.
+        if status == .notApplicable, !allowsNA { status = .missed }
 
         // Evidence: an EVIDENCE: line if present, else the text between the result
         // line and the TIP line (models that drop labels put the quote there).
@@ -236,9 +251,10 @@ enum FeedbackParser {
     }
 
     /// Map a cleaned line to a status if it clearly states one.
-    /// Order matters: check missed/not-done BEFORE done.
+    /// Order matters: check n/a and missed/not-done BEFORE done.
     private static func keyword(_ s: String) -> CriterionResult.Status? {
         let low = s.lowercased()
+        if low.hasPrefix("n/a") || low.hasPrefix("not applicable") || low == "na" { return .notApplicable }
         if low.hasPrefix("partial") { return .partial }
         if low.hasPrefix("missed") || low.hasPrefix("not done") || low == "no" || low == "no." { return .missed }
         if low.hasPrefix("done") || low.hasPrefix("met") || low == "yes" || low == "yes." { return .met }
