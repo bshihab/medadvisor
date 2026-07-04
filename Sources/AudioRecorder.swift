@@ -29,19 +29,28 @@ final class AudioRecorder: NSObject, ObservableObject {
     @Published var liveActive = false
 
     private let engine = AVAudioEngine()
-    private var file: AVAudioFile?
     private var currentURL: URL?
     private var startedAt: Date?
     private var bankedElapsed: TimeInterval = 0
 
     private static let maxWaveformSamples = 120
 
+    /// State the audio tap thread owns. The tap's buffer is only guaranteed
+    /// valid inside the callback, so file writes + conversion MUST happen there
+    /// synchronously — never after an async hop (that caused corrupt writes and
+    /// crashes on longer recordings).
+    private final class Capture: @unchecked Sendable {
+        var file: AVAudioFile?
+        var inputBuilder: AsyncStream<AnalyzerInput>.Continuation?
+        var analyzerFormat: AVAudioFormat?
+        var converter: AVAudioConverter?
+        var paused = false
+    }
+    private let capture = Capture()
+
     // Live transcription (SpeechAnalyzer)
     private var transcriber: SpeechTranscriber?
     private var analyzer: SpeechAnalyzer?
-    private var inputBuilder: AsyncStream<AnalyzerInput>.Continuation?
-    private var analyzerFormat: AVAudioFormat?
-    private var converter: AVAudioConverter?
     private var recognizerTask: Task<Void, Never>?
     private var finalizedText = ""
 
@@ -55,6 +64,7 @@ final class AudioRecorder: NSObject, ObservableObject {
 
     func pause() {
         guard isRecording, !isPaused else { return }
+        capture.paused = true
         if let startedAt { bankedElapsed += Date().timeIntervalSince(startedAt) }
         startedAt = nil
         level = 0
@@ -63,6 +73,7 @@ final class AudioRecorder: NSObject, ObservableObject {
 
     func resume() {
         guard isRecording, isPaused else { return }
+        capture.paused = false
         startedAt = Date()
         isPaused = false
     }
@@ -88,7 +99,8 @@ final class AudioRecorder: NSObject, ObservableObject {
 
             // File to write (WAV/PCM — read reliably by WhisperKit/diarizer later).
             let url = Self.makeFileURL()
-            file = try AVAudioFile(forWriting: url, settings: format.settings)
+            capture.file = try AVAudioFile(forWriting: url, settings: format.settings)
+            capture.paused = false
             currentURL = url
 
             // Optional live transcription (Apple engine only). Best-effort.
@@ -97,9 +109,18 @@ final class AudioRecorder: NSObject, ObservableObject {
                 Task { await self.setupLiveTranscription() }
             }
 
+            let capture = self.capture
             input.installTap(onBus: 0, bufferSize: 4096, format: format) { [weak self] buffer, _ in
-                guard let self else { return }
-                Task { @MainActor in self.handle(buffer) }
+                guard !capture.paused else { return }
+                // Synchronous work while the buffer is valid (tap thread):
+                try? capture.file?.write(from: buffer)
+                if let builder = capture.inputBuilder, let fmt = capture.analyzerFormat,
+                   let converted = Self.convert(buffer, to: fmt, using: &capture.converter) {
+                    builder.yield(AnalyzerInput(buffer: converted))
+                }
+                // Lightweight UI numbers hop to the main actor.
+                let level = Self.rms(buffer)
+                Task { @MainActor in self?.updateMeter(level) }
             }
 
             engine.prepare()
@@ -123,17 +144,19 @@ final class AudioRecorder: NSObject, ObservableObject {
         engine.stop()
 
         // Finish the file.
-        file = nil
+        capture.file = nil
         if let url = currentURL { recordings.insert(url, at: 0) }
         currentURL = nil
 
         // Finish live transcription.
-        inputBuilder?.finish()
-        inputBuilder = nil
+        capture.inputBuilder?.finish()
+        capture.inputBuilder = nil
+        capture.analyzerFormat = nil
+        capture.converter = nil
         let analyzer = self.analyzer
         Task { try? await analyzer?.finalizeAndFinishThroughEndOfInput() }
         recognizerTask?.cancel(); recognizerTask = nil
-        transcriber = nil; self.analyzer = nil; converter = nil; analyzerFormat = nil
+        transcriber = nil; self.analyzer = nil
 
         isRecording = false
         isPaused = false
@@ -146,29 +169,17 @@ final class AudioRecorder: NSObject, ObservableObject {
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 
-    // MARK: - Per-buffer handling (main actor)
+    // MARK: - UI meter (main actor; audio work stays on the tap thread)
 
-    private func handle(_ buffer: AVAudioPCMBuffer) {
+    private func updateMeter(_ newLevel: Float) {
         guard isRecording, !isPaused else { return }
-
-        // 1) Write to file (the priority).
-        try? file?.write(from: buffer)
-
-        // 2) Meter + waveform + elapsed.
-        level = Self.rms(buffer)
-        waveform.append(level)
+        level = newLevel
+        waveform.append(newLevel)
         if waveform.count > Self.maxWaveformSamples {
             waveform.removeFirst(waveform.count - Self.maxWaveformSamples)
         }
         let running = startedAt.map { Date().timeIntervalSince($0) } ?? 0
         elapsed = bankedElapsed + running
-
-        // 3) Feed live transcription (best-effort).
-        if let inputBuilder, let analyzerFormat {
-            if let converted = Self.convert(buffer, to: analyzerFormat, using: &converter) {
-                inputBuilder.yield(AnalyzerInput(buffer: converted))
-            }
-        }
     }
 
     // MARK: - Live transcription setup
@@ -190,8 +201,8 @@ final class AudioRecorder: NSObject, ObservableObject {
 
             self.transcriber = t
             self.analyzer = a
-            self.analyzerFormat = fmt
-            self.inputBuilder = builder
+            capture.analyzerFormat = fmt
+            capture.inputBuilder = builder
             self.liveActive = true
 
             self.recognizerTask = Task { [weak self] in
@@ -223,7 +234,7 @@ final class AudioRecorder: NSObject, ObservableObject {
 
     // MARK: - Helpers
 
-    private static func rms(_ buffer: AVAudioPCMBuffer) -> Float {
+    nonisolated private static func rms(_ buffer: AVAudioPCMBuffer) -> Float {
         guard let data = buffer.floatChannelData else { return 0 }
         let n = Int(buffer.frameLength)
         guard n > 0 else { return 0 }
@@ -234,7 +245,7 @@ final class AudioRecorder: NSObject, ObservableObject {
     }
 
     /// Convert a mic buffer to the analyzer's format (cached converter).
-    private static func convert(_ buffer: AVAudioPCMBuffer,
+    nonisolated private static func convert(_ buffer: AVAudioPCMBuffer,
                                 to format: AVAudioFormat,
                                 using converter: inout AVAudioConverter?) -> AVAudioPCMBuffer? {
         if converter == nil || converter?.outputFormat != format {
