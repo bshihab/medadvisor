@@ -13,22 +13,32 @@ struct LiveScoringView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                ForEach(rubric.dimensions) { dim in
-                    let items = rubric.criteria.filter { $0.dimension == dim.id }
-                    if !items.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(dim.label)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                            ForEach(items) { row(for: $0) }
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    ForEach(rubric.dimensions) { dim in
+                        let items = rubric.criteria.filter { $0.dimension == dim.id }
+                        if !items.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(dim.label)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                ForEach(items) { row(for: $0).id($0.id) }
+                            }
                         }
                     }
+                    // Anchor so the last criterion can scroll clear of the bottom.
+                    Color.clear.frame(height: 1).id("scoring-bottom")
+                }
+                .padding()
+                .animation(.easeInOut(duration: 0.3), value: results.count)
+            }
+            // Follow the criterion being scored as the rubric fills downward.
+            .onChange(of: results.count) { _, _ in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    proxy.scrollTo(currentId ?? "scoring-bottom", anchor: .center)
                 }
             }
-            .padding()
-            .animation(.easeInOut(duration: 0.3), value: results.count)
         }
     }
 
