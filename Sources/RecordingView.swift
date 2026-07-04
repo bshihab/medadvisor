@@ -33,8 +33,8 @@ struct RecordingView: View {
         case .done: return "done"
         case .error: return "error"
         default:
+            if recorder.isFinished { return "finished" }
             if recorder.isRecording { return "recording" }
-            if recorder.recordings.first != nil { return "finished" }
             return "idle"
         }
     }
@@ -92,7 +92,9 @@ struct RecordingView: View {
             .foregroundStyle(recorder.isRecording ? .primary : .secondary)
             .contentTransition(.numericText())
 
-        if recorder.isRecording {
+        if reviewPhase {
+            finishedControls
+        } else if recorder.isRecording {
             WaveformView(levels: recorder.waveform,
                          color: recorder.isPaused ? .secondary : .red)
                 .frame(height: 96)
@@ -108,8 +110,6 @@ struct RecordingView: View {
             }
 
             recordingControls
-        } else if let latest = recorder.recordings.first {
-            finishedControls(url: latest)
         } else if !llmReady {
             Image(systemName: "arrow.down.circle")
                 .font(.system(size: 48))
@@ -288,9 +288,18 @@ struct RecordingView: View {
         .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
-    /// Stopped, ready to analyze.
+    /// True while the review/analyze screen (or the finished feedback) should
+    /// show instead of the recording controls.
+    private var reviewPhase: Bool {
+        if recorder.isFinished { return true }
+        if case .done = processor.stage { return true }
+        if case .error = processor.stage { return true }
+        return false
+    }
+
+    /// Stopped for review, ready to analyze (or done/errored).
     @ViewBuilder
-    private func finishedControls(url: URL) -> some View {
+    private var finishedControls: some View {
         VStack(spacing: 16) {
             switch processor.stage {
             case .done:
@@ -302,11 +311,16 @@ struct RecordingView: View {
                 Button("Try again") { processor.reset() }
                     .glassButton()
             default:
+                // Review the transcript captured so far before committing.
+                if !recorder.liveLines.isEmpty { reviewTranscript }
+
                 if !ModelDownloader.shared.isDownloaded {
                     modelHint
                 }
                 // Primary action — big, full-width, hard to miss.
-                Button { runProcessing(url: url) } label: {
+                Button {
+                    if let url = recorder.finishReview() { runProcessing(url: url) }
+                } label: {
                     Label("Transcribe & analyze", systemImage: "sparkles")
                         .font(.title3.weight(.semibold))
                         .frame(maxWidth: .infinity)
@@ -316,10 +330,18 @@ struct RecordingView: View {
                 .controlSize(.large)
                 .disabled(rubric == nil)
 
-                // Secondary action — quieter.
-                Button("Record again") {
-                    recorder.deleteRecording(url)
-                    processor.reset()
+                // Secondary actions — go back (if Stop was a mis-tap) or discard.
+                HStack(spacing: 20) {
+                    Button {
+                        recorder.resumeFromReview()
+                    } label: {
+                        Label("Back to recording", systemImage: "chevron.backward")
+                    }
+                    Spacer()
+                    Button("Record again") {
+                        recorder.discardReview()
+                        processor.reset()
+                    }
                 }
                 .font(.callout.weight(.medium))
                 .buttonStyle(.plain)
@@ -334,6 +356,26 @@ struct RecordingView: View {
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity)
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    /// The transcript captured while recording (Apple engine), in the same
+    /// timestamped live-transcript style, for a quick review before analyzing.
+    private var reviewTranscript: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(recorder.liveLines) { line in
+                    liveRow(time: line.time, text: line.text, dimmed: false)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .frame(maxHeight: 260)
+        .mask(
+            LinearGradient(stops: [.init(color: .clear, location: 0),
+                                   .init(color: .black, location: 0.08),
+                                   .init(color: .black, location: 1)],
+                           startPoint: .top, endPoint: .bottom)
+        )
     }
 
     private var modelHint: some View {
@@ -433,9 +475,10 @@ struct RecordingView: View {
         recorder.toggle()
     }
 
-    /// Stop and finalize the recording (ready to analyze).
+    /// The red Stop button: pause for review (resumable) and show the analyze
+    /// screen. The recording is only finalized when the user taps Analyze.
     private func finishRecording() {
-        recorder.toggle()
+        recorder.stopForReview()
     }
 
     private func timeString(_ t: TimeInterval) -> String {
