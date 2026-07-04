@@ -394,7 +394,7 @@ struct RecordingView: View {
     private func centeredProgress(_ title: String) -> some View {
         VStack {
             Spacer()
-            ProgressView(title)
+            ProcessingWave(title: title)
             Spacer()
         }
     }

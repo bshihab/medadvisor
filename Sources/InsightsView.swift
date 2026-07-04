@@ -180,9 +180,9 @@ struct InsightsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 if engine.isGenerating {
-                    ProgressView("Reviewing your consultations…")
+                    GeneratingPulse(title: "Reviewing your consultations…")
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
+                        .padding(.vertical, 48)
                 } else if let insights = engine.latest {
                     report(insights)
                 } else {
