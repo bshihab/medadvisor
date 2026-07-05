@@ -398,45 +398,61 @@ struct RecordingView: View {
 
     @ViewBuilder
     private var processingSection: some View {
+        VStack(spacing: 22) {
+            Spacer(minLength: 0)
+            VStack(spacing: 6) {
+                Text("Analyzing consultation").font(.title2.weight(.bold))
+                Text(stageDetail)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .contentTransition(.opacity)
+            }
+            PipelineStagesView(currentIndex: stageIndex)
+                .padding(16)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22))
+                .glassHairline(22)
+                .padding(.horizontal)
+            stageExtra
+            Spacer(minLength: 0)
+        }
+        .animation(.smooth(duration: 0.35), value: stageIndex)
+    }
+
+    /// The pipeline runs transcribe → load model → speakers → score → summary.
+    private var stageIndex: Int {
         switch processor.stage {
-        case .transcribing:
-            centeredProgress("Transcribing on-device…")
-        case .identifyingSpeakers:
-            centeredProgress("Identifying speakers…")
-        case .redacting:
-            centeredProgress("Removing identifiers…")
-        case .preparingModel(let fraction):
-            VStack(spacing: 14) {
-                Spacer()
-                // Loading (no measurable progress) → spinner; downloading → bar.
-                if fraction < 0.001 {
-                    ProgressView().controlSize(.large)
-                    Text("Preparing AI model…")
-                        .font(.callout).foregroundStyle(.secondary)
-                } else {
-                    ProgressView(value: fraction).frame(maxWidth: 260)
-                    Text("Downloading AI model (one time)… \(Int(fraction * 100))%")
-                        .font(.callout).foregroundStyle(.secondary)
-                }
-                Spacer()
+        case .transcribing:                     return 0
+        case .preparingModel:                   return 1
+        case .identifyingSpeakers, .redacting:  return 2
+        case .scoring:                          return 3
+        case .summarizing:                      return 4
+        case .done:                             return 5
+        default:                                return 0
+        }
+    }
+
+    private var stageDetail: String {
+        switch processor.stage {
+        case .transcribing:            return "Transcribing on-device…"
+        case .preparingModel(let f):   return f < 0.001 ? "Preparing the AI model…"
+                                                          : "Downloading AI model… \(Int(f * 100))%"
+        case .identifyingSpeakers:     return "Identifying who's speaking…"
+        case .redacting:               return "Removing identifiers…"
+        case .scoring(let d, let t):   return "Scoring — \(d) of \(t) checked"
+        case .summarizing:             return "Writing the summary…"
+        default:                       return ""
+        }
+    }
+
+    @ViewBuilder
+    private var stageExtra: some View {
+        switch processor.stage {
+        case .scoring, .summarizing:
+            if let rubric {
+                LiveScoringView(rubric: rubric, results: processor.liveResults)
             }
-        case .scoring(let done, let total):
-            VStack(spacing: 8) {
-                Text("Analyzing the consultation")
-                    .font(.headline)
-                Text("\(done) of \(total) checked")
-                    .font(.caption).foregroundStyle(.secondary)
-                if let rubric {
-                    LiveScoringView(rubric: rubric, results: processor.liveResults)
-                }
-            }
-        case .summarizing:
-            VStack(spacing: 8) {
-                if let rubric {
-                    LiveScoringView(rubric: rubric, results: processor.liveResults)
-                }
-                ProgressView("Writing summary…").padding(.bottom)
-            }
+        case .preparingModel(let f) where f > 0.001:
+            ProgressView(value: f).tint(.blue).frame(maxWidth: 260)
         default:
             EmptyView()
         }
@@ -509,4 +525,53 @@ struct RecordingView: View {
 
 #Preview {
     RecordingView(location: .outpatientClinic)
+}
+
+/// A washing-machine-style multi-stage progress bar for the analysis pipeline:
+/// each stage is a glyph chip — completed ones show a checkmark, the current one
+/// pulses, upcoming ones are dim.
+struct PipelineStagesView: View {
+    let currentIndex: Int
+    @State private var pulse = false
+
+    private let stages: [(icon: String, label: String)] = [
+        ("waveform", "Transcribe"),
+        ("brain.head.profile", "AI model"),
+        ("person.2.fill", "Speakers"),
+        ("checklist", "Score"),
+        ("sparkles", "Summary"),
+    ]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(stages.enumerated()), id: \.offset) { i, s in
+                chip(icon: s.icon, label: s.label, index: i)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .onAppear { pulse = true }
+    }
+
+    @ViewBuilder
+    private func chip(icon: String, label: String, index: Int) -> some View {
+        let done = index < currentIndex
+        let current = index == currentIndex
+        let fill: Color = (done || current) ? .blue : Color.primary.opacity(0.12)
+        let fg: Color = (done || current) ? .white : .secondary
+        VStack(spacing: 6) {
+            ZStack {
+                Circle().fill(fill).frame(width: 36, height: 36)
+                Image(systemName: done ? "checkmark" : icon)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(fg)
+            }
+            .scaleEffect(current && pulse ? 1.12 : 1)
+            .animation(current ? .easeInOut(duration: 0.7).repeatForever(autoreverses: true)
+                               : .default, value: pulse)
+            Text(label)
+                .font(.caption2.weight(current ? .bold : .medium))
+                .foregroundStyle(current ? .primary : .secondary)
+                .lineLimit(1).minimumScaleFactor(0.7)
+        }
+    }
 }
