@@ -23,6 +23,11 @@ Scoring rules — follow exactly:
 anywhere in the transcript — NOT on the possibly-wrong speaker label.
 - NEVER credit the clinician for something the PATIENT said. A patient describing \
 their own symptoms or feelings is not the clinician exploring them.
+- The quote must ACTUALLY demonstrate the SPECIFIC behavior being asked about. A \
+generic greeting, acknowledgement, or sign-off ("take care", "I've got other \
+patients", "okay", "goodbye") does NOT count as safety-netting, teach-back, \
+exploring concerns, or inviting questions. If the quote does not clearly show \
+THIS exact behavior, answer "missed".
 - "done" REQUIRES a direct supporting quote of the clinician actually doing it. If \
 you cannot quote it, it is NOT done. Never reward intentions or things that \
 "could have" been said.

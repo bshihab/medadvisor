@@ -76,6 +76,11 @@ enum PromptBuilder {
         anywhere in the transcript — NOT on the possibly-wrong speaker label.
         - NEVER credit the clinician for something the PATIENT said. A patient describing \
         their own symptoms or feelings is not the clinician exploring them.
+        - The quote must ACTUALLY demonstrate the SPECIFIC behavior being asked about. A \
+        generic greeting, acknowledgement, or sign-off ("take care", "I've got other \
+        patients", "okay", "goodbye") does NOT count as safety-netting, teach-back, \
+        exploring concerns, or inviting questions. If the quote does not clearly show \
+        THIS exact behavior, answer "missed".
         - "done" REQUIRES a direct supporting quote of the clinician actually doing it. If \
         you cannot quote it, it is NOT done. Never reward intentions or things that \
         "could have" been said.
@@ -120,11 +125,15 @@ enum PromptBuilder {
         """
 
 
-        The next question only applies in SOME consultations: "\(c.prompt)"
-        Ignore whether it was done well. First: did the situation it asks about \
-        (for example, an actual physical examination) genuinely take place in this \
-        consultation's transcript?
-        Answer with ONLY one word: yes or no.
+        Answer ONE factual question about the transcript above — ignore how well \
+        anything was done.
+
+        Did a physical examination of the patient actually take place in this \
+        consultation — for example checking the pulse or blood pressure, listening to \
+        the chest, feeling the neck or abdomen, or looking in the eyes or ears?
+
+        Reply with ONLY one word: "yes" if an examination clearly happened, or "no" if \
+        no examination took place.
         """
     }
 

@@ -126,12 +126,18 @@ final class EncounterProcessor: ObservableObject {
                     let gate = (try? await LLMEngine.shared.generate(
                         sharedPrefix: sharedPrefix,
                         suffix: PromptBuilder.applicabilityGateSuffix(criterion: criterion),
-                        maxTokens: 6)) ?? ""
-                    if gate.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("no") {
+                        maxTokens: 8)) ?? ""
+                    let g = gate.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    // Treat any clear "no / didn't happen" answer as Not Applicable.
+                    let didNotHappen = (g.hasPrefix("no") || g.contains("no exam")
+                        || g.contains("did not") || g.contains("didn't")
+                        || g.contains("no physical") || g.contains("not take place"))
+                        && !g.hasPrefix("yes")
+                    print("[Scoring] \(criterion.id) gate=\"\(g)\" → \(didNotHappen ? "N/A" : "score")")
+                    if didNotHappen {
                         let na = CriterionResult(criterionId: criterion.id, status: .notApplicable,
                                                  evidence: nil, comment: nil)
                         results.append(na); liveResults.append(na)
-                        print(String(format: "[Scoring] %@ N/A (%.1fs)", criterion.id, Date().timeIntervalSince(t0)))
                         continue
                     }
                 }
