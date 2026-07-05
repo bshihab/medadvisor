@@ -406,12 +406,18 @@ struct RecordingView: View {
         case .redacting:
             centeredProgress("Removing identifiers…")
         case .preparingModel(let fraction):
-            VStack(spacing: 12) {
+            VStack(spacing: 14) {
                 Spacer()
-                ProgressView(value: fraction).frame(maxWidth: 260)
-                Text(fraction < 0.001 ? "Preparing AI model…"
-                                      : "Downloading AI model (one time)… \(Int(fraction * 100))%")
-                    .font(.callout).foregroundStyle(.secondary)
+                // Loading (no measurable progress) → spinner; downloading → bar.
+                if fraction < 0.001 {
+                    ProgressView().controlSize(.large)
+                    Text("Preparing AI model…")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else {
+                    ProgressView(value: fraction).frame(maxWidth: 260)
+                    Text("Downloading AI model (one time)… \(Int(fraction * 100))%")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
                 Spacer()
             }
         case .scoring(let done, let total):

@@ -42,9 +42,11 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(url: URL, rubric: Rubric, liveSegments: [String] = []) async {
-        // Free any LLM still resident from a previous analysis BEFORE the
-        // transcriber loads — only one big model should be in memory at a time.
-        LLMEngine.shared.unload()
+        // Keep the LLM RESIDENT across analyses. With Whisper + the diarizer
+        // gone, the LLM is the only big model, so there's nothing to free it for
+        // — and reloading a 4.3GB model on every analysis is exactly what made
+        // the pipeline feel stuck ("Transcribing…"). The first analysis loads it
+        // once; later ones reuse it.
 
         // 1) Get the utterances to attribute. PREFER the live transcript's own
         //    segmentation: Apple's streaming engine already cut it at natural
@@ -73,9 +75,13 @@ final class EncounterProcessor: ObservableObject {
             return
         }
 
-        // 2) Load the LLM once (the transcriber is freed by now; first run
-        //    downloads ~4.3GB). The same model does speaker attribution + scoring.
+        // 2) Load the LLM (first analysis of the session only — it stays resident
+        //    after). Loading a 4.3GB model takes a while, so show it as
+        //    "Preparing AI model" instead of leaving the stuck-looking
+        //    "Transcribing…" label up. The progress callback fires only for a
+        //    first-run download.
         do {
+            stage = .preparingModel(0)
             try await LLMEngine.shared.ensureLoaded { fraction in
                 self.stage = .preparingModel(fraction)
             }
