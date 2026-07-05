@@ -120,7 +120,7 @@ struct RecordingView: View {
                 .foregroundStyle(.secondary)
             Text("Download the AI model to record")
                 .font(.headline)
-            Text("Tap the pulsing gear (top-right) to open Settings and download the AI model — one time. Recording needs it to give feedback.")
+            Text("Open Settings (the gear, top-right) and download the AI model — one time. Recording needs it to give feedback.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -383,7 +383,7 @@ struct RecordingView: View {
 
     private var modelHint: some View {
         Label {
-            Text("The AI model isn't downloaded yet. Open **Settings** (the pulsing gear) and download it (~4.3 GB, one time) before analyzing.")
+            Text("The AI model isn't downloaded yet. Open **Settings** (the gear, top-right) and download it (~4.3 GB, one time) before analyzing.")
         } icon: {
             Image(systemName: "arrow.down.circle")
         }
