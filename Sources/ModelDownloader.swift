@@ -1,4 +1,5 @@
 import Foundation
+import ActivityKit
 
 /// Downloads the Qwen2.5-7B-Instruct GGUF (~4.3 GB) once into Documents, then
 /// runs fully offline. Uses a BACKGROUND URLSession so the download survives the
@@ -21,6 +22,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Stored by the app delegate for background-launch events; called when the
     /// background session finishes delivering events.
     var backgroundCompletion: (() -> Void)?
+
+    // Live Activity (Lock Screen / Dynamic Island) for the download.
+    private var activity: Activity<ModelDownloadAttributes>?
+    private var lastActivityProgress: Double = -1
 
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: Self.sessionID)
@@ -57,6 +62,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 self.errorMessage = nil
                 self.progress = 0
                 self.session.downloadTask(with: self.remoteURL).resume()
+                self.startActivity()
             }
         }
     }
@@ -70,6 +76,34 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         }
         return localURL
     }
+
+    // MARK: - Live Activity
+
+    private func startActivity() {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled, activity == nil else { return }
+        let content = ActivityContent(state: .init(progress: 0, finished: false), staleDate: nil)
+        activity = try? Activity.request(attributes: ModelDownloadAttributes(), content: content)
+        lastActivityProgress = 0
+    }
+
+    private func updateActivity(_ p: Double) {
+        // Throttle — ActivityKit rate-limits updates, so only push every ~2%.
+        guard let activity, p - lastActivityProgress >= 0.02 else { return }
+        lastActivityProgress = p
+        Task { await activity.update(ActivityContent(state: .init(progress: p, finished: false), staleDate: nil)) }
+    }
+
+    private func endActivity(finished: Bool) {
+        guard let activity else { return }
+        self.activity = nil
+        Task {
+            let content = ActivityContent(
+                state: .init(progress: finished ? 1 : lastActivityProgress, finished: finished),
+                staleDate: nil)
+            await activity.update(content)
+            await activity.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4)))
+        }
+    }
 }
 
 extension ModelDownloader: URLSessionDownloadDelegate {
@@ -81,6 +115,7 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         DispatchQueue.main.async {
             self.progress = fraction
             self.isDownloading = true
+            self.updateActivity(fraction)
         }
     }
 
@@ -94,9 +129,11 @@ extension ModelDownloader: URLSessionDownloadDelegate {
             self.isDownloading = false
             if moved {
                 self.progress = 1
+                self.endActivity(finished: true)
                 Task { @MainActor in ModelManager.shared.modelChanged() }  // refresh badge/state
             } else {
                 self.errorMessage = "Couldn't save the downloaded model."
+                self.endActivity(finished: false)
             }
         }
     }
@@ -107,6 +144,7 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         DispatchQueue.main.async {
             self.isDownloading = false
             self.errorMessage = error.localizedDescription
+            self.endActivity(finished: false)
         }
     }
 
