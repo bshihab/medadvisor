@@ -163,6 +163,17 @@ enum PromptBuilder {
         - Assign short lines ("Okay.", "Right.", "Yeah, that's fine.") to whoever the \
         surrounding content shows is speaking.
 
+        Strong signals — a line is almost certainly the DOCTOR if it contains phrasing \
+        such as: "what brought you in", "what brings you in", "how can I help", "tell me \
+        more about", "when did it start", "how long have you", "any fever", "have you \
+        tried", "have you noticed", "let me examine", "let me take a look", "open wide", \
+        "I'll check your", "feel your neck", "in plain terms", "here's what I'd suggest", \
+        "I'd recommend", "come back or call us", "before we finish", "what questions do \
+        you have", "could you tell me back", "thank you for telling me". \
+        A line is almost certainly the PATIENT if it is a first-person account of \
+        symptoms or feelings — e.g. "I've been feeling", "I've had", "it started", "I'm \
+        worried", "I got scared", "I googled it".
+
         Output ONLY one line per number in the form "N: D" or "N: P". Nothing else.
 
         UTTERANCES:
