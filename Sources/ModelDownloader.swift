@@ -109,22 +109,42 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                     self.enterForeground()             // app is active → pull it to the fast session
                     return
                 }
-                if !self.isDownloaded, let data = self.loadResumeData() {
+                if self.isDownloaded {
+                    self.markCompleted()               // finished while away — reflect it
+                } else if let data = self.loadResumeData() {
                     // Auto-continue from the saved byte offset.
                     self.isDownloading = true
                     self.restart(on: self.foregroundSession, background: false, resume: data)
                     self.startActivity()
-                } else if self.isDownloaded {
-                    self.endActivity(finished: true)   // clear any leftover activity
                 }
             }
         }
     }
 
-    /// App became active — pull a background transfer up to the fast session.
+    /// App became active. First reconcile: if the download finished while we were
+    /// away (background completion already ran, or a suspended transfer wrapped
+    /// up), reflect that now instead of showing a stale % until the next launch.
+    /// Otherwise pull an in-flight background transfer up to the fast session.
     func enterForeground() {
+        if isDownloaded {
+            if isDownloading || progress < 1 {
+                markCompleted()
+            }
+            return
+        }
         guard isDownloading, currentIsBackground, let task = currentTask else { return }
         performHandoff(task, to: foregroundSession, background: false, direction: .toForeground)
+    }
+
+    /// Sync UI + Live Activity to "done" and refresh dependent state.
+    private func markCompleted() {
+        currentTask = nil
+        progress = 1
+        isDownloading = false
+        errorMessage = nil
+        saveResumeData(nil)
+        endActivity(finished: true)
+        Task { @MainActor in ModelManager.shared.modelChanged() }
     }
 
     /// App is backgrounding — push a foreground transfer down to the durable
@@ -273,14 +293,11 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         let moved = (try? FileManager.default.moveItem(at: location, to: dest)) != nil
         DispatchQueue.main.async {
             self.handoff = .none
-            self.currentTask = nil
-            self.isDownloading = false
-            self.saveResumeData(nil)            // done — clear saved resume data
             if moved {
-                self.progress = 1
-                self.endActivity(finished: true)
-                Task { @MainActor in ModelManager.shared.modelChanged() }  // refresh state
+                self.markCompleted()
             } else {
+                self.currentTask = nil
+                self.isDownloading = false
                 self.errorMessage = "Couldn't save the downloaded model."
                 self.endActivity(finished: false)
             }
