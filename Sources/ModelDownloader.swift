@@ -10,12 +10,13 @@ import ActivityKit
 /// between them on every foreground/background transition —
 ///   • App on-screen  → FOREGROUND (default) session: full speed, Live Activity
 ///     stays in sync.
-///   • App backgrounded/closed → BACKGROUND session: iOS-throttled (slower) but
-///     it keeps going and survives even a force-quit, and the system relaunches
-///     us to save the finished file.
+///   • App backgrounded/locked → BACKGROUND session: iOS-throttled (slower) but
+///     it keeps going and the system relaunches us to save the finished file.
+/// A force-quit cancels the transfer; we persist its resume data to DISK so the
+/// next launch continues from where it stopped instead of restarting from 0.
 /// The handoff cancels the current task *producing resume data* and restarts it
-/// on the other session from where it left off (HuggingFace supports range
-/// requests, so no bytes are re-downloaded).
+/// on the other session (HuggingFace supports range requests, so no bytes are
+/// re-downloaded).
 final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     static let shared = ModelDownloader()
     private override init() { super.init() }
@@ -37,9 +38,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var activity: Activity<ModelDownloadAttributes>?
     private var lastActivityProgress: Double = -1
 
-    /// Resume data captured when a download is cancelled by the user (e.g. they
-    /// tapped Delete or an error killed it) so the next Download continues.
-    private var resumeData: Data?
+    /// The download task we currently consider "ours". Used to tell a stale
+    /// cancellation (e.g. a force-quit event redelivered after we've already
+    /// relaunched the download) apart from a real stop.
+    private var currentTask: URLSessionDownloadTask?
 
     /// Which way an in-flight session→session handoff is going, if any. While a
     /// handoff is in progress we ignore the cancellation it produces (the restart
@@ -54,8 +56,8 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
-    /// Survives backgrounding/lock/force-quit; iOS-throttled. Recreating it with
-    /// the same identifier reconnects to an in-flight transfer after relaunch.
+    /// Survives backgrounding/lock; iOS-throttled. Recreating it with the same
+    /// identifier reconnects to an in-flight transfer after relaunch.
     private lazy var backgroundSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: Self.sessionID)
         config.sessionSendsLaunchEvents = true   // relaunch the app when done
@@ -68,21 +70,40 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         return docs.appendingPathComponent(fileName)
     }
 
+    /// Resume data persisted to disk, so a force-quit (which wipes memory) still
+    /// lets us continue from where the transfer stopped.
+    private var resumeDataURL: URL {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return docs.appendingPathComponent(fileName + ".resume")
+    }
+
     var isDownloaded: Bool { FileManager.default.fileExists(atPath: localURL.path) }
+
+    private func saveResumeData(_ data: Data?) {
+        if let data { try? data.write(to: resumeDataURL, options: .atomic) }
+        else { try? FileManager.default.removeItem(at: resumeDataURL) }
+    }
+    private func loadResumeData() -> Data? { try? Data(contentsOf: resumeDataURL) }
 
     // MARK: - Launch / lifecycle
 
-    /// Re-attach to any in-flight background download (call at launch). Creating
-    /// the background session lets iOS deliver events from a transfer that ran
-    /// (or finished) while we were suspended/killed; we also re-grab the Live
-    /// Activity so we can keep updating it.
+    /// Re-attach to any in-flight download and de-dupe Live Activities (call at
+    /// launch). If nothing is running but we have saved resume data, continue
+    /// from where a force-quit left off instead of starting over.
     func resume() {
-        if let existing = Activity<ModelDownloadAttributes>.activities.first {
-            activity = existing
-        }
-        backgroundSession.getAllTasks { tasks in
-            let active = tasks.contains { $0.state == .running || $0.state == .suspended }
-            if active { DispatchQueue.main.async { self.isDownloading = true } }
+        reconcileActivities()
+        activeDownloadExists { running in
+            DispatchQueue.main.async {
+                if running { self.isDownloading = true; return }
+                if !self.isDownloaded, let data = self.loadResumeData() {
+                    // Auto-continue from the saved byte offset.
+                    self.isDownloading = true
+                    self.restart(on: self.foregroundSession, resume: data)
+                    self.startActivity()
+                } else if self.isDownloaded {
+                    self.endActivity(finished: true)   // clear any leftover activity
+                }
+            }
         }
     }
 
@@ -99,8 +120,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     /// Cancel the in-flight download on `source` producing resume data, then
     /// restart it on `dest` from where it left off. A UIKit background-task
-    /// assertion buys us the moment needed to complete the swap while the app is
-    /// suspending.
+    /// assertion buys us the moment needed to complete the swap while suspending.
     private func handoffTask(from source: URLSession, to dest: URLSession, direction: Handoff) {
         source.getTasksWithCompletionHandler { _, _, downloads in
             guard let task = downloads.first(where: { $0.state == .running || $0.state == .suspended })
@@ -122,10 +142,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private func restart(on session: URLSession, resume data: Data?) {
         let task = data.map { session.downloadTask(withResumeData: $0) }
             ?? session.downloadTask(with: remoteURL)
+        currentTask = task
         task.resume()
         isDownloading = true
         errorMessage = nil
-        resumeData = nil
     }
 
     // MARK: - Start (from Settings)
@@ -140,8 +160,9 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 self.isDownloading = true
                 if running { return }            // already going — just reflect it
                 self.errorMessage = nil
-                self.progress = 0
-                self.restart(on: self.foregroundSession, resume: self.resumeData)
+                let resume = self.loadResumeData()
+                if resume == nil { self.progress = 0 }   // only reset when starting fresh
+                self.restart(on: self.foregroundSession, resume: resume)
                 self.startActivity()
             }
         }
@@ -170,8 +191,22 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     // MARK: - Live Activity
 
+    /// Reattach to a surviving activity (e.g. after force-quit) and end any
+    /// duplicates, so we never show more than one.
+    private func reconcileActivities() {
+        let all = Activity<ModelDownloadAttributes>.activities
+        guard let first = all.first else { return }
+        activity = first
+        lastActivityProgress = -1            // force the next update through
+        for extra in all.dropFirst() {
+            Task { await extra.end(nil, dismissalPolicy: .immediate) }
+        }
+    }
+
     private func startActivity() {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled, activity == nil else { return }
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        reconcileActivities()
+        guard activity == nil else { return }   // reused an existing one — don't add a second
         let state = ModelDownloadAttributes.ContentState(progress: 0, finished: false)
         let content = ActivityContent(state: state, staleDate: nil)
         activity = try? Activity.request(attributes: ModelDownloadAttributes(), content: content)
@@ -186,15 +221,20 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         Task { await activity.update(ActivityContent(state: state, staleDate: nil)) }
     }
 
+    /// End the download's Live Activity — and any stray duplicates — showing a
+    /// final state.
     private func endActivity(finished: Bool) {
-        guard let activity else { return }
-        self.activity = nil
+        let all = Activity<ModelDownloadAttributes>.activities
+        guard !all.isEmpty else { activity = nil; return }
+        activity = nil
         let state = ModelDownloadAttributes.ContentState(
-            progress: finished ? 1 : lastActivityProgress, finished: finished)
+            progress: finished ? 1 : max(0, lastActivityProgress), finished: finished)
         let content = ActivityContent(state: state, staleDate: nil)
         Task {
-            await activity.update(content)
-            await activity.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4)))
+            for a in all {
+                await a.update(content)
+                await a.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4)))
+            }
         }
     }
 }
@@ -206,9 +246,10 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         guard totalBytesExpectedToWrite > 0 else { return }
         let fraction = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
         DispatchQueue.main.async {
+            self.currentTask = downloadTask     // adopt whichever task is actually delivering bytes
             self.progress = fraction
             self.isDownloading = true
-            self.errorMessage = nil          // bytes flowing → clear any stale "stopped" note
+            self.errorMessage = nil             // bytes flowing → clear any stale "stopped" note
             self.updateActivity(fraction)
         }
     }
@@ -221,7 +262,9 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         let moved = (try? FileManager.default.moveItem(at: location, to: dest)) != nil
         DispatchQueue.main.async {
             self.handoff = .none
+            self.currentTask = nil
             self.isDownloading = false
+            self.saveResumeData(nil)            // done — clear saved resume data
             if moved {
                 self.progress = 1
                 self.endActivity(finished: true)
@@ -239,19 +282,30 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         let nsError = error as NSError
         let resume = nsError.userInfo[NSURLSessionDownloadTaskResumeData] as? Data
         DispatchQueue.main.async {
-            // Mid-handoff cancellation — the restart is handled by handoffTask, so
-            // don't treat it as the user stopping the download.
+            // Mid-handoff cancellation — the restart is handled by handoffTask.
             if self.handoff != .none { return }
 
+            // A cancellation from a task that isn't our current one is a stale
+            // redelivery (e.g. the force-quit event arriving after we already
+            // relaunched). Keep its resume data as a fallback, but don't stop.
+            if let current = self.currentTask, task !== current {
+                if let resume, self.loadResumeData() == nil { self.saveResumeData(resume) }
+                return
+            }
+
+            self.currentTask = nil
             self.isDownloading = false
-            self.endActivity(finished: false)
-            if nsError.code == NSURLErrorCancelled {
-                self.resumeData = resume
-                self.errorMessage = (resume != nil)
-                    ? "Download stopped. Tap Download to resume where it left off."
-                    : nil
+            if nsError.code == NSURLErrorCancelled, let resume {
+                // Paused (e.g. force-quit) but recoverable. Persist resume data so
+                // the next launch continues, and KEEP the Live Activity — the
+                // download isn't finished, and reattaching to the same one on
+                // relaunch avoids a stuck-old + new duplicate.
+                self.saveResumeData(resume)
+                self.errorMessage = "Download paused. It'll continue when you reopen, or tap Download."
             } else {
-                self.errorMessage = error.localizedDescription
+                // Unrecoverable (cancel with no resume data, or a real error).
+                self.endActivity(finished: false)
+                self.errorMessage = (nsError.code == NSURLErrorCancelled) ? nil : error.localizedDescription
             }
         }
     }
