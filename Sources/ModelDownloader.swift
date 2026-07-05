@@ -81,7 +81,8 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     private func startActivity() {
         guard ActivityAuthorizationInfo().areActivitiesEnabled, activity == nil else { return }
-        let content = ActivityContent(state: .init(progress: 0, finished: false), staleDate: nil)
+        let state = ModelDownloadAttributes.ContentState(progress: 0, finished: false)
+        let content = ActivityContent(state: state, staleDate: nil)
         activity = try? Activity.request(attributes: ModelDownloadAttributes(), content: content)
         lastActivityProgress = 0
     }
@@ -90,16 +91,17 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         // Throttle — ActivityKit rate-limits updates, so only push every ~2%.
         guard let activity, p - lastActivityProgress >= 0.02 else { return }
         lastActivityProgress = p
-        Task { await activity.update(ActivityContent(state: .init(progress: p, finished: false), staleDate: nil)) }
+        let state = ModelDownloadAttributes.ContentState(progress: p, finished: false)
+        Task { await activity.update(ActivityContent(state: state, staleDate: nil)) }
     }
 
     private func endActivity(finished: Bool) {
         guard let activity else { return }
         self.activity = nil
+        let state = ModelDownloadAttributes.ContentState(
+            progress: finished ? 1 : lastActivityProgress, finished: finished)
+        let content = ActivityContent(state: state, staleDate: nil)
         Task {
-            let content = ActivityContent(
-                state: .init(progress: finished ? 1 : lastActivityProgress, finished: finished),
-                staleDate: nil)
             await activity.update(content)
             await activity.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4)))
         }
