@@ -96,14 +96,14 @@ struct SettingsView: View {
                         ProgressView(value: downloader.progress)
                         Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
-                        Text("You can leave the app or lock your phone — it keeps downloading in the background.")
+                        Text("Keep MedAdvisor open while it downloads. If you leave, it pauses and resumes when you come back.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {
                     Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                    Text("Downloads in the background — leave the app or lock your phone while it finishes. (If you force-quit the app it pauses; tap Download to resume.)")
+                    Text("~4.3 GB, one time. Keep MedAdvisor open while it downloads — it's fastest that way. If you leave, it pauses and resumes when you return.")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }

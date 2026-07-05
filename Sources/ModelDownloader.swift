@@ -32,9 +32,12 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var resumeData: Data?
 
     private lazy var session: URLSession = {
-        let config = URLSessionConfiguration.background(withIdentifier: Self.sessionID)
-        config.sessionSendsLaunchEvents = true   // relaunch the app when done
-        config.isDiscretionary = false           // start now, don't defer
+        // Foreground (default) session. Background sessions are heavily throttled
+        // by iOS (~10x slower for a big file) and their Live Activity updates lag,
+        // so for a one-time 4.3GB download we prioritize SPEED: fast while the app
+        // is open; it pauses if you leave and resumes (from resume data) on return.
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
