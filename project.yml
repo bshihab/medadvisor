@@ -8,9 +8,6 @@ options:
 packages:
   llama-binary:
     path: llama-binary
-  WhisperKit:
-    url: https://github.com/argmaxinc/WhisperKit
-    exactVersion: 1.0.0
 
 targets:
   MedAdvisor:
@@ -23,13 +20,11 @@ targets:
     dependencies:
       - package: llama-binary
         product: llama
-      - package: WhisperKit
-        product: WhisperKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor
-        MARKETING_VERSION: "0.0.2"
-        CURRENT_PROJECT_VERSION: "2"
+        MARKETING_VERSION: "0.0.3"
+        CURRENT_PROJECT_VERSION: "3"
         GENERATE_INFOPLIST_FILE: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"

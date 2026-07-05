@@ -12,9 +12,11 @@ struct TranscriptTurn: Codable, Equatable {
 /// same-role utterances back into turns. This replaced FluidAudio diarization,
 /// which was unreliable and needed timed segments the Apple engine doesn't give.
 enum SpeakerAttribution {
-    /// The utterance units to label. Prefer the engine's own timed segments
-    /// (Whisper); fall back to sentence-splitting the flat text (Apple returns
-    /// one segment, so this is where its utterances come from).
+    /// The utterance units to label. Prefer the transcriber's own segments if
+    /// it provides several; fall back to sentence-splitting the flat text (the
+    /// Apple engine's file transcription returns one segment). Note: the primary
+    /// path uses the live transcript's pause-segmented lines (see
+    /// EncounterProcessor) — this is only for the file-transcription fallback.
     static func utterances(from result: TranscriptResult) -> [String] {
         let fromSegments = result.segments
             .map { $0.text.trimmingCharacters(in: .whitespacesAndNewlines) }

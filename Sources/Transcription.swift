@@ -14,8 +14,8 @@ struct TranscriptResult: Equatable {
     let segments: [TranscriptSegment]
 }
 
-/// Engine-agnostic transcription. WhisperTranscriber and AppleSpeechTranscriber
-/// both conform, so EncounterProcessor can switch engines at runtime (A/B).
+/// Engine-agnostic transcription. Only AppleSpeechTranscriber conforms now
+/// (Whisper was removed) — kept as a protocol so the pipeline stays decoupled.
 @MainActor
 protocol Transcribing {
     func transcribe(url: URL) async throws -> TranscriptResult
@@ -24,31 +24,3 @@ protocol Transcribing {
 // Back-compat aliases so existing call sites keep compiling.
 typealias WhisperSegment = TranscriptSegment
 typealias WhisperResult = TranscriptResult
-
-/// The selectable speech-to-text engines (persisted in UserDefaults).
-enum TranscriptionEngine: String, CaseIterable, Identifiable {
-    case apple, whisper
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .apple:    return "Apple (on-device)"
-        case .whisper:  return "Whisper (small.en)"
-        }
-    }
-    var subtitle: String {
-        switch self {
-        case .apple:    return "iOS 26 · no download · fastest, most battery-efficient"
-        case .whisper:  return "iOS 17+ · downloads ~480 MB once"
-        }
-    }
-
-    /// The currently-selected engine. Defaults to Apple — its transcription is
-    /// accurate and needs no download. Speaker separation no longer depends on
-    /// the engine's timed segments: the LLM tags Doctor/Patient from the text
-    /// (see SpeakerAttribution + PromptBuilder.speakerAttributionPrompt).
-    static var current: TranscriptionEngine {
-        TranscriptionEngine(rawValue:
-            UserDefaults.standard.string(forKey: "transcriptionEngine") ?? "") ?? .apple
-    }
-}

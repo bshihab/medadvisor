@@ -7,16 +7,9 @@ struct SettingsView: View {
     @State private var progress: Double = 0
     @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
-    @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.apple.rawValue
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
-
-    /// Apple's engine only appears on iOS 26+; below that, Whisper only.
-    private var engineChoices: [TranscriptionEngine] {
-        if #available(iOS 26.0, *) { return TranscriptionEngine.allCases }
-        return [.whisper]
-    }
 
     var body: some View {
         NavigationStack {
@@ -29,19 +22,7 @@ struct SettingsView: View {
                 } header: {
                     Text("On-device Models")
                 } footer: {
-                    Text("Everything runs on your device, offline. The AI model downloads once; the speech models download automatically the first time you record. Delete any to free space — the AI model is required to record.")
-                }
-
-                Section {
-                    Picker("Speech engine", selection: $engine) {
-                        ForEach(engineChoices) { choice in
-                            Text(choice.title).tag(choice.rawValue)
-                        }
-                    }
-                } header: {
-                    Text("Transcription")
-                } footer: {
-                    Text((TranscriptionEngine(rawValue: engine) ?? .whisper).subtitle)
+                    Text("Everything runs on your device, offline. The AI model downloads once (required to record); speech-to-text uses Apple's built-in on-device engine — no download.")
                 }
 
                 Section("Appearance") {

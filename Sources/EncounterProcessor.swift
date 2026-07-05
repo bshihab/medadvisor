@@ -1,7 +1,7 @@
 import Foundation
 
 /// Orchestrates the on-device pipeline for one recording:
-/// transcribe (Apple/Whisper) → LLM speaker attribution → conversation turns →
+/// transcribe (Apple) → LLM speaker attribution → conversation turns →
 /// redact → score each criterion → summary.
 ///
 /// The transcriber is released before the LLM loads, so only one big model is
@@ -27,17 +27,10 @@ final class EncounterProcessor: ObservableObject {
     /// Per-criterion results as they're scored — drives the live-filling rubric.
     @Published var liveResults: [CriterionResult] = []
 
-    /// Picks the speech engine at runtime so we can A/B without rebuilding.
-    /// Selection lives in Settings ("transcriptionEngine").
-    private var transcriber: any Transcribing {
-        switch TranscriptionEngine.current {
-        case .apple:
-            if #available(iOS 26.0, *) { return AppleSpeechTranscriber() }
-            return WhisperTranscriber()   // fallback below iOS 26
-        case .whisper:
-            return WhisperTranscriber()
-        }
-    }
+    /// On-device speech-to-text — Apple's SpeechAnalyzer (the app requires
+    /// iOS 26, so it's always available). Only used for the fallback file
+    /// re-transcription; live segmentation comes from the recorder.
+    private var transcriber: any Transcribing { AppleSpeechTranscriber() }
 
     func requestPermissions() {}
 
@@ -58,8 +51,8 @@ final class EncounterProcessor: ObservableObject {
         //    pauses — which is where speakers change — so those are far better
         //    boundaries than re-transcribing the file into a flat blob and
         //    guessing sentence breaks (that flattening is what glued a doctor
-        //    question onto the patient's answer). Fall back to transcribing the
-        //    file only when there's no live transcript (e.g. the Whisper engine).
+        //    question onto the patient's answer). Fall back to re-transcribing
+        //    the file only when there's no live transcript (e.g. live failed).
         stage = .transcribing
         let liveUtterances = liveSegments
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -70,10 +63,10 @@ final class EncounterProcessor: ObservableObject {
             utterances = liveUtterances
             flatTranscript = liveUtterances.joined(separator: " ")
         } else {
-            let whisperResult = (try? await transcriber.transcribe(url: url))
+            let fileResult = (try? await transcriber.transcribe(url: url))
                 ?? TranscriptResult(text: "", segments: [])
-            flatTranscript = whisperResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            utterances = SpeakerAttribution.utterances(from: whisperResult)
+            flatTranscript = fileResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            utterances = SpeakerAttribution.utterances(from: fileResult)
         }
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")

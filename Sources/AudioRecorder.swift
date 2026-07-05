@@ -110,15 +110,15 @@ final class AudioRecorder: NSObject, ObservableObject {
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
 
-            // File to write (WAV/PCM — read reliably by WhisperKit/diarizer later).
+            // File to write (WAV/PCM — read reliably for post-stop transcription).
             let url = Self.makeFileURL()
             capture.file = try AVAudioFile(forWriting: url, settings: format.settings)
             capture.paused = false
             currentURL = url
 
-            // Optional live transcription (Apple engine only). Best-effort.
-            let wantLive = (TranscriptionEngine.current == .apple)
-            if wantLive, #available(iOS 26.0, *) {
+            // Live transcription via Apple SpeechAnalyzer (best-effort). Its
+            // pause-segmented lines also drive the speaker attribution.
+            if #available(iOS 26.0, *) {
                 Task { await self.setupLiveTranscription() }
             }
 

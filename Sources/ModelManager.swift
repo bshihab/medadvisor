@@ -1,44 +1,28 @@
 import Foundation
 
-/// Directories we own for the on-device speech models, so we can reliably check
-/// whether they're installed and delete them. (The LLM is managed separately by
-/// ModelDownloader, which owns its .gguf file.)
-enum AppModelPaths {
-    static var base: URL {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Models", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir
-    }
-    static var whisperBase: URL { base.appendingPathComponent("whisper", isDirectory: true) }
-}
-
-/// The on-device models the app manages.
+/// The on-device model the app manages (just the LLM now — Apple's speech
+/// engine ships with iOS and needs no managed download).
 enum ManagedModel: String, CaseIterable, Identifiable {
-    case llm, whisper
+    case llm
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .llm:      return "Qwen 2.5-7B"
-        case .whisper:  return "Whisper (small.en)"
+        case .llm: return "Qwen 2.5-7B"
         }
     }
     var role: String {
         switch self {
-        case .llm:      return "AI feedback"
-        case .whisper:  return "Speech-to-text"
+        case .llm: return "AI feedback"
         }
     }
     var approxSize: String {
         switch self {
-        case .llm:      return "~4.3 GB"
-        case .whisper:  return "~480 MB"
+        case .llm: return "~4.3 GB"
         }
     }
-    /// The LLM is downloaded up front; the speech models download automatically
-    /// the first time they're used.
-    var downloadsOnFirstUse: Bool { self != .llm }
+    /// The LLM is downloaded up front.
+    var downloadsOnFirstUse: Bool { false }
 }
 
 /// Tracks install-state and deletion for all three models. Bump `revision` to
@@ -51,23 +35,14 @@ final class ModelManager: ObservableObject {
 
     func isInstalled(_ model: ManagedModel) -> Bool {
         switch model {
-        case .llm:      return ModelDownloader.shared.isDownloaded
-        case .whisper:  return Self.directoryHasContents(AppModelPaths.whisperBase)
+        case .llm: return ModelDownloader.shared.isDownloaded
         }
     }
 
     func delete(_ model: ManagedModel) {
         switch model {
-        case .llm:      try? FileManager.default.removeItem(at: ModelDownloader.shared.localURL)
-        case .whisper:  try? FileManager.default.removeItem(at: AppModelPaths.whisperBase)
+        case .llm: try? FileManager.default.removeItem(at: ModelDownloader.shared.localURL)
         }
         revision += 1
-    }
-
-    /// True if the model directory exists and contains at least one file.
-    private static func directoryHasContents(_ url: URL) -> Bool {
-        guard let items = try? FileManager.default.contentsOfDirectory(
-            at: url, includingPropertiesForKeys: nil) else { return false }
-        return !items.isEmpty
     }
 }
