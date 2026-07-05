@@ -48,17 +48,33 @@ final class EncounterProcessor: ObservableObject {
         liveResults = []
     }
 
-    func process(url: URL, rubric: Rubric) async {
+    func process(url: URL, rubric: Rubric, liveSegments: [String] = []) async {
         // Free any LLM still resident from a previous analysis BEFORE the
         // transcriber loads — only one big model should be in memory at a time.
         LLMEngine.shared.unload()
 
-        // 1) Transcribe the whole file (Apple SpeechAnalyzer or WhisperKit,
-        //    whichever is selected; released on return).
+        // 1) Get the utterances to attribute. PREFER the live transcript's own
+        //    segmentation: Apple's streaming engine already cut it at natural
+        //    pauses — which is where speakers change — so those are far better
+        //    boundaries than re-transcribing the file into a flat blob and
+        //    guessing sentence breaks (that flattening is what glued a doctor
+        //    question onto the patient's answer). Fall back to transcribing the
+        //    file only when there's no live transcript (e.g. the Whisper engine).
         stage = .transcribing
-        let whisperResult = (try? await transcriber.transcribe(url: url))
-            ?? TranscriptResult(text: "", segments: [])
-        let flatTranscript = whisperResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let liveUtterances = liveSegments
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        let utterances: [String]
+        let flatTranscript: String
+        if liveUtterances.count >= 2 {
+            utterances = liveUtterances
+            flatTranscript = liveUtterances.joined(separator: " ")
+        } else {
+            let whisperResult = (try? await transcriber.transcribe(url: url))
+                ?? TranscriptResult(text: "", segments: [])
+            flatTranscript = whisperResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            utterances = SpeakerAttribution.utterances(from: whisperResult)
+        }
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")
             return
@@ -77,7 +93,6 @@ final class EncounterProcessor: ObservableObject {
             //    boundaries (the model only classifies) avoid the phase-slips that
             //    whole-transcript reconstruction produced.
             stage = .identifyingSpeakers
-            let utterances = SpeakerAttribution.utterances(from: whisperResult)
             var rawTurns: [TranscriptTurn]
             var twoSpeaker = false
             if utterances.count >= 4 {

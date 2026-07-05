@@ -457,7 +457,11 @@ struct RecordingView: View {
     private func runProcessing(url: URL) {
         guard let rubric else { return }
         Task {
-            await processor.process(url: url, rubric: rubric)
+            // Hand over the live transcript's pause-segmented lines — Apple's
+            // streaming engine already split them at natural pauses (where
+            // speakers change), which beats re-flattening the audio.
+            await processor.process(url: url, rubric: rubric,
+                                    liveSegments: recorder.liveLines.map(\.text))
             if case .done(let feedback) = processor.stage {
                 let record = ConsultationRecord(
                     id: UUID().uuidString,
