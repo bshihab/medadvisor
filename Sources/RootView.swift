@@ -1,13 +1,37 @@
 import SwiftUI
 
+/// Light / Dark / System appearance, persisted in UserDefaults ("appearance").
+enum Appearance: String, CaseIterable, Identifiable {
+    case system, light, dark
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .system: return "System"
+        case .light:  return "Light"
+        case .dark:   return "Dark"
+        }
+    }
+    /// nil = follow the system setting.
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light:  return .light
+        case .dark:   return .dark
+        }
+    }
+}
+
 /// App root: two tabs. Record is the hero — it opens straight onto the recording
 /// screen; Progress combines the old History, Insights, and Goals into one hub.
 /// Settings is a gear on each screen rather than a tab.
 struct RootView: View {
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
+    @AppStorage("appearance") private var appearance = Appearance.system.rawValue
 
     var body: some View {
-        tabs.memoryHUD(showMemoryHUD)
+        tabs
+            .memoryHUD(showMemoryHUD)
+            .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme ?? nil)
     }
 
     private var tabs: some View {

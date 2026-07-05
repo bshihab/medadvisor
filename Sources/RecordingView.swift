@@ -437,9 +437,17 @@ struct RecordingView: View {
     }
 
     private func centeredProgress(_ title: String) -> some View {
-        VStack {
+        // System spinner (UIKit-backed) rather than a custom SwiftUI animation:
+        // on-device transcription saturates the chip and stalls custom animations,
+        // but the system indicator keeps spinning because it runs off the main thread.
+        VStack(spacing: 18) {
             Spacer()
-            ProcessingWave(title: title)
+            ProgressView()
+                .controlSize(.large)
+            Text(title)
+                .font(.callout.weight(.medium))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
             Spacer()
         }
     }

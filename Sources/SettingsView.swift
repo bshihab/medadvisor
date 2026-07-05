@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var confirmDelete: ManagedModel?
     @AppStorage("transcriptionEngine") private var engine = TranscriptionEngine.apple.rawValue
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
+    @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
 
     /// Apple's engine only appears on iOS 26+; below that, Whisper only.
@@ -41,6 +42,15 @@ struct SettingsView: View {
                     Text("Transcription")
                 } footer: {
                     Text((TranscriptionEngine(rawValue: engine) ?? .whisper).subtitle)
+                }
+
+                Section("Appearance") {
+                    Picker("Theme", selection: $appearance) {
+                        ForEach(Appearance.allCases) { option in
+                            Text(option.label).tag(option.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 Section("Privacy") {

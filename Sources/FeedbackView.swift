@@ -149,12 +149,15 @@ struct FeedbackView: View {
                     .monospacedDigit()
                     .foregroundStyle(tint)
             }
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color.secondary.opacity(0.15))
-                    Capsule().fill(tint).frame(width: geo.size.width * CGFloat(fraction))
-                }
+            // No GeometryReader (it's greedy about width in a ScrollView and can
+            // cause sideways scrolling): the filled bar is a full-width capsule
+            // scaled horizontally from the leading edge.
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.secondary.opacity(0.15))
+                Capsule().fill(tint)
+                    .scaleEffect(x: CGFloat(fraction), y: 1, anchor: .leading)
             }
+            .frame(maxWidth: .infinity)
             .frame(height: 6)
         }
     }
