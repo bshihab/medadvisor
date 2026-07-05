@@ -2,9 +2,10 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-/// Live Activity for the AI-model download. Compact: a circular progress ring
-/// on the Lock Screen and in the Dynamic Island (like a download indicator),
-/// plus a clean glyph + line in the expanded island.
+/// Live Activity for the AI-model download. A thick circular ring in the compact
+/// island, and a "route"-style progress line (like the delivery/rideshare
+/// activities) in the expanded island — with bold text and generous insets so
+/// nothing sits on the rounded edges.
 struct ModelDownloadLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ModelDownloadAttributes.self) { context in
@@ -13,42 +14,47 @@ struct ModelDownloadLiveActivity: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     Label("AI model", systemImage: "brain.head.profile")
-                        .font(.caption.weight(.medium))
+                        .font(.subheadline.weight(.bold))
                         .foregroundStyle(.blue)
+                        .padding(.leading, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    statusText(context.state).font(.caption.weight(.semibold))
+                    badge(context.state).padding(.trailing, 4)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    HStack(spacing: 8) {
-                        Image(systemName: context.state.finished ? "checkmark.circle.fill" : "arrow.down.circle.fill")
-                            .font(.footnote)
-                            .foregroundStyle(context.state.finished ? .green : .blue)
-                        line(context.state)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(context.state.finished ? "Model ready" : "Downloading AI model")
+                            .font(.footnote.weight(.bold))
+                            .foregroundStyle(.primary)
+                        route(context.state)
                     }
+                    .padding(.horizontal, 6)
                     .padding(.top, 2)
                 }
             } compactLeading: {
-                Image(systemName: "brain.head.profile").foregroundStyle(.blue)
+                Image(systemName: "brain.head.profile")
+                    .foregroundStyle(.blue)
+                    .padding(.leading, 2)
             } compactTrailing: {
-                ring(context.state, size: 20, lineWidth: 2.5, glyph: false)
+                ring(context.state, size: 22, lineWidth: 4, glyph: false)
+                    .padding(.trailing, 2)
             } minimal: {
-                ring(context.state, size: 20, lineWidth: 2.5, glyph: false)
+                ring(context.state, size: 22, lineWidth: 4, glyph: false)
             }
             .keylineTint(.blue)
         }
     }
 
-    // MARK: - Lock Screen (compact row: ring + text + %)
+    // MARK: - Lock Screen (ring + text + %)
 
     private func lockScreen(_ s: ModelDownloadAttributes.ContentState) -> some View {
         HStack(spacing: 14) {
-            ring(s, size: 42, lineWidth: 4, glyph: true)
+            ring(s, size: 44, lineWidth: 5, glyph: true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(s.finished ? "AI model ready" : "Downloading AI model")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.subheadline.weight(.bold))
                 Text(s.finished ? "MedAdvisor · ready to score" : "MedAdvisor · runs on your device")
-                    .font(.caption2).foregroundStyle(.secondary)
+                    .font(.caption2.weight(.medium)).foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
             statusText(s).font(.title3.weight(.bold))
@@ -59,30 +65,59 @@ struct ModelDownloadLiveActivity: Widget {
 
     // MARK: - Pieces
 
-    /// Circular progress ring, optionally with a glyph in the center.
+    /// Thick circular progress ring, optionally with a glyph in the center.
     @ViewBuilder
     private func ring(_ s: ModelDownloadAttributes.ContentState,
                       size: CGFloat, lineWidth: CGFloat, glyph: Bool) -> some View {
         let tint: Color = s.finished ? .green : .blue
         ZStack {
-            Circle().stroke(Color.primary.opacity(0.18), lineWidth: lineWidth)
+            Circle().stroke(Color.primary.opacity(0.2), lineWidth: lineWidth)
             Circle()
-                .trim(from: 0, to: s.finished ? 1 : max(0.03, s.progress))
+                .trim(from: 0, to: s.finished ? 1 : max(0.04, s.progress))
                 .stroke(tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             if glyph {
                 Image(systemName: s.finished ? "checkmark" : "arrow.down")
-                    .font(.system(size: size * 0.38, weight: .bold))
+                    .font(.system(size: size * 0.4, weight: .heavy))
                     .foregroundStyle(tint)
             }
         }
         .frame(width: size, height: size)
     }
 
-    /// Thin rounded progress line.
-    private func line(_ s: ModelDownloadAttributes.ContentState) -> some View {
-        ProgressView(value: s.finished ? 1 : s.progress)
-            .tint(s.finished ? .green : .blue)
+    /// "Route" line: a start glyph, a progress track with a moving dot, and a
+    /// destination glyph — like the delivery/rideshare Live Activities.
+    private func route(_ s: ModelDownloadAttributes.ContentState) -> some View {
+        let p = s.finished ? 1 : min(1, max(0, s.progress))
+        let tint: Color = s.finished ? .green : .blue
+        return HStack(spacing: 10) {
+            Image(systemName: "arrow.down.circle.fill")
+                .font(.footnote).foregroundStyle(.blue)
+            GeometryReader { geo in
+                let w = geo.size.width
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.primary.opacity(0.2)).frame(height: 5)
+                    Capsule().fill(tint).frame(width: w * p, height: 5)
+                    Circle().fill(.white)
+                        .frame(width: 11, height: 11)
+                        .overlay(Circle().stroke(tint, lineWidth: 3))
+                        .offset(x: min(w - 11, max(0, w * p - 5.5)))
+                }
+                .frame(maxHeight: .infinity, alignment: .center)
+            }
+            .frame(height: 12)
+            Image(systemName: s.finished ? "checkmark.seal.fill" : "brain.head.profile")
+                .font(.footnote).foregroundStyle(s.finished ? .green : .secondary)
+        }
+    }
+
+    /// Percentage in a tinted capsule (like the time badges in the examples).
+    private func badge(_ s: ModelDownloadAttributes.ContentState) -> some View {
+        statusText(s)
+            .font(.caption.weight(.bold))
+            .padding(.horizontal, 9)
+            .padding(.vertical, 3)
+            .background(Capsule().fill((s.finished ? Color.green : Color.blue).opacity(0.22)))
     }
 
     private func statusText(_ s: ModelDownloadAttributes.ContentState) -> some View {
