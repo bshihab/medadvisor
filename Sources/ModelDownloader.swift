@@ -40,8 +40,13 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     /// The download task we currently consider "ours". Used to tell a stale
     /// cancellation (e.g. a force-quit event redelivered after we've already
-    /// relaunched the download) apart from a real stop.
+    /// relaunched the download) apart from a real stop, and to hand the transfer
+    /// between sessions without racing on getTasks().
     private var currentTask: URLSessionDownloadTask?
+
+    /// Whether `currentTask` is running on the (throttled) background session.
+    /// Drives the foreground/background handoff so we only move it when needed.
+    private var currentIsBackground = false
 
     /// Which way an in-flight session→session handoff is going, if any. While a
     /// handoff is in progress we ignore the cancellation it produces (the restart
@@ -92,13 +97,22 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// from where a force-quit left off instead of starting over.
     func resume() {
         reconcileActivities()
-        activeDownloadExists { running in
+        // If a transfer is still live on the background session (system relaunch
+        // or a reopen), adopt its task by reference so we can hand it off cleanly.
+        backgroundSession.getAllTasks { tasks in
+            let live = tasks.first(where: { $0.state == .running || $0.state == .suspended }) as? URLSessionDownloadTask
             DispatchQueue.main.async {
-                if running { self.isDownloading = true; return }
+                if let live {
+                    self.currentTask = live
+                    self.currentIsBackground = true
+                    self.isDownloading = true
+                    self.enterForeground()             // app is active → pull it to the fast session
+                    return
+                }
                 if !self.isDownloaded, let data = self.loadResumeData() {
                     // Auto-continue from the saved byte offset.
                     self.isDownloading = true
-                    self.restart(on: self.foregroundSession, resume: data)
+                    self.restart(on: self.foregroundSession, background: false, resume: data)
                     self.startActivity()
                 } else if self.isDownloaded {
                     self.endActivity(finished: true)   // clear any leftover activity
@@ -107,42 +121,40 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         }
     }
 
-    /// App became active — pull any background transfer up to the fast session.
+    /// App became active — pull a background transfer up to the fast session.
     func enterForeground() {
-        handoffTask(from: backgroundSession, to: foregroundSession, direction: .toForeground)
+        guard isDownloading, currentIsBackground, let task = currentTask else { return }
+        performHandoff(task, to: foregroundSession, background: false, direction: .toForeground)
     }
 
-    /// App is backgrounding — push any foreground transfer down to the session
-    /// that survives, so it keeps going while we're away.
+    /// App is backgrounding — push a foreground transfer down to the durable
+    /// session so it keeps going while we're away.
     func enterBackground() {
-        handoffTask(from: foregroundSession, to: backgroundSession, direction: .toBackground)
+        guard isDownloading, !currentIsBackground, let task = currentTask else { return }
+        performHandoff(task, to: backgroundSession, background: true, direction: .toBackground)
     }
 
-    /// Cancel the in-flight download on `source` producing resume data, then
-    /// restart it on `dest` from where it left off. A UIKit background-task
-    /// assertion buys us the moment needed to complete the swap while suspending.
-    private func handoffTask(from source: URLSession, to dest: URLSession, direction: Handoff) {
-        source.getTasksWithCompletionHandler { _, _, downloads in
-            guard let task = downloads.first(where: { $0.state == .running || $0.state == .suspended })
-            else { return }
+    /// Cancel the in-flight task producing resume data, then restart it on `dest`
+    /// from where it left off. A UIKit background-task assertion buys us the
+    /// moment needed to complete the swap while the app is suspending.
+    private func performHandoff(_ task: URLSessionDownloadTask, to dest: URLSession,
+                                background: Bool, direction: Handoff) {
+        handoff = direction
+        let assertion = UIApplication.shared.beginBackgroundTask(withName: "model-download-handoff")
+        task.cancel(byProducingResumeData: { data in
             DispatchQueue.main.async {
-                self.handoff = direction
-                let assertion = UIApplication.shared.beginBackgroundTask(withName: "model-download-handoff")
-                task.cancel(byProducingResumeData: { data in
-                    DispatchQueue.main.async {
-                        self.restart(on: dest, resume: data)
-                        self.handoff = .none
-                        if assertion != .invalid { UIApplication.shared.endBackgroundTask(assertion) }
-                    }
-                })
+                self.restart(on: dest, background: background, resume: data)
+                self.handoff = .none
+                if assertion != .invalid { UIApplication.shared.endBackgroundTask(assertion) }
             }
-        }
+        })
     }
 
-    private func restart(on session: URLSession, resume data: Data?) {
+    private func restart(on session: URLSession, background: Bool, resume data: Data?) {
         let task = data.map { session.downloadTask(withResumeData: $0) }
             ?? session.downloadTask(with: remoteURL)
         currentTask = task
+        currentIsBackground = background
         task.resume()
         isDownloading = true
         errorMessage = nil
@@ -162,7 +174,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 self.errorMessage = nil
                 let resume = self.loadResumeData()
                 if resume == nil { self.progress = 0 }   // only reset when starting fresh
-                self.restart(on: self.foregroundSession, resume: resume)
+                self.restart(on: self.foregroundSession, background: false, resume: resume)
                 self.startActivity()
             }
         }
@@ -246,7 +258,6 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         guard totalBytesExpectedToWrite > 0 else { return }
         let fraction = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
         DispatchQueue.main.async {
-            self.currentTask = downloadTask     // adopt whichever task is actually delivering bytes
             self.progress = fraction
             self.isDownloading = true
             self.errorMessage = nil             // bytes flowing → clear any stale "stopped" note
