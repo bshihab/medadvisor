@@ -138,12 +138,21 @@ enum PromptBuilder {
             .map { "\($0.offset + 1). \($0.element)" }
             .joined(separator: "\n")
         return """
-        These are numbered utterances from a two-person doctor-patient consultation, \
-        in chronological order. Some are the Doctor speaking, some are the Patient. \
-        Label EVERY numbered utterance as D (Doctor) or P (Patient). The doctor asks \
-        questions, examines, explains, and gives the plan; the patient describes their \
-        symptoms and feelings. Speakers usually alternate, but one speaker can have \
-        several utterances in a row.
+        These are numbered utterances from a two-person doctor–patient consultation, \
+        in chronological order. Label EVERY utterance as D (Doctor) or P (Patient).
+
+        Decide each one from its CONTENT and clinical role — do NOT just assume the \
+        speakers take strict turns:
+        - The DOCTOR opens by greeting and introducing themselves, then asks the \
+        history questions, proposes and narrates the exam, explains findings, \
+        reassures, and gives the plan and safety-net.
+        - The PATIENT describes their own symptoms, feelings, worries, and answers \
+        questions about themselves.
+        - Speakers do NOT alternate every line. A greeting, a multi-part question, or \
+        a follow-up is usually the SAME speaker as the line before it — one speaker \
+        often has several utterances in a row.
+        - Assign short lines ("Okay.", "Right.", "Yeah, that's fine.") to whoever the \
+        surrounding content shows is speaking.
 
         Output ONLY one line per number in the form "N: D" or "N: P". Nothing else.
 
