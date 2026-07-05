@@ -33,6 +33,9 @@ final class ModelManager: ObservableObject {
 
     @Published private(set) var revision = 0
 
+    /// Bump so views re-check install state (e.g. after a background download).
+    func modelChanged() { revision += 1 }
+
     func isInstalled(_ model: ManagedModel) -> Bool {
         switch model {
         case .llm: return ModelDownloader.shared.isDownloaded

@@ -3,21 +3,19 @@ import SwiftUI
 /// Settings — manage the on-device models (download the LLM up front; see status
 /// of and delete any managed model) and pick the transcription engine.
 struct SettingsView: View {
-    @State private var downloading = false
-    @State private var progress: Double = 0
-    @State private var errorMessage: String?
     @State private var confirmDelete: ManagedModel?
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
+    @ObservedObject private var downloader = ModelDownloader.shared
 
     var body: some View {
         NavigationStack {
             List {
                 Section {
                     ForEach(ManagedModel.allCases) { modelRow($0) }
-                    if let errorMessage {
-                        Text(errorMessage).font(.caption).foregroundStyle(.red)
+                    if let error = downloader.errorMessage {
+                        Text(error).font(.caption).foregroundStyle(.red)
                     }
                 } header: {
                     Text("On-device Models")
@@ -93,20 +91,21 @@ struct SettingsView: View {
             }
 
             if model == .llm, !installed {
-                if downloading {
+                if downloader.isDownloading {
                     VStack(alignment: .leading, spacing: 6) {
-                        ProgressView(value: progress)
-                        Text("Downloading… \(Int(progress * 100))%")
+                        ProgressView(value: downloader.progress)
+                        Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
+                        Text("You can leave the app or lock your phone — it keeps downloading in the background.")
+                            .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {
-                    Button("Download (~4.3 GB, one time)") { downloadLLM() }
+                    Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
+                    Text("Downloads in the background — you can leave the app or lock your phone while it finishes.")
+                        .font(.caption2).foregroundStyle(.secondary)
                 }
-            } else if !installed, model.downloadsOnFirstUse {
-                Text("Downloads automatically on first recording.")
-                    .font(.caption).foregroundStyle(.secondary)
             }
 
             if installed {
@@ -118,21 +117,5 @@ struct SettingsView: View {
             }
         }
         .padding(.vertical, 4)
-    }
-
-    private func downloadLLM() {
-        downloading = true
-        errorMessage = nil
-        Task {
-            do {
-                _ = try await ModelDownloader.shared.ensureModel { fraction in
-                    progress = fraction
-                }
-                models.objectWillChange.send()   // refresh installed state
-            } catch {
-                errorMessage = error.localizedDescription
-            }
-            downloading = false
-        }
     }
 }
