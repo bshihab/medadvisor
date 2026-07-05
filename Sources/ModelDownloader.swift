@@ -1,11 +1,21 @@
 import Foundation
+import UIKit
 import ActivityKit
 
 /// Downloads the Qwen2.5-7B-Instruct GGUF (~4.3 GB) once into Documents, then
-/// runs fully offline. Uses a BACKGROUND URLSession so the download survives the
-/// user leaving the app, locking the phone, or even killing the app — the system
-/// keeps downloading and relaunches us to save the file. (Chosen over MedGemma
-/// 4B after benchmarking — see tools/llm-benchmark/README.md.)
+/// runs fully offline. (Chosen over MedGemma 4B after benchmarking — see
+/// tools/llm-benchmark/README.md.)
+///
+/// HYBRID transfer: we keep TWO URLSessions and hand the in-flight download off
+/// between them on every foreground/background transition —
+///   • App on-screen  → FOREGROUND (default) session: full speed, Live Activity
+///     stays in sync.
+///   • App backgrounded/closed → BACKGROUND session: iOS-throttled (slower) but
+///     it keeps going and survives even a force-quit, and the system relaunches
+///     us to save the finished file.
+/// The handoff cancels the current task *producing resume data* and restarts it
+/// on the other session from where it left off (HuggingFace supports range
+/// requests, so no bytes are re-downloaded).
 final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     static let shared = ModelDownloader()
     private override init() { super.init() }
@@ -27,17 +37,29 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var activity: Activity<ModelDownloadAttributes>?
     private var lastActivityProgress: Double = -1
 
-    /// Resume data captured when a download is cancelled (e.g. the app was
-    /// force-quit) so the next Download continues from where it stopped.
+    /// Resume data captured when a download is cancelled by the user (e.g. they
+    /// tapped Delete or an error killed it) so the next Download continues.
     private var resumeData: Data?
 
-    private lazy var session: URLSession = {
-        // Foreground (default) session. Background sessions are heavily throttled
-        // by iOS (~10x slower for a big file) and their Live Activity updates lag,
-        // so for a one-time 4.3GB download we prioritize SPEED: fast while the app
-        // is open; it pauses if you leave and resumes (from resume data) on return.
+    /// Which way an in-flight session→session handoff is going, if any. While a
+    /// handoff is in progress we ignore the cancellation it produces (the restart
+    /// is handled by the handoff itself, not the "download stopped" path).
+    private enum Handoff { case none, toBackground, toForeground }
+    private var handoff: Handoff = .none
+
+    /// Fast, full-speed transfer used while the app is on-screen.
+    private lazy var foregroundSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.waitsForConnectivity = true
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+
+    /// Survives backgrounding/lock/force-quit; iOS-throttled. Recreating it with
+    /// the same identifier reconnects to an in-flight transfer after relaunch.
+    private lazy var backgroundSession: URLSession = {
+        let config = URLSessionConfiguration.background(withIdentifier: Self.sessionID)
+        config.sessionSendsLaunchEvents = true   // relaunch the app when done
+        config.isDiscretionary = false           // start now, don't defer
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
@@ -48,34 +70,90 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     var isDownloaded: Bool { FileManager.default.fileExists(atPath: localURL.path) }
 
+    // MARK: - Launch / lifecycle
+
     /// Re-attach to any in-flight background download (call at launch). Creating
-    /// the session also lets the system deliver events from a download that
-    /// finished while we were suspended/killed.
+    /// the background session lets iOS deliver events from a transfer that ran
+    /// (or finished) while we were suspended/killed; we also re-grab the Live
+    /// Activity so we can keep updating it.
     func resume() {
-        session.getAllTasks { tasks in
+        if let existing = Activity<ModelDownloadAttributes>.activities.first {
+            activity = existing
+        }
+        backgroundSession.getAllTasks { tasks in
             let active = tasks.contains { $0.state == .running || $0.state == .suspended }
             if active { DispatchQueue.main.async { self.isDownloading = true } }
         }
     }
 
-    /// Start the download (from Settings). No-op if it's already done or running.
+    /// App became active — pull any background transfer up to the fast session.
+    func enterForeground() {
+        handoffTask(from: backgroundSession, to: foregroundSession, direction: .toForeground)
+    }
+
+    /// App is backgrounding — push any foreground transfer down to the session
+    /// that survives, so it keeps going while we're away.
+    func enterBackground() {
+        handoffTask(from: foregroundSession, to: backgroundSession, direction: .toBackground)
+    }
+
+    /// Cancel the in-flight download on `source` producing resume data, then
+    /// restart it on `dest` from where it left off. A UIKit background-task
+    /// assertion buys us the moment needed to complete the swap while the app is
+    /// suspending.
+    private func handoffTask(from source: URLSession, to dest: URLSession, direction: Handoff) {
+        source.getTasksWithCompletionHandler { _, _, downloads in
+            guard let task = downloads.first(where: { $0.state == .running || $0.state == .suspended })
+            else { return }
+            DispatchQueue.main.async {
+                self.handoff = direction
+                let assertion = UIApplication.shared.beginBackgroundTask(withName: "model-download-handoff")
+                task.cancel(byProducingResumeData: { data in
+                    DispatchQueue.main.async {
+                        self.restart(on: dest, resume: data)
+                        self.handoff = .none
+                        if assertion != .invalid { UIApplication.shared.endBackgroundTask(assertion) }
+                    }
+                })
+            }
+        }
+    }
+
+    private func restart(on session: URLSession, resume data: Data?) {
+        let task = data.map { session.downloadTask(withResumeData: $0) }
+            ?? session.downloadTask(with: remoteURL)
+        task.resume()
+        isDownloading = true
+        errorMessage = nil
+        resumeData = nil
+    }
+
+    // MARK: - Start (from Settings)
+
+    /// Start the download. The app is on-screen when the user taps Download, so we
+    /// begin on the fast foreground session; the scene handoff moves it to the
+    /// background session if they leave. No-op if it's already done or running.
     func startDownload() {
         guard !isDownloaded else { return }
-        session.getAllTasks { tasks in
-            let active = tasks.contains { $0.state == .running || $0.state == .suspended }
+        activeDownloadExists { running in
             DispatchQueue.main.async {
                 self.isDownloading = true
-                if active { return }             // already running — just reflect it
+                if running { return }            // already going — just reflect it
                 self.errorMessage = nil
                 self.progress = 0
-                // Resume from where a cancelled download left off, if we can.
-                if let data = self.resumeData {
-                    self.resumeData = nil
-                    self.session.downloadTask(withResumeData: data).resume()
-                } else {
-                    self.session.downloadTask(with: self.remoteURL).resume()
-                }
+                self.restart(on: self.foregroundSession, resume: self.resumeData)
                 self.startActivity()
+            }
+        }
+    }
+
+    /// Is a download currently running/suspended on *either* session?
+    private func activeDownloadExists(_ completion: @escaping (Bool) -> Void) {
+        foregroundSession.getAllTasks { fg in
+            let fgActive = fg.contains { $0.state == .running || $0.state == .suspended }
+            if fgActive { return completion(true) }
+            self.backgroundSession.getAllTasks { bg in
+                completion(bg.contains { $0.state == .running || $0.state == .suspended })
             }
         }
     }
@@ -130,6 +208,7 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         DispatchQueue.main.async {
             self.progress = fraction
             self.isDownloading = true
+            self.errorMessage = nil          // bytes flowing → clear any stale "stopped" note
             self.updateActivity(fraction)
         }
     }
@@ -141,11 +220,12 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         try? FileManager.default.removeItem(at: dest)
         let moved = (try? FileManager.default.moveItem(at: location, to: dest)) != nil
         DispatchQueue.main.async {
+            self.handoff = .none
             self.isDownloading = false
             if moved {
                 self.progress = 1
                 self.endActivity(finished: true)
-                Task { @MainActor in ModelManager.shared.modelChanged() }  // refresh badge/state
+                Task { @MainActor in ModelManager.shared.modelChanged() }  // refresh state
             } else {
                 self.errorMessage = "Couldn't save the downloaded model."
                 self.endActivity(finished: false)
@@ -159,11 +239,13 @@ extension ModelDownloader: URLSessionDownloadDelegate {
         let nsError = error as NSError
         let resume = nsError.userInfo[NSURLSessionDownloadTaskResumeData] as? Data
         DispatchQueue.main.async {
+            // Mid-handoff cancellation — the restart is handled by handoffTask, so
+            // don't treat it as the user stopping the download.
+            if self.handoff != .none { return }
+
             self.isDownloading = false
             self.endActivity(finished: false)
             if nsError.code == NSURLErrorCancelled {
-                // Force-quitting the app cancels the background transfer (iOS
-                // behavior). Keep the resume data so Download continues later.
                 self.resumeData = resume
                 self.errorMessage = (resume != nil)
                     ? "Download stopped. Tap Download to resume where it left off."

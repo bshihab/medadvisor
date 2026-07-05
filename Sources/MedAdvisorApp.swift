@@ -4,10 +4,20 @@ import UIKit
 @main
 struct MedAdvisorApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             RootView()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            // Hand the model download between the fast (foreground) and durable
+            // (background) sessions as the app moves on/off screen.
+            switch phase {
+            case .active:     ModelDownloader.shared.enterForeground()
+            case .background: ModelDownloader.shared.enterBackground()
+            default:          break
+            }
         }
     }
 }
