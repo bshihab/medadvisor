@@ -36,7 +36,7 @@ Result:
 
 Answer in EXACTLY three lines and nothing else:
 RESULT: done, partial, or missed
-EVIDENCE: a direct quote of the clinician's words (write none if missed)
+EVIDENCE: a short direct quote of the clinician's OWN words, with NO speaker labels (write none if missed)
 TIP: one short, specific improvement tip if partial or missed (write none if done)
 
 TRANSCRIPT:
@@ -123,6 +123,9 @@ def parse_criterion(raw: str, transcript: str):
                 continue
             evidence = c.strip(" \t\"'“”")
             break
+    if evidence:
+        evidence = re.sub(r"(?i)\b(doctor|patient|clinician|speaker\s*\d+)\s*:\s*", "", evidence)
+        evidence = re.sub(r"\s{2,}", " ", evidence).strip()
     if evidence and evidence.lower() == "none":
         evidence = None
 

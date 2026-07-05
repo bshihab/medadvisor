@@ -89,7 +89,7 @@ enum PromptBuilder {
 
         Answer in EXACTLY three lines and nothing else:
         RESULT: done, partial, or missed
-        EVIDENCE: a direct quote of the clinician's words (write none if missed)
+        EVIDENCE: a short direct quote of the clinician's OWN words, with NO speaker labels (write none if missed)
         TIP: one short, specific improvement tip if partial or missed (write none if done)
 
         TRANSCRIPT:
@@ -247,7 +247,7 @@ enum FeedbackParser {
             }
         }
         if var e = evidence {
-            e = e.trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
+            e = stripSpeakerLabels(e).trimmingCharacters(in: CharacterSet(charactersIn: " \t\"'“”"))
             evidence = (e.isEmpty || e.lowercased() == "none") ? nil : e
         }
         if let c = comment, c.lowercased() == "none" || c.isEmpty {
@@ -261,6 +261,17 @@ enum FeedbackParser {
         }
 
         return CriterionResult(criterionId: criterionId, status: status, evidence: evidence, comment: comment)
+    }
+
+    /// Remove any "Doctor:" / "Patient:" / "Speaker N:" labels from an evidence
+    /// quote so it reads as clean prose (attribution can mislabel a boundary and
+    /// the model sometimes echoes the labels into the quote), then tidy spacing.
+    private static func stripSpeakerLabels(_ s: String) -> String {
+        var out = s.replacingOccurrences(
+            of: "(?i)\\b(doctor|patient|clinician|speaker\\s*\\d+)\\s*:\\s*",
+            with: "", options: .regularExpression)
+        out = out.replacingOccurrences(of: "\\s{2,}", with: " ", options: .regularExpression)
+        return out.trimmingCharacters(in: .whitespaces)
     }
 
     /// Strip markdown, list markers, and a leading label so we can read the value.
