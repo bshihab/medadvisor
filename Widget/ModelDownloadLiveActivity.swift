@@ -33,13 +33,12 @@ struct ModelDownloadLiveActivity: Widget {
                 }
             } compactLeading: {
                 Image(systemName: "brain.head.profile")
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(.blue)
-                    .padding(.leading, 2)
             } compactTrailing: {
-                ring(context.state, size: 22, lineWidth: 4, glyph: false)
-                    .padding(.trailing, 2)
+                ring(context.state, size: 18, lineWidth: 3.5, glyph: false)
             } minimal: {
-                ring(context.state, size: 22, lineWidth: 4, glyph: false)
+                ring(context.state, size: 18, lineWidth: 3.5, glyph: false)
             }
             .keylineTint(.blue)
         }
@@ -78,10 +77,13 @@ struct ModelDownloadLiveActivity: Widget {
                 .rotationEffect(.degrees(-90))
             if glyph {
                 Image(systemName: s.finished ? "checkmark" : "arrow.down")
-                    .font(.system(size: size * 0.4, weight: .heavy))
+                    .font(.system(size: size * 0.34, weight: .heavy))
                     .foregroundStyle(tint)
             }
         }
+        // Keep the centered stroke inside the frame so it can't clip against the
+        // compact Dynamic Island edges.
+        .padding(lineWidth / 2)
         .frame(width: size, height: size)
     }
 
