@@ -42,6 +42,13 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(url: URL, rubric: Rubric, liveSegments: [String] = []) async {
+        // Never auto-download the 4.3GB model mid-flow — the user downloads it
+        // deliberately from Settings (the gear pulses until they do).
+        guard ModelDownloader.shared.isDownloaded else {
+            stage = .error("The AI model isn't downloaded yet. Open Settings (tap the gear) and download it, then try again.")
+            return
+        }
+
         // Keep the LLM RESIDENT across analyses. With Whisper + the diarizer
         // gone, the LLM is the only big model, so there's nothing to free it for
         // — and reloading a 4.3GB model on every analysis is exactly what made

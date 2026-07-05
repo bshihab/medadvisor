@@ -73,14 +73,41 @@ struct AmbientGlow: View {
 
 private struct SettingsGearModifier: ViewModifier {
     @State private var show = false
+    @State private var pulse = false
+    @ObservedObject private var models = ModelManager.shared
+
+    private var needsModel: Bool { !models.isInstalled(.llm) }
+
     func body(content: Content) -> some View {
         content
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { show = true } label: { Image(systemName: "gearshape") }
-                        .accessibilityLabel("Settings")
+                    Button { show = true } label: {
+                        Image(systemName: "gearshape")
+                            .overlay(alignment: .topTrailing) {
+                                if needsModel { downloadBadge }
+                            }
+                    }
+                    .accessibilityLabel(needsModel ? "Settings — AI model needs downloading" : "Settings")
                 }
             }
             .sheet(isPresented: $show) { SettingsView() }
+            .onAppear { pulse = true }
+    }
+
+    /// A liquid-glass badge that pulses on the gear until the model is
+    /// downloaded — nudges the user into Settings to grab it deliberately
+    /// (rather than a surprise 4.3GB download mid-flow).
+    private var downloadBadge: some View {
+        Image(systemName: "arrow.down")
+            .font(.system(size: 8, weight: .heavy))
+            .foregroundStyle(.white)
+            .padding(4)
+            .background(Circle().fill(.red))
+            .glassSurface(in: Circle())
+            .scaleEffect(pulse ? 1.18 : 0.9)
+            .opacity(pulse ? 1 : 0.55)
+            .offset(x: 7, y: -7)
+            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: pulse)
     }
 }
