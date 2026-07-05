@@ -103,7 +103,7 @@ struct SettingsView: View {
                     Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                    Text("Downloads in the background — you can leave the app or lock your phone while it finishes.")
+                    Text("Downloads in the background — leave the app or lock your phone while it finishes. (If you force-quit the app it pauses; tap Download to resume.)")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }

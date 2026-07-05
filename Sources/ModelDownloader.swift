@@ -27,6 +27,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var activity: Activity<ModelDownloadAttributes>?
     private var lastActivityProgress: Double = -1
 
+    /// Resume data captured when a download is cancelled (e.g. the app was
+    /// force-quit) so the next Download continues from where it stopped.
+    private var resumeData: Data?
+
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: Self.sessionID)
         config.sessionSendsLaunchEvents = true   // relaunch the app when done
@@ -61,7 +65,13 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 if active { return }             // already running — just reflect it
                 self.errorMessage = nil
                 self.progress = 0
-                self.session.downloadTask(with: self.remoteURL).resume()
+                // Resume from where a cancelled download left off, if we can.
+                if let data = self.resumeData {
+                    self.resumeData = nil
+                    self.session.downloadTask(withResumeData: data).resume()
+                } else {
+                    self.session.downloadTask(with: self.remoteURL).resume()
+                }
                 self.startActivity()
             }
         }
@@ -143,10 +153,21 @@ extension ModelDownloader: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask,
                     didCompleteWithError error: Error?) {
         guard let error else { return }
+        let nsError = error as NSError
+        let resume = nsError.userInfo[NSURLSessionDownloadTaskResumeData] as? Data
         DispatchQueue.main.async {
             self.isDownloading = false
-            self.errorMessage = error.localizedDescription
             self.endActivity(finished: false)
+            if nsError.code == NSURLErrorCancelled {
+                // Force-quitting the app cancels the background transfer (iOS
+                // behavior). Keep the resume data so Download continues later.
+                self.resumeData = resume
+                self.errorMessage = (resume != nil)
+                    ? "Download stopped. Tap Download to resume where it left off."
+                    : nil
+            } else {
+                self.errorMessage = error.localizedDescription
+            }
         }
     }
 
