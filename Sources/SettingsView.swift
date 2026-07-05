@@ -90,6 +90,9 @@ struct SettingsView: View {
                 Text("It will re-download the next time it's needed.")
             }
         }
+        // Apply the theme to the Settings sheet itself, live — a sheet doesn't
+        // pick up the root's preferredColorScheme change while it's already open.
+        .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme ?? nil)
     }
 
     @ViewBuilder
