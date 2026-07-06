@@ -143,7 +143,9 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// path can be handed to llama.cpp. Downloads if missing.
     func ensureModel(onProgress: @escaping (Double) -> Void = { _ in }) async throws -> URL {
         if !isReady { await runDownload() }
-        guard isReady, let path = resolvedModelPath ?? (try? await resolveModelPath()) else {
+        var path = resolvedModelPath
+        if path == nil { path = try? await resolveModelPath() }
+        guard isReady, let path else {
             throw NSError(domain: "ModelDownloader", code: 1, userInfo: [
                 NSLocalizedDescriptionKey: "The AI model isn't available yet. Download it in Settings."])
         }
@@ -154,8 +156,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// asset's descriptor and recover its on-disk path via `fcntl(F_GETPATH)`.
     /// llama.cpp re-opens the path itself, so we can close our descriptor.
     private func resolveModelPath() async throws -> String {
-        // VERIFY: `descriptor(for:)` return type. Assumed `System.FileDescriptor`.
-        let descriptor = try AssetPackManager.shared.descriptor(for: modelAssetPath)
+        let descriptor = try AssetPackManager.shared.descriptor(for: FilePath(modelAssetPath))
         defer { try? descriptor.close() }
         let raw = descriptor.rawValue
         var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
