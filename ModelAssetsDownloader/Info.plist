@@ -20,14 +20,10 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<!-- VERIFY ON DEVICE: this extension-point identifier is the #1 thing to
-	     confirm against what Xcode's "Background Download" template emits on the
-	     current iOS 26 SDK. If the build rejects it, use the value from a
-	     template-generated extension. -->
 	<key>EXAppExtensionAttributes</key>
 	<dict>
 		<key>EXExtensionPointIdentifier</key>
-		<string>com.apple.background-assets.downloader</string>
+		<string>com.apple.background-asset-downloader-extension</string>
 	</dict>
 </dict>
 </plist>
