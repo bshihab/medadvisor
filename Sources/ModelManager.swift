@@ -44,7 +44,7 @@ final class ModelManager: ObservableObject {
 
     func delete(_ model: ManagedModel) {
         switch model {
-        case .llm: try? FileManager.default.removeItem(at: ModelDownloader.shared.localURL)
+        case .llm: ModelDownloader.shared.delete()   // removes the Background Assets pack
         }
         revision += 1
     }

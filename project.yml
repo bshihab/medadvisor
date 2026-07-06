@@ -21,6 +21,19 @@ targets:
       - package: llama-binary
         product: llama
       - target: ModelDownloadWidget       # embed the Live Activity widget extension
+      - target: ModelAssetsDownloader      # embed the Background Assets downloader extension
+    entitlements:
+      path: MedAdvisor.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.medadvisor
+    info:
+      properties:
+        # Background Assets (Apple-hosted managed asset packs). The app + the
+        # downloader extension share this App Group.
+        BAAppGroupID: group.app.medadvisor
+        BAHasManagedAssetPacks: true
+        BAUsesAppleHosting: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor
@@ -50,6 +63,27 @@ targets:
         CURRENT_PROJECT_VERSION: "4"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Widget/Info.plist
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: NO
+
+  ModelAssetsDownloader:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ModelAssetsDownloader
+    entitlements:
+      path: ModelAssetsDownloader/ModelAssetsDownloader.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.medadvisor
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor.ModelAssetsDownloader
+        MARKETING_VERSION: "0.0.4"
+        CURRENT_PROJECT_VERSION: "4"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: ModelAssetsDownloader/Info.plist
         SWIFT_VERSION: "5.0"
         TARGETED_DEVICE_FAMILY: "1,2"
         SKIP_INSTALL: NO
