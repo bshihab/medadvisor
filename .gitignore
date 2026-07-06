@@ -8,6 +8,7 @@ xcuserdata/
 
 # XcodeGen generates the project locally — keep project.yml in git, not the project
 *.xcodeproj
+MedAdvisor-Info.plist
 
 # macOS
 .DS_Store
