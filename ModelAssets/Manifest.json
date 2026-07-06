@@ -1,0 +1,14 @@
+{
+  "assetPackID": "qwen7b-q4",
+  "downloadPolicy": {
+    "onDemand": {}
+  },
+  "fileSelectors": [
+    {
+      "file": "ModelAssets/Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+    }
+  ],
+  "platforms": [
+    "iOS"
+  ]
+}
