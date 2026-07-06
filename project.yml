@@ -69,7 +69,7 @@ targets:
         SKIP_INSTALL: NO
 
   ModelAssetsDownloader:
-    type: app-extension
+    type: extensionkit-extension   # ExtensionFoundation-based (embeds in Extensions/, not PlugIns/)
     platform: iOS
     sources:
       - ModelAssetsDownloader

@@ -1,17 +1,17 @@
 import BackgroundAssets
+import ExtensionFoundation
+import StoreKit
 
 /// Background Assets downloader extension for the Apple-hosted model asset pack.
 ///
-/// iOS 26 provides a fully-featured system implementation for managed,
-/// Apple-hosted asset packs — `BAManagedDownloaderExtension` supplies default
-/// implementations for every requirement, so this empty conformance is all that's
-/// needed to opt in (this is what Xcode's "Background Download" template
-/// generates). The system handles downloads, background updates, and resume.
-///
-/// VERIFY ON DEVICE: exact protocol name / whether an explicit `init()` is
-/// required can shift between betas; if the build complains, match whatever the
-/// current Background Download template emits.
+/// iOS 26's `StoreDownloaderExtension` (this is what Xcode's "Background
+/// Download" template generates for Apple-hosted managed asset packs) supplies a
+/// fully-featured system implementation — downloads, background updates, and
+/// resume are all handled by the OS. `shouldDownload` is the only optional hook;
+/// returning true accepts every pack (we only have one, the Qwen model).
 @main
-struct ModelAssetsDownloader: BAManagedDownloaderExtension {
-    init() {}
+struct ModelAssetsDownloader: StoreDownloaderExtension {
+    func shouldDownload(_ assetPack: AssetPack) -> Bool {
+        true
+    }
 }
