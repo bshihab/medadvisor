@@ -33,9 +33,9 @@ cd ~/bilal-dev/medadvisor
 #    ModelAssets/Qwen2.5-7B-Instruct-Q4_K_M.gguf
 
 # 2. Package it into a .aar archive (paths in the manifest are repo-root-relative)
-xcrun ba-package create \
-  --manifest ModelAssets/Manifest.json \
-  --output   build/qwen7b-q4.aar
+mkdir -p build
+xcrun ba-package package ModelAssets/Manifest.json \
+  --output-path build/qwen7b-q4.aar
 ```
 
 `xcrun ba-package template` regenerates a blank manifest if you ever need one.
