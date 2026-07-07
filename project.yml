@@ -5,6 +5,12 @@ options:
     iOS: "26.0"
   createIntermediateGroups: true
 
+# Applies to every target, so regenerating the project never loses signing.
+settings:
+  base:
+    DEVELOPMENT_TEAM: V9MD2XLT56
+    CODE_SIGN_STYLE: Automatic
+
 packages:
   llama-binary:
     path: llama-binary
