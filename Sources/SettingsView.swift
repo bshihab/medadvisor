@@ -96,14 +96,14 @@ struct SettingsView: View {
                         ProgressView(value: downloader.progress)
                         Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
-                        Text("Fastest with the app open. Leave or lock your phone and it keeps going in the background (slower). Force-quitting pauses it — reopen and it resumes where it left off.")
+                        Text("Downloading from Apple's servers. You can leave the app, lock your phone, or even close the app — iOS keeps downloading and picks up where it left off. Progress also shows on your Lock Screen.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {
                     Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                    Text("~4.3 GB, one time. Fastest with the app open; it keeps downloading in the background if you leave or lock the phone. Force-quitting pauses it — it resumes when you reopen.")
+                    Text("~4.3 GB, one time, from Apple's servers. Once started you can leave or close the app — iOS finishes the download for you.")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }
