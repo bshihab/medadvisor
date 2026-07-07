@@ -47,8 +47,44 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var lastActivityProgress: Double = -1
 
     /// Launch-time sync: the OS may have finished (or progressed) the asset-pack
-    /// download while the app wasn't running.
-    func resume() { Task { await refreshInstalledState() } }
+    /// download while the app wasn't running — the pack has a *prefetch* policy,
+    /// so iOS starts downloading it right after install, before first launch.
+    func resume() {
+        Task {
+            await refreshInstalledState()
+            if self.isReady {
+                await MainActor.run { self.endActivity(finished: true) }  // clear stragglers
+            } else {
+                self.observeStatus()   // a prefetch may be mid-flight — show its progress
+            }
+        }
+    }
+
+    /// Single shared observer of the pack's download status. Feeds the in-app
+    /// progress bar and the Live Activity from whatever download is in flight
+    /// (prefetch or user-initiated).
+    private var statusTask: Task<Void, Never>?
+
+    private func observeStatus() {
+        guard statusTask == nil else { return }
+        statusTask = Task { [assetPackID] in
+            for await update in AssetPackManager.shared.statusUpdates(forAssetPackWithID: assetPackID) {
+                if case .downloading(_, let p) = update {
+                    await MainActor.run {
+                        self.isDownloading = true
+                        self.progress = p.fractionCompleted
+                        if self.activity == nil { self.startActivity() }
+                        self.updateActivity(p.fractionCompleted)
+                    }
+                }
+            }
+        }
+    }
+
+    private func stopObserving() {
+        statusTask?.cancel()
+        statusTask = nil
+    }
 
     // MARK: - State
 
@@ -83,23 +119,11 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         do {
             let pack = try await AssetPackManager.shared.assetPack(withID: assetPackID)
 
-            // Observe progress on a child task while ensureLocalAvailability drives
-            // the actual download to completion.
-            let progressTask = Task { [assetPackID] in
-                for await update in AssetPackManager.shared.statusUpdates(forAssetPackWithID: assetPackID) {
-                    // VERIFY: exact case shape. WWDC showed `.downloading(_, progress)`
-                    // where `progress` is a Foundation `Progress`.
-                    if case .downloading(_, let p) = update {
-                        await MainActor.run {
-                            self.progress = p.fractionCompleted
-                            self.updateActivity(p.fractionCompleted)
-                        }
-                    }
-                }
-            }
-
+            // Progress flows through the shared status observer while
+            // ensureLocalAvailability drives the download to completion.
+            observeStatus()
             try await AssetPackManager.shared.ensureLocalAvailability(of: pack)
-            progressTask.cancel()
+            stopObserving()
 
             let path = try await resolveModelPath()
             await MainActor.run {
@@ -111,6 +135,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 Task { @MainActor in ModelManager.shared.modelChanged() }
             }
         } catch {
+            stopObserving()
             await MainActor.run {
                 self.isDownloading = false
                 self.errorMessage = "Model download failed: \(error.localizedDescription)"
@@ -164,20 +189,15 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     // MARK: - Live Activity
 
-    private func reconcileActivities() {
-        let all = Activity<ModelDownloadAttributes>.activities
-        guard let first = all.first else { return }
-        activity = first
-        lastActivityProgress = -1
-        for extra in all.dropFirst() {
-            Task { await extra.end(nil, dismissalPolicy: .immediate) }
-        }
-    }
-
     private func startActivity() {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        reconcileActivities()
-        guard activity == nil else { return }
+        // End any activity left over from a previous process — updating a
+        // reattached activity after force-quit proved unreliable (it renders
+        // frozen), so always start fresh.
+        for stale in Activity<ModelDownloadAttributes>.activities {
+            Task { await stale.end(nil, dismissalPolicy: .immediate) }
+        }
+        activity = nil
         let state = ModelDownloadAttributes.ContentState(progress: 0, finished: false)
         let content = ActivityContent(state: state, staleDate: nil)
         activity = try? Activity.request(attributes: ModelDownloadAttributes(), content: content)

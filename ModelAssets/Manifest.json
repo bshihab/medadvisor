@@ -1,7 +1,12 @@
 {
   "assetPackID": "qwen7b-q4",
   "downloadPolicy": {
-    "onDemand": {}
+    "prefetch": {
+      "installationEventTypes": [
+        "firstInstallation",
+        "subsequentUpdate"
+      ]
+    }
   },
   "fileSelectors": [
     {
