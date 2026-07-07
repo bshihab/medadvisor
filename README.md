@@ -11,10 +11,41 @@ Everything runs on the phone. The models were chosen by **benchmarking, not by l
 | Job | Model | Why |
 |---|---|---|
 | **Rubric scoring (LLM)** | **Qwen 2.5-7B-Instruct** (Q4, ~4.3 GB, llama.cpp) | Balanced judge — **3.3% over-score / 96% accuracy** on the realistic test. Replaced MedGemma 4B, which rubber-stamped (**53% over-score**). |
-| Transcription | WhisperKit `small.en` / Parakeet / Apple SpeechAnalyzer (selectable) | All ≥ good enough (~1–3% WER); pick by download size / iOS version. |
-| Diarization | FluidAudio (pyannote community-1, CoreML/ANE) | Best on-device option; `numSpeakers = 2` for consultations. |
+| Transcription | Apple SpeechAnalyzer (iOS 26, built-in) | On-device, no model download, live streaming with pause-segmented timestamps. WhisperKit was removed — Apple's engine matched it without the 500 MB download. |
+| Diarization | LLM speaker attribution (per-utterance, role-aware) | The scoring LLM labels each utterance Doctor/Patient using content + anchor phrases; replaced a separate diarization model. |
 
 **Key finding:** for rubric *scoring*, the task is judgment + instruction-following, **not** medical knowledge (the rubric supplies that) — so a strong *general* 7B (Qwen) beat the *medical* MedGemma 4B decisively. Full results + method in [`tools/llm-benchmark/README.md`](tools/llm-benchmark/README.md).
+
+## Model delivery — Apple-hosted Background Assets (iOS 26)
+
+The 4.3 GB LLM is too big to bundle in the app, so it's downloaded once after install.
+How that download happens has evolved:
+
+1. **v1 — direct from HuggingFace (URLSession).** Simple, but HuggingFace throttles
+   anonymous downloads to ~1.5 MB/s (a ~45-minute download), iOS throttles background
+   transfers on top of that, and a force-quit lost all progress. A long tail of
+   resume-data, Live Activity, and foreground/background-handoff plumbing tried to
+   patch around it.
+2. **v2 (current) — Apple-hosted Background Assets.** The model ships as a managed
+   asset pack (`qwen7b-q4`) uploaded to App Store Connect; **Apple's CDN hosts and
+   serves it** (free, fast — minutes instead of ~45), and **the OS owns the
+   download**: it survives backgrounding, lock, force-quit, and reboot, and resumes
+   itself. The app just asks `AssetPackManager` for the pack and shows progress.
+
+Moving parts (all in-repo except the upload):
+
+- `ModelAssets/Manifest.json` — defines the asset pack (ID `qwen7b-q4`, on-demand policy).
+- `ModelAssetsDownloader/` — the Background Assets downloader extension (system-provided
+  implementation; the extension point is `com.apple.background-asset-downloader-extension`).
+- App + extension share the App Group `group.app.medadvisor`; the app's Info.plist
+  carries `BAAppGroupID` / `BAHasManagedAssetPacks` / `BAUsesAppleHosting`.
+- `Sources/ModelDownloader.swift` — wraps `AssetPackManager` (download, progress →
+  UI + Live Activity, delete) and resolves the model file path for llama.cpp via
+  `descriptor(for:)` + `fcntl(F_GETPATH)`.
+
+Ship a new model version = re-run the packaging + Transporter upload — full
+step-by-step playbook (packaging, upload, local `ba-serve` testing) in
+[MODEL-ASSETS.md](MODEL-ASSETS.md).
 
 ## Repo layout
 
