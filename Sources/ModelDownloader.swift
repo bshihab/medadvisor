@@ -176,15 +176,22 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// asset's descriptor and recover its on-disk path via `fcntl(F_GETPATH)`.
     /// llama.cpp re-opens the path itself, so we can close our descriptor.
     private func resolveModelPath() async throws -> String {
-        let descriptor = try AssetPackManager.shared.descriptor(for: FilePath(modelAssetPath))
-        defer { try? descriptor.close() }
-        let raw = descriptor.rawValue
-        var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
-        guard fcntl(raw, F_GETPATH, &buffer) != -1 else {
-            throw NSError(domain: "ModelDownloader", code: 2, userInfo: [
-                NSLocalizedDescriptionKey: "Couldn't resolve the model file path."])
+        // The file's in-pack path depends on how ba-package stored the selector
+        // (repo-root-relative vs manifest-dir-relative) — try both spellings.
+        let candidates = [
+            modelAssetPath,                                    // ModelAssets/Qwen….gguf
+            (modelAssetPath as NSString).lastPathComponent,    // Qwen….gguf
+        ]
+        for path in candidates {
+            guard let descriptor = try? AssetPackManager.shared.descriptor(for: FilePath(path)) else { continue }
+            defer { try? descriptor.close() }
+            var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
+            if fcntl(descriptor.rawValue, F_GETPATH, &buffer) != -1 {
+                return String(cString: buffer)
+            }
         }
-        return String(cString: buffer)
+        throw NSError(domain: "ModelDownloader", code: 2, userInfo: [
+            NSLocalizedDescriptionKey: "Couldn't resolve the model file inside the asset pack."])
     }
 
     // MARK: - Live Activity
