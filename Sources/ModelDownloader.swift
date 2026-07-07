@@ -46,14 +46,9 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private var activity: Activity<ModelDownloadAttributes>?
     private var lastActivityProgress: Double = -1
 
-    // MARK: - Legacy lifecycle hooks (now no-ops)
-    // The OS manages Background Assets downloads across app lifecycle, so the old
-    // foreground/background URLSession handoff is gone. Kept so AppDelegate and
-    // the scene-phase wiring compile unchanged.
-    var backgroundCompletion: (() -> Void)?
+    /// Launch-time sync: the OS may have finished (or progressed) the asset-pack
+    /// download while the app wasn't running.
     func resume() { Task { await refreshInstalledState() } }
-    func enterForeground() {}
-    func enterBackground() {}
 
     // MARK: - State
 
