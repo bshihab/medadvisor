@@ -29,7 +29,8 @@ struct ProgressHome: View {
             .sheet(item: $selected) { record in
                 if let loc = record.location, let rubric = RubricLoader.load(for: loc) {
                     FeedbackView(feedback: record.feedback, rubric: rubric,
-                                 transcript: record.transcript, turns: record.turns)
+                                 transcript: record.transcript, turns: record.turns,
+                                 record: record)
                 }
             }
             .onAppear { insights.loadSaved() }

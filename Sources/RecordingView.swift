@@ -13,6 +13,7 @@ struct RecordingView: View {
     @StateObject private var processor = EncounterProcessor()
     @ObservedObject private var models = ModelManager.shared
     @State private var showFeedback = false
+    @State private var savedRecord: ConsultationRecord?
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
 
@@ -67,7 +68,8 @@ struct RecordingView: View {
             if case .done(let feedback) = processor.stage, let rubric {
                 FeedbackView(feedback: feedback, rubric: rubric,
                              transcript: processor.redactedTranscript,
-                             turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns)
+                             turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
+                             record: savedRecord)
             }
         }
         .alert("Microphone access needed", isPresented: $recorder.permissionDenied) {
@@ -493,6 +495,7 @@ struct RecordingView: View {
                     turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
                     feedback: feedback)
                 FeedbackStore.shared.add(record)
+                savedRecord = record
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis
                 showFeedback = true
             }

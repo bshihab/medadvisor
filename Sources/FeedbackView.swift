@@ -8,6 +8,8 @@ struct FeedbackView: View {
     let rubric: Rubric
     var transcript: String? = nil
     var turns: [TranscriptTurn]? = nil
+    /// The saved record backing this feedback — enables "Share with mentor".
+    var record: ConsultationRecord? = nil
 
     private var hasTranscript: Bool {
         (turns?.isEmpty == false) || (transcript?.isEmpty == false)
@@ -15,6 +17,7 @@ struct FeedbackView: View {
 
     private enum Tab: Hashable { case feedback, transcript }
     @State private var tab: Tab = .feedback
+    @State private var showShareWithMentor = false
     @ObservedObject private var goals = GoalStore.shared
 
     var body: some View {
@@ -37,9 +40,23 @@ struct FeedbackView: View {
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                if let record {
+                    Button {
+                        showShareWithMentor = true
+                    } label: {
+                        Label(record.sharedAt == nil ? "Share with mentor" : "Shared ✓",
+                              systemImage: record.sharedAt == nil
+                                  ? "person.crop.circle.badge.checkmark" : "checkmark.seal")
+                    }
+                }
                 let item = (tab == .transcript) ? shareText : feedbackShareText
                 if !item.isEmpty {
                     ShareLink(item: item)
+                }
+            }
+            .sheet(isPresented: $showShareWithMentor) {
+                if let record {
+                    ShareWithMentorView(record: record, rubric: rubric)
                 }
             }
         }

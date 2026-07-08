@@ -20,13 +20,10 @@ final class AccountStore: ObservableObject {
         static let projectID = "medadvisor-dev"
         static let gcmSenderID = "743594385075"
         #else
-        // TODO(prod): swap in medadvisor-production values once recorded in
-        // PLAN.md (prod Identity Platform pending approval). Until then release
-        // builds also point at dev so sign-in isn't silently broken.
-        static let apiKey = "AIzaSyBvHos84simxPRf4z8ICERrVz6zhYkayaE"
-        static let googleAppID = "1:743594385075:ios:9bb2092806b7e835149ac6"
-        static let projectID = "medadvisor-dev"
-        static let gcmSenderID = "743594385075"
+        static let apiKey = "AIzaSyCtAMi8JOzeJWsSaP5yV4WU9FPDsI5ye00"   // medadvisor-production
+        static let googleAppID = "1:597896295002:ios:7db9c01f79a5bc79471e63"
+        static let projectID = "medadvisor-production"
+        static let gcmSenderID = "597896295002"
         #endif
     }
 
@@ -54,7 +51,12 @@ final class AccountStore: ObservableObject {
         Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
                 self?.email = user?.email
-                if user == nil { self?.org = nil } else { await self?.refreshMe() }
+                if user == nil {
+                    self?.org = nil
+                } else {
+                    await self?.refreshMe()
+                    await SessionShare.restore()   // cross-device history (silent)
+                }
             }
         }
     }
@@ -120,7 +122,8 @@ final class AccountStore: ObservableObject {
 
     private struct ServerErrorBody: Decodable { let error: String? }
 
-    private func call<B: Encodable, R: Decodable>(_ path: String, method: String, body: B?) async throws -> R {
+    /// Authed JSON call against the API (also used by SessionShare).
+    func call<B: Encodable, R: Decodable>(_ path: String, method: String, body: B?) async throws -> R {
         guard let user = Auth.auth().currentUser else { throw APIError.notSignedIn }
         let token = try await user.getIDTokenResult(forcingRefresh: false).token
         var request = URLRequest(url: RubricSync.baseURL.appendingPathComponent(path))

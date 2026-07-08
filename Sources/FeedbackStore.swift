@@ -11,6 +11,8 @@ struct ConsultationRecord: Codable, Identifiable, Equatable {
     /// Redacted, speaker-labeled turns for the chat view (nil/empty if 1 speaker).
     var turns: [TranscriptTurn]?
     let feedback: ConsultationFeedback
+    /// When this session was shared with the mentor (nil = never shared).
+    var sharedAt: Date? = nil
 
     var location: AppLocation? { AppLocation(rawValue: locationRaw) }
 }
@@ -41,6 +43,24 @@ final class FeedbackStore: ObservableObject {
     func delete(_ record: ConsultationRecord) {
         records.removeAll { $0.id == record.id }
         try? FileManager.default.removeItem(at: fileURL(record.id))
+    }
+
+    /// Stamp a record as shared with the mentor (persisted).
+    func markShared(_ id: String) {
+        guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
+        records[idx].sharedAt = Date()
+        save(records[idx])
+    }
+
+    /// Merge sessions restored from the cloud (cross-device): insert any record
+    /// whose id we don't already have. Local copies win — they're richer
+    /// (transcript/turns never leave the device).
+    func mergeRestored(_ restored: [ConsultationRecord]) {
+        let known = Set(records.map(\.id))
+        let fresh = restored.filter { !known.contains($0.id) }
+        guard !fresh.isEmpty else { return }
+        for record in fresh { save(record) }
+        records = (records + fresh).sorted { $0.date > $1.date }
     }
 
     // MARK: - Disk

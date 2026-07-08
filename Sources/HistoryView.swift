@@ -25,7 +25,8 @@ struct HistoryView: View {
         .sheet(item: $selected) { record in
             if let location = record.location, let rubric = RubricLoader.load(for: location) {
                 FeedbackView(feedback: record.feedback, rubric: rubric,
-                             transcript: record.transcript, turns: record.turns)
+                             transcript: record.transcript, turns: record.turns,
+                             record: record)
             }
         }
     }
