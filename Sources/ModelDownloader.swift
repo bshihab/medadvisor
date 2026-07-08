@@ -15,9 +15,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     static let shared = ModelDownloader()
     private override init() { super.init() }
 
-    /// Tried in order on failure. TODO(R2): once the Cloudflare R2 bucket exists,
-    /// insert its public URL FIRST so HuggingFace becomes the fallback.
+    /// Tried in order on failure: Cloudflare R2 (fast, free egress) first,
+    /// HuggingFace as the fallback mirror (throttled but always there).
     private let mirrors = [
+        URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
         URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
     ]
     private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
