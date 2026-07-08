@@ -76,8 +76,24 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             return
         }
         guard !UserDefaults.standard.bool(forKey: Self.userDeletedKey) else { return }
+        if isDownloading {
+            // Back from suspension with a transfer "in flight": the connection
+            // may be a zombie (alive, delivering nothing). If no bytes arrived
+            // recently, cancel and re-issue from the partial's current byte.
+            if Date().timeIntervalSince(lastDataAt) > 5 {
+                task?.cancel()
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    guard let self, self.isDownloading else { return }
+                    self.beginAttempt()
+                }
+            }
+            return
+        }
         startDownload()
     }
+
+    /// When data last arrived — drives the zombie-connection nudge above.
+    private var lastDataAt = Date.distantPast
 
     /// Start or resume the download. No-op if already downloaded or in flight.
     func startDownload() {
@@ -127,6 +143,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         let offset = partialSize
         baseOffset = offset
         received = 0
+        lastDataAt = Date()   // fresh attempt — give it time before any nudge
         totalBytes = Int64(UserDefaults.standard.double(forKey: Self.expectedTotalKey))
         if totalBytes > 0 {
             let initial = Double(offset) / Double(totalBytes)
@@ -271,6 +288,7 @@ extension ModelDownloader: URLSessionDataDelegate {
         guard let fileHandle else { return }
         try? fileHandle.write(contentsOf: data)
         received += Int64(data.count)
+        lastDataAt = Date()
         guard totalBytes > 0 else { return }
         let fraction = Double(baseOffset + received) / Double(totalBytes)
         // Throttle UI updates to ~every half percent.
@@ -289,8 +307,9 @@ extension ModelDownloader: URLSessionDataDelegate {
         self.task = nil
         if let error {
             try? fileHandle?.close()
+            fileHandle = nil
             let nsError = error as NSError
-            if nsError.code == NSURLErrorCancelled { return }   // delete() already handled state
+            if nsError.code == NSURLErrorCancelled { return }   // delete()/nudge handles next step
             attemptFailed("Download interrupted — it'll resume from where it stopped. (\(nsError.localizedDescription))")
         } else {
             completeDownload()
