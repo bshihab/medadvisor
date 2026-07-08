@@ -12,6 +12,10 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section("Account") {
+                    AccountRow()
+                }
+
                 Section {
                     ForEach(ManagedModel.allCases) { modelRow($0) }
                     if let error = downloader.errorMessage {

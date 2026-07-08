@@ -14,6 +14,9 @@ settings:
 packages:
   llama-binary:
     path: llama-binary
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    majorVersion: 11.6.0
 
 targets:
   MedAdvisor:
@@ -26,12 +29,16 @@ targets:
     dependencies:
       - package: llama-binary
         product: llama
+      - package: Firebase
+        product: FirebaseAuth             # Identity Platform sign-in (MC2)
       - target: ModelDownloadWidget       # embed the Live Activity widget extension
     entitlements:
       path: MedAdvisor.entitlements
       properties:
         com.apple.security.application-groups:
           - group.app.medadvisor
+        com.apple.developer.applesignin:
+          - Default
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

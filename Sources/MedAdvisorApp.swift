@@ -4,6 +4,10 @@ import SwiftUI
 struct MedAdvisorApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
+    init() {
+        AccountStore.configure()   // Firebase/Identity Platform — before any Auth use
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
