@@ -96,7 +96,7 @@ struct SettingsView: View {
                         ProgressView(value: downloader.progress)
                         Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
-                        Text("Fastest with the app open. Your progress is never lost — leave, force-quit, even restart the phone, and it resumes from the exact spot when you come back.")
+                        Text("Keep the app open — the screen stays awake, so you can just set the phone down. If you do leave, nothing is lost: it resumes from the exact spot when you come back.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {

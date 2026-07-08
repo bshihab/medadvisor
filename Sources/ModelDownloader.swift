@@ -1,5 +1,6 @@
 import Foundation
 import ActivityKit
+import UIKit
 
 /// Downloads the Qwen2.5-7B GGUF (~4.4 GB) directly over HTTPS with **byte-range
 /// resume**: bytes stream into `Documents/<name>.partial`, so any interruption —
@@ -25,7 +26,12 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     /// Live download state (observed by Settings).
     @Published private(set) var progress: Double = 0
-    @Published private(set) var isDownloading = false
+    @Published private(set) var isDownloading = false {
+        // Keep the screen awake while downloading (main thread — all writes to
+        // isDownloading happen there): the user can set the phone down for the
+        // ~10 minutes without auto-lock suspending the transfer.
+        didSet { UIApplication.shared.isIdleTimerDisabled = isDownloading }
+    }
     @Published private(set) var errorMessage: String?
 
     private static let userDeletedKey = "modelDeletedByUser"
