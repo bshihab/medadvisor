@@ -155,6 +155,21 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         }
     }
 
+    /// Tear down whatever download session exists (wedged prefetch sessions
+    /// "begin" but never transfer) and issue a fresh user-initiated request.
+    func restartDownload() {
+        Task {
+            self.stopObserving()
+            try? await AssetPackManager.shared.remove(assetPackWithID: assetPackID)
+            await MainActor.run {
+                self.progress = 0
+                self.errorMessage = nil
+                self.statusDetail = nil
+            }
+            await self.runDownload()
+        }
+    }
+
     /// Remove the asset pack (Settings → Delete).
     func delete() {
         Task {

@@ -100,6 +100,9 @@ struct SettingsView: View {
                             Text(detail)
                                 .font(.caption2.monospaced()).foregroundStyle(.orange)
                         }
+                        Button("Restart download") { downloader.restartDownload() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
                         Text("Downloading from Apple's servers. You can leave the app, lock your phone, or even close the app — iOS keeps downloading and picks up where it left off. Progress also shows on your Lock Screen.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
