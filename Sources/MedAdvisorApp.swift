@@ -7,7 +7,10 @@ struct MedAdvisorApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .task { ModelDownloader.shared.resume() }
+                .task {
+                    ModelDownloader.shared.resume()
+                    RubricSync.refresh()   // cloud rubrics (silent, offline-safe)
+                }
         }
         // Re-drive the download whenever the app comes back — transfers only run
         // at full speed while we're active, and resume() picks up from the exact

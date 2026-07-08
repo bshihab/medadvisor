@@ -70,6 +70,9 @@ struct Criterion: Codable, Equatable, Identifiable {
 
 enum RubricLoader {
     static func load(named name: String) -> Rubric? {
+        // Cloud-refreshed copy first (director's latest edits), bundle as the
+        // always-works fallback.
+        if let cloud = RubricSync.cached(named: name) { return cloud }
         guard let url = Bundle.main.url(forResource: name, withExtension: "json"),
               let data = try? Data(contentsOf: url) else {
             return nil
