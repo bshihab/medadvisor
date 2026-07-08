@@ -58,11 +58,16 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             await refreshInstalledState()
             if self.isReady {
                 await MainActor.run { self.endActivity(finished: true) }  // clear stragglers
-            } else {
-                self.observeStatus()   // a prefetch may be mid-flight — show its progress
+            } else if !UserDefaults.standard.bool(forKey: Self.userDeletedKey) {
+                // DRIVE the download, don't just observe it: a session paused by
+                // the app closing stays paused until someone re-requests at user
+                // priority. Skipped only when the user explicitly deleted the model.
+                await self.runDownload()
             }
         }
     }
+
+    private static let userDeletedKey = "modelDeletedByUser"
 
     /// Single shared observer of the pack's download status. Feeds the in-app
     /// progress bar and the Live Activity from whatever download is in flight
@@ -117,10 +122,14 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Activity. No-op if it's already available.
     func startDownload() {
         guard !isReady else { return }
+        UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
         Task { await runDownload() }
     }
 
     private func runDownload() async {
+        // Don't double-drive (launch auto-resume + a Download tap can overlap).
+        let alreadyDriving = await MainActor.run { self.isDownloading }
+        if alreadyDriving { return }
         await MainActor.run {
             self.isDownloading = true
             self.errorMessage = nil
@@ -158,10 +167,12 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Tear down whatever download session exists (wedged prefetch sessions
     /// "begin" but never transfer) and issue a fresh user-initiated request.
     func restartDownload() {
+        UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
         Task {
             self.stopObserving()
             try? await AssetPackManager.shared.remove(assetPackWithID: assetPackID)
             await MainActor.run {
+                self.isDownloading = false   // else runDownload's double-drive guard trips
                 self.progress = 0
                 self.errorMessage = nil
                 self.statusDetail = nil
@@ -170,12 +181,16 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         }
     }
 
-    /// Remove the asset pack (Settings → Delete).
+    /// Remove the asset pack (Settings → Delete). Remembered so the next launch
+    /// doesn't auto-download it right back.
     func delete() {
+        UserDefaults.standard.set(true, forKey: Self.userDeletedKey)
         Task {
+            self.stopObserving()
             try? await AssetPackManager.shared.remove(assetPackWithID: assetPackID)
             await MainActor.run {
                 self.isReady = false
+                self.isDownloading = false
                 self.progress = 0
                 self.resolvedModelPath = nil
                 ModelManager.shared.modelChanged()

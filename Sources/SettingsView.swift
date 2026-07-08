@@ -103,14 +103,14 @@ struct SettingsView: View {
                         Button("Restart download") { downloader.restartDownload() }
                             .buttonStyle(.bordered)
                             .controlSize(.small)
-                        Text("Downloading from Apple's servers. You can leave the app, lock your phone, or even close the app — iOS keeps downloading and picks up where it left off. Progress also shows on your Lock Screen.")
+                        Text("Downloading from Apple's servers. Fastest with the app open — if you leave, iOS may slow or pause it, and it speeds back up whenever you return.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {
                     Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                    Text("~4.3 GB, one time, from Apple's servers. Once started you can leave or close the app — iOS finishes the download for you.")
+                    Text("~4.3 GB, one time, from Apple's servers. Fastest with the app open — it also continues automatically whenever the app is open.")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }
