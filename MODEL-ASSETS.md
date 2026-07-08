@@ -1,4 +1,12 @@
-# Model delivery via Apple-hosted Background Assets (iOS 26)
+# Model delivery via Apple-hosted Background Assets (iOS 26) — PARKED
+
+> **STATUS: parked, not shipping.** The iOS 26 daemon proved unreliable in
+> practice (downloads park on lock, force-quit destroys progress, corrupted pack
+> states, TestFlight-only testing). The app now downloads the model directly
+> (Cloudflare R2 + HuggingFace mirror, byte-range resume) — see README "Model
+> delivery" v3. This playbook is kept for a future revisit once the OS matures.
+> The `qwen7b-q4` pack should stay **archived** in App Store Connect meanwhile,
+> so installs don't ghost-prefetch 4.3 GB the app no longer reads.
 
 The Qwen2.5-7B GGUF (~4.3 GB) ships as an **Apple-hosted managed asset pack**
 instead of a HuggingFace download. Apple hosts it on their CDN (fast, free), and

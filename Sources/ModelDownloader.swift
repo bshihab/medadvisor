@@ -1,248 +1,202 @@
 import Foundation
 import ActivityKit
-import BackgroundAssets
-import System   // FileDescriptor
 
-/// Delivers the Qwen2.5-7B-Instruct GGUF (~4.3 GB) as an **Apple-hosted managed
-/// Background Assets pack** (iOS 26). Apple hosts it on their CDN (fast, free) and
-/// the OS downloads it out-of-process — so it survives backgrounding, locking,
-/// and force-quit, with no URLSession plumbing on our side.
+/// Downloads the Qwen2.5-7B GGUF (~4.4 GB) directly over HTTPS with **byte-range
+/// resume**: bytes stream into `Documents/<name>.partial`, so any interruption —
+/// force-quit, reboot, network drop — resumes from the exact byte next time.
+/// Mirrors are tried in order (Cloudflare R2 primary, HuggingFace fallback); the
+/// file is identical on every mirror, so a resume can switch mirrors mid-file.
 ///
-/// Keeps the old `ModelDownloader.shared` name + interface (`isDownloaded`,
-/// `progress`, `isDownloading`, `startDownload()`, `ensureModel()`) so callers
-/// (LLMEngine, Settings, ModelManager) are unchanged.
-///
-/// VERIFY ON DEVICE (new iOS 26 API — shake these out on the Air / via ba-serve):
-///  • `AssetPackManager` method/enum shapes (statusUpdates cases, descriptor type).
-///  • The descriptor→path bridge (`fcntl(F_GETPATH)`): if the sandbox blocks
-///    llama.cpp from opening the asset path directly, fall back to loading from
-///    the file descriptor or from `contents(at:)` (memory-mapped Data).
+/// Chosen over Apple-hosted Background Assets after its daemon proved unreliable
+/// in practice (downloads that never start or park on lock, progress destroyed by
+/// force-quit, TestFlight-only testing) — see README "Model delivery". The BA
+/// packaging lives on in ModelAssets/ + MODEL-ASSETS.md for a future revisit.
 final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     static let shared = ModelDownloader()
-    private override init() {
-        super.init()
-        Task { await refreshInstalledState() }
-    }
+    private override init() { super.init() }
 
-    /// Matches `ModelAssets/Manifest.json`.
-    private let assetPackID = "qwen7b-q4"
-    /// In-pack path == the manifest `fileSelectors` path (repo-root-relative when
-    /// packaged with `ba-package`).
-    private let modelAssetPath = "ModelAssets/Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+    /// Tried in order on failure. TODO(R2): once the Cloudflare R2 bucket exists,
+    /// insert its public URL FIRST so HuggingFace becomes the fallback.
+    private let mirrors = [
+        URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
+    ]
+    private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
 
-    /// Live state (observed by Settings).
+    /// Live download state (observed by Settings).
     @Published private(set) var progress: Double = 0
     @Published private(set) var isDownloading = false
     @Published private(set) var errorMessage: String?
-    /// Whether the pack is downloaded and locally available.
-    @Published private(set) var isReady = false
-    /// Raw last status from the download daemon (diagnostic, shown in Settings) —
-    /// surfaces waiting/paused/failed states that would otherwise look like a
-    /// silent 0%.
-    @Published private(set) var statusDetail: String?
 
-    var isDownloaded: Bool { isReady }
+    private static let userDeletedKey = "modelDeletedByUser"
+    private static let expectedTotalKey = "modelExpectedTotalBytes"
 
-    /// Resolved on-disk path to the model file, cached once available.
-    private var resolvedModelPath: String?
+    // Transfer state (touched only on the session's serial delegate queue).
+    private var task: URLSessionDataTask?
+    private var fileHandle: FileHandle?
+    private var baseOffset: Int64 = 0          // bytes already on disk when this attempt started
+    private var received: Int64 = 0            // bytes received during this attempt
+    private var totalBytes: Int64 = 0          // full file size (from Content-Range/Length)
+    private var mirrorIndex = 0
+    private var retriesLeft = 3
+    private var lastReportedProgress: Double = -1
 
-    // Live Activity (Lock Screen / Dynamic Island) for the download.
+    // Live Activity (Lock Screen / Dynamic Island).
     private var activity: Activity<ModelDownloadAttributes>?
     private var lastActivityProgress: Double = -1
 
-    /// Launch-time sync: the OS may have finished (or progressed) the asset-pack
-    /// download while the app wasn't running — the pack has a *prefetch* policy,
-    /// so iOS starts downloading it right after install, before first launch.
+    private lazy var session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForResource = 60 * 60 * 6   // one attempt may span hours
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+
+    private var docs: URL { FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0] }
+    var localURL: URL { docs.appendingPathComponent(fileName) }
+    private var partialURL: URL { docs.appendingPathComponent(fileName + ".partial") }
+
+    var isDownloaded: Bool { FileManager.default.fileExists(atPath: localURL.path) }
+
+    private var partialSize: Int64 {
+        (try? FileManager.default.attributesOfItem(atPath: partialURL.path)[.size] as? Int64) ?? 0
+    }
+
+    // MARK: - Lifecycle
+
+    /// Called at launch and whenever the app becomes active: if the model isn't
+    /// here and the user didn't explicitly delete it, (re)start the download —
+    /// resuming from the partial file's exact byte count.
     func resume() {
-        Task {
-            await refreshInstalledState()
-            if self.isReady {
-                await MainActor.run { self.endActivity(finished: true) }  // clear stragglers
-            } else if !UserDefaults.standard.bool(forKey: Self.userDeletedKey) {
-                // DRIVE the download, don't just observe it: a session paused by
-                // the app closing stays paused until someone re-requests at user
-                // priority. Skipped only when the user explicitly deleted the model.
-                await self.runDownload()
-            }
-        }
-    }
-
-    private static let userDeletedKey = "modelDeletedByUser"
-
-    /// Single shared observer of the pack's download status. Feeds the in-app
-    /// progress bar and the Live Activity from whatever download is in flight
-    /// (prefetch or user-initiated).
-    private var statusTask: Task<Void, Never>?
-
-    private func observeStatus() {
-        guard statusTask == nil else { return }
-        statusTask = Task { [assetPackID] in
-            for await update in AssetPackManager.shared.statusUpdates(forAssetPackWithID: assetPackID) {
-                if case .downloading(_, let p) = update {
-                    await MainActor.run {
-                        self.isDownloading = true
-                        self.progress = p.fractionCompleted
-                        self.statusDetail = nil          // bytes flowing — no diagnosis needed
-                        if self.activity == nil { self.startActivity() }
-                        self.updateActivity(p.fractionCompleted)
-                    }
-                } else {
-                    // Any non-downloading state (waiting, paused, failed, …):
-                    // surface it verbatim so a stall is never a silent 0%.
-                    let desc = String(describing: update)
-                    print("[ModelDownloader] status: \(desc)")
-                    await MainActor.run { self.statusDetail = desc }
-                }
-            }
-        }
-    }
-
-    private func stopObserving() {
-        statusTask?.cancel()
-        statusTask = nil
-    }
-
-    // MARK: - State
-
-    /// Probe whether the pack is already downloaded (best-effort). If a resolvable
-    /// file descriptor exists, it's available.
-    private func refreshInstalledState() async {
-        if let path = try? await resolveModelPath() {
-            await MainActor.run {
-                self.resolvedModelPath = path
-                self.isReady = true
-                self.progress = 1
-            }
-        }
-    }
-
-    // MARK: - Download (from Settings)
-
-    /// Ask the OS to download the asset pack, streaming progress to the UI + Live
-    /// Activity. No-op if it's already available.
-    func startDownload() {
-        guard !isReady else { return }
-        UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
-        Task { await runDownload() }
-    }
-
-    private func runDownload() async {
-        // Don't double-drive (launch auto-resume + a Download tap can overlap).
-        let alreadyDriving = await MainActor.run { self.isDownloading }
-        if alreadyDriving { return }
-        await MainActor.run {
-            self.isDownloading = true
-            self.errorMessage = nil
-            self.progress = 0
-            self.startActivity()
-        }
-        do {
-            let pack = try await AssetPackManager.shared.assetPack(withID: assetPackID)
-
-            // Progress flows through the shared status observer while
-            // ensureLocalAvailability drives the download to completion.
-            observeStatus()
-            try await AssetPackManager.shared.ensureLocalAvailability(of: pack)
-            stopObserving()
-
-            let path = try await resolveModelPath()
-            await MainActor.run {
-                self.resolvedModelPath = path
-                self.isReady = true
-                self.isDownloading = false
+        if isDownloaded {
+            DispatchQueue.main.async {
                 self.progress = 1
                 self.endActivity(finished: true)
-                Task { @MainActor in ModelManager.shared.modelChanged() }
             }
-        } catch {
-            stopObserving()
-            await MainActor.run {
-                self.isDownloading = false
-                self.errorMessage = "Model download failed: \(error.localizedDescription)"
-                self.endActivity(finished: false)
-            }
+            return
         }
+        guard !UserDefaults.standard.bool(forKey: Self.userDeletedKey) else { return }
+        startDownload()
     }
 
-    /// Tear down whatever download session exists (wedged prefetch sessions
-    /// "begin" but never transfer) and issue a fresh user-initiated request.
-    func restartDownload() {
+    /// Start or resume the download. No-op if already downloaded or in flight.
+    func startDownload() {
+        guard !isDownloaded else { return }
         UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
-        Task {
-            self.stopObserving()
-            try? await AssetPackManager.shared.remove(assetPackWithID: assetPackID)
-            await MainActor.run {
-                self.isDownloading = false   // else runDownload's double-drive guard trips
-                self.progress = 0
-                self.errorMessage = nil
-                self.statusDetail = nil
-            }
-            await self.runDownload()
+        DispatchQueue.main.async {
+            guard !self.isDownloading else { return }
+            self.isDownloading = true
+            self.errorMessage = nil
+            self.mirrorIndex = 0
+            self.retriesLeft = 3
+            self.startActivity()
+            self.beginAttempt()
         }
     }
 
-    /// Remove the asset pack (Settings → Delete). Remembered so the next launch
-    /// doesn't auto-download it right back.
+    /// Remove the model (Settings → Delete). Remembered so the next launch
+    /// doesn't immediately download it again.
     func delete() {
         UserDefaults.standard.set(true, forKey: Self.userDeletedKey)
-        Task {
-            self.stopObserving()
-            try? await AssetPackManager.shared.remove(assetPackWithID: assetPackID)
-            await MainActor.run {
-                self.isReady = false
-                self.isDownloading = false
-                self.progress = 0
-                self.resolvedModelPath = nil
-                ModelManager.shared.modelChanged()
-            }
+        task?.cancel()
+        try? FileManager.default.removeItem(at: localURL)
+        try? FileManager.default.removeItem(at: partialURL)
+        DispatchQueue.main.async {
+            self.isDownloading = false
+            self.progress = 0
+            self.endActivity(finished: false)
+            ModelManager.shared.modelChanged()
         }
     }
 
-    // MARK: - Model access for llama.cpp
-
-    /// For the LLM engine: ensure the pack is present and return a file URL whose
-    /// path can be handed to llama.cpp. Downloads if missing.
+    /// For the LLM engine: return the model if present. Never blocks to download —
+    /// the download runs via Settings / auto-resume.
     func ensureModel(onProgress: @escaping (Double) -> Void = { _ in }) async throws -> URL {
-        if !isReady { await runDownload() }
-        var path = resolvedModelPath
-        if path == nil { path = try? await resolveModelPath() }
-        guard isReady, let path else {
+        guard isDownloaded else {
             throw NSError(domain: "ModelDownloader", code: 1, userInfo: [
-                NSLocalizedDescriptionKey: "The AI model isn't available yet. Download it in Settings."])
+                NSLocalizedDescriptionKey: "The AI model isn't downloaded yet. Download it in Settings."])
         }
-        return URL(fileURLWithPath: path)
+        return localURL
     }
 
-    /// Bridge Background Assets → a filesystem path llama.cpp can mmap: open the
-    /// asset's descriptor and recover its on-disk path via `fcntl(F_GETPATH)`.
-    /// llama.cpp re-opens the path itself, so we can close our descriptor.
-    private func resolveModelPath() async throws -> String {
-        // The file's in-pack path depends on how ba-package stored the selector
-        // (repo-root-relative vs manifest-dir-relative) — try both spellings.
-        let candidates = [
-            modelAssetPath,                                    // ModelAssets/Qwen….gguf
-            "Contents/" + modelAssetPath,                      // as stored in the .aar
-            (modelAssetPath as NSString).lastPathComponent,    // Qwen….gguf
-        ]
-        for path in candidates {
-            guard let descriptor = try? AssetPackManager.shared.descriptor(for: FilePath(path)) else { continue }
-            defer { try? descriptor.close() }
-            var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
-            if fcntl(descriptor.rawValue, F_GETPATH, &buffer) != -1 {
-                return String(cString: buffer)
-            }
+    // MARK: - Transfer
+
+    /// Issue one HTTP attempt against the current mirror, resuming at the
+    /// partial file's current size via a Range header.
+    private func beginAttempt() {
+        let offset = partialSize
+        baseOffset = offset
+        received = 0
+        totalBytes = Int64(UserDefaults.standard.double(forKey: Self.expectedTotalKey))
+        if totalBytes > 0 {
+            let initial = Double(offset) / Double(totalBytes)
+            DispatchQueue.main.async { self.progress = initial }
         }
-        throw NSError(domain: "ModelDownloader", code: 2, userInfo: [
-            NSLocalizedDescriptionKey: "Couldn't resolve the model file inside the asset pack."])
+
+        var request = URLRequest(url: mirrors[mirrorIndex])
+        if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
+        let t = session.dataTask(with: request)
+        task = t
+        t.resume()
+    }
+
+    /// A failed attempt: retry the same mirror a few times, then advance to the
+    /// next mirror. The partial file survives throughout, so every retry resumes.
+    private func attemptFailed(_ message: String) {
+        fileHandle = nil
+        if retriesLeft > 0 {
+            retriesLeft -= 1
+            DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak self] in
+                guard let self, self.isDownloading == true else { return }
+                self.beginAttempt()
+            }
+            return
+        }
+        if mirrorIndex + 1 < mirrors.count {
+            mirrorIndex += 1
+            retriesLeft = 3
+            beginAttempt()
+            return
+        }
+        DispatchQueue.main.async {
+            self.isDownloading = false
+            self.errorMessage = message
+            self.endActivity(finished: false)
+        }
+    }
+
+    private func completeDownload() {
+        try? fileHandle?.close()
+        fileHandle = nil
+        let size = partialSize
+        // Only accept a byte-complete file; anything short is a broken stream.
+        guard totalBytes > 0, size == totalBytes else {
+            attemptFailed("Download ended early (\(size)/\(totalBytes) bytes). Tap Download to continue.")
+            return
+        }
+        try? FileManager.default.removeItem(at: localURL)
+        do {
+            try FileManager.default.moveItem(at: partialURL, to: localURL)
+        } catch {
+            DispatchQueue.main.async {
+                self.isDownloading = false
+                self.errorMessage = "Couldn't save the downloaded model."
+                self.endActivity(finished: false)
+            }
+            return
+        }
+        DispatchQueue.main.async {
+            self.isDownloading = false
+            self.progress = 1
+            self.errorMessage = nil
+            self.endActivity(finished: true)
+            ModelManager.shared.modelChanged()
+        }
     }
 
     // MARK: - Live Activity
 
     private func startActivity() {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        // End any activity left over from a previous process — updating a
-        // reattached activity after force-quit proved unreliable (it renders
-        // frozen), so always start fresh.
         for stale in Activity<ModelDownloadAttributes>.activities {
             Task { await stale.end(nil, dismissalPolicy: .immediate) }
         }
@@ -272,6 +226,73 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                 await a.update(content)
                 await a.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4)))
             }
+        }
+    }
+}
+
+extension ModelDownloader: URLSessionDataDelegate {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask,
+                    didReceive response: URLResponse,
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        guard let http = response as? HTTPURLResponse else {
+            completionHandler(.cancel); return
+        }
+        switch http.statusCode {
+        case 206:
+            // Partial content — parse the full size out of "bytes N-M/TOTAL".
+            if let range = http.value(forHTTPHeaderField: "Content-Range"),
+               let totalPart = range.split(separator: "/").last, let total = Int64(totalPart) {
+                totalBytes = total
+            }
+        case 200:
+            // Server ignored (or we didn't send) the Range — full body follows.
+            // Any partial data is superseded; start the file over.
+            totalBytes = http.expectedContentLength > 0 ? http.expectedContentLength : 0
+            try? FileManager.default.removeItem(at: partialURL)
+            baseOffset = 0
+        default:
+            completionHandler(.cancel)
+            attemptFailed("The model server said \(http.statusCode). Tap Download to retry.")
+            return
+        }
+        if totalBytes > 0 {
+            UserDefaults.standard.set(Double(totalBytes), forKey: Self.expectedTotalKey)
+        }
+        if !FileManager.default.fileExists(atPath: partialURL.path) {
+            FileManager.default.createFile(atPath: partialURL.path, contents: nil)
+        }
+        fileHandle = try? FileHandle(forWritingTo: partialURL)
+        _ = try? fileHandle?.seekToEnd()
+        completionHandler(.allow)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        guard let fileHandle else { return }
+        try? fileHandle.write(contentsOf: data)
+        received += Int64(data.count)
+        guard totalBytes > 0 else { return }
+        let fraction = Double(baseOffset + received) / Double(totalBytes)
+        // Throttle UI updates to ~every half percent.
+        if fraction - lastReportedProgress >= 0.005 || fraction >= 1 {
+            lastReportedProgress = fraction
+            DispatchQueue.main.async {
+                self.progress = fraction
+                self.errorMessage = nil          // bytes flowing — clear stale errors
+                self.updateActivity(fraction)
+            }
+        }
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard self.task === task else { return }   // stale callback from a replaced attempt
+        self.task = nil
+        if let error {
+            try? fileHandle?.close()
+            let nsError = error as NSError
+            if nsError.code == NSURLErrorCancelled { return }   // delete() already handled state
+            attemptFailed("Download interrupted — it'll resume from where it stopped. (\(nsError.localizedDescription))")
+        } else {
+            completeDownload()
         }
     }
 }

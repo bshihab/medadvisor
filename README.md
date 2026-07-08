@@ -26,11 +26,18 @@ How that download happens has evolved:
    transfers on top of that, and a force-quit lost all progress. A long tail of
    resume-data, Live Activity, and foreground/background-handoff plumbing tried to
    patch around it.
-2. **v2 (current) — Apple-hosted Background Assets.** The model ships as a managed
-   asset pack (`qwen7b-q4`) uploaded to App Store Connect; **Apple's CDN hosts and
-   serves it** (free, fast — minutes instead of ~45), and **the OS owns the
-   download**: it survives backgrounding, lock, force-quit, and reboot, and resumes
-   itself. The app just asks `AssetPackManager` for the pack and shows progress.
+2. **v2 — Apple-hosted Background Assets.** The model shipped as a managed asset
+   pack (`qwen7b-q4`) on Apple's CDN, downloaded by the OS. On paper ideal (free,
+   fast, survives everything); in practice the iOS 26 daemon proved unreliable —
+   downloads that never start or park when the phone locks, force-quit destroying
+   progress, corrupted pack states, TestFlight-only testing (no ⌘R builds) — all
+   consistent with open Apple forum reports. Parked until the OS matures.
+3. **v3 (current) — direct HTTPS with byte-range resume.** Plain download from a
+   fast mirror (Cloudflare R2 primary, HuggingFace fallback) streaming into a
+   `.partial` file in Documents. **Progress is never lost**: force-quit, reboot,
+   network drop — the next attempt sends `Range: bytes=N-` and continues from the
+   exact byte, and the app auto-resumes whenever it becomes active. Fastest with
+   the app open (iOS suspends the transfer with the app). Works in dev builds.
 
 Moving parts (all in-repo except the upload):
 

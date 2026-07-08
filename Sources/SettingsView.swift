@@ -96,21 +96,14 @@ struct SettingsView: View {
                         ProgressView(value: downloader.progress)
                         Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
-                        if let detail = downloader.statusDetail {
-                            Text(detail)
-                                .font(.caption2.monospaced()).foregroundStyle(.orange)
-                        }
-                        Button("Restart download") { downloader.restartDownload() }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                        Text("Downloading from Apple's servers. Fastest with the app open — if you leave, iOS may slow or pause it, and it speeds back up whenever you return.")
+                        Text("Fastest with the app open. Your progress is never lost — leave, force-quit, even restart the phone, and it resumes from the exact spot when you come back.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 } else {
                     Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                    Text("~4.3 GB, one time, from Apple's servers. Fastest with the app open — it also continues automatically whenever the app is open.")
+                    Text("~4.4 GB, one time. Fastest with the app open; progress is saved continuously, so nothing is ever lost if you leave.")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }
