@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Orchestrates the on-device pipeline for one recording:
 /// transcribe (Apple) → LLM speaker attribution → conversation turns →
@@ -48,6 +49,12 @@ final class EncounterProcessor: ObservableObject {
             stage = .error("The AI model isn't downloaded yet. Open Settings (tap the gear) and download it, then try again.")
             return
         }
+
+        // Keep the screen awake for the whole pipeline: auto-lock suspends the
+        // app, and iOS halts our GPU (Metal) work with it — scoring would stall
+        // mid-run. Restored no matter how processing exits.
+        UIApplication.shared.isIdleTimerDisabled = true
+        defer { UIApplication.shared.isIdleTimerDisabled = false }
 
         // Keep the LLM RESIDENT across analyses. With Whisper + the diarizer
         // gone, the LLM is the only big model, so there's nothing to free it for
