@@ -180,6 +180,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         // (repo-root-relative vs manifest-dir-relative) — try both spellings.
         let candidates = [
             modelAssetPath,                                    // ModelAssets/Qwen….gguf
+            "Contents/" + modelAssetPath,                      // as stored in the .aar
             (modelAssetPath as NSString).lastPathComponent,    // Qwen….gguf
         ]
         for path in candidates {
