@@ -118,6 +118,8 @@ final class AccountStore: ObservableObject {
         }
     }
 
+    private struct ServerErrorBody: Decodable { let error: String? }
+
     private func call<B: Encodable, R: Decodable>(_ path: String, method: String, body: B?) async throws -> R {
         guard let user = Auth.auth().currentUser else { throw APIError.notSignedIn }
         let token = try await user.getIDTokenResult(forcingRefresh: false).token
@@ -131,8 +133,7 @@ final class AccountStore: ObservableObject {
         let (data, response) = try await URLSession.shared.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard status == 200 else {
-            struct Err: Decodable { let error: String? }
-            let code = (try? JSONDecoder().decode(Err.self, from: data))?.error ?? "unknown"
+            let code = (try? JSONDecoder().decode(ServerErrorBody.self, from: data))?.error ?? "unknown"
             throw APIError.server(status, code)
         }
         return try JSONDecoder().decode(R.self, from: data)
