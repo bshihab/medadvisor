@@ -96,6 +96,10 @@ struct SettingsView: View {
                         ProgressView(value: downloader.progress)
                         Text("Downloading… \(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
+                        if let detail = downloader.statusDetail {
+                            Text(detail)
+                                .font(.caption2.monospaced()).foregroundStyle(.orange)
+                        }
                         Text("Downloading from Apple's servers. You can leave the app, lock your phone, or even close the app — iOS keeps downloading and picks up where it left off. Progress also shows on your Lock Screen.")
                             .font(.caption2).foregroundStyle(.secondary)
                     }

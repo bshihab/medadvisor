@@ -36,6 +36,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     @Published private(set) var errorMessage: String?
     /// Whether the pack is downloaded and locally available.
     @Published private(set) var isReady = false
+    /// Raw last status from the download daemon (diagnostic, shown in Settings) —
+    /// surfaces waiting/paused/failed states that would otherwise look like a
+    /// silent 0%.
+    @Published private(set) var statusDetail: String?
 
     var isDownloaded: Bool { isReady }
 
@@ -73,9 +77,16 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
                     await MainActor.run {
                         self.isDownloading = true
                         self.progress = p.fractionCompleted
+                        self.statusDetail = nil          // bytes flowing — no diagnosis needed
                         if self.activity == nil { self.startActivity() }
                         self.updateActivity(p.fractionCompleted)
                     }
+                } else {
+                    // Any non-downloading state (waiting, paused, failed, …):
+                    // surface it verbatim so a stall is never a silent 0%.
+                    let desc = String(describing: update)
+                    print("[ModelDownloader] status: \(desc)")
+                    await MainActor.run { self.statusDetail = desc }
                 }
             }
         }
