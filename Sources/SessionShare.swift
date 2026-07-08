@@ -27,6 +27,13 @@ enum SessionShare {
 
     // MARK: - Building
 
+    /// Server validation caps (400 invalid_body beyond these) — truncate
+    /// client-side so an over-long LLM summary can't bounce a share.
+    static func clip(_ s: String?, to limit: Int) -> String? {
+        guard let s, !s.isEmpty else { return nil }
+        return s.count <= limit ? s : String(s.prefix(limit - 1)) + "…"
+    }
+
     static func wireResult(_ status: CriterionResult.Status) -> String {
         switch status {
         case .met: return "met"

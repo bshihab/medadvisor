@@ -183,14 +183,14 @@ struct ShareWithMentorView: View {
             location: record.locationRaw,
             rubricId: rubric.id,
             rubricVersion: rubric.version,
-            summary: includeSummary && !summaryText.isEmpty ? summaryText : nil,
+            summary: includeSummary ? SessionShare.clip(summaryText, to: 2000) : nil,
             criteria: drafts.map { d in
                 SessionShare.Item(
                     id: d.id,
                     dimension: d.dimension,
                     result: SessionShare.wireResult(d.status),
-                    evidence: d.included && !d.text.isEmpty ? d.text : nil,
-                    tip: d.tip)
+                    evidence: d.included ? SessionShare.clip(d.text, to: 500) : nil,
+                    tip: SessionShare.clip(d.tip, to: 500))
             })
         Task {
             do {
