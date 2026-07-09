@@ -92,6 +92,13 @@ private struct ToolbarChromeModifier: ViewModifier {
     @State private var showSettings = false
     @State private var showAccount = false
     @ObservedObject private var account = AccountStore.shared
+    /// When the sign-in callout was dismissed — it stays away for a week.
+    @AppStorage("signInCalloutDismissedAt") private var calloutDismissedAt = 0.0
+
+    private var showCallout: Bool {
+        !account.isSignedIn &&
+        Date().timeIntervalSince1970 - calloutDismissedAt > 7 * 86_400
+    }
 
     func body(content: Content) -> some View {
         content
@@ -112,10 +119,14 @@ private struct ToolbarChromeModifier: ViewModifier {
                 }
             }
             .overlay(alignment: .topTrailing) {
-                if !account.isSignedIn {
-                    SignInCallout { showAccount = true }
-                        .padding(.trailing, 12)
-                        .padding(.top, 2)
+                if showCallout {
+                    SignInCallout {
+                        showAccount = true
+                    } onDismiss: {
+                        withAnimation { calloutDismissedAt = Date().timeIntervalSince1970 }
+                    }
+                    .padding(.trailing, 12)
+                    .padding(.top, 2)
                 }
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
@@ -127,6 +138,7 @@ private struct ToolbarChromeModifier: ViewModifier {
 /// Sign in button. Shown whenever signed out; tapping anywhere opens sign-in.
 private struct SignInCallout: View {
     var action: () -> Void
+    var onDismiss: () -> Void
 
     var body: some View {
         Button(action: action) {
@@ -136,8 +148,20 @@ private struct SignInCallout: View {
                     .frame(width: 22, height: 10)
                     .padding(.trailing, 22)
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Sign in to MedAdvisor")
-                        .font(.subheadline.weight(.semibold))
+                    HStack(alignment: .top) {
+                        Text("Sign in to MedAdvisor")
+                            .font(.subheadline.weight(.semibold))
+                        Spacer()
+                        Button {
+                            onDismiss()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Dismiss")
+                    }
                     Text("Keep your history on all your devices and share results with your mentor — only when you choose.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
