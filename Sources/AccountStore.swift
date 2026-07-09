@@ -41,6 +41,8 @@ final class AccountStore: ObservableObject {
         let orgId: String
         let name: String
         let role: String
+        /// User-facing role name (server keeps admin/trainee internally).
+        var roleLabel: String { role == "admin" ? "Mentor" : "Trainee" }
     }
 
     @Published private(set) var email: String?

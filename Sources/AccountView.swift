@@ -13,7 +13,7 @@ struct AccountRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     if let email = account.email {
                         Text(email).font(.subheadline)
-                        Text(account.org.map { "\($0.name) · \($0.role)" } ?? "No program joined")
+                        Text(account.org.map { "\($0.name) · \($0.roleLabel)" } ?? "No program joined")
                             .font(.caption).foregroundStyle(.secondary)
                     } else {
                         Text("Sign in").font(.subheadline)
@@ -125,7 +125,14 @@ struct AccountView: View {
             Section("Program") {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(org.name)
-                    Text(org.role).font(.caption).foregroundStyle(.secondary)
+                    Text(org.roleLabel).font(.caption).foregroundStyle(.secondary)
+                }
+                if org.role == "admin" {
+                    NavigationLink {
+                        MentorCohortView(org: org)
+                    } label: {
+                        Label("My cohort", systemImage: "person.2")
+                    }
                 }
             }
         } else {
