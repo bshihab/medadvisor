@@ -44,8 +44,8 @@ private struct DeleteSessionDialog: ViewModifier {
                 }
             } message: {
                 Text(target?.sharedAt == nil
-                     ? "This session was never shared — this is the only copy, and deleting it is permanent."
-                     : "This session was shared with your mentor. Device-only keeps their copy; everywhere removes it from their dashboard too.")
+                     ? "This session was never shared, so it exists only on this phone — there is no cloud or mentor copy to delete. Deleting it here is permanent."
+                     : "This session was shared with your mentor, so two copies exist. \"Device only\" removes yours and keeps theirs; \"everywhere\" removes it from their dashboard too.")
             }
             .alert("Couldn't delete the cloud copy",
                    isPresented: Binding(get: { errorMessage != nil },
