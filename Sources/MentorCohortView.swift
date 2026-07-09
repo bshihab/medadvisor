@@ -194,8 +194,10 @@ struct MentorTraineeView: View {
         }
         let rubric = sessions.first?.rubricId.flatMap { RubricLoader.load(named: $0) }
         return byDimension
-            .map { (label: rubric?.dimensions.first { d in d.id == $0.key }?.label ?? $0.key,
-                    scores: $0.value) }
+            .map { key, scores in
+                (label: rubric?.dimensions.first(where: { $0.id == key })?.label ?? key,
+                 scores: scores)
+            }
             .sorted { $0.label < $1.label }
     }
 
