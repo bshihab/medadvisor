@@ -32,17 +32,32 @@ extension View {
         background(AmbientGlow(colors: colors, opacity: opacity))
     }
 
-    /// Adds a Settings gear button (top-trailing) that presents Settings — used
-    /// now that Settings is a gear rather than a tab.
-    func settingsGear() -> some View { modifier(SettingsGearModifier()) }
+    /// Adds the two standard toolbar buttons: Settings gear (top-LEADING) and
+    /// the account/profile button (top-TRAILING) — separated so "the app's
+    /// knobs" and "who I am" don't share a door.
+    func settingsGear() -> some View { modifier(ToolbarChromeModifier()) }
 
     /// A faint glass-edge hairline — brighter at the top like a highlight — that
     /// gives material/glass cards more definition. Pass the card's corner radius.
     func glassHairline(_ cornerRadius: CGFloat) -> some View {
-        overlay(
+        modifier(GlassHairline(cornerRadius: cornerRadius))
+    }
+}
+
+/// Adaptive hairline: a white highlight reads as glass in light mode but as a
+/// harsh outline in dark — there it drops to a whisper so the ambient colors
+/// around the card do the talking.
+private struct GlassHairline: ViewModifier {
+    var cornerRadius: CGFloat
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        content.overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(
-                    LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.08)],
+                    LinearGradient(colors: scheme == .dark
+                                   ? [.white.opacity(0.14), .white.opacity(0.02)]
+                                   : [.white.opacity(0.5), .white.opacity(0.08)],
                                    startPoint: .top, endPoint: .bottom),
                     lineWidth: 0.75)
         )
@@ -71,16 +86,29 @@ struct AmbientGlow: View {
     }
 }
 
-private struct SettingsGearModifier: ViewModifier {
-    @State private var show = false
+/// Gear on the left (app settings), profile on the right (account/program —
+/// filled icon once signed in).
+private struct ToolbarChromeModifier: ViewModifier {
+    @State private var showSettings = false
+    @State private var showAccount = false
+    @ObservedObject private var account = AccountStore.shared
+
     func body(content: Content) -> some View {
         content
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { show = true } label: { Image(systemName: "gearshape") }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { showSettings = true } label: { Image(systemName: "gearshape") }
                         .accessibilityLabel("Settings")
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showAccount = true } label: {
+                        Image(systemName: account.isSignedIn
+                              ? "person.crop.circle.fill" : "person.crop.circle")
+                    }
+                    .accessibilityLabel("Account")
+                }
             }
-            .sheet(isPresented: $show) { SettingsView() }
+            .sheet(isPresented: $showSettings) { SettingsView() }
+            .sheet(isPresented: $showAccount) { AccountView() }
     }
 }

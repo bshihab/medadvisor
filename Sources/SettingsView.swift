@@ -47,14 +47,6 @@ struct SettingsView: View {
                 } footer: {
                     Text("Live overlay of the app's memory footprint + headroom before iOS kills it — for diagnosing the on-device model memory ceiling.")
                 }
-
-                Section("Developer") {
-                    NavigationLink {
-                        LLMSpikeView()
-                    } label: {
-                        Label("On-device LLM test", systemImage: "hammer")
-                    }
-                }
             }
             .navigationTitle("Settings")
             .confirmationDialog("Delete this model?",
@@ -70,12 +62,15 @@ struct SettingsView: View {
                     Button("Cancel", role: .cancel) { confirmDelete = nil }
                 }
             } message: {
-                Text("It will re-download the next time it's needed.")
+                Text("This removes the ~4.4 GB AI model from your phone. You'll need to download it again before you can analyze recordings.")
             }
         }
         // Apply the theme to the Settings sheet itself, live — a sheet doesn't
         // pick up the root's preferredColorScheme change while it's already open.
         .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme ?? nil)
+        // Re-key the sheet content when the choice changes: switching to System
+        // (nil) doesn't re-resolve an already-presented sheet without it.
+        .id("appearance-\(appearance)")
     }
 
     @ViewBuilder

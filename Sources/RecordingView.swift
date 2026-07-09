@@ -154,9 +154,27 @@ struct RecordingView: View {
     /// bottom of the screen, Live Voicemail-style. While recording it becomes
     /// alive: it swells and brightens with the mic level and drifts slowly, so
     /// louder speech visibly pushes the glow outward. Calm/static when idle.
+    /// True while the pipeline is running (transcribe -> score -> summarize).
+    private var isAnalyzing: Bool {
+        switch processor.stage {
+        case .idle, .done, .error: return false
+        default: return true
+        }
+    }
+
     private var gradeGradient: some View {
         Group {
-            if recorder.isRecording && !recorder.isPaused {
+            if isAnalyzing {
+                // Calm variant while the model works: slow, subtle drift — a
+                // fraction of the recording state's movement, no mic reactivity.
+                TimelineView(.animation) { timeline in
+                    let t = timeline.date.timeIntervalSinceReferenceDate
+                    gradientLayer(scaleX: 1.7, scaleY: 1.4,
+                                  opacity: 0.32 + 0.04 * sin(t * 0.5),
+                                  dx: CGFloat(sin(t * 0.22)) * 10,
+                                  dy: CGFloat(cos(t * 0.17)) * 5)
+                }
+            } else if recorder.isRecording && !recorder.isPaused {
                 TimelineView(.animation) { timeline in
                     let t = timeline.date.timeIntervalSinceReferenceDate
                     let lvl = CGFloat(max(0, min(1, recorder.level)))
