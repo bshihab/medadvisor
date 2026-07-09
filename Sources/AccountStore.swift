@@ -87,6 +87,10 @@ final class AccountStore: ObservableObject {
             let change = result.user.createProfileChangeRequest()
             change.displayName = trimmed
             try? await change.commitChanges()   // best-effort; account works regardless
+            // Refresh the ID token so the name claim rides along immediately —
+            // the invite-redeem stores displayName from the TOKEN, and the
+            // cached one predates the profile commit.
+            _ = try? await result.user.getIDTokenResult(forcingRefresh: true)
         }
     }
 
@@ -104,6 +108,7 @@ final class AccountStore: ObservableObject {
             let change = result.user.createProfileChangeRequest()
             change.displayName = fullName
             try? await change.commitChanges()
+            _ = try? await result.user.getIDTokenResult(forcingRefresh: true)
         }
     }
 
@@ -136,6 +141,7 @@ final class AccountStore: ObservableObject {
             let change = auth.user.createProfileChangeRequest()
             change.displayName = name
             try? await change.commitChanges()
+            _ = try? await auth.user.getIDTokenResult(forcingRefresh: true)
         }
     }
 
