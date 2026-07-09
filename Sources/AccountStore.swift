@@ -69,6 +69,7 @@ final class AccountStore: ObservableObject {
                     await self?.refreshMe()
                     await SessionShare.restore()   // cross-device history (silent)
                     await NotesStore.shared.refresh()
+                    PushManager.shared.syncAfterSignIn()
                 }
             }
         }
@@ -146,7 +147,12 @@ final class AccountStore: ObservableObject {
     }
 
     func signOut() {
-        try? Auth.auth().signOut()
+        Task {
+            // Withdraw this device's push token while the auth token still
+            // works, then sign out.
+            await PushManager.shared.unregisterForSignOut()
+            try? Auth.auth().signOut()
+        }
     }
 
     // MARK: - Org membership
@@ -162,6 +168,9 @@ final class AccountStore: ObservableObject {
             _ = try await user.getIDTokenResult(forcingRefresh: true)   // pick up new claims
         }
         org = Org(orgId: reply.orgId, name: reply.orgName, role: reply.role)
+        // In-context permission moment: you just joined a program — a mentor
+        // now exists who might write to you.
+        await PushManager.shared.requestPermission()
     }
 
     /// Refresh identity + org from the server (silent on failure — offline OK).

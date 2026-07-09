@@ -34,6 +34,8 @@ targets:
         product: llama
       - package: Firebase
         product: FirebaseAuth             # Identity Platform sign-in (MC2)
+      - package: Firebase
+        product: FirebaseMessaging        # push notifications (MC7)
       - package: GoogleSignIn
         product: GoogleSignIn             # Continue with Google
       - target: ModelDownloadWidget       # embed the Live Activity widget extension
@@ -53,6 +55,7 @@ targets:
           - group.app.medadvisor
         com.apple.developer.applesignin:
           - Default
+        aps-environment: development   # Xcode flips to production at App Store export
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

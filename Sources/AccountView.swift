@@ -229,6 +229,12 @@ struct AccountView: View {
             }
         }
 
+        if account.org != nil {
+            Section("Notifications") {
+                NotificationsRow()
+            }
+        }
+
         Section {
             Button("Sign out", role: .destructive) { account.signOut() }
         }
@@ -305,5 +311,38 @@ struct AccountView: View {
 
     private static func sha256(_ input: String) -> String {
         SHA256.hash(data: Data(input.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+
+/// Notification permission state + the enable path (in-context, post-join).
+private struct NotificationsRow: View {
+    @ObservedObject private var push = PushManager.shared
+
+    var body: some View {
+        switch push.authorized {
+        case true:
+            Label("Mentor notes notify this device", systemImage: "bell.badge.fill")
+                .font(.subheadline)
+        case false:
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Notifications are off — you won't know when your mentor writes to you.")
+                    .font(.footnote).foregroundStyle(.secondary)
+                Button("Turn on in Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                .font(.subheadline)
+            }
+        case nil:
+            Button {
+                Task { await push.requestPermission() }
+            } label: {
+                Label("Notify me about mentor notes", systemImage: "bell.badge")
+            }
+        case .some(_):
+            EmptyView()
+        }
     }
 }
