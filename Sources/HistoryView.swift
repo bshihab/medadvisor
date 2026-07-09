@@ -12,7 +12,7 @@ struct HistoryView: View {
 
     var body: some View {
         Group {
-            if store.records.isEmpty {
+            if store.visibleRecords.isEmpty {
                 ContentUnavailableView(
                     "No saved feedback yet",
                     systemImage: "waveform",
@@ -35,7 +35,7 @@ struct HistoryView: View {
 
     private var list: some View {
         List {
-            ForEach(store.records) { record in
+            ForEach(store.visibleRecords) { record in
                 row(record)
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
@@ -83,7 +83,7 @@ struct HistoryView: View {
                     if !isSelecting { picked.removeAll() }
                 }
             }
-            .disabled(store.records.isEmpty)
+            .disabled(store.visibleRecords.isEmpty)
         }
         if isSelecting {
             ToolbarItem(placement: .topBarLeading) {
@@ -104,7 +104,7 @@ struct HistoryView: View {
     // MARK: - Selection helpers
 
     private var pickedRecords: [ConsultationRecord] {
-        store.records.filter { picked.contains($0.id) }
+        store.visibleRecords.filter { picked.contains($0.id) }
     }
     private func toggle(_ id: String) {
         if picked.contains(id) { picked.remove(id) } else { picked.insert(id) }

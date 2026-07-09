@@ -59,7 +59,8 @@ struct MentorHome: View {
                         description: Text("Mint an invite code (⋯ menu) and share it with your trainees."))
                         .padding(.top, 40)
                 }
-                ForEach(store.members) { member in
+                // You don't mentor yourself — exclude the signed-in account.
+                ForEach(store.members.filter { $0.uid != account.uid }) { member in
                     NavigationLink {
                         MentorTraineeView(org: org, member: member)
                     } label: {
@@ -124,25 +125,11 @@ struct MentorTraineeView: View {
 
     var body: some View {
         List {
-            if !dimensionTrends.isEmpty {
+            let skillAreas = SkillAreas.from(sessions: sessions)
+            if !skillAreas.isEmpty {
                 Section("Progress by skill area") {
-                    ForEach(dimensionTrends, id: \.label) { trend in
-                        HStack {
-                            Text(trend.label).font(.caption)
-                            Spacer()
-                            Chart(Array(trend.scores.enumerated()), id: \.offset) { item in
-                                LineMark(x: .value("Session", item.offset),
-                                         y: .value("Score", item.element))
-                                    .interpolationMethod(.catmullRom)
-                            }
-                            .chartXAxis(.hidden).chartYAxis(.hidden)
-                            .chartYScale(domain: 0...1)
-                            .frame(width: 90, height: 24)
-                            Text("\(Int((trend.scores.last ?? 0) * 100))%")
-                                .font(.caption.monospacedDigit().weight(.semibold))
-                                .frame(width: 44, alignment: .trailing)
-                        }
-                    }
+                    SkillAreaChart(areas: skillAreas)
+                        .padding(.vertical, 4)
                 }
             }
 
@@ -182,23 +169,6 @@ struct MentorTraineeView: View {
         }
         .navigationTitle(member.label)
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private var dimensionTrends: [(label: String, scores: [Double])] {
-        let ordered = sessions.sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
-        var byDimension: [String: [Double]] = [:]
-        for session in ordered {
-            for (dimension, score) in session.dimensionScores {
-                byDimension[dimension, default: []].append(score)
-            }
-        }
-        let rubric = sessions.first?.rubricId.flatMap { RubricLoader.load(named: $0) }
-        return byDimension
-            .map { key, scores in
-                (label: rubric?.dimensions.first(where: { $0.id == key })?.label ?? key,
-                 scores: scores)
-            }
-            .sorted { $0.label < $1.label }
     }
 
     @ViewBuilder

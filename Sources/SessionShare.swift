@@ -117,7 +117,8 @@ enum SessionShare {
                 transcript: nil,               // transcripts never sync, by design
                 turns: nil,
                 feedback: ConsultationFeedback(perCriterion: results, summary: s.summary),
-                sharedAt: s.receivedAt.flatMap(parseDate))
+                sharedAt: s.receivedAt.flatMap(parseDate),
+                ownerUid: AccountStore.shared.uid)
         }
         FeedbackStore.shared.mergeRestored(records)
     }

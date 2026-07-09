@@ -513,7 +513,8 @@ struct RecordingView: View {
                     locationRaw: location.rawValue,
                     transcript: processor.redactedTranscript,
                     turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
-                    feedback: feedback)
+                    feedback: feedback,
+                    ownerUid: AccountStore.shared.uid)
                 FeedbackStore.shared.add(record)
                 savedRecord = record
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis

@@ -61,6 +61,8 @@ final class AccountStore: ObservableObject {
         Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
                 self?.email = user?.email
+                self?.uid = user?.uid
+                FeedbackStore.shared.currentUid = user?.uid
                 if user == nil {
                     self?.org = nil
                 } else {

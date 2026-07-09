@@ -67,7 +67,7 @@ final class InsightsEngine: ObservableObject {
 
     func generate(from: Date, to: Date) async {
         errorMessage = nil
-        let records = FeedbackStore.shared.records
+        let records = FeedbackStore.shared.visibleRecords
             .filter { $0.date >= from && $0.date <= to.addingTimeInterval(86_400) }
             .sorted { $0.date < $1.date }   // oldest first
 
@@ -253,14 +253,17 @@ struct InsightsView: View {
             trendChart(insights.trend)
         }
 
-        // By skill area — per-dimension bars
-        if let dims = insights.dimensionScores, !dims.isEmpty {
+        // By skill area — the unified visualization (bar = latest score,
+        // line = change over time; met=1, partial=0.5, N/A excluded).
+        let skillAreas = SkillAreas.from(records: FeedbackStore.shared.visibleRecords
+            .filter { $0.date >= insights.fromDate && $0.date <= insights.toDate })
+        if !skillAreas.isEmpty {
             card {
                 Text("By skill area")
                     .font(.subheadline.weight(.bold))
-                Text("Average done-rate across these sessions")
+                Text("Latest score per skill, and how it's moved across these sessions")
                     .font(.caption).foregroundStyle(.secondary)
-                dimensionChart(dims)
+                SkillAreaChart(areas: skillAreas)
             }
         }
 
@@ -382,7 +385,7 @@ struct InsightsView: View {
 
     /// Default the picker to span from the earliest saved consultation to today.
     private func setDefaultRange() {
-        if let earliest = FeedbackStore.shared.records.map(\.date).min() {
+        if let earliest = FeedbackStore.shared.visibleRecords.map(\.date).min() {
             fromDate = earliest
         }
         toDate = Date()

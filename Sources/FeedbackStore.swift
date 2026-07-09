@@ -13,6 +13,8 @@ struct ConsultationRecord: Codable, Identifiable, Equatable {
     let feedback: ConsultationFeedback
     /// When this session was shared with the mentor (nil = never shared).
     var sharedAt: Date? = nil
+    /// Account that recorded it (nil = recorded signed-out / pre-accounts).
+    var ownerUid: String? = nil
 
     var location: AppLocation? { AppLocation(rawValue: locationRaw) }
 }
@@ -25,6 +27,14 @@ final class FeedbackStore: ObservableObject {
     static let shared = FeedbackStore()
 
     @Published private(set) var records: [ConsultationRecord] = []
+    /// Current account (set by AccountStore on auth changes) — scopes visibility.
+    @Published var currentUid: String?
+
+    /// What the UI shows: your own records plus anonymous/legacy ones. Another
+    /// account's sessions never leak across sign-ins on a shared device.
+    var visibleRecords: [ConsultationRecord] {
+        records.filter { $0.ownerUid == nil || $0.ownerUid == currentUid }
+    }
 
     private let dir: URL
 

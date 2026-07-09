@@ -14,7 +14,7 @@ struct ProgressHome: View {
     @State private var deleteTarget: ConsultationRecord?
 
     private var location: AppLocation { AppLocation(rawValue: locationRaw) ?? .outpatientClinic }
-    private var recent: [ConsultationRecord] { Array(store.records.prefix(4)) }
+    private var recent: [ConsultationRecord] { Array(store.visibleRecords.prefix(4)) }
 
     var body: some View {
         NavigationStack {
@@ -122,11 +122,11 @@ struct ProgressHome: View {
             HStack {
                 Label("Recent sessions", systemImage: "clock").font(.headline)
                 Spacer()
-                if store.records.count > recent.count {
+                if store.visibleRecords.count > recent.count {
                     NavigationLink("See all") { HistoryView() }.font(.subheadline)
                 }
             }
-            if store.records.isEmpty {
+            if store.visibleRecords.isEmpty {
                 Text("Record a consultation to see it here.")
                     .font(.subheadline).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
