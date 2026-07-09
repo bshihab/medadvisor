@@ -53,6 +53,7 @@ final class AccountStore: ObservableObject {
     }
 
     @Published private(set) var email: String?
+    @Published private(set) var uid: String?
     @Published private(set) var org: Org?
     var isSignedIn: Bool { email != nil }
 
@@ -157,8 +158,9 @@ final class AccountStore: ObservableObject {
 
     /// Refresh identity + org from the server (silent on failure — offline OK).
     func refreshMe() async {
-        struct Me: Decodable { let email: String?; let org: Org? }
+        struct Me: Decodable { let uid: String?; let email: String?; let org: Org? }
         guard let me: Me = try? await call("v1/me", method: "GET", body: Optional<Int>.none) else { return }
+        uid = me.uid
         org = me.org
     }
 
@@ -194,6 +196,29 @@ final class AccountStore: ObservableObject {
             let code = (try? JSONDecoder().decode(ServerErrorBody.self, from: data))?.error ?? "unknown"
             throw APIError.server(status, code)
         }
+    }
+
+    /// Authed call whose body is a raw JSON object (lossless round-trips for
+    /// the rubric editor — typed encode would drop unknown keys). Returns the
+    /// raw response data for the caller to decode.
+    func callJSONObject(_ path: String, method: String, jsonObject: Any) async throws -> Data {
+        guard let user = Auth.auth().currentUser else { throw APIError.notSignedIn }
+        let token = try await user.getIDTokenResult(forcingRefresh: false).token
+        guard let url = URL(string: path, relativeTo: RubricSync.baseURL) else {
+            throw APIError.server(0, "bad_path")
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: jsonObject)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard status == 200 else {
+            let code = (try? JSONDecoder().decode(ServerErrorBody.self, from: data))?.error ?? "unknown"
+            throw APIError.server(status, code)
+        }
+        return data
     }
 
     /// Authed JSON call against the API (also used by SessionShare).

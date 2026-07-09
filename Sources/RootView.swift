@@ -27,6 +27,7 @@ enum Appearance: String, CaseIterable, Identifiable {
 struct RootView: View {
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
+    @ObservedObject private var account = AccountStore.shared
 
     var body: some View {
         tabs
@@ -41,6 +42,13 @@ struct RootView: View {
 
             ProgressHome()
                 .tabItem { Label("Progress", systemImage: "chart.line.uptrend.xyaxis") }
+
+            // Mentors get a third tab: their cohort, natively. Role-gated by
+            // /v1/me, so trainees never see it.
+            if account.org?.role == "admin" {
+                MentorHome()
+                    .tabItem { Label("Cohort", systemImage: "person.2.fill") }
+            }
         }
     }
 }

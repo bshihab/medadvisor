@@ -208,11 +208,8 @@ struct AccountView: View {
                     Text(org.roleLabel).font(.caption).foregroundStyle(.secondary)
                 }
                 if org.role == "admin" {
-                    NavigationLink {
-                        MentorCohortView(org: org)
-                    } label: {
-                        Label("My cohort", systemImage: "person.2")
-                    }
+                    Label("Your cohort lives in the Cohort tab", systemImage: "person.2")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
         } else {

@@ -12,6 +12,7 @@ final class NotesStore: ObservableObject {
         let noteId: String
         let sessionId: String?
         let traineeUid: String
+        let authorUid: String?
         let authorEmail: String?
         let authorDisplayName: String?
         let text: String

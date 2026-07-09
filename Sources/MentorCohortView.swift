@@ -1,141 +1,282 @@
 import SwiftUI
+import Charts
 
-/// Phase-1 native mentor view (read-only): cohort roster → trainee → their
-/// shared sessions, rendered from the same org endpoints the web dashboard
-/// uses. Appears only for accounts whose org role is admin (shown as
-/// "Mentor"). The website remains the full tool (rubric editor, notes).
-struct MentorCohortView: View {
-    let org: AccountStore.Org
-
-    struct Member: Decodable, Identifiable {
-        let uid: String
-        let email: String?
-        let displayName: String?
-        let role: String
-        var id: String { uid }
-        var label: String { displayName ?? email ?? uid }
-        var roleLabel: String { role == "admin" ? "Mentor" : "Trainee" }
-    }
-    private struct MembersReply: Decodable { let members: [Member] }
-
-    @State private var members: [Member] = []
-    @State private var errorMessage: String?
-    @State private var loading = true
+/// Phase-2 mentor experience, native: the Cohort tab. Everything the web
+/// dashboard offers — roster with trends, trainee drill-in with per-dimension
+/// charts, session cards with quotes, notes CRUD, invite-code minting, and the
+/// rubric editor — against the same settled endpoints.
+struct MentorHome: View {
+    @ObservedObject private var account = AccountStore.shared
+    @ObservedObject private var store = MentorStore.shared
+    @State private var showMint = false
 
     var body: some View {
-        List {
-            if loading {
-                HStack { Spacer(); ProgressView(); Spacer() }
-            } else if let errorMessage {
-                Text(errorMessage).font(.caption).foregroundStyle(.red)
-            } else if members.isEmpty {
-                ContentUnavailableView("No members yet", systemImage: "person.2",
-                    description: Text("Trainees appear here once they join with an invite code."))
+        NavigationStack {
+            Group {
+                if let org = account.org, org.role == "admin" {
+                    cohortList(org)
+                } else {
+                    ContentUnavailableView("Mentor access needed", systemImage: "person.2",
+                        description: Text("Sign in with a mentor account to see your cohort."))
+                }
             }
-            ForEach(members) { member in
-                NavigationLink {
-                    MentorTraineeView(org: org, member: member)
-                } label: {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(member.label)
-                        Text(member.roleLabel).font(.caption).foregroundStyle(.secondary)
+            .navigationTitle(account.org?.name ?? "Cohort")
+            .ambientGradient([.teal, .blue, .indigo])
+            .settingsGear()
+            .toolbar {
+                if let org = account.org, org.role == "admin" {
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu {
+                            Button { showMint = true } label: {
+                                Label("New invite code", systemImage: "key")
+                            }
+                            NavigationLink {
+                                RubricEditorListView(org: org)
+                            } label: {
+                                Label("Edit rubrics", systemImage: "list.bullet.clipboard")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                        }
                     }
                 }
             }
-        }
-        .navigationTitle(org.name)
-        .task {
-            do {
-                let reply: MembersReply = try await AccountStore.shared.call(
-                    "v1/orgs/\(org.orgId)/members", method: "GET", body: Optional<Int>.none)
-                members = reply.members.sorted { $0.label < $1.label }
-            } catch {
-                errorMessage = error.localizedDescription
+            .sheet(isPresented: $showMint) {
+                if let org = account.org { InviteMintView(org: org) }
             }
-            loading = false
+        }
+    }
+
+    private func cohortList(_ org: AccountStore.Org) -> some View {
+        ScrollView {
+            VStack(spacing: 12) {
+                if store.loading && store.members.isEmpty {
+                    ProgressView().padding(.top, 60)
+                } else if let errorMessage = store.errorMessage {
+                    Text(errorMessage).font(.caption).foregroundStyle(.red).padding()
+                } else if store.members.isEmpty {
+                    ContentUnavailableView("No members yet", systemImage: "person.2",
+                        description: Text("Mint an invite code (⋯ menu) and share it with your trainees."))
+                        .padding(.top, 40)
+                }
+                ForEach(store.members) { member in
+                    NavigationLink {
+                        MentorTraineeView(org: org, member: member)
+                    } label: {
+                        memberCard(member)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding()
+        }
+        .refreshable { await store.refresh(org: org) }
+        .task { await store.refresh(org: org) }
+    }
+
+    private func memberCard(_ member: MentorStore.Member) -> some View {
+        let sessions = store.sessions(for: member.uid)
+        let trend = store.trend(for: member.uid)
+        return HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(member.label).font(.headline)
+                Text(member.roleLabel +
+                     (sessions.isEmpty ? " · nothing shared yet"
+                                       : " · \(sessions.count) session\(sessions.count == 1 ? "" : "s")"))
+                    .font(.caption).foregroundStyle(.secondary)
+                if let last = sessions.first?.date {
+                    Text("Last shared \(last.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.caption2).foregroundStyle(.tertiary)
+                }
+            }
+            Spacer()
+            if trend.count >= 2 {
+                Chart(Array(trend.enumerated()), id: \.offset) { item in
+                    LineMark(x: .value("Session", item.offset),
+                             y: .value("Score", item.element))
+                        .interpolationMethod(.catmullRom)
+                }
+                .chartXAxis(.hidden).chartYAxis(.hidden)
+                .chartYScale(domain: 0...1)
+                .foregroundStyle(.blue)
+                .frame(width: 72, height: 30)
+            }
+            Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
+        }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .glassHairline(16)
+    }
+}
+
+// MARK: - Trainee drill-in
+
+struct MentorTraineeView: View {
+    let org: AccountStore.Org
+    let member: MentorStore.Member
+
+    @ObservedObject private var store = MentorStore.shared
+    @ObservedObject private var account = AccountStore.shared
+    @State private var generalDraft = ""
+    @State private var errorMessage: String?
+
+    private var sessions: [MentorStore.Session] { store.sessions(for: member.uid) }
+
+    var body: some View {
+        List {
+            if !dimensionTrends.isEmpty {
+                Section("Progress by skill area") {
+                    ForEach(dimensionTrends, id: \.label) { trend in
+                        HStack {
+                            Text(trend.label).font(.caption)
+                            Spacer()
+                            Chart(Array(trend.scores.enumerated()), id: \.offset) { item in
+                                LineMark(x: .value("Session", item.offset),
+                                         y: .value("Score", item.element))
+                                    .interpolationMethod(.catmullRom)
+                            }
+                            .chartXAxis(.hidden).chartYAxis(.hidden)
+                            .chartYScale(domain: 0...1)
+                            .frame(width: 90, height: 24)
+                            Text("\(Int((trend.scores.last ?? 0) * 100))%")
+                                .font(.caption.monospacedDigit().weight(.semibold))
+                                .frame(width: 44, alignment: .trailing)
+                        }
+                    }
+                }
+            }
+
+            Section("Notes about \(member.label)") {
+                notesList(store.generalNotes(for: member.uid))
+                composer(text: $generalDraft, placeholder: "Add a note…") {
+                    try await store.addNote(org: org, traineeUid: member.uid,
+                                            sessionId: nil, text: generalDraft)
+                    generalDraft = ""
+                }
+            }
+
+            if sessions.isEmpty {
+                Section {
+                    Text("Nothing shared yet — sessions appear when \(member.label) shares them.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
+            }
+            ForEach(sessions) { session in
+                SessionSection(org: org, member: member, session: session)
+            }
+
+            if let errorMessage {
+                Section { Text(errorMessage).font(.caption).foregroundStyle(.red) }
+            }
+        }
+        .navigationTitle(member.label)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var dimensionTrends: [(label: String, scores: [Double])] {
+        let ordered = sessions.sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        var byDimension: [String: [Double]] = [:]
+        for session in ordered {
+            for (dimension, score) in session.dimensionScores {
+                byDimension[dimension, default: []].append(score)
+            }
+        }
+        let rubric = sessions.first?.rubricId.flatMap { RubricLoader.load(named: $0) }
+        return byDimension
+            .map { (label: rubric?.dimensions.first { d in d.id == $0.key }?.label ?? $0.key,
+                    scores: $0.value) }
+            .sorted { $0.label < $1.label }
+    }
+
+    @ViewBuilder
+    private func notesList(_ notes: [NotesStore.Note]) -> some View {
+        ForEach(notes) { note in
+            MentorNoteRow(org: org, note: note, isMine: note.authorUid == account.uid)
+        }
+    }
+
+    private func composer(text: Binding<String>, placeholder: String,
+                          submit: @escaping () async throws -> Void) -> some View {
+        HStack {
+            TextField(placeholder, text: text, axis: .vertical)
+            Button {
+                Task {
+                    do { try await submit(); errorMessage = nil }
+                    catch { errorMessage = error.localizedDescription }
+                }
+            } label: {
+                Image(systemName: "arrow.up.circle.fill").font(.title3)
+            }
+            .disabled(text.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
     }
 }
 
-/// One trainee's shared sessions (scores + approved quotes — all a mentor
-/// can ever see).
-struct MentorTraineeView: View {
+/// One shared session: header, summary, criteria with quotes, and its notes.
+private struct SessionSection: View {
     let org: AccountStore.Org
-    let member: MentorCohortView.Member
+    let member: MentorStore.Member
+    let session: MentorStore.Session
 
-    struct Session: Decodable, Identifiable {
-        let sessionId: String?
-        let clientSessionId: String?
-        let recordedAt: String?
-        let location: String?
-        let rubricId: String?
-        let summary: String?
-        let criteria: [SessionShare.Item]?
-        var id: String { sessionId ?? clientSessionId ?? UUID().uuidString }
-
-        var date: Date? { recordedAt.flatMap(SessionShare.parseDate) }
-        var metLine: String {
-            let items = criteria ?? []
-            let applicable = items.filter { $0.result != "na" }
-            let met = items.filter { $0.result == "met" }
-            return "\(met.count) of \(applicable.count) met"
-        }
-    }
-    private struct SessionsReply: Decodable { let sessions: [Session] }
-
-    @State private var sessions: [Session] = []
+    @ObservedObject private var store = MentorStore.shared
+    @ObservedObject private var account = AccountStore.shared
+    @State private var draft = ""
+    @State private var expanded = false
     @State private var errorMessage: String?
-    @State private var loading = true
 
     var body: some View {
-        List {
-            if loading {
-                HStack { Spacer(); ProgressView(); Spacer() }
-            } else if let errorMessage {
-                Text(errorMessage).font(.caption).foregroundStyle(.red)
-            } else if sessions.isEmpty {
-                ContentUnavailableView("Nothing shared yet", systemImage: "tray",
-                    description: Text("Sessions appear when \(member.label) shares them."))
+        Section {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text(session.date.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "—")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    Text(session.metLine).font(.caption).foregroundStyle(.secondary)
+                }
+                if let location = session.location {
+                    Text(location).font(.caption).foregroundStyle(.secondary)
+                }
+                if let summary = session.summary, !summary.isEmpty {
+                    Text(summary).font(.footnote)
+                }
+                Button(expanded ? "Hide criteria" : "Show criteria") { expanded.toggle() }
+                    .font(.caption)
             }
-            ForEach(sessions) { session in
-                Section {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text(session.date.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "—")
-                                .font(.subheadline.weight(.semibold))
-                            Spacer()
-                            Text(session.metLine).font(.caption).foregroundStyle(.secondary)
-                        }
-                        if let location = session.location {
-                            Text(location).font(.caption).foregroundStyle(.secondary)
-                        }
-                        if let summary = session.summary, !summary.isEmpty {
-                            Text(summary).font(.footnote)
-                        }
-                    }
-                    ForEach(session.criteria ?? [], id: \.id) { item in
-                        criterionRow(item, rubricId: session.rubricId)
-                    }
+
+            if expanded {
+                ForEach(session.criteria ?? [], id: \.id) { item in
+                    criterionRow(item)
                 }
             }
-        }
-        .navigationTitle(member.label)
-        .task {
-            do {
-                let reply: SessionsReply = try await AccountStore.shared.call(
-                    "v1/orgs/\(org.orgId)/sessions?uid=\(member.uid)", method: "GET",
-                    body: Optional<Int>.none)
-                sessions = reply.sessions.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
-            } catch {
-                errorMessage = error.localizedDescription
+
+            ForEach(store.sessionNotes(for: session.id)) { note in
+                MentorNoteRow(org: org, note: note, isMine: note.authorUid == account.uid)
             }
-            loading = false
+            HStack {
+                TextField("Note on this session…", text: $draft, axis: .vertical)
+                Button {
+                    Task {
+                        do {
+                            try await store.addNote(org: org, traineeUid: member.uid,
+                                                    sessionId: session.id, text: draft)
+                            draft = ""
+                            errorMessage = nil
+                        } catch { errorMessage = error.localizedDescription }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill").font(.title3)
+                }
+                .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+            if let errorMessage {
+                Text(errorMessage).font(.caption).foregroundStyle(.red)
+            }
         }
     }
 
     @ViewBuilder
-    private func criterionRow(_ item: SessionShare.Item, rubricId: String?) -> some View {
-        let prompt = rubricId.flatMap { RubricLoader.load(named: $0) }?
+    private func criterionRow(_ item: SessionShare.Item) -> some View {
+        let prompt = session.rubricId.flatMap { RubricLoader.load(named: $0) }?
             .criteria.first { $0.id == item.id }?.prompt ?? item.id
         VStack(alignment: .leading, spacing: 3) {
             HStack(alignment: .top, spacing: 6) {
@@ -156,6 +297,137 @@ struct MentorTraineeView: View {
         case "partial": Image(systemName: "exclamationmark.circle.fill").foregroundStyle(.orange)
         case "na":      Image(systemName: "minus.circle").foregroundStyle(.gray)
         default:        Image(systemName: "xmark.circle.fill").foregroundStyle(.red)
+        }
+    }
+}
+
+/// A note row with edit/delete for the author (server enforces author-only —
+/// the UI just hides the affordances from everyone else).
+private struct MentorNoteRow: View {
+    let org: AccountStore.Org
+    let note: NotesStore.Note
+    let isMine: Bool
+
+    @ObservedObject private var store = MentorStore.shared
+    @State private var editing = false
+    @State private var draft = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(note.author).font(.caption.weight(.semibold))
+                Spacer()
+                Text(note.when.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "")
+                    .font(.caption2).foregroundStyle(.secondary)
+            }
+            if editing {
+                TextField("Note", text: $draft, axis: .vertical).font(.subheadline)
+                HStack {
+                    Button("Save") {
+                        Task {
+                            try? await store.editNote(org: org, noteId: note.noteId, text: draft)
+                            editing = false
+                        }
+                    }
+                    .font(.caption)
+                    .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Button("Cancel") { editing = false }.font(.caption)
+                }
+            } else {
+                Text(note.text).font(.subheadline)
+            }
+        }
+        .contextMenu {
+            if isMine {
+                Button {
+                    draft = note.text
+                    editing = true
+                } label: { Label("Edit", systemImage: "pencil") }
+                Button(role: .destructive) {
+                    Task { try? await store.deleteNote(org: org, noteId: note.noteId) }
+                } label: { Label("Delete", systemImage: "trash") }
+            }
+        }
+    }
+}
+
+// MARK: - Invite-code minting
+
+struct InviteMintView: View {
+    let org: AccountStore.Org
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var mentorRole = false
+    @State private var minted: MentorStore.MintedCode?
+    @State private var busy = false
+    @State private var errorMessage: String?
+    @State private var copied = false
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                if let minted {
+                    Section("Share this code") {
+                        Text(minted.code)
+                            .font(.system(.largeTitle, design: .monospaced).weight(.bold))
+                            .frame(maxWidth: .infinity)
+                            .textSelection(.enabled)
+                        Button {
+                            UIPasteboard.general.string = minted.code
+                            copied = true
+                        } label: {
+                            Label(copied ? "Copied" : "Copy code",
+                                  systemImage: copied ? "checkmark" : "doc.on.doc")
+                        }
+                        LabeledContent("Role", value: minted.roleLabel)
+                        if let maxUses = minted.maxUses {
+                            LabeledContent("Uses", value: "\(maxUses)")
+                        }
+                        if let expires = minted.expiresAt {
+                            LabeledContent("Expires",
+                                           value: expires.formatted(date: .abbreviated, time: .omitted))
+                        }
+                    }
+                } else {
+                    Section {
+                        Toggle("Mentor code", isOn: $mentorRole)
+                    } footer: {
+                        Text(mentorRole
+                             ? "⚠️ Whoever redeems this becomes a Mentor and can see the whole cohort. Share carefully."
+                             : "Trainees who redeem this join \(org.name).")
+                    }
+                    Section {
+                        Button {
+                            mint()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                if busy { ProgressView() } else { Text("Create code").bold() }
+                                Spacer()
+                            }
+                        }
+                        .disabled(busy)
+                    }
+                    if let errorMessage {
+                        Section { Text(errorMessage).font(.caption).foregroundStyle(.red) }
+                    }
+                }
+            }
+            .navigationTitle("Invite code")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+            }
+        }
+    }
+
+    private func mint() {
+        busy = true
+        errorMessage = nil
+        Task {
+            do { minted = try await MentorStore.shared.mintCode(org: org, mentorRole: mentorRole) }
+            catch { errorMessage = error.localizedDescription }
+            busy = false
         }
     }
 }
