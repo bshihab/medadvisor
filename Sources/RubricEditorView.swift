@@ -167,9 +167,12 @@ struct RubricEditorView: View {
 
     /// Bump the semver patch, preserving any suffix ("0.1.0-draft" → "0.1.1-draft").
     static func bump(_ version: String) -> String {
-        guard let match = version.wholeMatch(of: /(\d+)\.(\d+)\.(\d+)(.*)/),
-              let patch = Int(match.3) else { return version + ".1" }
-        return "\(match.1).\(match.2).\(patch + 1)\(match.4)"
+        let parts = version.split(separator: ".", maxSplits: 2, omittingEmptySubsequences: false)
+        guard parts.count == 3 else { return version + ".1" }
+        let tail = parts[2]                       // e.g. "0-draft" or "0"
+        let digits = tail.prefix { $0.isNumber }
+        guard let patch = Int(digits) else { return version + ".1" }
+        return "\(parts[0]).\(parts[1]).\(patch + 1)\(tail.dropFirst(digits.count))"
     }
 
     private func save() {
