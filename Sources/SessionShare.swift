@@ -72,6 +72,13 @@ enum SessionShare {
             "v1/sessions", method: "POST", body: payload)
     }
 
+    /// Remove the cloud copy too (owner-only server-side) — it disappears from
+    /// the mentor's dashboard. Endpoint per PLAN.md (settled with the MC6 batch).
+    @MainActor
+    static func deleteEverywhere(_ clientSessionId: String) async throws {
+        try await AccountStore.shared.callVoid("v1/sessions/\(clientSessionId)", method: "DELETE")
+    }
+
     // MARK: - Cross-device restore
 
     private struct RestoredSession: Decodable {

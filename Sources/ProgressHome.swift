@@ -9,6 +9,7 @@ struct ProgressHome: View {
     @ObservedObject private var goals = GoalStore.shared
     @AppStorage("lastLocation") private var locationRaw = AppLocation.outpatientClinic.rawValue
     @State private var selected: ConsultationRecord?
+    @State private var deleteTarget: ConsultationRecord?
 
     private var location: AppLocation { AppLocation(rawValue: locationRaw) ?? .outpatientClinic }
     private var recent: [ConsultationRecord] { Array(store.records.prefix(4)) }
@@ -34,6 +35,7 @@ struct ProgressHome: View {
                 }
             }
             .onAppear { insights.loadSaved() }
+            .deleteSessionDialog(target: $deleteTarget)
         }
     }
 
@@ -102,6 +104,11 @@ struct ProgressHome: View {
                 ForEach(recent) { record in
                     Button { selected = record } label: { sessionRow(record) }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button(role: .destructive) { deleteTarget = record } label: {
+                                Label("Delete session", systemImage: "trash")
+                            }
+                        }
                 }
             }
         }

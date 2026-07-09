@@ -122,11 +122,34 @@ final class AccountStore: ObservableObject {
 
     private struct ServerErrorBody: Decodable { let error: String? }
 
+    /// Authed call with no response body of interest (DELETE etc.).
+    func callVoid(_ path: String, method: String) async throws {
+        guard let user = Auth.auth().currentUser else { throw APIError.notSignedIn }
+        let token = try await user.getIDTokenResult(forcingRefresh: false).token
+        guard let url = URL(string: path, relativeTo: RubricSync.baseURL) else {
+            throw APIError.server(0, "bad_path")
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(status) else {
+            let code = (try? JSONDecoder().decode(ServerErrorBody.self, from: data))?.error ?? "unknown"
+            throw APIError.server(status, code)
+        }
+    }
+
     /// Authed JSON call against the API (also used by SessionShare).
     func call<B: Encodable, R: Decodable>(_ path: String, method: String, body: B?) async throws -> R {
         guard let user = Auth.auth().currentUser else { throw APIError.notSignedIn }
         let token = try await user.getIDTokenResult(forcingRefresh: false).token
-        var request = URLRequest(url: RubricSync.baseURL.appendingPathComponent(path))
+        // relative-URL init (not appendingPathComponent) so paths may carry
+        // query strings like "v1/orgs/x/sessions?uid=y"
+        guard let url = URL(string: path, relativeTo: RubricSync.baseURL) else {
+            throw APIError.server(0, "bad_path")
+        }
+        var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         if let body {

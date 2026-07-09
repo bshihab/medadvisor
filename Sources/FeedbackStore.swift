@@ -41,8 +41,25 @@ final class FeedbackStore: ObservableObject {
     }
 
     func delete(_ record: ConsultationRecord) {
+        // Shared sessions get a tombstone so cloud restore never resurrects a
+        // session the user deleted on this device.
+        if record.sharedAt != nil { Self.addTombstone(record.id) }
         records.removeAll { $0.id == record.id }
         try? FileManager.default.removeItem(at: fileURL(record.id))
+    }
+
+    // MARK: - Tombstones (per-device)
+
+    private static let tombstoneKey = "sessionTombstones"
+
+    static func tombstones() -> Set<String> {
+        Set(UserDefaults.standard.stringArray(forKey: tombstoneKey) ?? [])
+    }
+
+    static func addTombstone(_ id: String) {
+        var all = tombstones()
+        all.insert(id)
+        UserDefaults.standard.set(Array(all), forKey: tombstoneKey)
     }
 
     /// Stamp a record as shared with the mentor (persisted).
@@ -57,7 +74,8 @@ final class FeedbackStore: ObservableObject {
     /// (transcript/turns never leave the device).
     func mergeRestored(_ restored: [ConsultationRecord]) {
         let known = Set(records.map(\.id))
-        let fresh = restored.filter { !known.contains($0.id) }
+        let dead = Self.tombstones()
+        let fresh = restored.filter { !known.contains($0.id) && !dead.contains($0.id) }
         guard !fresh.isEmpty else { return }
         for record in fresh { save(record) }
         records = (records + fresh).sorted { $0.date > $1.date }

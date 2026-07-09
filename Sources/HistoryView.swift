@@ -7,6 +7,7 @@ struct HistoryView: View {
     @ObservedObject private var store = FeedbackStore.shared
     @State private var selected: ConsultationRecord?
     @State private var isSelecting = false
+    @State private var deleteTarget: ConsultationRecord?
     @State private var picked = Set<String>()
 
     var body: some View {
@@ -22,6 +23,7 @@ struct HistoryView: View {
         }
         .navigationTitle("History")
         .toolbar { toolbarContent }
+        .deleteSessionDialog(target: $deleteTarget)
         .sheet(item: $selected) { record in
             if let location = record.location, let rubric = RubricLoader.load(for: location) {
                 FeedbackView(feedback: record.feedback, rubric: rubric,
@@ -39,7 +41,7 @@ struct HistoryView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) { store.delete(record) } label: {
+                        Button(role: .destructive) { deleteTarget = record } label: {
                             Label("Delete", systemImage: "trash")
                         }
                     }
