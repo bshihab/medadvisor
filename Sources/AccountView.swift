@@ -51,10 +51,16 @@ struct AccountView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                if account.isSignedIn { signedIn } else { signedOut }
-                if let errorMessage {
-                    Text(errorMessage).font(.caption).foregroundStyle(.red)
+            Group {
+                if account.isSignedIn {
+                    Form {
+                        signedIn
+                        if let errorMessage {
+                            Text(errorMessage).font(.caption).foregroundStyle(.red)
+                        }
+                    }
+                } else {
+                    signedOutScreen
                 }
             }
             .navigationTitle("Account")
@@ -68,48 +74,88 @@ struct AccountView: View {
         .preferredColorScheme(nil)
     }
 
-    // MARK: - Signed out
+    // MARK: - Signed out (traditional sign-in screen, not a settings form)
 
-    @ViewBuilder
-    private var signedOut: some View {
-        Section {
-            Text("An account is optional. It lets your history follow you across devices and — only when you choose — lets you share results with your mentor.")
-                .font(.footnote).foregroundStyle(.secondary)
-        }
-
-        Section {
-            SignInWithAppleButton(.signIn) { request in
-                appleNonce = Self.randomNonce()
-                request.requestedScopes = [.email]
-                request.nonce = Self.sha256(appleNonce)
-            } onCompletion: { result in
-                handleApple(result)
-            }
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-            .frame(height: 48)
-            .listRowInsets(EdgeInsets())
-        }
-
-        Section("Or with email") {
-            TextField("Email", text: $email)
-                .keyboardType(.emailAddress)
-                .textContentType(.username)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-            SecureField("Password", text: $password)
-                .textContentType(creatingAccount ? .newPassword : .password)
-            Toggle("I'm new — create an account", isOn: $creatingAccount)
-                .font(.subheadline)
-            Button(creatingAccount ? "Create account" : "Sign in") {
-                run {
-                    if creatingAccount {
-                        try await account.createAccount(email: email, password: password)
-                    } else {
-                        try await account.signIn(email: email, password: password)
-                    }
+    private var signedOutScreen: some View {
+        ScrollView {
+            VStack(spacing: 22) {
+                VStack(spacing: 10) {
+                    Image(systemName: "stethoscope.circle.fill")
+                        .font(.system(size: 56))
+                        .foregroundStyle(.blue)
+                    Text(creatingAccount ? "Create your account" : "Welcome back")
+                        .font(.title2.bold())
+                    Text("An account is optional — it lets your history follow you across devices, and you choose what to share with your mentor.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
+                .padding(.top, 20)
+
+                SignInWithAppleButton(creatingAccount ? .signUp : .signIn) { request in
+                    appleNonce = Self.randomNonce()
+                    request.requestedScopes = [.email]
+                    request.nonce = Self.sha256(appleNonce)
+                } onCompletion: { result in
+                    handleApple(result)
+                }
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                .frame(height: 50)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                HStack(spacing: 12) {
+                    Rectangle().fill(.quaternary).frame(height: 1)
+                    Text("or").font(.caption).foregroundStyle(.secondary)
+                    Rectangle().fill(.quaternary).frame(height: 1)
+                }
+
+                VStack(spacing: 12) {
+                    TextField("Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.username)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(14)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                        .glassHairline(14)
+                    SecureField("Password", text: $password)
+                        .textContentType(creatingAccount ? .newPassword : .password)
+                        .padding(14)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                        .glassHairline(14)
+                }
+
+                Button {
+                    run {
+                        if creatingAccount {
+                            try await account.createAccount(email: email, password: password)
+                        } else {
+                            try await account.signIn(email: email, password: password)
+                        }
+                    }
+                } label: {
+                    Group {
+                        if busy { ProgressView() }
+                        else { Text(creatingAccount ? "Create account" : "Sign in").bold() }
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 28)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(busy || email.isEmpty || password.isEmpty)
+
+                if let errorMessage {
+                    Text(errorMessage).font(.caption).foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                }
+
+                Button(creatingAccount ? "Already have an account? Sign in"
+                                       : "New here? Create an account") {
+                    creatingAccount.toggle()
+                    errorMessage = nil
+                }
+                .font(.footnote)
             }
-            .disabled(busy || email.isEmpty || password.isEmpty)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 32)
         }
     }
 

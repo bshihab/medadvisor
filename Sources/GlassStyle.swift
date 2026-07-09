@@ -102,8 +102,11 @@ private struct ToolbarChromeModifier: ViewModifier {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAccount = true } label: {
-                        Image(systemName: account.isSignedIn
-                              ? "person.crop.circle.fill" : "person.crop.circle")
+                        if account.isSignedIn {
+                            Image(systemName: "person.crop.circle.fill")
+                        } else {
+                            Text("Sign in").font(.subheadline.weight(.medium))
+                        }
                     }
                     .accessibilityLabel("Account")
                 }

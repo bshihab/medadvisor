@@ -165,14 +165,16 @@ struct RecordingView: View {
     private var gradeGradient: some View {
         Group {
             if isAnalyzing {
-                // Calm variant while the model works: slow, subtle drift — a
-                // fraction of the recording state's movement, no mic reactivity.
+                // Calm-but-alive variant for the whole pipeline (transcribe
+                // through scoring): a visible slow breathe + drift, gentler
+                // than recording and with no mic reactivity.
                 TimelineView(.animation) { timeline in
                     let t = timeline.date.timeIntervalSinceReferenceDate
-                    gradientLayer(scaleX: 1.7, scaleY: 1.4,
-                                  opacity: 0.32 + 0.04 * sin(t * 0.5),
-                                  dx: CGFloat(sin(t * 0.22)) * 10,
-                                  dy: CGFloat(cos(t * 0.17)) * 5)
+                    gradientLayer(scaleX: 1.7 + 0.08 * CGFloat(sin(t * 0.35)),
+                                  scaleY: 1.4 + 0.10 * CGFloat(cos(t * 0.28)),
+                                  opacity: 0.34 + 0.08 * sin(t * 0.6),
+                                  dx: CGFloat(sin(t * 0.5)) * 26,
+                                  dy: CGFloat(cos(t * 0.4)) * 13)
                 }
             } else if recorder.isRecording && !recorder.isPaused {
                 TimelineView(.animation) { timeline in
