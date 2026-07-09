@@ -103,6 +103,18 @@ struct AccountView: View {
                 .frame(height: 50)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
+                Button {
+                    run { try await account.signInWithGoogle() }
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("G").font(.title3.bold()).foregroundStyle(.blue)
+                        Text("Continue with Google").font(.body.weight(.medium))
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 34)
+                }
+                .buttonStyle(.bordered)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
                 HStack(spacing: 12) {
                     Rectangle().fill(.quaternary).frame(height: 1)
                     Text("or").font(.caption).foregroundStyle(.secondary)
@@ -231,7 +243,9 @@ struct AccountView: View {
         busy = true
         errorMessage = nil
         Task {
-            do { try await work() } catch { errorMessage = Self.friendlyAuthError(error) }
+            do { try await work() }
+            catch is CancellationError { /* user backed out — say nothing */ }
+            catch { errorMessage = Self.friendlyAuthError(error) }
             busy = false
         }
     }
@@ -268,6 +282,7 @@ struct AccountView: View {
         case 17004, 17009, 17011:   // invalidCredential, wrongPassword, userNotFound
             return "Email or password is incorrect."
         case 17008: return "That doesn't look like an email address."
+        case 17012: return "You already have an account with this email — sign in with the method you used before."
         case 17007: return "An account with that email already exists — try signing in instead."
         case 17026: return "Password is too short — use at least 6 characters."
         case 17010: return "Too many attempts — wait a few minutes and try again."

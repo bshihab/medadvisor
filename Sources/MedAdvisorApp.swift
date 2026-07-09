@@ -1,4 +1,5 @@
 import SwiftUI
+import GoogleSignIn
 
 @main
 struct MedAdvisorApp: App {
@@ -15,6 +16,7 @@ struct MedAdvisorApp: App {
                     ModelDownloader.shared.resume()
                     RubricSync.refresh()   // cloud rubrics (silent, offline-safe)
                 }
+                .onOpenURL { GIDSignIn.sharedInstance.handle($0) }
         }
         // Re-drive the download whenever the app comes back — transfers only run
         // at full speed while we're active, and resume() picks up from the exact

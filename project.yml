@@ -17,6 +17,9 @@ packages:
   Firebase:
     url: https://github.com/firebase/firebase-ios-sdk
     majorVersion: 11.6.0
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    majorVersion: 8.0.0
 
 targets:
   MedAdvisor:
@@ -31,7 +34,18 @@ targets:
         product: llama
       - package: Firebase
         product: FirebaseAuth             # Identity Platform sign-in (MC2)
+      - package: GoogleSignIn
+        product: GoogleSignIn             # Continue with Google
       - target: ModelDownloadWidget       # embed the Live Activity widget extension
+    info:
+      path: MedAdvisor-Info.plist   # generated; Xcode merges with INFOPLIST_KEY_* settings
+      properties:
+        CFBundleURLTypes:
+          - CFBundleTypeRole: Editor
+            CFBundleURLSchemes:
+              # Google sign-in callback (dev reversed client ID; prod's gets
+              # added when published in PLAN.md — both can coexist)
+              - com.googleusercontent.apps.743594385075-k98bthp09fubpvsk54ni65ji8ic5ia1j
     entitlements:
       path: MedAdvisor.entitlements
       properties:

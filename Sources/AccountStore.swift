@@ -1,6 +1,8 @@
 import Foundation
+import UIKit
 import FirebaseCore
 import FirebaseAuth
+import GoogleSignIn
 
 /// MC2 client: optional accounts via Identity Platform (FirebaseAuth SDK,
 /// project-level accounts — NEVER set tenantID) + org membership via invite
@@ -19,11 +21,16 @@ final class AccountStore: ObservableObject {
         static let googleAppID = "1:743594385075:ios:9bb2092806b7e835149ac6"
         static let projectID = "medadvisor-dev"
         static let gcmSenderID = "743594385075"
+        static let googleClientID = "743594385075-k98bthp09fubpvsk54ni65ji8ic5ia1j.apps.googleusercontent.com"
         #else
         static let apiKey = "AIzaSyCtAMi8JOzeJWsSaP5yV4WU9FPDsI5ye00"   // medadvisor-production
         static let googleAppID = "1:597896295002:ios:7db9c01f79a5bc79471e63"
         static let projectID = "medadvisor-production"
         static let gcmSenderID = "597896295002"
+        // TODO(prod): swap in the prod iOS Google client once published in
+        // PLAN.md (pending Bilal's console toggle). Until then release builds
+        // reuse dev's — sign-in would fail cleanly, not crash.
+        static let googleClientID = "743594385075-k98bthp09fubpvsk54ni65ji8ic5ia1j.apps.googleusercontent.com"
         #endif
     }
 
@@ -93,6 +100,38 @@ final class AccountStore: ObservableObject {
            (result.user.displayName ?? "").isEmpty {
             let change = result.user.createProfileChangeRequest()
             change.displayName = fullName
+            try? await change.commitChanges()
+        }
+    }
+
+    /// Continue with Google: native GoogleSignIn flow → Firebase credential.
+    /// User-cancel is rethrown as CancellationError so the UI stays silent.
+    func signInWithGoogle() async throws {
+        guard let presenter = UIApplication.shared.connectedScenes
+            .compactMap({ ($0 as? UIWindowScene)?.keyWindow?.rootViewController })
+            .first else {
+            throw APIError.server(0, "no_presenter")
+        }
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: Config.googleClientID)
+        let result: GIDSignInResult
+        do {
+            result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presenter)
+        } catch {
+            let ns = error as NSError
+            if ns.domain == kGIDSignInErrorDomain, ns.code == GIDSignInError.canceled.rawValue {
+                throw CancellationError()
+            }
+            throw error
+        }
+        guard let idToken = result.user.idToken?.tokenString else {
+            throw APIError.server(0, "google_no_token")
+        }
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                       accessToken: result.user.accessToken.tokenString)
+        let auth = try await Auth.auth().signIn(with: credential)
+        if (auth.user.displayName ?? "").isEmpty, let name = result.user.profile?.name {
+            let change = auth.user.createProfileChangeRequest()
+            change.displayName = name
             try? await change.commitChanges()
         }
     }
