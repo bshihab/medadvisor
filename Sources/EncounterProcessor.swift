@@ -43,8 +43,8 @@ final class EncounterProcessor: ObservableObject {
     }
 
     func process(url: URL, rubric: Rubric, liveSegments: [String] = []) async {
-        // Never auto-download the 4.3GB model mid-flow — the user downloads it
-        // deliberately from Settings (the gear pulses until they do).
+        // Never auto-download the 4.3GB model mid-flow — the download runs from
+        // Settings / launch auto-resume, never as a surprise inside Analyze.
         guard ModelDownloader.shared.isDownloaded else {
             stage = .error("The AI model isn't downloaded yet. Open Settings (tap the gear) and download it, then try again.")
             return
