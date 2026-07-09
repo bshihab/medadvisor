@@ -42,6 +42,7 @@ struct AccountView: View {
 
     @State private var email = ""
     @State private var password = ""
+    @State private var displayName = ""
     @State private var creatingAccount = false
     @State private var joinCode = ""
     @State private var busy = false
@@ -93,7 +94,7 @@ struct AccountView: View {
 
                 SignInWithAppleButton(creatingAccount ? .signUp : .signIn) { request in
                     appleNonce = Self.randomNonce()
-                    request.requestedScopes = [.email]
+                    request.requestedScopes = [.email, .fullName]
                     request.nonce = Self.sha256(appleNonce)
                 } onCompletion: { result in
                     handleApple(result)
@@ -109,6 +110,13 @@ struct AccountView: View {
                 }
 
                 VStack(spacing: 12) {
+                    if creatingAccount {
+                        TextField("Your name (shown to your mentor)", text: $displayName)
+                            .textContentType(.name)
+                            .padding(14)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                            .glassHairline(14)
+                    }
                     TextField("Email", text: $email)
                         .keyboardType(.emailAddress)
                         .textContentType(.username)
@@ -127,7 +135,8 @@ struct AccountView: View {
                 Button {
                     run {
                         if creatingAccount {
-                            try await account.createAccount(email: email, password: password)
+                            try await account.createAccount(email: email, password: password,
+                                                            name: displayName)
                         } else {
                             try await account.signIn(email: email, password: password)
                         }
@@ -140,7 +149,8 @@ struct AccountView: View {
                     .frame(maxWidth: .infinity, minHeight: 28)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(busy || email.isEmpty || password.isEmpty)
+                .disabled(busy || email.isEmpty || password.isEmpty
+                          || (creatingAccount && displayName.trimmingCharacters(in: .whitespaces).isEmpty))
 
                 if let errorMessage {
                     HStack(alignment: .top, spacing: 8) {
@@ -154,12 +164,16 @@ struct AccountView: View {
                     .background(Color.red.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
                 }
 
-                Button(creatingAccount ? "Already have an account? Sign in"
-                                       : "New here? Create an account") {
+                Button {
                     creatingAccount.toggle()
                     errorMessage = nil
+                } label: {
+                    Text(creatingAccount ? "Already have an account? Sign in"
+                                         : "New here? Create an account")
+                        .font(.body.weight(.semibold))
+                        .frame(maxWidth: .infinity, minHeight: 28)
                 }
-                .font(.footnote)
+                .buttonStyle(.bordered)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 32)
@@ -202,7 +216,7 @@ struct AccountView: View {
             } header: {
                 Text("Join my program")
             } footer: {
-                Text("Enter the code from your program director to connect. Nothing is shared with them until you explicitly choose to.")
+                Text("Enter the code from your program director to connect. Nothing is shared with them until you explicitly choose to.\n\nNo code? No problem — your account works on its own for personal practice, and you can join a program anytime.")
             }
         }
 
@@ -237,7 +251,11 @@ struct AccountView: View {
                 return
             }
             let nonce = appleNonce
-            run { try await account.signInWithApple(idToken: idToken, rawNonce: nonce) }
+            let name = credential.fullName.map {
+                PersonNameComponentsFormatter().string(from: $0)
+            }
+            run { try await account.signInWithApple(idToken: idToken, rawNonce: nonce,
+                                                    fullName: name) }
         }
     }
 

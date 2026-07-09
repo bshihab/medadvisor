@@ -70,17 +70,31 @@ final class AccountStore: ObservableObject {
         try await Auth.auth().signIn(withEmail: email, password: password)
     }
 
-    func createAccount(email: String, password: String) async throws {
-        try await Auth.auth().createUser(withEmail: email, password: password)
+    func createAccount(email: String, password: String, name: String) async throws {
+        let result = try await Auth.auth().createUser(withEmail: email, password: password)
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            let change = result.user.createProfileChangeRequest()
+            change.displayName = trimmed
+            try? await change.commitChanges()   // best-effort; account works regardless
+        }
     }
 
     /// Completes Sign in with Apple: exchange the Apple identity token (+ the
     /// raw nonce used in the request) for a Firebase session.
-    func signInWithApple(idToken: String, rawNonce: String) async throws {
+    func signInWithApple(idToken: String, rawNonce: String, fullName: String?) async throws {
         let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                   idToken: idToken,
                                                   rawNonce: rawNonce)
-        try await Auth.auth().signIn(with: credential)
+        let result = try await Auth.auth().signIn(with: credential)
+        // Apple only provides the name on the FIRST authorization — capture it
+        // then or lose it.
+        if let fullName, !fullName.isEmpty,
+           (result.user.displayName ?? "").isEmpty {
+            let change = result.user.createProfileChangeRequest()
+            change.displayName = fullName
+            try? await change.commitChanges()
+        }
     }
 
     func signOut() {
