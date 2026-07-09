@@ -111,7 +111,63 @@ private struct ToolbarChromeModifier: ViewModifier {
                     .accessibilityLabel("Account")
                 }
             }
+            .overlay(alignment: .topTrailing) {
+                if !account.isSignedIn {
+                    SignInCallout { showAccount = true }
+                        .padding(.trailing, 12)
+                        .padding(.top, 2)
+                }
+            }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .sheet(isPresented: $showAccount) { AccountView() }
+    }
+}
+
+/// Journal-style glass callout under the toolbar, its tip pointing up at the
+/// Sign in button. Shown whenever signed out; tapping anywhere opens sign-in.
+private struct SignInCallout: View {
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .trailing, spacing: 0) {
+                CalloutTip()
+                    .fill(.ultraThinMaterial)
+                    .frame(width: 22, height: 10)
+                    .padding(.trailing, 22)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Sign in to MedAdvisor")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Keep your history on all your devices and share results with your mentor — only when you choose.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("Sign in")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.blue)
+                        .padding(.top, 2)
+                }
+                .padding(14)
+                .frame(maxWidth: 290, alignment: .leading)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
+                .glassHairline(18)
+            }
+        }
+        .buttonStyle(.plain)
+        .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .topTrailing)))
+    }
+}
+
+/// The little upward-pointing bubble tip.
+private struct CalloutTip: Shape {
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        p.move(to: CGPoint(x: rect.minX, y: rect.maxY))
+        p.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.minY),
+                       control: CGPoint(x: rect.midX - rect.width * 0.18, y: rect.maxY))
+        p.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY),
+                       control: CGPoint(x: rect.midX + rect.width * 0.18, y: rect.maxY))
+        p.closeSubpath()
+        return p
     }
 }

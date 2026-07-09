@@ -143,8 +143,15 @@ struct AccountView: View {
                 .disabled(busy || email.isEmpty || password.isEmpty)
 
                 if let errorMessage {
-                    Text(errorMessage).font(.caption).foregroundStyle(.red)
-                        .multilineTextAlignment(.center)
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                        Text(errorMessage)
+                    }
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(12)
+                    .background(Color.red.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
                 }
 
                 Button(creatingAccount ? "Already have an account? Sign in"
@@ -157,6 +164,7 @@ struct AccountView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 32)
         }
+        .scrollDismissesKeyboard(.immediately)
     }
 
     // MARK: - Signed in
@@ -209,7 +217,7 @@ struct AccountView: View {
         busy = true
         errorMessage = nil
         Task {
-            do { try await work() } catch { errorMessage = error.localizedDescription }
+            do { try await work() } catch { errorMessage = Self.friendlyAuthError(error) }
             busy = false
         }
     }
@@ -230,6 +238,23 @@ struct AccountView: View {
             }
             let nonce = appleNonce
             run { try await account.signInWithApple(idToken: idToken, rawNonce: nonce) }
+        }
+    }
+
+    /// Human messages for Identity Platform failures (stable FIRAuth codes) —
+    /// nobody should read "The supplied auth credential is malformed".
+    private static func friendlyAuthError(_ error: Error) -> String {
+        let ns = error as NSError
+        guard ns.domain == "FIRAuthErrorDomain" else { return error.localizedDescription }
+        switch ns.code {
+        case 17004, 17009, 17011:   // invalidCredential, wrongPassword, userNotFound
+            return "Email or password is incorrect."
+        case 17008: return "That doesn't look like an email address."
+        case 17007: return "An account with that email already exists — try signing in instead."
+        case 17026: return "Password is too short — use at least 6 characters."
+        case 17010: return "Too many attempts — wait a few minutes and try again."
+        case 17020: return "Network problem — check your connection and try again."
+        default:    return error.localizedDescription
         }
     }
 
