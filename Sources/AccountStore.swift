@@ -58,6 +58,7 @@ final class AccountStore: ObservableObject {
                 } else {
                     await self?.refreshMe()
                     await SessionShare.restore()   // cross-device history (silent)
+                    await NotesStore.shared.refresh()
                 }
             }
         }

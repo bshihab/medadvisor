@@ -5,6 +5,8 @@ import SwiftUI
 /// inline and links out to the full screen for detail, so nothing is lost.
 struct ProgressHome: View {
     @ObservedObject private var store = FeedbackStore.shared
+    @ObservedObject private var notesStore = NotesStore.shared
+    @ObservedObject private var account = AccountStore.shared
     @StateObject private var insights = InsightsEngine()
     @ObservedObject private var goals = GoalStore.shared
     @AppStorage("lastLocation") private var locationRaw = AppLocation.outpatientClinic.rawValue
@@ -20,6 +22,9 @@ struct ProgressHome: View {
                 VStack(spacing: 20) {
                     insightsSection
                     goalsSection
+                    if account.org != nil && !(notesStore.notes.isEmpty && notesStore.unreadCount == 0) {
+                        notesSection
+                    }
                     historySection
                 }
                 .padding()
@@ -35,6 +40,7 @@ struct ProgressHome: View {
                 }
             }
             .onAppear { insights.loadSaved() }
+            .task { await NotesStore.shared.refresh() }
             .deleteSessionDialog(target: $deleteTarget)
         }
     }
@@ -80,6 +86,31 @@ struct ProgressHome: View {
                         .font(.subheadline).foregroundStyle(.secondary)
                 }
             }
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Mentor notes
+
+    @ViewBuilder private var notesSection: some View {
+        NavigationLink { MentorNotesView() } label: {
+            HStack {
+                Label("Notes from your mentor", systemImage: "note.text")
+                    .font(.headline)
+                Spacer()
+                if notesStore.unreadCount > 0 {
+                    Text("\(notesStore.unreadCount)")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8).padding(.vertical, 3)
+                        .background(Circle().fill(.red))
+                }
+                Image(systemName: "chevron.right")
+                    .font(.caption).foregroundStyle(.tertiary)
+            }
+            .padding()
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+            .glassHairline(16)
         }
         .buttonStyle(.plain)
     }
