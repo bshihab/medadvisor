@@ -60,6 +60,27 @@ final class MentorStore: ObservableObject {
     private struct SessionsReply: Decodable { let sessions: [Session] }
 
     private struct NotesReply: Decodable { let notes: [NotesStore.Note] }
+
+    struct Retraction: Decodable {
+        let traineeUid: String
+        let recordedAt: String?
+        let retractedAt: String?
+        var recordedDate: Date? { recordedAt.flatMap(SessionShare.parseDate) }
+        var retractedDate: Date? { retractedAt.flatMap(SessionShare.parseDate) }
+    }
+    private struct RetractionsReply: Decodable { let retractions: [Retraction] }
+
+    struct ActiveInvite: Decodable, Identifiable {
+        let code: String
+        let role: String
+        let uses: Int?
+        let maxUses: Int?
+        let expiresAt: String?
+        var id: String { code }
+        var roleLabel: String { role == "admin" ? "Mentor" : "Trainee" }
+        var expiresDate: Date? { expiresAt.flatMap(SessionShare.parseDate) }
+    }
+    private struct InvitesReply: Decodable { let invites: [ActiveInvite] }
     private struct MintReply: Decodable {
         let code: String
         let role: String
@@ -72,6 +93,7 @@ final class MentorStore: ObservableObject {
     @Published private(set) var members: [Member] = []
     @Published private(set) var sessionsByUid: [String: [Session]] = [:]
     @Published private(set) var notes: [NotesStore.Note] = []
+    @Published private(set) var retractions: [Retraction] = []
     @Published private(set) var loading = false
     @Published private(set) var errorMessage: String?
 
@@ -81,6 +103,9 @@ final class MentorStore: ObservableObject {
     }
     func sessionNotes(for sessionId: String) -> [NotesStore.Note] {
         notes.filter { $0.sessionId == sessionId }
+    }
+    func retractions(for uid: String) -> [Retraction] {
+        retractions.filter { $0.traineeUid == uid }
     }
     /// Chronological overall scores for the sparkline.
     func trend(for uid: String) -> [Double] {
@@ -112,6 +137,14 @@ final class MentorStore: ObservableObject {
             let notesReply: NotesReply = try await AccountStore.shared.call(
                 "v1/orgs/\(org.orgId)/notes?limit=500", method: "GET", body: Optional<Int>.none)
             notes = notesReply.notes
+
+            // Contentless retraction markers (admin-only read; may 404 on an
+            // older server — treat as none).
+            if let reply: RetractionsReply = try? await AccountStore.shared.call(
+                "v1/orgs/\(org.orgId)/retractions?limit=200", method: "GET",
+                body: Optional<Int>.none) {
+                retractions = reply.retractions
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -141,6 +174,12 @@ final class MentorStore: ObservableObject {
     }
 
     // MARK: - Invite codes
+
+    func activeInvites(org: AccountStore.Org) async throws -> [ActiveInvite] {
+        let reply: InvitesReply = try await AccountStore.shared.call(
+            "v1/orgs/\(org.orgId)/invites", method: "GET", body: Optional<Int>.none)
+        return reply.invites
+    }
 
     struct MintedCode {
         let code: String

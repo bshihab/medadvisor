@@ -165,6 +165,17 @@ struct MentorTraineeView: View {
                 SessionSection(org: org, member: member, session: session)
             }
 
+            let retracted = store.retractions(for: member.uid)
+            if !retracted.isEmpty {
+                Section {
+                    ForEach(Array(retracted.enumerated()), id: \.offset) { _, marker in
+                        Text("A session from \(marker.recordedDate.map { $0.formatted(date: .abbreviated, time: .omitted) } ?? "—") was retracted by the trainee on \(marker.retractedDate.map { $0.formatted(date: .abbreviated, time: .omitted) } ?? "—").")
+                            .font(.caption.italic())
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            }
+
             if let errorMessage {
                 Section { Text(errorMessage).font(.caption).foregroundStyle(.red) }
             }
@@ -362,6 +373,7 @@ struct InviteMintView: View {
     @State private var busy = false
     @State private var errorMessage: String?
     @State private var copied = false
+    @State private var activeInvites: [MentorStore.ActiveInvite] = []
 
     var body: some View {
         NavigationStack {
@@ -411,12 +423,37 @@ struct InviteMintView: View {
                     if let errorMessage {
                         Section { Text(errorMessage).font(.caption).foregroundStyle(.red) }
                     }
+                    if !activeInvites.isEmpty {
+                        Section("Active codes") {
+                            ForEach(activeInvites) { invite in
+                                Button {
+                                    UIPasteboard.general.string = invite.code
+                                } label: {
+                                    HStack {
+                                        Text(invite.code).font(.body.monospaced().weight(.semibold))
+                                        Spacer()
+                                        VStack(alignment: .trailing, spacing: 1) {
+                                            Text(invite.roleLabel).font(.caption)
+                                            Text("\(invite.uses ?? 0)/\(invite.maxUses ?? 0) used" +
+                                                 (invite.expiresDate.map { " · expires \($0.formatted(date: .numeric, time: .omitted))" } ?? ""))
+                                                .font(.caption2).foregroundStyle(.secondary)
+                                        }
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            Text("Tap a code to copy it.").font(.caption2).foregroundStyle(.tertiary)
+                        }
+                    }
                 }
             }
             .navigationTitle("Invite code")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+            }
+            .task {
+                activeInvites = (try? await MentorStore.shared.activeInvites(org: org)) ?? []
             }
         }
     }
