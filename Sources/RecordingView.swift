@@ -165,14 +165,14 @@ struct RecordingView: View {
     private var gradeGradient: some View {
         Group {
             if isAnalyzing {
-                // Calm-but-alive drift for the whole pipeline. Deliberately NOT
-                // a TimelineView: that needs the main thread to redraw every
-                // frame, and the pipeline (model load, parsing, stage updates)
-                // stalls main — which froze the previous two attempts. A
-                // repeatForever animation runs on the render server and keeps
-                // moving even while main is busy.
-                gradientLayer(scaleX: 1.72, scaleY: 1.42, opacity: 0.38, dx: 0, dy: 0)
-                    .modifier(CalmDrift())
+                // Calm breathing for the whole pipeline: animates the SAME
+                // internal parameters the recording variant drives (swell,
+                // brightness, drift before the mask, on the over-scaled
+                // canvas) so no edges ever show — but on a constant rhythm
+                // instead of the mic, and via a repeatForever animation that
+                // runs on the render server (immune to the pipeline stalling
+                // the main thread, which froze the TimelineView attempts).
+                CalmGlow()
             } else if recorder.isRecording && !recorder.isPaused {
                 TimelineView(.animation) { timeline in
                     let t = timeline.date.timeIntervalSinceReferenceDate
@@ -192,25 +192,6 @@ struct RecordingView: View {
         }
     }
 
-    /// The gradient layer itself, parameterized so idle (static) and recording
-    /// (level-driven) states share one definition.
-    private func gradientLayer(scaleX: CGFloat, scaleY: CGFloat,
-                               opacity: Double, dx: CGFloat, dy: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            Spacer(minLength: 0)
-            LinearGradient(colors: [.green, .orange, .red],
-                           startPoint: .leading, endPoint: .trailing)
-                .scaleEffect(x: scaleX, y: scaleY)   // push the blur's faded edges offscreen
-                .blur(radius: 60)
-                .opacity(opacity)
-                .offset(x: dx, y: dy)
-                .mask(LinearGradient(colors: [.clear, .black],
-                                     startPoint: .top, endPoint: .bottom))
-                .frame(height: 400)
-        }
-        .ignoresSafeArea()
-        .allowsHitTesting(false)
-    }
 
     /// Live transcript, Live Voicemail-style: big bold text with a timestamp
     /// column on the left (the gaps between timestamps reveal the pauses), the
@@ -598,20 +579,46 @@ struct PipelineStagesView: View {
 }
 
 
-/// Render-server-backed slow drift: survives main-thread stalls (the LLM
-/// pipeline) because Core Animation runs repeatForever animations out of
-/// process once committed.
-private struct CalmDrift: ViewModifier {
-    @State private var on = false
+/// The gradient layer, parameterized so idle (static), recording
+/// (level-driven), and analyzing (CalmGlow) states share one definition.
+/// The scale/offset happen BEFORE the soft mask on an over-scaled canvas,
+/// so motion never exposes an edge.
+private func gradientLayer(scaleX: CGFloat, scaleY: CGFloat,
+                           opacity: Double, dx: CGFloat, dy: CGFloat) -> some View {
+    VStack(spacing: 0) {
+        Spacer(minLength: 0)
+        LinearGradient(colors: [.green, .orange, .red],
+                       startPoint: .leading, endPoint: .trailing)
+            .scaleEffect(x: scaleX, y: scaleY)   // push the blur's faded edges offscreen
+            .blur(radius: 60)
+            .opacity(opacity)
+            .offset(x: dx, y: dy)
+            .mask(LinearGradient(colors: [.clear, .black],
+                                 startPoint: .top, endPoint: .bottom))
+            .frame(height: 400)
+    }
+    .ignoresSafeArea()
+    .allowsHitTesting(false)
+}
 
-    func body(content: Content) -> some View {
-        content
-            .offset(x: on ? 26 : -26, y: on ? -12 : 12)
-            .scaleEffect(x: on ? 1.06 : 0.97, y: on ? 1.08 : 0.95)
-            .opacity(on ? 1.0 : 0.74)
+/// The analyzing state's glow: breathes between two parameter sets of the
+/// SAME layer the recording state animates — swell, brightness, gentle
+/// sideways drift — on a constant rhythm. repeatForever = render-server
+/// animation, so it keeps breathing while the pipeline hammers the main
+/// thread. Scale never dips below the recording baseline (1.7/1.4), so the
+/// canvas always over-fills the screen and no black edges can appear.
+private struct CalmGlow: View {
+    @State private var breathing = false
+
+    var body: some View {
+        gradientLayer(scaleX: breathing ? 2.05 : 1.7,
+                      scaleY: breathing ? 1.75 : 1.4,
+                      opacity: breathing ? 0.50 : 0.30,
+                      dx: breathing ? 26 : -26,
+                      dy: breathing ? -10 : 10)
             .onAppear {
-                withAnimation(.easeInOut(duration: 4.5).repeatForever(autoreverses: true)) {
-                    on = true
+                withAnimation(.easeInOut(duration: 3.6).repeatForever(autoreverses: true)) {
+                    breathing = true
                 }
             }
     }
