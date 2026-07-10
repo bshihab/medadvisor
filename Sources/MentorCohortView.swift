@@ -154,7 +154,7 @@ struct MentorTraineeView: View {
                 }
             }
             ForEach(sessions) { session in
-                SessionSection(org: org, member: member, session: session) { criterionId in
+                SessionCardView(org: org, member: member, session: session) { criterionId in
                     chatPrefill = (sessionId: session.id, criterionId: criterionId)
                     showAnchoredChat = true
                 }
@@ -190,7 +190,7 @@ struct MentorTraineeView: View {
 }
 
 /// One shared session: header, summary, criteria with quotes, and its notes.
-private struct SessionSection: View {
+struct SessionCardView: View {
     let org: AccountStore.Org
     let member: MentorStore.Member
     let session: MentorStore.Session
@@ -217,8 +217,12 @@ private struct SessionSection: View {
                     Text(summary).font(.footnote)
                 }
                 HStack {
-                    Button(expanded ? "Hide criteria" : "Show criteria") { expanded.toggle() }
-                        .font(.caption)
+                    // Not a Button: the whole card is the expand tap target
+                    // (List rows fire every default-styled button on row tap,
+                    // which used to expand AND open chat at once).
+                    Label(expanded ? "Hide criteria" : "Show criteria",
+                          systemImage: expanded ? "chevron.up" : "chevron.down")
+                        .font(.caption).foregroundStyle(.blue)
                     Spacer()
                     if let onChat {
                         Button {
@@ -227,9 +231,12 @@ private struct SessionSection: View {
                             Label("Chat about this session", systemImage: "bubble.left")
                                 .font(.caption)
                         }
+                        .buttonStyle(.borderless)   // isolated tap target
                     }
                 }
             }
+            .contentShape(Rectangle())
+            .onTapGesture { withAnimation { expanded.toggle() } }
 
             if expanded {
                 ForEach(session.criteria ?? [], id: \.id) { item in
@@ -454,7 +461,7 @@ struct SkillDetailScreen: View {
         .navigationDestination(isPresented: $showSession) {
             if let openedSession {
                 List {
-                    SessionSection(org: org, member: member, session: openedSession)
+                    SessionCardView(org: org, member: member, session: openedSession)
                 }
                 .navigationTitle(openedSession.date.map {
                     $0.formatted(date: .abbreviated, time: .shortened)

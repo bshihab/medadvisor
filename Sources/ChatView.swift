@@ -16,6 +16,7 @@ struct ChatEntry: Identifiable {
     let text: String
     let when: Date?
     let anchor: String?         // resolved human label, e.g. "Session Jul 9 · Elicits concerns"
+    let anchorKey: String?      // session key for navigation (server id / record id)
     let rootNoteId: String      // thread this entry belongs to
     let isRoot: Bool
 }
@@ -23,10 +24,11 @@ struct ChatEntry: Identifiable {
 enum ChatFlattener {
     static func entries(notes: [NotesStore.Note],
                         myUid: String?,
-                        anchorLabel: (NotesStore.Note) -> String?) -> [ChatEntry] {
+                        anchorInfo: (NotesStore.Note) -> (label: String, key: String?)?) -> [ChatEntry] {
         let roots = notes.sorted { ($0.when ?? .distantPast) < ($1.when ?? .distantPast) }
         var out: [ChatEntry] = []
         for note in roots {
+            let info = anchorInfo(note)
             out.append(ChatEntry(
                 id: "n-\(note.noteId)",
                 author: note.author,
@@ -34,7 +36,8 @@ enum ChatFlattener {
                 isMentor: true,                    // roots are mentor-authored per contract
                 text: note.text,
                 when: note.when,
-                anchor: anchorLabel(note),
+                anchor: info?.label,
+                anchorKey: info?.key,
                 rootNoteId: note.noteId,
                 isRoot: true))
             for reply in (note.replies ?? []).sorted(by: { ($0.when ?? .distantPast) < ($1.when ?? .distantPast) }) {
@@ -46,6 +49,7 @@ enum ChatFlattener {
                     text: reply.text,
                     when: reply.when,
                     anchor: nil,
+                    anchorKey: nil,
                     rootNoteId: note.noteId,
                     isRoot: false))
             }
@@ -61,6 +65,8 @@ struct ChatThreadList: View {
     let emptyText: String
     /// Called with (rootNoteId, text) when a reply is sent from a thread.
     let onReply: (String, String) async throws -> Void
+    /// Tapping a message's anchor chip navigates to that session.
+    var onOpenAnchor: ((String) -> Void)? = nil
 
     @State private var replyingTo: String?
     @State private var replyDraft = ""
@@ -83,7 +89,7 @@ struct ChatThreadList: View {
                             replyControl(rootId: entries[index - 1].rootNoteId)
                             Divider().padding(.vertical, 8)
                         }
-                        ChatBubble(entry: entry)
+                        ChatBubble(entry: entry, onOpenAnchor: onOpenAnchor)
                             .id(entry.id)
                     }
                     if let last = entries.last {
@@ -143,6 +149,7 @@ struct ChatThreadList: View {
 
 struct ChatBubble: View {
     let entry: ChatEntry
+    var onOpenAnchor: ((String) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: entry.isMine ? .trailing : .leading, spacing: 3) {
@@ -150,10 +157,17 @@ struct ChatBubble: View {
                 if entry.isMine { Spacer(minLength: 48) }
                 VStack(alignment: .leading, spacing: 5) {
                     if let anchor = entry.anchor {
-                        Label(anchor, systemImage: "paperclip")
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(entry.isMine ? .white.opacity(0.85) : Color.blue)
-                            .lineLimit(2)
+                        Button {
+                            if let key = entry.anchorKey { onOpenAnchor?(key) }
+                        } label: {
+                            Label(anchor, systemImage: "paperclip")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(entry.isMine ? .white.opacity(0.85) : Color.blue)
+                                .lineLimit(2)
+                                .underline(entry.anchorKey != nil && onOpenAnchor != nil)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(entry.anchorKey == nil || onOpenAnchor == nil)
                     }
                     Text(entry.text)
                         .font(.subheadline)
@@ -181,15 +195,20 @@ struct TraineeChatScreen: View {
     @ObservedObject private var account = AccountStore.shared
     @ObservedObject private var feedback = FeedbackStore.shared
 
+    @State private var openedRecord: ConsultationRecord?
+
     var body: some View {
         ChatThreadList(
             entries: ChatFlattener.entries(notes: notesStore.notes,
                                            myUid: account.uid,
-                                           anchorLabel: anchorLabel),
+                                           anchorInfo: anchorInfo),
             emptyText: "No messages yet.\nYour mentor starts conversations here — often about a session you've shared — and you can reply to any of them.",
             onReply: { noteId, text in
                 guard let orgId = account.org?.orgId else { throw AccountStore.APIError.notSignedIn }
                 try await notesStore.reply(orgId: orgId, noteId: noteId, text: text)
+            },
+            onOpenAnchor: { recordId in
+                openedRecord = feedback.records.first { $0.id == recordId }
             })
         .navigationTitle("Mentor chat")
         .navigationBarTitleDisplayMode(.inline)
@@ -197,11 +216,18 @@ struct TraineeChatScreen: View {
             notesStore.markAllSeen()
             await notesStore.refresh()
         }
+        .sheet(item: $openedRecord) { record in
+            if let location = record.location, let rubric = RubricLoader.load(for: location) {
+                FeedbackView(feedback: record.feedback, rubric: rubric,
+                             transcript: record.transcript, turns: record.turns,
+                             record: record)
+            }
+        }
     }
 
     /// Server sessionId is "{uid}__{clientSessionId}" — match local records by
     /// suffix, then resolve the criterion prompt from that record's rubric.
-    private func anchorLabel(_ note: NotesStore.Note) -> String? {
+    private func anchorInfo(_ note: NotesStore.Note) -> (label: String, key: String?)? {
         guard let sessionId = note.sessionId else { return nil }
         let record = feedback.records.first { sessionId.hasSuffix($0.id) }
         var label = record.map { "Session \($0.date.formatted(date: .abbreviated, time: .omitted))" }
@@ -212,7 +238,7 @@ struct TraineeChatScreen: View {
                 .criteria.first { $0.id == criterionId }?.prompt
             label += " · \(prompt ?? criterionId)"
         }
-        return label
+        return (label, record?.id)
     }
 }
 
@@ -232,6 +258,8 @@ struct MentorChatScreen: View {
     @State private var anchorCriterionId: String?
     @State private var anchorArmed = false
     @State private var errorMessage: String?
+    @State private var openedSession: MentorStore.Session?
+    @State private var showOpenedSession = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -239,10 +267,16 @@ struct MentorChatScreen: View {
                 entries: ChatFlattener.entries(
                     notes: store.notes.filter { $0.traineeUid == member.uid },
                     myUid: account.uid,
-                    anchorLabel: anchorLabel),
+                    anchorInfo: anchorInfo),
                 emptyText: "No messages with \(member.label) yet — write below. Attach a message to a session or criterion via the 💬 buttons on their sessions.",
                 onReply: { noteId, text in
                     try await store.addReply(org: org, noteId: noteId, text: text)
+                },
+                onOpenAnchor: { sessionId in
+                    if let session = store.sessions(for: member.uid).first(where: { $0.id == sessionId }) {
+                        openedSession = session
+                        showOpenedSession = true
+                    }
                 })
 
             Divider()
@@ -278,6 +312,17 @@ struct MentorChatScreen: View {
         }
         .navigationTitle(member.label)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $showOpenedSession) {
+            if let openedSession {
+                List {
+                    SessionCardView(org: org, member: member, session: openedSession)
+                }
+                .navigationTitle(openedSession.date.map {
+                    $0.formatted(date: .abbreviated, time: .shortened)
+                } ?? "Session")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+        }
         .onAppear {
             if !anchorArmed {
                 anchorSessionId = prefillSessionId
@@ -308,9 +353,9 @@ struct MentorChatScreen: View {
         return label(sessionId: sessionId, criterionId: anchorCriterionId)
     }
 
-    private func anchorLabel(_ note: NotesStore.Note) -> String? {
+    private func anchorInfo(_ note: NotesStore.Note) -> (label: String, key: String?)? {
         guard let sessionId = note.sessionId else { return nil }
-        return label(sessionId: sessionId, criterionId: note.criterionId)
+        return (label(sessionId: sessionId, criterionId: note.criterionId), sessionId)
     }
 
     private func label(sessionId: String, criterionId: String?) -> String {
