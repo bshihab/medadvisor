@@ -45,7 +45,7 @@ final class NotesStore: ObservableObject {
             (replies ?? []).compactMap(\.when).max() ?? when
         }
     }
-    private struct Reply: Decodable { let notes: [Note] }
+    private struct NotesEnvelope: Decodable { let notes: [Note] }
 
     @Published private(set) var notes: [Note] = []
 
@@ -67,7 +67,7 @@ final class NotesStore: ObservableObject {
     /// Pull the trainee's notes (silent on failure — offline fine).
     func refresh() async {
         guard AccountStore.shared.isSignedIn else { return }
-        guard let reply: Reply = try? await AccountStore.shared.call(
+        guard let reply: NotesEnvelope = try? await AccountStore.shared.call(
             "v1/me/notes", method: "GET", body: Optional<Int>.none) else { return }
         notes = reply.notes
     }
