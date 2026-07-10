@@ -128,8 +128,12 @@ struct MentorTraineeView: View {
             let skillAreas = SkillAreas.from(sessions: sessions)
             if !skillAreas.isEmpty {
                 Section("Progress by skill area") {
-                    SkillAreaChart(areas: skillAreas)
-                        .padding(.vertical, 4)
+                    NavigationLink {
+                        SkillAreasDetailView(title: member.label, areas: skillAreas)
+                    } label: {
+                        SkillAreaChart(areas: skillAreas)
+                            .padding(.vertical, 4)
+                    }
                 }
             }
 
