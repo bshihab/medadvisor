@@ -153,12 +153,28 @@ final class MentorStore: ObservableObject {
 
     // MARK: - Notes CRUD (author-only rules enforced server-side)
 
-    func addNote(org: AccountStore.Org, traineeUid: String, sessionId: String?, text: String) async throws {
-        struct Body: Encodable { let traineeUid: String; let sessionId: String?; let text: String }
+    func addNote(org: AccountStore.Org, traineeUid: String, sessionId: String?,
+                 criterionId: String? = nil, text: String) async throws {
+        struct Body: Encodable {
+            let traineeUid: String
+            let sessionId: String?
+            let criterionId: String?
+            let text: String
+        }
         let note: NotesStore.Note = try await AccountStore.shared.call(
             "v1/orgs/\(org.orgId)/notes", method: "POST",
-            body: Body(traineeUid: traineeUid, sessionId: sessionId, text: text))
+            body: Body(traineeUid: traineeUid, sessionId: sessionId,
+                       criterionId: criterionId, text: text))
         notes.insert(note, at: 0)
+    }
+
+    func addReply(org: AccountStore.Org, noteId: String, text: String) async throws {
+        struct Body: Encodable { let text: String }
+        let reply: NotesStore.Reply = try await AccountStore.shared.call(
+            "v1/orgs/\(org.orgId)/notes/\(noteId)/replies", method: "POST", body: Body(text: text))
+        if let idx = notes.firstIndex(where: { $0.noteId == noteId }) {
+            notes[idx].replies = (notes[idx].replies ?? []) + [reply]
+        }
     }
 
     func editNote(org: AccountStore.Org, noteId: String, text: String) async throws {

@@ -118,8 +118,9 @@ struct MentorTraineeView: View {
 
     @ObservedObject private var store = MentorStore.shared
     @ObservedObject private var account = AccountStore.shared
-    @State private var generalDraft = ""
     @State private var errorMessage: String?
+    @State private var chatPrefill: (sessionId: String, criterionId: String?)?
+    @State private var showAnchoredChat = false
 
     private var sessions: [MentorStore.Session] { store.sessions(for: member.uid) }
 
@@ -138,12 +139,11 @@ struct MentorTraineeView: View {
                 }
             }
 
-            Section("Notes about \(member.label)") {
-                notesList(store.generalNotes(for: member.uid))
-                composer(text: $generalDraft, placeholder: "Add a note…") {
-                    try await store.addNote(org: org, traineeUid: member.uid,
-                                            sessionId: nil, text: generalDraft)
-                    generalDraft = ""
+            Section {
+                NavigationLink {
+                    MentorChatScreen(org: org, member: member)
+                } label: {
+                    Label("Chat with \(member.label)", systemImage: "bubble.left.and.bubble.right")
                 }
             }
 
@@ -154,7 +154,10 @@ struct MentorTraineeView: View {
                 }
             }
             ForEach(sessions) { session in
-                SessionSection(org: org, member: member, session: session)
+                SessionSection(org: org, member: member, session: session) { criterionId in
+                    chatPrefill = (sessionId: session.id, criterionId: criterionId)
+                    showAnchoredChat = true
+                }
             }
 
             let retracted = store.retractions(for: member.uid)
@@ -174,28 +177,14 @@ struct MentorTraineeView: View {
         }
         .navigationTitle(member.label)
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    @ViewBuilder
-    private func notesList(_ notes: [NotesStore.Note]) -> some View {
-        ForEach(notes) { note in
-            MentorNoteRow(org: org, note: note, isMine: note.authorUid == account.uid)
-        }
-    }
-
-    private func composer(text: Binding<String>, placeholder: String,
-                          submit: @escaping () async throws -> Void) -> some View {
-        HStack {
-            TextField(placeholder, text: text, axis: .vertical)
-            Button {
-                Task {
-                    do { try await submit(); errorMessage = nil }
-                    catch { errorMessage = error.localizedDescription }
+        .sheet(isPresented: $showAnchoredChat) {
+            if let chatPrefill {
+                NavigationStack {
+                    MentorChatScreen(org: org, member: member,
+                                     prefillSessionId: chatPrefill.sessionId,
+                                     prefillCriterionId: chatPrefill.criterionId)
                 }
-            } label: {
-                Image(systemName: "arrow.up.circle.fill").font(.title3)
             }
-            .disabled(text.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
     }
 }
@@ -205,12 +194,12 @@ private struct SessionSection: View {
     let org: AccountStore.Org
     let member: MentorStore.Member
     let session: MentorStore.Session
+    /// Opens the anchored chat composer (criterionId, or nil = session-level).
+    var onChat: ((String?) -> Void)? = nil
 
     @ObservedObject private var store = MentorStore.shared
     @ObservedObject private var account = AccountStore.shared
-    @State private var draft = ""
     @State private var expanded = false
-    @State private var errorMessage: String?
 
     var body: some View {
         Section {
@@ -227,37 +216,25 @@ private struct SessionSection: View {
                 if let summary = session.summary, !summary.isEmpty {
                     Text(summary).font(.footnote)
                 }
-                Button(expanded ? "Hide criteria" : "Show criteria") { expanded.toggle() }
-                    .font(.caption)
+                HStack {
+                    Button(expanded ? "Hide criteria" : "Show criteria") { expanded.toggle() }
+                        .font(.caption)
+                    Spacer()
+                    if let onChat {
+                        Button {
+                            onChat(nil)
+                        } label: {
+                            Label("Chat about this session", systemImage: "bubble.left")
+                                .font(.caption)
+                        }
+                    }
+                }
             }
 
             if expanded {
                 ForEach(session.criteria ?? [], id: \.id) { item in
                     criterionRow(item)
                 }
-            }
-
-            ForEach(store.sessionNotes(for: session.id)) { note in
-                MentorNoteRow(org: org, note: note, isMine: note.authorUid == account.uid)
-            }
-            HStack {
-                TextField("Note on this session…", text: $draft, axis: .vertical)
-                Button {
-                    Task {
-                        do {
-                            try await store.addNote(org: org, traineeUid: member.uid,
-                                                    sessionId: session.id, text: draft)
-                            draft = ""
-                            errorMessage = nil
-                        } catch { errorMessage = error.localizedDescription }
-                    }
-                } label: {
-                    Image(systemName: "arrow.up.circle.fill").font(.title3)
-                }
-                .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            }
-            if let errorMessage {
-                Text(errorMessage).font(.caption).foregroundStyle(.red)
             }
         }
     }
@@ -270,6 +247,15 @@ private struct SessionSection: View {
             HStack(alignment: .top, spacing: 6) {
                 statusIcon(item.result)
                 Text(prompt).font(.caption)
+                Spacer()
+                if let onChat {
+                    Button {
+                        onChat(item.id)
+                    } label: {
+                        Image(systemName: "bubble.left").font(.caption)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             if let quote = item.evidence, !quote.isEmpty {
                 Text("“\(quote)”").font(.caption.italic()).foregroundStyle(.secondary)

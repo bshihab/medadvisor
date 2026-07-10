@@ -95,7 +95,7 @@ struct ProgressHome: View {
     @ViewBuilder private var notesSection: some View {
         NavigationLink { MentorNotesView() } label: {
             HStack {
-                Label("Notes from your mentor", systemImage: "note.text")
+                Label("Chat with your mentor", systemImage: "bubble.left.and.bubble.right")
                     .font(.headline)
                 Spacer()
                 if notesStore.unreadCount > 0 {

@@ -8,9 +8,27 @@ final class NotesStore: ObservableObject {
     static let shared = NotesStore()
     private init() {}
 
+    struct Reply: Decodable, Identifiable {
+        let replyId: String
+        let parentNoteId: String
+        let authorUid: String?
+        let authorEmail: String?
+        let authorDisplayName: String?
+        let authorRole: String?          // "admin" | "trainee"
+        let text: String
+        let createdAt: String
+        let updatedAt: String?
+
+        var id: String { replyId }
+        var author: String { authorDisplayName ?? authorEmail ?? "—" }
+        var when: Date? { SessionShare.parseDate(createdAt) }
+        var isMentor: Bool { authorRole == "admin" }
+    }
+
     struct Note: Decodable, Identifiable {
         let noteId: String
         let sessionId: String?
+        let criterionId: String?
         let traineeUid: String
         let authorUid: String?
         let authorEmail: String?
@@ -18,10 +36,14 @@ final class NotesStore: ObservableObject {
         let text: String
         let createdAt: String
         let updatedAt: String
+        var replies: [Reply]?
 
         var id: String { noteId }
         var author: String { authorDisplayName ?? authorEmail ?? "Your mentor" }
-        var when: Date? { SessionShare.parseDate(updatedAt) ?? SessionShare.parseDate(createdAt) }
+        var when: Date? { SessionShare.parseDate(createdAt) }
+        var lastActivity: Date? {
+            (replies ?? []).compactMap(\.when).max() ?? when
+        }
     }
     private struct Reply: Decodable { let notes: [Note] }
 
@@ -34,7 +56,12 @@ final class NotesStore: ObservableObject {
     }
 
     var unreadCount: Int {
-        notes.filter { ($0.when ?? .distantPast) > lastSeen }.count
+        let seen = lastSeen
+        let newRoots = notes.filter { ($0.when ?? .distantPast) > seen }.count
+        let newReplies = notes.flatMap { $0.replies ?? [] }
+            .filter { !( $0.isMentor == false ) }   // only mentor replies badge the trainee
+            .filter { ($0.when ?? .distantPast) > seen }.count
+        return newRoots + newReplies
     }
 
     /// Pull the trainee's notes (silent on failure — offline fine).
@@ -45,50 +72,24 @@ final class NotesStore: ObservableObject {
         notes = reply.notes
     }
 
+    /// Trainee replies to a root note (contract: root's trainee only).
+    func reply(orgId: String, noteId: String, text: String) async throws {
+        struct Body: Encodable { let text: String }
+        let reply: Reply = try await AccountStore.shared.call(
+            "v1/orgs/\(orgId)/notes/\(noteId)/replies", method: "POST", body: Body(text: text))
+        if let idx = notes.firstIndex(where: { $0.noteId == noteId }) {
+            notes[idx].replies = (notes[idx].replies ?? []) + [reply]
+        }
+    }
+
     func markAllSeen() {
         UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.lastSeenKey)
         objectWillChange.send()
     }
 }
 
-/// The trainee's notes list. Unread state is captured at open so the dots
-/// don't vanish mid-read; everything is marked seen when the view appears.
+/// Kept as the navigation target name (Progress card + push tap) — the
+/// content is now the unified chat.
 struct MentorNotesView: View {
-    @ObservedObject private var store = NotesStore.shared
-    @State private var unreadAtOpen: Set<String> = []
-
-    var body: some View {
-        List {
-            if store.notes.isEmpty {
-                ContentUnavailableView("No notes yet", systemImage: "note.text",
-                    description: Text("Notes from your mentor show up here."))
-            }
-            ForEach(store.notes) { note in
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        if unreadAtOpen.contains(note.id) {
-                            Circle().fill(.blue).frame(width: 8, height: 8)
-                        }
-                        Text(note.author).font(.caption.weight(.semibold))
-                        Spacer()
-                        Text(note.when.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
-                    Text(note.text).font(.subheadline)
-                    if note.sessionId != nil {
-                        Label("About one of your sessions", systemImage: "waveform")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.vertical, 2)
-            }
-        }
-        .navigationTitle("Mentor notes")
-        .task {
-            let seen = store.lastSeen
-            unreadAtOpen = Set(store.notes.filter { ($0.when ?? .distantPast) > seen }.map(\.id))
-            store.markAllSeen()
-            await store.refresh()
-        }
-    }
+    var body: some View { TraineeChatScreen() }
 }
