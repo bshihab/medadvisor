@@ -7,6 +7,8 @@ import SwiftUI
 struct ShareWithMentorView: View {
     let record: ConsultationRecord
     let rubric: Rubric
+    /// Called once the upload succeeds (lets the presenter update stale copies).
+    var onShared: (() -> Void)? = nil
 
     @ObservedObject private var account = AccountStore.shared
     @Environment(\.dismiss) private var dismiss
@@ -197,6 +199,7 @@ struct ShareWithMentorView: View {
                 try await SessionShare.upload(payload)
                 FeedbackStore.shared.markShared(record.id)
                 shared = true
+                onShared?()
             } catch {
                 errorMessage = error.localizedDescription
             }

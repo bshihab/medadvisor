@@ -69,7 +69,8 @@ struct RecordingView: View {
                 FeedbackView(feedback: feedback, rubric: rubric,
                              transcript: processor.redactedTranscript,
                              turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
-                             record: savedRecord)
+                             record: savedRecord,
+                             promptShareOnAppear: true)
             }
         }
         .alert("Microphone access needed", isPresented: $recorder.permissionDenied) {
