@@ -78,6 +78,13 @@ final class AccountStore: ObservableObject {
         try await Auth.auth().signIn(withEmail: email, password: password)
     }
 
+    /// Firebase sends the reset email from its own infrastructure (default
+    /// noreply@<project>.firebaseapp.com; display name / custom domain are
+    /// console settings — no code change to swap later).
+    func sendPasswordReset(email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+
     func createAccount(email: String, password: String, name: String) async throws {
         let result = try await Auth.auth().createUser(withEmail: email, password: password)
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)

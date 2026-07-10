@@ -47,6 +47,7 @@ struct AccountView: View {
     @State private var joinCode = ""
     @State private var busy = false
     @State private var errorMessage: String?
+    @State private var resetSent = false
     /// Raw nonce for the in-flight Sign in with Apple request.
     @State private var appleNonce = ""
 
@@ -163,6 +164,18 @@ struct AccountView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(busy || email.isEmpty || password.isEmpty
                           || (creatingAccount && displayName.trimmingCharacters(in: .whitespaces).isEmpty))
+
+                if !creatingAccount {
+                    Button(resetSent ? "Reset email sent — check your inbox"
+                                     : "Forgot password?") {
+                        run {
+                            try await account.sendPasswordReset(email: email)
+                            resetSent = true
+                        }
+                    }
+                    .font(.footnote)
+                    .disabled(busy || email.isEmpty || resetSent)
+                }
 
                 if let errorMessage {
                     HStack(alignment: .top, spacing: 8) {
