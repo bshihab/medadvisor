@@ -129,7 +129,8 @@ struct MentorTraineeView: View {
             if !skillAreas.isEmpty {
                 Section("Progress by skill area") {
                     NavigationLink {
-                        SkillAreasDetailView(title: member.label, areas: skillAreas)
+                        SkillDetailScreen(org: org, member: member,
+                                          areas: skillAreas, sessions: sessions)
                     } label: {
                         SkillAreaChart(areas: skillAreas)
                             .padding(.vertical, 4)
@@ -441,6 +442,39 @@ struct InviteMintView: View {
             do { minted = try await MentorStore.shared.mintCode(org: org, mentorRole: mentorRole) }
             catch { errorMessage = error.localizedDescription }
             busy = false
+        }
+    }
+}
+
+
+/// Wraps the shared chart-detail view with mentor navigation: selecting a
+/// session point and tapping "Open session" pushes that session's full card.
+struct SkillDetailScreen: View {
+    let org: AccountStore.Org
+    let member: MentorStore.Member
+    let areas: [SkillArea]
+    let sessions: [MentorStore.Session]
+
+    @State private var openedSession: MentorStore.Session?
+    @State private var showSession = false
+
+    var body: some View {
+        SkillAreasDetailView(title: member.label, areas: areas) { key in
+            if let session = sessions.first(where: { $0.id == key }) {
+                openedSession = session
+                showSession = true
+            }
+        }
+        .navigationDestination(isPresented: $showSession) {
+            if let openedSession {
+                List {
+                    SessionSection(org: org, member: member, session: openedSession)
+                }
+                .navigationTitle(openedSession.date.map {
+                    $0.formatted(date: .abbreviated, time: .shortened)
+                } ?? "Session")
+                .navigationBarTitleDisplayMode(.inline)
+            }
         }
     }
 }
