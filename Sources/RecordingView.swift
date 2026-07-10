@@ -165,17 +165,14 @@ struct RecordingView: View {
     private var gradeGradient: some View {
         Group {
             if isAnalyzing {
-                // Calm-but-alive variant for the whole pipeline (transcribe
-                // through scoring): a visible slow breathe + drift, gentler
-                // than recording and with no mic reactivity.
-                TimelineView(.animation) { timeline in
-                    let t = timeline.date.timeIntervalSinceReferenceDate
-                    gradientLayer(scaleX: 1.7 + 0.08 * CGFloat(sin(t * 0.35)),
-                                  scaleY: 1.4 + 0.10 * CGFloat(cos(t * 0.28)),
-                                  opacity: 0.34 + 0.08 * sin(t * 0.6),
-                                  dx: CGFloat(sin(t * 0.5)) * 26,
-                                  dy: CGFloat(cos(t * 0.4)) * 13)
-                }
+                // Calm-but-alive drift for the whole pipeline. Deliberately NOT
+                // a TimelineView: that needs the main thread to redraw every
+                // frame, and the pipeline (model load, parsing, stage updates)
+                // stalls main — which froze the previous two attempts. A
+                // repeatForever animation runs on the render server and keeps
+                // moving even while main is busy.
+                gradientLayer(scaleX: 1.72, scaleY: 1.42, opacity: 0.38, dx: 0, dy: 0)
+                    .modifier(CalmDrift())
             } else if recorder.isRecording && !recorder.isPaused {
                 TimelineView(.animation) { timeline in
                     let t = timeline.date.timeIntervalSinceReferenceDate
@@ -597,5 +594,25 @@ struct PipelineStagesView: View {
                 .foregroundStyle(current ? .primary : .secondary)
                 .lineLimit(1).minimumScaleFactor(0.7)
         }
+    }
+}
+
+
+/// Render-server-backed slow drift: survives main-thread stalls (the LLM
+/// pipeline) because Core Animation runs repeatForever animations out of
+/// process once committed.
+private struct CalmDrift: ViewModifier {
+    @State private var on = false
+
+    func body(content: Content) -> some View {
+        content
+            .offset(x: on ? 26 : -26, y: on ? -12 : 12)
+            .scaleEffect(x: on ? 1.06 : 0.97, y: on ? 1.08 : 0.95)
+            .opacity(on ? 1.0 : 0.74)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 4.5).repeatForever(autoreverses: true)) {
+                    on = true
+                }
+            }
     }
 }
