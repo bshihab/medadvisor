@@ -27,10 +27,7 @@ final class AccountStore: ObservableObject {
         static let googleAppID = "1:597896295002:ios:7db9c01f79a5bc79471e63"
         static let projectID = "medadvisor-production"
         static let gcmSenderID = "597896295002"
-        // TODO(prod): swap in the prod iOS Google client once published in
-        // PLAN.md (pending Bilal's console toggle). Until then release builds
-        // reuse dev's — sign-in would fail cleanly, not crash.
-        static let googleClientID = "743594385075-k98bthp09fubpvsk54ni65ji8ic5ia1j.apps.googleusercontent.com"
+        static let googleClientID = "597896295002-fsm8d0j9tsqjmsh5i2pq4gttio9psen5.apps.googleusercontent.com"
         #endif
     }
 

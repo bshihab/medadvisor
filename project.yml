@@ -45,9 +45,10 @@ targets:
         CFBundleURLTypes:
           - CFBundleTypeRole: Editor
             CFBundleURLSchemes:
-              # Google sign-in callback (dev reversed client ID; prod's gets
-              # added when published in PLAN.md — both can coexist)
+              # Google sign-in callbacks (dev + prod reversed client IDs coexist;
+              # the build config picks which client is used)
               - com.googleusercontent.apps.743594385075-k98bthp09fubpvsk54ni65ji8ic5ia1j
+              - com.googleusercontent.apps.597896295002-fsm8d0j9tsqjmsh5i2pq4gttio9psen5
     entitlements:
       path: MedAdvisor.entitlements
       properties:
