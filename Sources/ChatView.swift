@@ -236,7 +236,9 @@ struct TraineeChatScreen: View {
             let prompt = record?.location
                 .flatMap { RubricLoader.load(for: $0) }?
                 .criteria.first { $0.id == criterionId }?.prompt
-            label += " · \(prompt ?? criterionId)"
+            // The rubric is cloud-editable — a criterion this message was
+            // anchored to may since have been reworded or removed.
+            label += " · " + (prompt ?? "a criterion since removed from the rubric")
         }
         return (label, record?.id)
     }
@@ -366,7 +368,7 @@ struct MentorChatScreen: View {
             let prompt = session?.rubricId
                 .flatMap { RubricLoader.load(named: $0) }?
                 .criteria.first { $0.id == criterionId }?.prompt
-            label += " · \(prompt ?? criterionId)"
+            label += " · " + (prompt ?? "a criterion since removed from the rubric")
         }
         return label
     }
