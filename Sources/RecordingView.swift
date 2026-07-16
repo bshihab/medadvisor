@@ -496,6 +496,7 @@ struct RecordingView: View {
                     ownerUid: AccountStore.shared.uid)
                 FeedbackStore.shared.add(record)
                 savedRecord = record
+                Task { await PrivateBackup.syncPending() }   // private cloud backup (D2 on by default)
                 recorder.deleteRecording(url)   // privacy: drop raw audio after analysis
                 showFeedback = true
             }

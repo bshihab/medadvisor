@@ -31,7 +31,10 @@ struct MedAdvisorApp: App {
         // at full speed while we're active, and resume() picks up from the exact
         // byte the partial file left off at.
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { ModelDownloader.shared.resume() }
+            if phase == .active {
+                ModelDownloader.shared.resume()
+                Task { await PrivateBackup.syncPending() }   // drain any backup backlog
+            }
         }
     }
 }

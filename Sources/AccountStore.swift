@@ -64,7 +64,9 @@ final class AccountStore: ObservableObject {
                     self?.org = nil
                 } else {
                     await self?.refreshMe()
-                    await SessionShare.restore()   // cross-device history (silent)
+                    await SessionShare.restore()   // shared-session history (silent)
+                    await PrivateBackup.restore()  // private backup history (silent)
+                    await PrivateBackup.syncPending()  // upload any local backlog
                     await NotesStore.shared.refresh()
                     PushManager.shared.syncAfterSignIn()
                 }

@@ -15,6 +15,8 @@ struct ConsultationRecord: Codable, Identifiable, Equatable {
     var sharedAt: Date? = nil
     /// Account that recorded it (nil = recorded signed-out / pre-accounts).
     var ownerUid: String? = nil
+    /// When this session was backed up to the owner's private cloud (nil = not yet).
+    var backedUpAt: Date? = nil
 
     var location: AppLocation? { AppLocation(rawValue: locationRaw) }
 }
@@ -51,9 +53,10 @@ final class FeedbackStore: ObservableObject {
     }
 
     func delete(_ record: ConsultationRecord) {
-        // Shared sessions get a tombstone so cloud restore never resurrects a
-        // session the user deleted on this device.
-        if record.sharedAt != nil { Self.addTombstone(record.id) }
+        // Tombstone anything that has a cloud copy (shared OR privately backed
+        // up) so a restore can't resurrect a session the user deleted here —
+        // belt to the explicit cloud-delete's suspenders (covers offline delete).
+        if record.sharedAt != nil || record.backedUpAt != nil { Self.addTombstone(record.id) }
         records.removeAll { $0.id == record.id }
         try? FileManager.default.removeItem(at: fileURL(record.id))
     }
@@ -77,6 +80,34 @@ final class FeedbackStore: ObservableObject {
         guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
         records[idx].sharedAt = Date()
         save(records[idx])
+    }
+
+    /// Stamp a record as backed up to the owner's private cloud (persisted).
+    func markBackedUp(_ id: String) {
+        guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
+        records[idx].backedUpAt = Date()
+        save(records[idx])
+    }
+
+    /// The signed-in user's own records that still need a private backup.
+    func pendingBackup() -> [ConsultationRecord] {
+        guard let uid = currentUid else { return [] }
+        return records.filter { $0.ownerUid == uid && $0.backedUpAt == nil }
+    }
+
+    /// Owner's records that ARE safely backed up (used by device-wipe / logout).
+    func backedUpCount(for uid: String?) -> (backed: Int, pending: Int) {
+        let mine = records.filter { $0.ownerUid == uid }
+        let pending = mine.filter { $0.backedUpAt == nil }.count
+        return (mine.count - pending, pending)
+    }
+
+    /// Remove the current owner's records from THIS device only (device wipe /
+    /// sign-out cleanup). Does not touch cloud copies.
+    func removeLocal(for uid: String?) {
+        let mine = records.filter { $0.ownerUid == uid }
+        for r in mine { try? FileManager.default.removeItem(at: fileURL(r.id)) }
+        records.removeAll { $0.ownerUid == uid }
     }
 
     /// Merge sessions restored from the cloud (cross-device): insert any record

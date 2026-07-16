@@ -27,12 +27,12 @@ private struct DeleteSessionDialog: ViewModifier {
                 if let record = target {
                     if record.sharedAt == nil {
                         Button("Delete permanently", role: .destructive) {
-                            FeedbackStore.shared.delete(record)
+                            deleteMine(record)
                             target = nil
                         }
                     } else {
-                        Button("Delete on this device only", role: .destructive) {
-                            FeedbackStore.shared.delete(record)
+                        Button("Delete for me", role: .destructive) {
+                            deleteMine(record)
                             target = nil
                         }
                         Button("Delete everywhere (mentor too)", role: .destructive) {
@@ -44,8 +44,8 @@ private struct DeleteSessionDialog: ViewModifier {
                 }
             } message: {
                 Text(target?.sharedAt == nil
-                     ? "This session was never shared, so it exists only on this phone — there is no cloud or mentor copy to delete. Deleting it here is permanent."
-                     : "This session was shared with your mentor, so two copies exist. \"Device only\" removes yours and keeps theirs; \"everywhere\" removes it from their dashboard too.")
+                     ? "This removes the session from this device and your private backup. It was never shared, so there is no mentor copy. Permanent."
+                     : "\"Delete for me\" removes it from your device and your private backup; your mentor keeps their shared copy. \"Delete everywhere\" also removes it from their dashboard.")
             }
             .alert("Couldn't delete the cloud copy",
                    isPresented: Binding(get: { errorMessage != nil },
@@ -56,12 +56,23 @@ private struct DeleteSessionDialog: ViewModifier {
             }
     }
 
-    /// Cloud first, local only on success — a failed cloud delete must not
-    /// leave the mentor with a copy the trainee believes is gone.
+    /// Delete the owner's copies (D5): device + private backup. The tombstone
+    /// (set in delete()) blocks a resurrection if the backup delete fails offline.
+    private func deleteMine(_ record: ConsultationRecord) {
+        FeedbackStore.shared.delete(record)
+        if record.backedUpAt != nil {
+            Task { await PrivateBackup.deleteBackup(record.id) }
+        }
+    }
+
+    /// Cloud first, local only on success — a failed mentor-copy delete must not
+    /// leave the mentor with a copy the trainee believes is gone. Also clears
+    /// the private backup.
     private func deleteEverywhere(_ record: ConsultationRecord) {
         Task { @MainActor in
             do {
                 try await SessionShare.deleteEverywhere(record.id)
+                if record.backedUpAt != nil { await PrivateBackup.deleteBackup(record.id) }
                 FeedbackStore.shared.delete(record)
             } catch {
                 errorMessage = "\(error.localizedDescription) The session was NOT deleted — try again when you're online."
