@@ -48,6 +48,9 @@ struct AccountView: View {
     @State private var busy = false
     @State private var errorMessage: String?
     @State private var resetSent = false
+    @AppStorage("privateBackupEnabled") private var backupEnabled = true
+    @State private var confirmSignOut = false
+    @State private var confirmWipe = false
     /// Raw nonce for the in-flight Sign in with Apple request.
     @State private var appleNonce = ""
 
@@ -189,6 +192,12 @@ struct AccountView: View {
                     .background(Color.red.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
                 }
 
+                if creatingAccount {
+                    Text("Your feedback history (scores and redacted highlights — never the recording or transcript) is saved to your private account so it's on all your devices. Only you can see it unless you choose to share a session with a mentor.")
+                        .font(.caption2).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+
                 Button {
                     creatingAccount.toggle()
                     errorMessage = nil
@@ -249,7 +258,53 @@ struct AccountView: View {
         }
 
         Section {
-            Button("Sign out", role: .destructive) { account.signOut() }
+            Toggle("Back up my history to my private account", isOn: $backupEnabled)
+        } header: {
+            Text("Backup")
+        } footer: {
+            Text("Scores and redacted highlights — never the recording or transcript — saved to your private account so your history follows you across devices. Only you can see it.")
+        }
+
+        Section {
+            Button("Sign out", role: .destructive) {
+                if FeedbackStore.shared.pendingBackup().isEmpty { account.signOut() }
+                else { confirmSignOut = true }
+            }
+            Button("Remove my data from this device", role: .destructive) {
+                confirmWipe = true
+            }
+        } footer: {
+            Text("Removing data deletes your sessions from THIS device only (cloud copies are unaffected). Signing out keeps them on this device, hidden, until you sign back in.")
+        }
+        .confirmationDialog("Sign out?",
+                            isPresented: $confirmSignOut, titleVisibility: .visible) {
+            Button("Wait for backup, then sign out") {
+                Task { await PrivateBackup.syncPending(); account.signOut() }
+            }
+            Button("Sign out now", role: .destructive) { account.signOut() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            let n = FeedbackStore.shared.pendingBackup().count
+            Text("\(n) session\(n == 1 ? "" : "s") haven't finished backing up. They'll stay on this device and back up next time you sign in — nothing is lost.")
+        }
+        .confirmationDialog("Remove your data from this device?",
+                            isPresented: $confirmWipe, titleVisibility: .visible) {
+            let pending = FeedbackStore.shared.backedUpCount(for: account.uid).pending
+            if pending > 0 {
+                Button("Remove anyway (\(pending) not backed up — permanent)", role: .destructive) {
+                    FeedbackStore.shared.removeLocal(for: account.uid)
+                }
+            } else {
+                Button("Remove from this device", role: .destructive) {
+                    FeedbackStore.shared.removeLocal(for: account.uid)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            let pending = FeedbackStore.shared.backedUpCount(for: account.uid).pending
+            Text(pending > 0
+                 ? "\(pending) session\(pending == 1 ? "" : "s") aren't backed up yet — removing them is permanent and can't be undone."
+                 : "Your history is safely backed up. This clears it from this device; sign in on any device to get it back.")
         }
     }
 
