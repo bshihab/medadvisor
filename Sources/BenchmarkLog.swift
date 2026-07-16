@@ -66,10 +66,17 @@ final class BenchmarkRecorder: ObservableObject {
     /// Record one LLM generation call's token count and wall time. The call's
     /// START offset is back-computed from its duration so throughput can be
     /// plotted against elapsed time — a sagging curve is thermal throttling.
-    func recordGeneration(phase: String, tokens: Int, seconds: Double) {
+    /// `cachedInputTokens` is Core AI only (llama.cpp doesn't report it): how many
+    /// input tokens came from the prefix KV cache instead of being reprocessed.
+    /// Across the 16 criteria it should be roughly the transcript length — if it
+    /// stays near zero, prefix caching isn't working and the design is wrong.
+    func recordGeneration(phase: String, tokens: Int, seconds: Double,
+                          cachedInputTokens: Int? = nil) {
         guard var run = active else { return }
         let at = max(0, elapsed() - seconds)
-        run.generations.append(Generation(phase: phase, at: at, tokens: tokens, seconds: seconds))
+        run.generations.append(Generation(phase: phase, at: at, tokens: tokens,
+                                          seconds: seconds,
+                                          cachedInputTokens: cachedInputTokens))
         active = run
     }
 
@@ -103,7 +110,7 @@ final class BenchmarkRecorder: ObservableObject {
             peakThermal: Self.thermalName(peakThermal),
             batteryPercentUsed: batteryDrop,
             stages: run.stages.map { .init(name: $0.name, atSeconds: $0.at) },
-            generations: run.generations.map { .init(phase: $0.phase, atSeconds: $0.at, tokens: $0.tokens, seconds: $0.seconds) },
+            generations: run.generations.map { .init(phase: $0.phase, atSeconds: $0.at, tokens: $0.tokens, seconds: $0.seconds, cachedInputTokens: $0.cachedInputTokens) },
             thermalCurve: run.thermalSamples.map { .init(atSeconds: $0.at, state: Self.thermalName($0.state)) },
             recordedAt: ISO8601DateFormatter().string(from: Date()))
 
@@ -193,7 +200,7 @@ final class BenchmarkRecorder: ObservableObject {
         var peakFootprintMB: Double = 0
     }
     private struct Stage { let name: String; let at: Double }        // seconds since start
-    private struct Generation { let phase: String; let at: Double; let tokens: Int; let seconds: Double }
+    private struct Generation { let phase: String; let at: Double; let tokens: Int; let seconds: Double; let cachedInputTokens: Int? }
     private struct ThermalSample { let at: Double; let state: Int }  // 0 nominal … 3 critical
 
     // MARK: - Report (Codable → JSON on disk)
@@ -217,7 +224,7 @@ final class BenchmarkRecorder: ObservableObject {
         let recordedAt: String
 
         struct StageOut: Codable { let name: String; let atSeconds: Double }
-        struct GenerationOut: Codable { let phase: String; let atSeconds: Double; let tokens: Int; let seconds: Double }
+        struct GenerationOut: Codable { let phase: String; let atSeconds: Double; let tokens: Int; let seconds: Double; let cachedInputTokens: Int? }
         struct ThermalOut: Codable { let atSeconds: Double; let state: String }
     }
 
