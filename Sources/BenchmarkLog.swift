@@ -111,13 +111,56 @@ final class BenchmarkRecorder: ObservableObject {
         lastReportURL = Self.write(report)
     }
 
-    /// One-line human summary for the Settings screen.
-    var lastSummaryText: String? {
-        guard let r = lastReport else { return nil }
+    /// One-line human summary of the most recent run.
+    var lastSummaryText: String? { lastReport.map(Self.summaryText) }
+
+    /// Compact one-liner for any run:
+    /// "3.5 tok/s · 211s total · 495 MB peak · fair · 5.0% batt"
+    static func summaryText(_ r: Report) -> String {
         let batt = r.batteryPercentUsed >= 0
             ? String(format: "%.1f%% batt", r.batteryPercentUsed) : "batt n/a"
         return String(format: "%.1f tok/s · %.0fs total · %.0f MB peak · %@ · %@",
                       r.tokensPerSecond, r.totalSeconds, r.peakMemoryMB, r.peakThermal, batt)
+    }
+
+    // MARK: - Saved runs
+
+    struct SavedRun: Identifiable {
+        let id: URL
+        let report: Report
+        var url: URL { id }
+    }
+
+    /// Every benchmark JSON on disk, newest first. Each analysis writes its own
+    /// file, so back-to-back stress runs are all here — not just the latest.
+    func savedRuns() -> [SavedRun] {
+        guard let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+              let files = try? FileManager.default.contentsOfDirectory(
+                  at: dir, includingPropertiesForKeys: nil)
+        else { return [] }
+        let decoder = JSONDecoder()
+        return files
+            .filter { $0.lastPathComponent.hasPrefix("benchmark-") && $0.pathExtension == "json" }
+            .compactMap { url -> SavedRun? in
+                guard let data = try? Data(contentsOf: url),
+                      let report = try? decoder.decode(Report.self, from: data) else { return nil }
+                return SavedRun(id: url, report: report)
+            }
+            .sorted { $0.report.recordedAt > $1.report.recordedAt }
+    }
+
+    func deleteAllSavedRuns() {
+        for run in savedRuns() { try? FileManager.default.removeItem(at: run.url) }
+        lastReport = nil
+        lastReportURL = nil
+    }
+
+    /// "18:42:04" from the stored ISO timestamp (falls back to the raw string).
+    static func displayTime(_ iso: String) -> String {
+        guard let date = ISO8601DateFormatter().date(from: iso) else { return iso }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        return formatter.string(from: date)
     }
 
     // MARK: - Sampling

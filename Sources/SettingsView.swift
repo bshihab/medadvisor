@@ -10,6 +10,7 @@ struct SettingsView: View {
     @ObservedObject private var models = ModelManager.shared
     @ObservedObject private var downloader = ModelDownloader.shared
     @ObservedObject private var benchmark = BenchmarkRecorder.shared
+    @State private var savedRuns: [BenchmarkRecorder.SavedRun] = []
 
     var body: some View {
         NavigationStack {
@@ -47,26 +48,43 @@ struct SettingsView: View {
                 Section {
                     Toggle("Show memory usage", isOn: $showMemoryHUD)
                     Toggle("Record benchmark", isOn: $benchmarkEnabled)
-                    if let summary = benchmark.lastSummaryText {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Last run").font(.caption).foregroundStyle(.secondary)
-                            Text(summary)
-                                .font(.system(.caption, design: .monospaced))
-                                .textSelection(.enabled)
-                        }
-                        if let url = benchmark.lastReportURL {
-                            ShareLink(item: url) {
-                                Label("Export benchmark JSON", systemImage: "square.and.arrow.up")
-                            }
-                        }
-                    }
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("Memory overlay diagnoses the model memory ceiling. “Record benchmark” times your next analysis — throughput, per-stage timing, peak memory, thermal state, and battery drain — and lets you export it as JSON for the write-up.")
+                    Text("Memory overlay diagnoses the model memory ceiling. “Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, and battery drain — and saves each run below.")
+                }
+
+                if !savedRuns.isEmpty {
+                    Section {
+                        ForEach(savedRuns) { run in
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(BenchmarkRecorder.displayTime(run.report.recordedAt))
+                                    .font(.caption2).foregroundStyle(.secondary)
+                                Text(BenchmarkRecorder.summaryText(run.report))
+                                    .font(.system(.caption, design: .monospaced))
+                                    .textSelection(.enabled)
+                                ShareLink(item: run.url) {
+                                    Label("Export JSON", systemImage: "square.and.arrow.up")
+                                        .font(.caption)
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                        Button("Delete all runs", role: .destructive) {
+                            benchmark.deleteAllSavedRuns()
+                            savedRuns = []
+                        }
+                    } header: {
+                        Text("Benchmark runs (\(savedRuns.count))")
+                    } footer: {
+                        Text("Newest first. Every analysis saves its own run, so back-to-back sessions are all here — compare tok/s down the list to see thermal throttling.")
+                    }
                 }
             }
             .navigationTitle("Settings")
+            .onAppear { savedRuns = benchmark.savedRuns() }
+            // A run that finishes while Settings is open lands in the list too.
+            .onChange(of: benchmark.lastReportURL) { _, _ in savedRuns = benchmark.savedRuns() }
             .confirmationDialog("Delete this model?",
                                 isPresented: Binding(
                                     get: { confirmDelete != nil },
