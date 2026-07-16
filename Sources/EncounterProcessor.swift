@@ -57,7 +57,9 @@ final class EncounterProcessor: ObservableObject {
         defer { UIApplication.shared.isIdleTimerDisabled = false }
 
         // Benchmark (dev-only): times this whole analysis when the toggle is on.
-        BenchmarkRecorder.shared.begin(engine: "llama.cpp · GPU (Metal)",
+        // The label comes from the active backend, so a Core AI run stamps
+        // itself correctly with no change here.
+        BenchmarkRecorder.shared.begin(engine: LLMEngine.shared.label,
                                        criterionCount: rubric.criteria.count)
 
         // Keep the LLM RESIDENT across analyses. With Whisper + the diarizer
