@@ -35,10 +35,16 @@ final class LLMEngine {
         let formatted = "<|im_start|>user\n\(prompt)<|im_end|>\n<|im_start|>assistant\n"
 
         var output = ""
+        var tokens = 0
+        let t0 = Date()
         for await piece in llama.predict(prompt: formatted, maxTokens: maxTokens) {
+            tokens += 1
             output += piece
             onPartial(Self.clean(output))
         }
+        BenchmarkRecorder.shared.recordGeneration(
+            phase: BenchmarkRecorder.shared.currentPhase,
+            tokens: tokens, seconds: Date().timeIntervalSince(t0))
         return Self.clean(output)
     }
 
@@ -57,10 +63,16 @@ final class LLMEngine {
         let fullSuffix = suffix + "<|im_end|>\n<|im_start|>assistant\n"
 
         var output = ""
+        var tokens = 0
+        let t0 = Date()
         for await piece in llama.predict(prefix: prefix, suffix: fullSuffix, maxTokens: maxTokens) {
+            tokens += 1
             output += piece
             onPartial(Self.clean(output))
         }
+        BenchmarkRecorder.shared.recordGeneration(
+            phase: BenchmarkRecorder.shared.currentPhase,
+            tokens: tokens, seconds: Date().timeIntervalSince(t0))
         return Self.clean(output)
     }
 

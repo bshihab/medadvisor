@@ -5,9 +5,11 @@ import SwiftUI
 struct SettingsView: View {
     @State private var confirmDelete: ManagedModel?
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
+    @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
     @ObservedObject private var downloader = ModelDownloader.shared
+    @ObservedObject private var benchmark = BenchmarkRecorder.shared
 
     var body: some View {
         NavigationStack {
@@ -44,8 +46,24 @@ struct SettingsView: View {
 
                 Section {
                     Toggle("Show memory usage", isOn: $showMemoryHUD)
+                    Toggle("Record benchmark", isOn: $benchmarkEnabled)
+                    if let summary = benchmark.lastSummaryText {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Last run").font(.caption).foregroundStyle(.secondary)
+                            Text(summary)
+                                .font(.system(.caption, design: .monospaced))
+                                .textSelection(.enabled)
+                        }
+                        if let url = benchmark.lastReportURL {
+                            ShareLink(item: url) {
+                                Label("Export benchmark JSON", systemImage: "square.and.arrow.up")
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Developer")
                 } footer: {
-                    Text("Live overlay of the app's memory footprint + headroom before iOS kills it — for diagnosing the on-device model memory ceiling.")
+                    Text("Memory overlay diagnoses the model memory ceiling. “Record benchmark” times your next analysis — throughput, per-stage timing, peak memory, thermal state, and battery drain — and lets you export it as JSON for the write-up.")
                 }
             }
             .navigationTitle("Settings")

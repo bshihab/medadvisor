@@ -152,7 +152,7 @@ struct ChatThreadList: View {
 
 struct ChatBubble: View {
     let entry: ChatEntry
-    var onOpenAnchor: ((String) -> Void)? = nil
+    var onOpenAnchor: ((String, String?) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: entry.isMine ? .trailing : .leading, spacing: 3) {

@@ -56,6 +56,10 @@ final class EncounterProcessor: ObservableObject {
         UIApplication.shared.isIdleTimerDisabled = true
         defer { UIApplication.shared.isIdleTimerDisabled = false }
 
+        // Benchmark (dev-only): times this whole analysis when the toggle is on.
+        BenchmarkRecorder.shared.begin(engine: "llama.cpp · GPU (Metal)",
+                                       criterionCount: rubric.criteria.count)
+
         // Keep the LLM RESIDENT across analyses. With Whisper + the diarizer
         // gone, the LLM is the only big model, so there's nothing to free it for
         // — and reloading a 4.3GB model on every analysis is exactly what made
@@ -70,6 +74,7 @@ final class EncounterProcessor: ObservableObject {
         //    question onto the patient's answer). Fall back to re-transcribing
         //    the file only when there's no live transcript (e.g. live failed).
         stage = .transcribing
+        BenchmarkRecorder.shared.markStage("transcribing")
         let liveUtterances = liveSegments
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -86,6 +91,7 @@ final class EncounterProcessor: ObservableObject {
         }
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")
+            BenchmarkRecorder.shared.end(success: false)
             return
         }
 
@@ -96,9 +102,12 @@ final class EncounterProcessor: ObservableObject {
         //    first-run download.
         do {
             stage = .preparingModel(0)
+            BenchmarkRecorder.shared.markStage("preparingModel")
+            let loadStart = Date()
             try await LLMEngine.shared.ensureLoaded { fraction in
                 self.stage = .preparingModel(fraction)
             }
+            BenchmarkRecorder.shared.recordLoad(seconds: Date().timeIntervalSince(loadStart))
 
             // 3) Speaker separation WITHOUT diarization: split the transcript into
             //    utterances and have the LLM tag each Doctor/Patient, then merge
@@ -106,6 +115,7 @@ final class EncounterProcessor: ObservableObject {
             //    boundaries (the model only classifies) avoid the phase-slips that
             //    whole-transcript reconstruction produced.
             stage = .identifyingSpeakers
+            BenchmarkRecorder.shared.markStage("attribution")
             var rawTurns: [TranscriptTurn]
             var twoSpeaker = false
             if utterances.count >= 4 {
@@ -126,6 +136,7 @@ final class EncounterProcessor: ObservableObject {
             //    scores ONLY the Doctor. Solo → unlabeled text (the scoring prompt
             //    treats a single speaker as the clinician).
             stage = .redacting
+            BenchmarkRecorder.shared.markStage("redacting")
             let scoringText = twoSpeaker
                 ? rawTurns.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n")
                 : flatTranscript
@@ -143,6 +154,7 @@ final class EncounterProcessor: ObservableObject {
             var results: [CriterionResult] = []
             let total = rubric.criteria.count
             let sharedPrefix = PromptBuilder.scoringPrefix(transcript: redactedTranscript)
+            BenchmarkRecorder.shared.markStage("scoring")
             for (index, criterion) in rubric.criteria.enumerated() {
                 stage = .scoring(done: index, total: total)
                 let t0 = Date()
@@ -185,13 +197,16 @@ final class EncounterProcessor: ObservableObject {
             }
 
             stage = .summarizing
+            BenchmarkRecorder.shared.markStage("summarizing")
             let summary = try? await LLMEngine.shared.generate(
                 prompt: PromptBuilder.summaryPrompt(rubric: rubric, results: results),
                 maxTokens: 160)
 
             stage = .done(ConsultationFeedback(perCriterion: results, summary: summary))
+            BenchmarkRecorder.shared.end(success: true)
         } catch {
             stage = .error("Analysis failed: \(error.localizedDescription)")
+            BenchmarkRecorder.shared.end(success: false)
         }
     }
 }
