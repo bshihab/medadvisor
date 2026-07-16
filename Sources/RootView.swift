@@ -50,6 +50,10 @@ struct RootView: View {
                     .tabItem { Label("Cohort", systemImage: "person.2.fill") }
             }
         }
+        // Rebuild the whole TabView when the account/role changes — a
+        // conditionally-included tab otherwise leaves a stale blank tab after
+        // switching between a mentor and a trainee account on the same device.
+        .id("\(account.uid ?? "none")-\(account.org?.role ?? "none")")
     }
 }
 
