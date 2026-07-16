@@ -13,6 +13,8 @@ struct FeedbackView: View {
     /// Fresh-analysis flow: pop the share screen automatically after grading
     /// (only when the user belongs to a program and hasn't shared yet).
     var promptShareOnAppear: Bool = false
+    /// When opened from a chat anchor: scroll to + highlight this criterion.
+    var focusCriterionId: String? = nil
 
     private var hasTranscript: Bool {
         (turns?.isEmpty == false) || (transcript?.isEmpty == false)
@@ -122,18 +124,25 @@ struct FeedbackView: View {
     // MARK: - Feedback (card layout)
 
     private var feedbackList: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                scoreCard
-                if !criticalMisses.isEmpty { criticalCard }
-                ForEach(orderedDimensions) { dimension in
-                    let results = resultsFor(dimension)
-                    if !results.isEmpty { phaseCard(dimension, results) }
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 16) {
+                    scoreCard
+                    if !criticalMisses.isEmpty { criticalCard }
+                    ForEach(orderedDimensions) { dimension in
+                        let results = resultsFor(dimension)
+                        if !results.isEmpty { phaseCard(dimension, results) }
+                    }
                 }
+                .padding()
             }
-            .padding()
+            .background(Color(.systemGroupedBackground))
+            .task {
+                guard let fc = focusCriterionId else { return }
+                try? await Task.sleep(nanoseconds: 400_000_000)
+                withAnimation { proxy.scrollTo("crit-\(fc)", anchor: .center) }
+            }
         }
-        .background(Color(.systemGroupedBackground))
     }
 
     /// Top card: the per-dimension breakdown is the hero (a labelled meter per
@@ -272,6 +281,11 @@ struct FeedbackView: View {
             Spacer(minLength: 0)
         }
         .padding(.vertical, 4)
+        .padding(.horizontal, result.criterionId == focusCriterionId ? 8 : 0)
+        .background(result.criterionId == focusCriterionId
+                    ? Color.blue.opacity(0.12) : Color.clear,
+                    in: RoundedRectangle(cornerRadius: 10))
+        .id("crit-\(result.criterionId)")
     }
 
     /// Rounded card container.

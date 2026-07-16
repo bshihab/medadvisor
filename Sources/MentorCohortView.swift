@@ -177,15 +177,40 @@ struct MentorTraineeView: View {
         }
         .navigationTitle(member.label)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showAnchoredChat) {
+        .navigationDestination(isPresented: $showAnchoredChat) {
             if let chatPrefill {
-                NavigationStack {
-                    MentorChatScreen(org: org, member: member,
-                                     prefillSessionId: chatPrefill.sessionId,
-                                     prefillCriterionId: chatPrefill.criterionId)
-                }
+                MentorChatScreen(org: org, member: member,
+                                 prefillSessionId: chatPrefill.sessionId,
+                                 prefillCriterionId: chatPrefill.criterionId)
             }
         }
+    }
+}
+
+/// Standalone session view (opened from a chat anchor): auto-expands, scrolls
+/// to and highlights the anchored criterion.
+struct SessionDetailScreen: View {
+    let org: AccountStore.Org
+    let member: MentorStore.Member
+    let session: MentorStore.Session
+    var focusCriterionId: String? = nil
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            List {
+                SessionCardView(org: org, member: member, session: session,
+                                focusCriterionId: focusCriterionId)
+            }
+            .task {
+                guard let fc = focusCriterionId else { return }
+                try? await Task.sleep(nanoseconds: 400_000_000)   // let the row render
+                withAnimation { proxy.scrollTo(fc, anchor: .center) }
+            }
+        }
+        .navigationTitle(session.date.map {
+            $0.formatted(date: .abbreviated, time: .shortened)
+        } ?? "Session")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -196,6 +221,8 @@ struct SessionCardView: View {
     let session: MentorStore.Session
     /// Opens the anchored chat composer (criterionId, or nil = session-level).
     var onChat: ((String?) -> Void)? = nil
+    /// When set, the card opens expanded with this criterion highlighted.
+    var focusCriterionId: String? = nil
 
     @ObservedObject private var store = MentorStore.shared
     @ObservedObject private var account = AccountStore.shared
@@ -241,9 +268,13 @@ struct SessionCardView: View {
             if expanded {
                 ForEach(session.criteria ?? [], id: \.id) { item in
                     criterionRow(item)
+                        .id(item.id)
+                        .listRowBackground(item.id == focusCriterionId
+                                           ? Color.blue.opacity(0.12) : nil)
                 }
             }
         }
+        .onAppear { if focusCriterionId != nil { expanded = true } }
     }
 
     @ViewBuilder
