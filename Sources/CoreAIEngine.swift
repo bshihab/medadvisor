@@ -42,13 +42,17 @@ final class CoreAIEngine: InferenceEngine {
     /// Produced by (on an arm64 Mac — Apple ships the wheels for Apple silicon
     /// only; an Intel-emulated Python can't install coreai-core):
     ///
-    ///     uv run coreai.llm.export Qwen/Qwen3-4B --platform iOS \
-    ///         --max-context-length 6144 --output-dir ./my-models/
+    ///     uv run coreai.llm.export Qwen/Qwen3-4B --platform iOS --output-dir ./my-models/
     ///
-    /// 6144 matches LlamaContext's n_ctx — a ~15 min consultation is ~3-3.5k
-    /// tokens of transcript and the whole transcript sits in context for every
-    /// criterion. The export defaults to 4096, which would both cap consultation
-    /// length AND make any llama.cpp comparison apples-to-oranges.
+    /// ⚠️ Do NOT pass --max-context-length 6144 (coreai-core 1.0.0b2): the flag
+    /// is stamped into metadata but the compiled artifact ships a fixed shape
+    /// ladder regardless — extend/prompt_opt at contexts {256,512,1024,2048,4096}
+    /// × query {8,16,64} (verified by grepping main.mlirb). The runtime then
+    /// looks for extend_6144_* to match the metadata, finds nothing, and fails
+    /// with "invalid engine state". So the real context ceiling here is 4096 —
+    /// below LlamaContext's n_ctx=6144, meaning long consultations get tight on
+    /// this path (~3-3.5k tokens of transcript is a ~15 min visit) and any
+    /// llama.cpp comparison should note the asymmetry.
     ///
     /// The export emits a FOLDER, not a file — model + tokenizer together:
     ///
