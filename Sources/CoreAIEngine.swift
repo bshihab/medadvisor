@@ -69,10 +69,22 @@ final class CoreAIEngine: InferenceEngine {
     func ensureLoaded(progress: @escaping (Double) -> Void) async throws {
         if model != nil { return }
         guard let url = Self.resourcesURL else { throw InferenceError.notLoaded }
-        // Specialization (compiling the model for this device) is the expensive
-        // step; Core AI caches it via AIModelCache. Worth comparing against
-        // llama.cpp's measured 14.0s cold load.
-        model = try await CoreAILanguageModel(resourcesAt: url)
+        // `.eager`, NOT the default `.lazy`: lazy defers the engine load (and,
+        // on the first-ever run, minutes of one-time device specialization) to
+        // the FIRST generation — which made speaker attribution look hung and
+        // would mis-charge the load to attribution in the benchmark. Eager pays
+        // it here, inside the stage EncounterProcessor already times as
+        // preparingModel / modelLoadSeconds. Compare against llama.cpp's 14.0s.
+        //
+        // `.fixedSize`, NOT `.auto`: auto starts the KV cache at 256 tokens and
+        // grows it as the 3k-token transcript streams in — repeated mid-run
+        // reallocations (the memory spikes on the HUD). Fixed pre-allocates the
+        // full 6144 up front, which is exactly what LlamaContext does with
+        // n_ctx=6144 at init, so the two engines behave symmetrically.
+        model = try await CoreAILanguageModel(
+            resourcesAt: url,
+            mode: .eager,
+            kvCacheStrategy: .fixedSize)
     }
 
     func generate(prompt: String,
