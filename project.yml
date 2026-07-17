@@ -84,6 +84,17 @@ targets:
         com.apple.developer.applesignin:
           - Default
         aps-environment: development   # Xcode flips to production at App Store export
+        # SPIKE: Core AI jetsams without these. The Neural Engine doesn't change
+        # where weights live — Apple silicon has unified memory, so the model sits
+        # in the same RAM regardless of which chip reads it. What changes is the
+        # ACCOUNTING: llama.cpp mmaps its weights (file-backed, evictable, not
+        # charged to us — hence a 495MB measured peak for a 4.3GB model), while
+        # Core AI loads them as counted memory, so all 2.4GB plus the 6144 KV
+        # cache lands on our footprint and iOS kills us. Note the irony: the
+        # SMALLER model is the one that dies. This is the same wall that ruled out
+        # MLX — see the comment in LlamaEngine.
+        com.apple.developer.kernel.increased-memory-limit: true
+        com.apple.developer.kernel.extended-virtual-addressing: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor
