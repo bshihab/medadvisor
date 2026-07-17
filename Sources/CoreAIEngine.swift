@@ -33,16 +33,37 @@ final class CoreAIEngine: InferenceEngine {
 
     func unload() { model = nil }
 
+    /// Name of the exported resource folder (as emitted by the export recipe).
+    private static let modelFolderName = "qwen3_4b_mixed_4bit_8bit_static"
+
     /// The exported model's resource folder, bundled with the app.
     ///
-    /// Produced by (run on an arm64 Mac — the wheels are Apple-silicon only):
-    ///     uv run coreai.llm.export Qwen/Qwen3-4B --platform iOS --output-dir ./my-models/
+    /// Produced by (on an arm64 Mac — Apple ships the wheels for Apple silicon
+    /// only; an Intel-emulated Python can't install coreai-core):
     ///
-    /// The export emits a resource *folder* (weights + tokenizer), so this is a
-    /// directory reference, not a single file. Exact name comes from the export
-    /// output — fix this up once it's actually run.
+    ///     uv run coreai.llm.export Qwen/Qwen3-4B --platform iOS \
+    ///         --max-context-length 6144 --output-dir ./my-models/
+    ///
+    /// 6144 matches LlamaContext's n_ctx — a ~15 min consultation is ~3-3.5k
+    /// tokens of transcript and the whole transcript sits in context for every
+    /// criterion. The export defaults to 4096, which would both cap consultation
+    /// length AND make any llama.cpp comparison apples-to-oranges.
+    ///
+    /// The export emits a FOLDER, not a file — model + tokenizer together:
+    ///
+    ///     qwen3_4b_mixed_4bit_8bit_static/       <- resourcesAt: wants THIS
+    ///       ├── metadata.json
+    ///       ├── qwen3_4b_mixed_4bit_8bit_static.aimodel/   (main.mlirb, main.hash)
+    ///       └── tokenizer/                                 (tokenizer.json, chat_template.jinja, …)
+    ///
+    /// It must be added to the target as a **folder reference** (blue folder in
+    /// Xcode), not a group — a group flattens the subfolders and the tokenizer
+    /// lookup breaks.
+    ///
+    /// 2.4GB bundled is fine for this spike, but not shippable: production would
+    /// fetch it the way ModelDownloader already fetches the GGUF.
     private static var resourcesURL: URL? {
-        Bundle.main.url(forResource: "Qwen3-4B", withExtension: nil)
+        Bundle.main.url(forResource: modelFolderName, withExtension: nil)
     }
 
     func ensureLoaded(progress: @escaping (Double) -> Void) async throws {
