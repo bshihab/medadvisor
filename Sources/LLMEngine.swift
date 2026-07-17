@@ -54,6 +54,11 @@ final class LLMEngine {
     /// JSON always says which engine produced it.
     var label: String { engine.label }
 
+    /// Whether the active backend needs the ModelDownloader-managed GGUF.
+    /// Core AI's model ships in the bundle, so the pipeline must not gate
+    /// analysis on a download that engine never reads.
+    var requiresManagedDownload: Bool { engine.requiresManagedDownload }
+
     var isLoaded: Bool { engine.isLoaded }
 
     func unload() { engine.unload() }

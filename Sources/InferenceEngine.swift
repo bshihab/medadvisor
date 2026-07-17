@@ -17,6 +17,12 @@ protocol InferenceEngine {
     /// engine produced it. e.g. "llama.cpp · GPU (Metal)".
     var label: String { get }
 
+    /// Whether this backend's weights come through ModelDownloader (the ~4.3GB
+    /// GGUF fetched from Settings). llama.cpp: yes. Core AI: no — its .aimodel
+    /// ships inside the app bundle, so the pipeline must not gate analysis on a
+    /// download this engine never reads.
+    var requiresManagedDownload: Bool { get }
+
     var isLoaded: Bool { get }
 
     /// Ensure the model is present and resident. `progress` reports a first-run

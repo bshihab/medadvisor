@@ -152,12 +152,15 @@ struct SettingsView: View {
                 }
             }
 
-            if installed {
+            if installed, model.deletable {
                 Button(role: .destructive) { confirmDelete = model } label: {
                     Label("Delete", systemImage: "trash")
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
+            } else if installed {
+                Text("Ships inside the app — nothing to download or delete.")
+                    .font(.caption2).foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, 4)

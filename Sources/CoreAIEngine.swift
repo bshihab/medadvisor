@@ -26,6 +26,7 @@ import CoreAILanguageModels
 @MainActor
 final class CoreAIEngine: InferenceEngine {
     let label = "Core AI · Qwen3-4B"
+    let requiresManagedDownload = false   // model ships in the app bundle
 
     private var model: CoreAILanguageModel?
 

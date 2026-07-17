@@ -15,6 +15,7 @@ import Foundation
 @MainActor
 final class LlamaEngine: InferenceEngine {
     let label = "llama.cpp · GPU (Metal)"
+    let requiresManagedDownload = true
 
     private var llama: LlamaContext?
 
