@@ -2,7 +2,19 @@ name: MedAdvisor
 options:
   bundleIdPrefix: app.medadvisor
   deploymentTarget:
-    iOS: "26.0"
+    # ⚠️ SPIKE ONLY — DO NOT MERGE TO main. main stays at 26.0.
+    #
+    # apple/coreai-models declares platforms: [.iOS("27.0")], and SPM hard-refuses
+    # to link a package into a target whose deployment target is lower. So there
+    # is no way to even MEASURE Core AI without raising the floor to 27 — which,
+    # if shipped, strands every iOS 26 user including the director.
+    #
+    # This is the packaging wall behind "one binary, two engines": gating our own
+    # code with `if #available(iOS 27, *)` is easy, but a package that won't link
+    # below 27 is not. Shipping both would mean isolating Core AI in a separate
+    # weak-linked framework with its own deployment target. Decide whether that
+    # complexity is worth paying for AFTER this spike produces numbers.
+    iOS: "27.0"
   createIntermediateGroups: true
 
 # Applies to every target, so regenerating the project never loses signing.
@@ -20,6 +32,12 @@ packages:
   GoogleSignIn:
     url: https://github.com/google/GoogleSignIn-iOS
     majorVersion: 8.0.0
+  # SPIKE ONLY. Supplies CoreAILanguageModel — it is NOT in the iOS 27 SDK
+  # (CoreAI.framework there is just a shim re-exporting CoreAIDelegates).
+  # Tracking main: this is beta and has no tagged release yet.
+  CoreAIModels:
+    url: https://github.com/apple/coreai-models
+    branch: main
 
 targets:
   MedAdvisor:
@@ -29,9 +47,18 @@ targets:
       - Sources
       - path: rubrics
         buildPhase: resources
+      # SPIKE ONLY: the exported Qwen3-4B (2.4GB, gitignored — copy it in by hand,
+      # see CoreAIEngine). `type: folder` makes it a FOLDER REFERENCE, so the
+      # .aimodel/ and tokenizer/ subdirectories survive into the bundle; a normal
+      # group would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
+      - path: Models/qwen3_4b_mixed_4bit_8bit_static
+        type: folder
+        buildPhase: resources
     dependencies:
       - package: llama-binary
         product: llama
+      - package: CoreAIModels
+        product: CoreAILM               # module name is CoreAILanguageModels
       - package: Firebase
         product: FirebaseAuth             # Identity Platform sign-in (MC2)
       - package: Firebase

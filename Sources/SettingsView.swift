@@ -6,6 +6,8 @@ struct SettingsView: View {
     @State private var confirmDelete: ManagedModel?
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
+    // Key must match LLMEngine.preferenceKey — the engine reads it at startup.
+    @AppStorage("enginePreference") private var enginePreference = LLMEngine.EnginePreference.auto.rawValue
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
     @ObservedObject private var downloader = ModelDownloader.shared
@@ -48,10 +50,17 @@ struct SettingsView: View {
                 Section {
                     Toggle("Show memory usage", isOn: $showMemoryHUD)
                     Toggle("Record benchmark", isOn: $benchmarkEnabled)
+                    Picker("Inference engine", selection: $enginePreference) {
+                        ForEach(LLMEngine.EnginePreference.allCases) { option in
+                            Text(option.label).tag(option.rawValue)
+                        }
+                    }
+                    LabeledContent("Active now", value: LLMEngine.shared.label)
+                        .font(.caption)
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("Memory overlay diagnoses the model memory ceiling. “Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, and battery drain — and saves each run below.")
+                    Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.\n\nThe engine picker takes effect on the NEXT LAUNCH (the model is chosen once at startup). Quit and reopen the app after switching, then re-run the same script so the engine is the only thing that changed.")
                 }
 
                 if !savedRuns.isEmpty {

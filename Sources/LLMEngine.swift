@@ -15,15 +15,38 @@ final class LLMEngine {
 
     private let engine: InferenceEngine
 
+    /// Dev override for which backend runs. The whole point of the spike: it lets
+    /// ONE phone measure llama.cpp/GPU against Core AI/Neural Engine with the
+    /// hardware, OS, and script held constant, so the engine is the only variable.
+    enum EnginePreference: String, CaseIterable, Identifiable {
+        case auto, llama, coreAI
+        var id: String { rawValue }
+        var label: String {
+            switch self {
+            case .auto:   return "Automatic"
+            case .llama:  return "llama.cpp (GPU)"
+            case .coreAI: return "Core AI (Neural Engine)"
+            }
+        }
+    }
+
+    static let preferenceKey = "enginePreference"
+
+    /// Read once — the engine is chosen at construction, so changing the
+    /// preference needs an app relaunch to take effect.
     private init() {
-        // Backend selection. iOS 26 can only run a 7B via llama.cpp on the GPU;
-        // iOS 27's Core AI targets the Neural Engine instead. When CoreAIEngine
-        // exists this becomes:
-        //
-        //     if #available(iOS 27, *) { engine = CoreAIEngine(); return }
-        //
-        // Same binary either way — the deployment target stays iOS 26, so the
-        // director's phone keeps the GPU path untouched and nobody is stranded.
+        let pref = EnginePreference(
+            rawValue: UserDefaults.standard.string(forKey: Self.preferenceKey) ?? "") ?? .auto
+
+        // Core AI only exists once the SPM package is linked (it is NOT in the
+        // SDK), and only on iOS 27+. Everything else falls back to llama.cpp —
+        // which on main is the only path, keeping the director's build untouched.
+        #if canImport(CoreAILanguageModels)
+        if pref != .llama, #available(iOS 27.0, *) {
+            engine = CoreAIEngine()
+            return
+        }
+        #endif
         engine = LlamaEngine()
     }
 
