@@ -34,10 +34,12 @@ packages:
     majorVersion: 8.0.0
   # SPIKE ONLY. Supplies CoreAILanguageModel — it is NOT in the iOS 27 SDK
   # (CoreAI.framework there is just a shim re-exporting CoreAIDelegates).
-  # Tracking main: this is beta and has no tagged release yet.
+  # VENDORED at Vendor/coreai-models (upstream 04a3fd6 + local patches): the
+  # upstream has no tagged release, so `branch: main` made every build a moving
+  # target, and we need the cachedTokenCount/lastPrefixHitCount fixes — see
+  # Vendor/coreai-models/VENDORED.md for the exact diff.
   CoreAIModels:
-    url: https://github.com/apple/coreai-models
-    branch: main
+    path: Vendor/coreai-models
 
 targets:
   MedAdvisor:
@@ -47,11 +49,17 @@ targets:
       - Sources
       - path: rubrics
         buildPhase: resources
-      # SPIKE ONLY: the exported Qwen3-0.6B (454MB, gitignored — copy it in by
-      # hand; the 4B is un-runnable here, see CoreAIEngine's modelFolderName
-      # comment). `type: folder` makes it a FOLDER REFERENCE, so the
-      # .aimodel/ and tokenizer/ subdirectories survive into the bundle; a normal
-      # group would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
+      # SPIKE ONLY: both exported Core AI models, gitignored — copy BOTH
+      # folders into Models/ by hand BEFORE running xcodegen (it errors on
+      # missing paths). Which one loads is decided at runtime by
+      # CoreAIModelCatalog (4B first; Settings → Developer overrides), so one
+      # build carries both and no rebuild is needed to switch. `type: folder`
+      # makes each a FOLDER REFERENCE, so the .aimodel(/.aimodelc) and
+      # tokenizer/ subdirectories survive into the bundle; a normal group
+      # would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
+      - path: Models/qwen3_4b_mixed_4bit_8bit_static
+        type: folder
+        buildPhase: resources
       - path: Models/qwen3_0_6b_mixed_4bit_8bit_static
         type: folder
         buildPhase: resources
@@ -60,6 +68,8 @@ targets:
         product: llama
       - package: CoreAIModels
         product: CoreAILM               # module name is CoreAILanguageModels
+      - package: CoreAIModels
+        product: CoreAIShared           # CLILogger (engine load-progress logs)
       - package: Firebase
         product: FirebaseAuth             # Identity Platform sign-in (MC2)
       - package: Firebase

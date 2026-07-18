@@ -15,7 +15,10 @@ enum ManagedModel: String, CaseIterable, Identifiable {
         switch self {
         case .llm: return "Qwen 2.5-7B"
         #if canImport(CoreAILanguageModels)
-        case .coreAI: return "Qwen 3-0.6B (Core AI)"
+        // Reflects whichever bundled Core AI model will actually load —
+        // the catalog resolves the dev override + priority order (4B first).
+        case .coreAI:
+            return "\(CoreAIModelCatalog.active?.displayName ?? "Qwen 3") (Core AI)"
         #endif
         }
     }
@@ -31,7 +34,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
         switch self {
         case .llm: return "~4.3 GB"
         #if canImport(CoreAILanguageModels)
-        case .coreAI: return "~450 MB"
+        case .coreAI: return CoreAIModelCatalog.active?.approxSize ?? "—"
         #endif
         }
     }
@@ -64,11 +67,10 @@ final class ModelManager: ObservableObject {
         switch model {
         case .llm: return ModelDownloader.shared.isDownloaded
         #if canImport(CoreAILanguageModels)
-        // Folder name must match CoreAIEngine.modelFolderName (the export's
-        // output directory, added to the target as a folder reference).
+        // Installed = some catalog model's folder reference made it into the
+        // bundle. The catalog owns the folder names — one source of truth.
         case .coreAI:
-            return Bundle.main.url(forResource: "qwen3_0_6b_mixed_4bit_8bit_static",
-                                   withExtension: nil) != nil
+            return CoreAIModelCatalog.active != nil
         #endif
         }
     }

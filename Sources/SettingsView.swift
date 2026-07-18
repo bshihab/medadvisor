@@ -8,6 +8,11 @@ struct SettingsView: View {
     @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
     // Key must match LLMEngine.preferenceKey — the engine reads it at startup.
     @AppStorage("enginePreference") private var enginePreference = LLMEngine.EnginePreference.auto.rawValue
+    #if canImport(CoreAILanguageModels)
+    // Key must match CoreAIModelCatalog.selectionKey — read at model load.
+    @AppStorage("coreAIModelFolder") private var coreAIModelFolder = ""
+    @State private var coreAICacheMessage: String?
+    #endif
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
     @ObservedObject private var downloader = ModelDownloader.shared
@@ -57,10 +62,29 @@ struct SettingsView: View {
                     }
                     LabeledContent("Active now", value: LLMEngine.shared.label)
                         .font(.caption)
+                    #if canImport(CoreAILanguageModels)
+                    // Only meaningful when more than one Core AI model is
+                    // bundled — spares a rebuild per model swap.
+                    if CoreAIModelCatalog.installed.count > 1 {
+                        Picker("Core AI model", selection: $coreAIModelFolder) {
+                            Text("Automatic (4B first)").tag("")
+                            ForEach(CoreAIModelCatalog.installed) { entry in
+                                Text(entry.displayName).tag(entry.folder)
+                            }
+                        }
+                    }
+                    Button("Clear Core AI specialization cache", role: .destructive) {
+                        coreAICacheMessage = CoreAIEngine.clearSpecializationCache()
+                    }
+                    if let coreAICacheMessage {
+                        Text(coreAICacheMessage)
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    #endif
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.\n\nThe engine picker takes effect on the NEXT LAUNCH (the model is chosen once at startup). Quit and reopen the app after switching, then re-run the same script so the engine is the only thing that changed.")
+                    Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.\n\nThe engine picker and the Core AI model picker take effect on the NEXT LAUNCH (the model is chosen once at startup). Quit and reopen the app after switching, then re-run the same script so the engine is the only thing that changed.\n\n“Clear specialization cache” deletes the on-device compiled Core AI artifacts (can be multiple GB): the next load re-specializes from scratch. Use it to recover from a poisoned cache or to re-measure a cold first load without reinstalling.")
                 }
 
                 if !savedRuns.isEmpty {
