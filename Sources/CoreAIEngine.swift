@@ -304,9 +304,18 @@ final class CoreAIEngine: InferenceEngine {
                          to prompt: String,
                          maxTokens: Int,
                          onPartial: @escaping (String) -> Void) async throws -> String {
+        // Qwen3 is a thinking model: left alone it opens a <think> block and
+        // reasons before answering. Our token caps are sized for answers, not
+        // reasoning — on-device run 2026-07-18 burned the entire 180-token
+        // budget inside <think> (first token 151667 = <think>) and the session
+        // threw "Session ended without producing a response". "/no_think" is
+        // Qwen3's trained soft switch (appended to the user turn): it makes
+        // the model emit an empty think block and answer directly — which is
+        // also what keeps the comparison fair, because the llama baseline
+        // (Qwen2.5) doesn't think at all.
         let options = GenerationOptions(maximumResponseTokens: maxTokens)
         let t0 = Date()
-        let response = try await session.respond(to: prompt, options: options)
+        let response = try await session.respond(to: prompt + "\n/no_think", options: options)
         let text = response.content
         onPartial(text)
 

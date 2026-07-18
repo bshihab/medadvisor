@@ -169,7 +169,10 @@ final class EncounterProcessor: ObservableObject {
                     let gate = (try? await LLMEngine.shared.generate(
                         sharedPrefix: sharedPrefix,
                         suffix: PromptBuilder.applicabilityGateSuffix(criterion: criterion),
-                        maxTokens: 8)) ?? ""
+                        // 24, not 8: on the Core AI path Qwen3 spends ~5 tokens
+                        // on an empty <think></think> block (even with
+                        // /no_think) before the yes/no lands.
+                        maxTokens: 24)) ?? ""
                     let g = gate.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
                     // Treat any clear "no / didn't happen" answer as Not Applicable.
                     let didNotHappen = (g.hasPrefix("no") || g.contains("no exam")
