@@ -81,15 +81,17 @@ final class CoreAIEngine: InferenceEngine {
         // it here, inside the stage EncounterProcessor already times as
         // preparingModel / modelLoadSeconds. Compare against llama.cpp's 14.0s.
         //
-        // `.fixedSize`, NOT `.auto`: auto starts the KV cache at 256 tokens and
-        // grows it as the 3k-token transcript streams in — repeated mid-run
-        // reallocations (the memory spikes on the HUD). Fixed pre-allocates the
-        // full 6144 up front, which is exactly what LlamaContext does with
-        // n_ctx=6144 at init, so the two engines behave symmetrically.
+        // KV strategy is back to `.auto` (256-token initial, grows on demand):
+        // `.fixedSize` pre-allocated the full-context KV during engine creation,
+        // stacking it on top of the weight-loading burst — and the process was
+        // jetsammed ~10s into load (memory kill, despite the entitlement; the
+        // HUD's 0.4s sampling never caught the spike). Trading llama-symmetry
+        // (LlamaContext pre-allocates n_ctx at init) for actually surviving
+        // load. Revisit once the load-peak problem is understood.
         model = try await CoreAILanguageModel(
             resourcesAt: url,
             mode: .eager,
-            kvCacheStrategy: .fixedSize)
+            kvCacheStrategy: .auto)
     }
 
     func generate(prompt: String,
