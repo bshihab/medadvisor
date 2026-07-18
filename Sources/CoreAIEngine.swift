@@ -133,12 +133,12 @@ final class CoreAIEngine: InferenceEngine {
         // this is what distinguishes "still compiling" from "wedged".
         CLILogger.setLevel(to: 2)
 
-        print("[CoreAI] loading \(active.folder)")
+        DevLog.log("[CoreAI] loading \(active.folder)")
         // Names the .aimodelc architecture this phone needs — required to pick
         // which ahead-of-time-compiled artifact to bundle (h18-class for the
         // iPhone 17 family; exact string comes from this line).
-        print("[CoreAI] device architecture: \(AIModel.deviceArchitectureName)")
-        print(String(format: "[CoreAI] physical RAM %.0f MB · jetsam headroom now %.0f MB",
+        DevLog.log("[CoreAI] device architecture: \(AIModel.deviceArchitectureName)")
+        DevLog.log(String(format: "[CoreAI] physical RAM %.0f MB · jetsam headroom now %.0f MB",
                      Double(ProcessInfo.processInfo.physicalMemory) / 1_048_576,
                      Double(os_proc_available_memory()) / 1_048_576))
         logSpecializationCacheState(bundleURL: url)
@@ -164,7 +164,7 @@ final class CoreAIEngine: InferenceEngine {
             resourcesAt: url,
             mode: .eager,
             kvCacheStrategy: .auto)
-        print(String(format: "[CoreAI] engine loaded in %.1fs", Date().timeIntervalSince(t0)))
+        DevLog.log(String(format: "[CoreAI] engine loaded in %.1fs", Date().timeIntervalSince(t0)))
     }
 
     /// Log whether the on-device specialization cache already holds this model
@@ -181,21 +181,21 @@ final class CoreAIEngine: InferenceEngine {
         guard let asset = contents.first(where: {
             ["aimodel", "aimodelc"].contains($0.pathExtension.lowercased())
         }) else {
-            print("[CoreAI] ⚠️ no .aimodel/.aimodelc inside \(bundleURL.lastPathComponent)")
+            DevLog.log("[CoreAI] ⚠️ no .aimodel/.aimodelc inside \(bundleURL.lastPathComponent)")
             return
         }
-        print("[CoreAI] model asset: \(asset.lastPathComponent)")
+        DevLog.log("[CoreAI] model asset: \(asset.lastPathComponent)")
         do {
             let options = SpecializationOptions(preferredComputeUnitKind: .neuralEngine)
             if try AIModelCache.default.model(for: asset, options: options) != nil {
-                print("[CoreAI] specialization cache: HIT — engine creation should be quick")
+                DevLog.log("[CoreAI] specialization cache: HIT — engine creation should be quick")
             } else {
-                print("[CoreAI] specialization cache: MISS — the device will specialize now."
+                DevLog.log("[CoreAI] specialization cache: MISS — the device will specialize now."
                     + " This is the multi-minute compile: expect app storage to grow"
                     + " and ANECompilerService CPU in Console. If neither moves, it's wedged.")
             }
         } catch {
-            print("[CoreAI] specialization cache probe failed: \(error)")
+            DevLog.log("[CoreAI] specialization cache probe failed: \(error)")
         }
     }
 
@@ -206,10 +206,10 @@ final class CoreAIEngine: InferenceEngine {
     static func clearSpecializationCache() -> String {
         do {
             try AIModelCache.default.deleteAll()
-            print("[CoreAI] specialization cache cleared")
+            DevLog.log("[CoreAI] specialization cache cleared")
             return "Specialization cache cleared. Next load re-specializes from scratch."
         } catch {
-            print("[CoreAI] specialization cache clear FAILED: \(error)")
+            DevLog.log("[CoreAI] specialization cache clear FAILED: \(error)")
             return "Cache clear failed: \(error.localizedDescription)"
         }
     }
@@ -234,13 +234,13 @@ final class CoreAIEngine: InferenceEngine {
                 sinceLastPrint += 1
                 if sinceLastPrint >= 40 {   // ≈ every 2s at 50ms cadence
                     sinceLastPrint = 0
-                    print(String(format: "[CoreAI][mem] footprint %.0f MB (peak %.0f) · headroom %.0f MB (min %.0f)",
+                    DevLog.log(String(format: "[CoreAI][mem] footprint %.0f MB (peak %.0f) · headroom %.0f MB (min %.0f)",
                                  Double(footprint) / 1_048_576, Double(peakFootprint) / 1_048_576,
                                  Double(headroom) / 1_048_576, Double(minHeadroom) / 1_048_576))
                 }
                 do { try await Task.sleep(for: .milliseconds(50)) } catch { break }
             }
-            print(String(format: "[CoreAI][mem] load done · peak footprint %.0f MB · min headroom %.0f MB",
+            DevLog.log(String(format: "[CoreAI][mem] load done · peak footprint %.0f MB · min headroom %.0f MB",
                          Double(peakFootprint) / 1_048_576, Double(minHeadroom) / 1_048_576))
         }
     }
@@ -319,7 +319,7 @@ final class CoreAIEngine: InferenceEngine {
             seconds: Date().timeIntervalSince(t0),
             cachedInputTokens: usage.input.cachedTokenCount)
 
-        print("[CoreAI] in=\(usage.input.totalTokenCount) cached=\(usage.input.cachedTokenCount) out=\(usage.output.totalTokenCount)")
+        DevLog.log("[CoreAI] in=\(usage.input.totalTokenCount) cached=\(usage.input.cachedTokenCount) out=\(usage.output.totalTokenCount)")
         return text
     }
 }

@@ -176,7 +176,7 @@ final class EncounterProcessor: ObservableObject {
                         || g.contains("did not") || g.contains("didn't")
                         || g.contains("no physical") || g.contains("not take place"))
                         && !g.hasPrefix("yes")
-                    print("[Scoring] \(criterion.id) gate=\"\(g)\" → \(didNotHappen ? "N/A" : "score")")
+                    DevLog.log("[Scoring] \(criterion.id) gate=\"\(g)\" → \(didNotHappen ? "N/A" : "score")")
                     if didNotHappen {
                         let na = CriterionResult(criterionId: criterion.id, status: .notApplicable,
                                                  evidence: nil, comment: nil)
@@ -191,7 +191,7 @@ final class EncounterProcessor: ObservableObject {
                     maxTokens: 180)
                 // Timing: criterion 0 pays the transcript prefill; 1+ should be
                 // decode-only if prefix caching is working.
-                print(String(format: "[Scoring] %@ took %.1fs", criterion.id, Date().timeIntervalSince(t0)))
+                DevLog.log(String(format: "[Scoring] %@ took %.1fs", criterion.id, Date().timeIntervalSince(t0)))
                 let result = FeedbackParser.parseCriterion(
                     raw: raw, criterionId: criterion.id, transcript: redactedTranscript,
                     allowsNA: criterion.responseType == "not_applicable_allowed")
@@ -208,6 +208,9 @@ final class EncounterProcessor: ObservableObject {
             stage = .done(ConsultationFeedback(perCriterion: results, summary: summary))
             BenchmarkRecorder.shared.end(success: true)
         } catch {
+            // Full error, not just localizedDescription — the underlying type
+            // and payload are what actually diagnose a generation failure.
+            DevLog.log("[Pipeline] analysis FAILED: \(String(describing: error))")
             stage = .error("Analysis failed: \(error.localizedDescription)")
             BenchmarkRecorder.shared.end(success: false)
         }

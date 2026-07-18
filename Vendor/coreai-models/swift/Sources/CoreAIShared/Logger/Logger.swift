@@ -35,11 +35,20 @@ public struct CLILogger {
             return
         }
 
+        let line: String
         if let component {
-            print("[\(component)] \(message)")
+            line = "[\(component)] \(message)"
         } else {
-            print(message)
+            line = message
         }
+        print(line)
+        // MEDADVISOR PATCH: mirror every engine log line to the host app
+        // (NotificationCenter → DevLog), so runs without a debugger attached
+        // still capture the whole load-progress trace.
+        NotificationCenter.default.post(
+            name: Notification.Name("CoreAICLILoggerDidLog"),
+            object: nil,
+            userInfo: ["line": line])
     }
 
     public static func isEnabled(at level: Int) -> Bool {

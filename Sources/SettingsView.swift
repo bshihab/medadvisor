@@ -81,6 +81,10 @@ struct SettingsView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     #endif
+                    // Every [CoreAI]/[Scoring]/[Pipeline] diagnostic line, kept
+                    // in-app — works with no debugger attached (the clean way
+                    // to benchmark) and survives Xcode console flakiness.
+                    NavigationLink("Diagnostics log") { DiagnosticsLogView() }
                 } header: {
                     Text("Developer")
                 } footer: {
