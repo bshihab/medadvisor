@@ -18,7 +18,19 @@ struct RecordingView: View {
     @State private var showConsentDialog = false
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
-    private var llmReady: Bool { models.isInstalled(.llm) }
+    /// Whether the ACTIVE engine's model is present — llama needs the downloaded
+    /// GGUF; Core AI's model ships inside the app bundle, so gating the record
+    /// button on the 4.3GB download would demand a model that engine never reads.
+    private var llmReady: Bool {
+        guard LLMEngine.shared.requiresManagedDownload else {
+            #if canImport(CoreAILanguageModels)
+            return models.isInstalled(.coreAI)
+            #else
+            return true
+            #endif
+        }
+        return models.isInstalled(.llm)
+    }
 
     private var isProcessing: Bool {
         switch processor.stage {
@@ -326,7 +338,7 @@ struct RecordingView: View {
                 // Preview the transcript captured so far before committing.
                 if !recorder.liveLines.isEmpty { reviewTranscript }
 
-                if !ModelDownloader.shared.isDownloaded {
+                if !llmReady {
                     modelHint
                 }
                 // Primary action — big, full-width, hard to miss.
