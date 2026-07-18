@@ -15,7 +15,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
         switch self {
         case .llm: return "Qwen 2.5-7B"
         #if canImport(CoreAILanguageModels)
-        case .coreAI: return "Qwen 3-4B (Core AI)"
+        case .coreAI: return "Qwen 3-0.6B (Core AI)"
         #endif
         }
     }
@@ -31,7 +31,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
         switch self {
         case .llm: return "~4.3 GB"
         #if canImport(CoreAILanguageModels)
-        case .coreAI: return "~2.4 GB"
+        case .coreAI: return "~450 MB"
         #endif
         }
     }
@@ -67,7 +67,7 @@ final class ModelManager: ObservableObject {
         // Folder name must match CoreAIEngine.modelFolderName (the export's
         // output directory, added to the target as a folder reference).
         case .coreAI:
-            return Bundle.main.url(forResource: "qwen3_4b_mixed_4bit_8bit_static",
+            return Bundle.main.url(forResource: "qwen3_0_6b_mixed_4bit_8bit_static",
                                    withExtension: nil) != nil
         #endif
         }

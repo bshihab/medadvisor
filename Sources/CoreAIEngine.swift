@@ -25,7 +25,7 @@ import CoreAILanguageModels
 @available(iOS 27.0, *)
 @MainActor
 final class CoreAIEngine: InferenceEngine {
-    let label = "Core AI · Qwen3-4B"
+    let label = "Core AI · Qwen3-0.6B"
     let requiresManagedDownload = false   // model ships in the app bundle
 
     private var model: CoreAILanguageModel?
@@ -35,14 +35,22 @@ final class CoreAIEngine: InferenceEngine {
     func unload() { model = nil }
 
     /// Name of the exported resource folder (as emitted by the export recipe).
-    private static let modelFolderName = "qwen3_4b_mixed_4bit_8bit_static"
+    ///
+    /// Qwen3-0.6B (454MB exported), NOT the 4B: the 4B is un-runnable on this
+    /// hardware — on-device specialization inflated its 2.4GB 4-bit artifact to
+    /// ~5GB of compiled cache, and engine load was jetsammed every time even
+    /// with the increased-memory entitlement (verified: the app's on-device
+    /// storage grew to 12GB). The 0.6B is an instrumentation vehicle to measure
+    /// the framework itself — ANE residency, prefix caching, throughput — not a
+    /// scoring-quality candidate.
+    private static let modelFolderName = "qwen3_0_6b_mixed_4bit_8bit_static"
 
     /// The exported model's resource folder, bundled with the app.
     ///
     /// Produced by (on an arm64 Mac — Apple ships the wheels for Apple silicon
     /// only; an Intel-emulated Python can't install coreai-core):
     ///
-    ///     uv run coreai.llm.export Qwen/Qwen3-4B --platform iOS --output-dir ./my-models/
+    ///     uv run coreai.llm.export Qwen/Qwen3-0.6B --platform iOS --output-dir ./my-models/
     ///
     /// ⚠️ Do NOT pass --max-context-length 6144 (coreai-core 1.0.0b2): the flag
     /// is stamped into metadata but the compiled artifact ships a fixed shape
@@ -56,9 +64,9 @@ final class CoreAIEngine: InferenceEngine {
     ///
     /// The export emits a FOLDER, not a file — model + tokenizer together:
     ///
-    ///     qwen3_4b_mixed_4bit_8bit_static/       <- resourcesAt: wants THIS
+    ///     qwen3_0_6b_mixed_4bit_8bit_static/     <- resourcesAt: wants THIS
     ///       ├── metadata.json
-    ///       ├── qwen3_4b_mixed_4bit_8bit_static.aimodel/   (main.mlirb, main.hash)
+    ///       ├── qwen3_0_6b_mixed_4bit_8bit_static.aimodel/ (main.mlirb, main.hash)
     ///       └── tokenizer/                                 (tokenizer.json, chat_template.jinja, …)
     ///
     /// It must be added to the target as a **folder reference** (blue folder in

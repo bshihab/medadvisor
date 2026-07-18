@@ -47,11 +47,12 @@ targets:
       - Sources
       - path: rubrics
         buildPhase: resources
-      # SPIKE ONLY: the exported Qwen3-4B (2.4GB, gitignored — copy it in by hand,
-      # see CoreAIEngine). `type: folder` makes it a FOLDER REFERENCE, so the
+      # SPIKE ONLY: the exported Qwen3-0.6B (454MB, gitignored — copy it in by
+      # hand; the 4B is un-runnable here, see CoreAIEngine's modelFolderName
+      # comment). `type: folder` makes it a FOLDER REFERENCE, so the
       # .aimodel/ and tokenizer/ subdirectories survive into the bundle; a normal
       # group would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
-      - path: Models/qwen3_4b_mixed_4bit_8bit_static
+      - path: Models/qwen3_0_6b_mixed_4bit_8bit_static
         type: folder
         buildPhase: resources
     dependencies:
