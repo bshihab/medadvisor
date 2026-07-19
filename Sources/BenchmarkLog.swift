@@ -162,11 +162,13 @@ final class BenchmarkRecorder: ObservableObject {
         lastReportURL = nil
     }
 
-    /// "18:42:04" from the stored ISO timestamp (falls back to the raw string).
+    /// "Jul 18 · 18:42:04" from the stored ISO timestamp (falls back to the
+    /// raw string). Includes the day: runs accumulate across sessions and a
+    /// bare clock time is ambiguous after the first day.
     static func displayTime(_ iso: String) -> String {
         guard let date = ISO8601DateFormatter().date(from: iso) else { return iso }
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
+        formatter.dateFormat = "MMM d · HH:mm:ss"
         return formatter.string(from: date)
     }
 

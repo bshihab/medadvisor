@@ -102,7 +102,10 @@ struct SettingsView: View {
                     Section {
                         ForEach(savedRuns) { run in
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(BenchmarkRecorder.displayTime(run.report.recordedAt))
+                                // Engine + failure marker on the header line:
+                                // with llama/0.6B/4B runs accumulating across
+                                // days, a bare timestamp can't identify a row.
+                                Text("\(BenchmarkRecorder.displayTime(run.report.recordedAt)) · \(run.report.engine)\(run.report.success ? "" : " · FAILED")")
                                     .font(.caption2).foregroundStyle(.secondary)
                                 Text(BenchmarkRecorder.summaryText(run.report))
                                     .font(.system(.caption, design: .monospaced))
