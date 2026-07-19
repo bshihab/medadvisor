@@ -71,6 +71,17 @@ public enum ModelStructure: Equatable, Sendable, CustomStringConvertible {
     public var specializationOptions: SpecializationOptions {
         switch self {
         case .chunkedStatic, .multiFunctionSegmenter:
+            // MEDADVISOR PATCH: escape hatch for wedged ANE specialization.
+            // iPhone 17 / iOS 27.0 beta: the residual ANE specialization of a
+            // 2.4 GB Qwen3-4B .aimodelc ground for 10-30 min at high heat and
+            // never completed (5 attempts, 2 thermal/system kills). When the
+            // host app sets this default, specialize static bundles for the
+            // GPU instead — the Metal compiler is a different, faster path.
+            // Must match the compile-time flag of the bundled .aimodelc
+            // (--preferred-compute gpu) and CoreAIEngine's cache probe.
+            if UserDefaults.standard.bool(forKey: "coreAIPreferGPUSpecialization") {
+                return SpecializationOptions(preferredComputeUnitKind: .gpu)
+            }
             return SpecializationOptions(preferredComputeUnitKind: .neuralEngine)
         case .dynamic:
             var opts = SpecializationOptions(preferredComputeUnitKind: .gpu)

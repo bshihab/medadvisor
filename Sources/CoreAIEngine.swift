@@ -186,7 +186,13 @@ final class CoreAIEngine: InferenceEngine {
         }
         DevLog.log("[CoreAI] model asset: \(asset.lastPathComponent)")
         do {
-            let options = SpecializationOptions(preferredComputeUnitKind: .neuralEngine)
+            // Mirror the vendored ModelStructure patch: the runtime specializes
+            // static bundles for the GPU when this default is set, so the cache
+            // probe must ask for the same key.
+            let prefersGPU = UserDefaults.standard.bool(forKey: "coreAIPreferGPUSpecialization")
+            DevLog.log("[CoreAI] specialization target: \(prefersGPU ? "GPU (override)" : "Neural Engine")")
+            let options = SpecializationOptions(
+                preferredComputeUnitKind: prefersGPU ? .gpu : .neuralEngine)
             if try AIModelCache.default.model(for: asset, options: options) != nil {
                 DevLog.log("[CoreAI] specialization cache: HIT — engine creation should be quick")
             } else {

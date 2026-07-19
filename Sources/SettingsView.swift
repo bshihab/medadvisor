@@ -11,6 +11,8 @@ struct SettingsView: View {
     #if canImport(CoreAILanguageModels)
     // Key must match CoreAIModelCatalog.selectionKey — read at model load.
     @AppStorage("coreAIModelFolder") private var coreAIModelFolder = ""
+    // Read by the vendored ModelStructure + CoreAIEngine's cache probe.
+    @AppStorage("coreAIPreferGPUSpecialization") private var coreAIPreferGPU = false
     @State private var coreAICacheMessage: String?
     #endif
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
@@ -73,6 +75,11 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    // Escape hatch for the wedged ANE compile of the 4B: when
+                    // on, static bundles specialize for the GPU (needs the
+                    // matching --preferred-compute gpu .aimodelc bundled, and
+                    // a relaunch).
+                    Toggle("Core AI: specialize for GPU", isOn: $coreAIPreferGPU)
                     Button("Clear Core AI specialization cache", role: .destructive) {
                         coreAICacheMessage = CoreAIEngine.clearSpecializationCache()
                     }
