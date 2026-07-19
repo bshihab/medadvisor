@@ -98,7 +98,19 @@ struct SettingsView: View {
                     Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.\n\nThe engine picker and the Core AI model picker take effect on the NEXT LAUNCH (the model is chosen once at startup). Quit and reopen the app after switching, then re-run the same script so the engine is the only thing that changed.\n\n“Clear specialization cache” deletes the on-device compiled Core AI artifacts (can be multiple GB): the next load re-specializes from scratch. Use it to recover from a poisoned cache or to re-measure a cold first load without reinstalling.")
                 }
 
-                if !savedRuns.isEmpty {
+                // Always visible: an empty hidden section made "toggle was
+                // off during the run" indistinguishable from "runs are gone" —
+                // which cost us the first successful Core AI run's JSON.
+                if savedRuns.isEmpty {
+                    Section {
+                        Text(benchmarkEnabled
+                             ? "No runs recorded yet. “Record benchmark” is ON — the next analysis will be captured."
+                             : "No runs recorded yet — and “Record benchmark” is OFF, so analyses are NOT being captured. Turn it on above before running one.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } header: {
+                        Text("Benchmark runs (0)")
+                    }
+                } else {
                     Section {
                         ForEach(savedRuns) { run in
                             VStack(alignment: .leading, spacing: 6) {
