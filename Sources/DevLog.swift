@@ -32,6 +32,14 @@ final class DevLog: ObservableObject {
     private init() {
         let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         fileURL = dir.appendingPathComponent("diagnostics-log.txt")
+        // The file outlives crashes and relaunches — load its tail so the
+        // viewer shows prior sessions too, not just the current one (a crash's
+        // last lines are usually exactly what we need to read).
+        if let existing = try? String(contentsOf: fileURL, encoding: .utf8) {
+            lines = existing.split(separator: "\n", omittingEmptySubsequences: true)
+                .suffix(Self.maxLines)
+                .map(String.init)
+        }
         observer = NotificationCenter.default.addObserver(
             forName: Self.coreAILogNotification, object: nil, queue: .main
         ) { note in
