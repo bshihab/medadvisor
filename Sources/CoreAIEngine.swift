@@ -33,6 +33,16 @@ enum CoreAIModelCatalog {
     }
 
     static let all: [Entry] = [
+        // Dynamic (macOS-style) export: linear-INT4 weights, no shape ladder,
+        // auto-detected by the runtime as `dynamic` → GPU pipelined engine
+        // with a growing KV cache. The LAST viable 4B path on 8 GB — the
+        // static/palettized artifact wedges the ANE compiler and de-palettizes
+        // past the memory ceiling when forced onto the GPU. Leave the
+        // "specialize for GPU" toggle OFF for this one: the toggle only
+        // affects chunked-static bundles, and the runtime already picks GPU
+        // (+ expectFrequentReshapes) for dynamic structures on its own.
+        Entry(folder: "qwen3_4b_4bit_dynamic",
+              displayName: "Qwen3-4B (dynamic/GPU)", approxSize: "~2.4 GB"),
         Entry(folder: "qwen3_4b_mixed_4bit_8bit_static",
               displayName: "Qwen3-4B", approxSize: "~2.4 GB"),
         Entry(folder: "qwen3_0_6b_mixed_4bit_8bit_static",
