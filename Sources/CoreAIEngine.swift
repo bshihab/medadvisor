@@ -385,10 +385,10 @@ final class CoreAIEngine: InferenceEngine {
         // a literal "/no_think" line into every prompt of a model that has no
         // idea what it means.
         let switchesOffThinking = model?.capabilities.contains(.reasoning) ?? false
-        let text = switchesOffThinking ? prompt + "\n/no_think" : prompt
+        let promptText = switchesOffThinking ? prompt + "\n/no_think" : prompt
         let options = GenerationOptions(maximumResponseTokens: maxTokens)
         let t0 = Date()
-        let response = try await session.respond(to: text, options: options)
+        let response = try await session.respond(to: promptText, options: options)
         let text = response.content
         onPartial(text)
 
