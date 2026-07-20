@@ -605,9 +605,16 @@ public final class StaticShapeEngine: InferenceEngine, @unchecked Sendable {
     }
 
     public func warmup(queryLength: Int, sampling: SamplingConfiguration?) async throws {
-        for fnName in extendFunctionNames {
-            self.functions[fnName] = try Self.requireFunction(model: model, functionName: fnName)
-        }
+        // MEDADVISOR PATCH: upstream force-loads ALL ~30 decoder functions
+        // here, materializing every compiled GPU pipeline at once — measured
+        // on iPhone 17 (8 GB): the footprint blew past ~4 GB during this loop
+        // and the process was jetsammed ~10 s after "Engine initialized"
+        // (2026-07-19, GPU-specialized Qwen3-4B; the only load path that ever
+        // got this far). `loadFunction(named:)` already loads-and-caches on
+        // demand, and a scoring session touches only the handful of shape
+        // variants its context length needs — so skip the bulk load and let
+        // functions materialize lazily. Cost: a one-time stall on first use
+        // of each shape. Benefit: peak resident set small enough to live.
         try await reset()
     }
 }

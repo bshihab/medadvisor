@@ -30,5 +30,16 @@
    prefix reuse. cachedInputTokens ≈ transcript length would only appear for
    monotonic-extension workloads (one growing conversation).
 
+4. `CoreAIStaticShapeEngine.swift` (`warmup`) — upstream force-loads all ~30
+   decoder functions up front, materializing every compiled pipeline at once;
+   on an 8 GB iPhone with the GPU-specialized 4B this blew past ~4 GB resident
+   right after "Engine initialized" and the process was jetsammed. Warmup now
+   only resets; functions materialize lazily via the existing
+   `loadFunction(named:)` cache as generation touches them.
+5. `ModelStructure.swift` — UserDefaults escape hatch
+   (`coreAIPreferGPUSpecialization`) to specialize chunked-static bundles for
+   the GPU instead of the ANE (the device ANE compile of the 4B never
+   completed on iOS 27.0 beta; GPU specialization finished in ~1 min).
+
 To diff against upstream: clone upstream at `04a3fd6` and
 `diff -r <upstream>/swift Vendor/coreai-models/swift`.
