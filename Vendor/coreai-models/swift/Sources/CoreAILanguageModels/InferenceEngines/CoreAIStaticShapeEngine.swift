@@ -205,10 +205,15 @@ public final class StaticShapeEngine: InferenceEngine, @unchecked Sendable {
 
     private func loadFunction(named name: String) throws -> InferenceFunction {
         if let fn = functions[name] { return fn }
+        // MEDADVISOR PATCH: bracket each lazy materialization — paired with
+        // the host app's memory watcher, this attributes the footprint cost
+        // of every compiled pipeline (the 4B/8GB kill happens in here).
+        CLILogger.log("Materializing pipeline '\(name)'…")
         guard let fn = try model.loadFunction(named: name) else {
             throw InferenceRuntimeError.invalidState("Cannot load function '\(name)'")
         }
         functions[name] = fn
+        CLILogger.log("Materialized '\(name)'")
         return fn
     }
 

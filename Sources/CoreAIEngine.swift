@@ -109,10 +109,15 @@ final class CoreAIEngine: InferenceEngine {
     let requiresManagedDownload = false   // model ships in the app bundle
 
     private var model: CoreAILanguageModel?
+    private var memWatcher: Task<Void, Never>?
 
     var isLoaded: Bool { model != nil }
 
-    func unload() { model = nil }
+    func unload() {
+        model = nil
+        memWatcher?.cancel()
+        memWatcher = nil
+    }
 
     func ensureLoaded(progress: @escaping (Double) -> Void) async throws {
         if model != nil { return }
@@ -143,8 +148,11 @@ final class CoreAIEngine: InferenceEngine {
                      Double(os_proc_available_memory()) / 1_048_576))
         logSpecializationCacheState(bundleURL: url)
 
-        let watcher = Self.startLoadMemoryWatcher()
-        defer { watcher.cancel() }
+        // Session-long, not load-scoped: the 4B now survives load (0.9s,
+        // ~1GB peak) and dies mid-GENERATION while graph pipelines
+        // materialize lazily — the watcher must be running when that happens
+        // or the kill lands between observations again. Cancelled in unload().
+        if memWatcher == nil { memWatcher = Self.startLoadMemoryWatcher() }
 
         // `.eager`, NOT the default `.lazy`: lazy defers the engine load (and,
         // on the first-ever run, minutes of one-time device specialization) to
@@ -246,7 +254,7 @@ final class CoreAIEngine: InferenceEngine {
                 }
                 do { try await Task.sleep(for: .milliseconds(50)) } catch { break }
             }
-            DevLog.log(String(format: "[CoreAI][mem] load done · peak footprint %.0f MB · min headroom %.0f MB",
+            DevLog.log(String(format: "[CoreAI][mem] watcher stopped · peak footprint %.0f MB · min headroom %.0f MB",
                          Double(peakFootprint) / 1_048_576, Double(minHeadroom) / 1_048_576))
         }
     }
