@@ -11,7 +11,6 @@ struct MedAdvisorApp: App {
 
     init() {
         AccountStore.configure()   // Firebase/Identity Platform — before any Auth use
-        _ = DevLog.shared          // start capturing diagnostics from launch
     }
 
     var body: some Scene {

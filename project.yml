@@ -2,19 +2,7 @@ name: MedAdvisor
 options:
   bundleIdPrefix: app.medadvisor
   deploymentTarget:
-    # ⚠️ SPIKE ONLY — DO NOT MERGE TO main. main stays at 26.0.
-    #
-    # apple/coreai-models declares platforms: [.iOS("27.0")], and SPM hard-refuses
-    # to link a package into a target whose deployment target is lower. So there
-    # is no way to even MEASURE Core AI without raising the floor to 27 — which,
-    # if shipped, strands every iOS 26 user including the director.
-    #
-    # This is the packaging wall behind "one binary, two engines": gating our own
-    # code with `if #available(iOS 27, *)` is easy, but a package that won't link
-    # below 27 is not. Shipping both would mean isolating Core AI in a separate
-    # weak-linked framework with its own deployment target. Decide whether that
-    # complexity is worth paying for AFTER this spike produces numbers.
-    iOS: "27.0"
+    iOS: "26.0"
   createIntermediateGroups: true
 
 # Applies to every target, so regenerating the project never loses signing.
@@ -32,14 +20,6 @@ packages:
   GoogleSignIn:
     url: https://github.com/google/GoogleSignIn-iOS
     majorVersion: 8.0.0
-  # SPIKE ONLY. Supplies CoreAILanguageModel — it is NOT in the iOS 27 SDK
-  # (CoreAI.framework there is just a shim re-exporting CoreAIDelegates).
-  # VENDORED at Vendor/coreai-models (upstream 04a3fd6 + local patches): the
-  # upstream has no tagged release, so `branch: main` made every build a moving
-  # target, and we need the cachedTokenCount/lastPrefixHitCount fixes — see
-  # Vendor/coreai-models/VENDORED.md for the exact diff.
-  CoreAIModels:
-    path: Vendor/coreai-models
 
 targets:
   MedAdvisor:
@@ -49,33 +29,9 @@ targets:
       - Sources
       - path: rubrics
         buildPhase: resources
-      # SPIKE ONLY: both exported Core AI models, gitignored — copy BOTH
-      # folders into Models/ by hand BEFORE running xcodegen (it errors on
-      # missing paths). Which one loads is decided at runtime by
-      # CoreAIModelCatalog (4B first; Settings → Developer overrides), so one
-      # build carries both and no rebuild is needed to switch. `type: folder`
-      # makes each a FOLDER REFERENCE, so the .aimodel(/.aimodelc) and
-      # tokenizer/ subdirectories survive into the bundle; a normal group
-      # would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
-      - path: Models/qwen2_5_1_5b_instruct_4bit_weight_palettized_group8_static
-        type: folder
-        buildPhase: resources
-      - path: Models/qwen3_4b_4bit_dynamic
-        type: folder
-        buildPhase: resources
-      - path: Models/qwen3_4b_mixed_4bit_8bit_static
-        type: folder
-        buildPhase: resources
-      - path: Models/qwen3_0_6b_mixed_4bit_8bit_static
-        type: folder
-        buildPhase: resources
     dependencies:
       - package: llama-binary
         product: llama
-      - package: CoreAIModels
-        product: CoreAILM               # module name is CoreAILanguageModels
-      - package: CoreAIModels
-        product: CoreAIShared           # CLILogger (engine load-progress logs)
       - package: Firebase
         product: FirebaseAuth             # Identity Platform sign-in (MC2)
       - package: Firebase
@@ -101,17 +57,6 @@ targets:
         com.apple.developer.applesignin:
           - Default
         aps-environment: development   # Xcode flips to production at App Store export
-        # SPIKE: Core AI jetsams without these. The Neural Engine doesn't change
-        # where weights live — Apple silicon has unified memory, so the model sits
-        # in the same RAM regardless of which chip reads it. What changes is the
-        # ACCOUNTING: llama.cpp mmaps its weights (file-backed, evictable, not
-        # charged to us — hence a 495MB measured peak for a 4.3GB model), while
-        # Core AI loads them as counted memory, so all 2.4GB plus the 6144 KV
-        # cache lands on our footprint and iOS kills us. Note the irony: the
-        # SMALLER model is the one that dies. This is the same wall that ruled out
-        # MLX — see the comment in LlamaEngine.
-        com.apple.developer.kernel.increased-memory-limit: true
-        com.apple.developer.kernel.extended-virtual-addressing: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisor

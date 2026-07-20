@@ -6,15 +6,6 @@ struct SettingsView: View {
     @State private var confirmDelete: ManagedModel?
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
-    // Key must match LLMEngine.preferenceKey — the engine reads it at startup.
-    @AppStorage("enginePreference") private var enginePreference = LLMEngine.EnginePreference.auto.rawValue
-    #if canImport(CoreAILanguageModels)
-    // Key must match CoreAIModelCatalog.selectionKey — read at model load.
-    @AppStorage("coreAIModelFolder") private var coreAIModelFolder = ""
-    // Read by the vendored ModelStructure + CoreAIEngine's cache probe.
-    @AppStorage("coreAIPreferGPUSpecialization") private var coreAIPreferGPU = false
-    @State private var coreAICacheMessage: String?
-    #endif
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
     @ObservedObject private var models = ModelManager.shared
     @ObservedObject private var downloader = ModelDownloader.shared
@@ -57,50 +48,15 @@ struct SettingsView: View {
                 Section {
                     Toggle("Show memory usage", isOn: $showMemoryHUD)
                     Toggle("Record benchmark", isOn: $benchmarkEnabled)
-                    Picker("Inference engine", selection: $enginePreference) {
-                        ForEach(LLMEngine.EnginePreference.allCases) { option in
-                            Text(option.label).tag(option.rawValue)
-                        }
-                    }
-                    LabeledContent("Active now", value: LLMEngine.shared.label)
-                        .font(.caption)
-                    #if canImport(CoreAILanguageModels)
-                    // Only meaningful when more than one Core AI model is
-                    // bundled — spares a rebuild per model swap.
-                    if CoreAIModelCatalog.installed.count > 1 {
-                        Picker("Core AI model", selection: $coreAIModelFolder) {
-                            Text("Automatic (4B first)").tag("")
-                            ForEach(CoreAIModelCatalog.installed) { entry in
-                                Text(entry.displayName).tag(entry.folder)
-                            }
-                        }
-                    }
-                    // Escape hatch for the wedged ANE compile of the 4B: when
-                    // on, static bundles specialize for the GPU (needs the
-                    // matching --preferred-compute gpu .aimodelc bundled, and
-                    // a relaunch).
-                    Toggle("Core AI: specialize for GPU", isOn: $coreAIPreferGPU)
-                    Button("Clear Core AI specialization cache", role: .destructive) {
-                        coreAICacheMessage = CoreAIEngine.clearSpecializationCache()
-                    }
-                    if let coreAICacheMessage {
-                        Text(coreAICacheMessage)
-                            .font(.caption).foregroundStyle(.secondary)
-                    }
-                    #endif
-                    // Every [CoreAI]/[Scoring]/[Pipeline] diagnostic line, kept
-                    // in-app — works with no debugger attached (the clean way
-                    // to benchmark) and survives Xcode console flakiness.
-                    NavigationLink("Diagnostics log") { DiagnosticsLogView() }
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.\n\nThe engine picker and the Core AI model picker take effect on the NEXT LAUNCH (the model is chosen once at startup). Quit and reopen the app after switching, then re-run the same script so the engine is the only thing that changed.\n\n“Clear specialization cache” deletes the on-device compiled Core AI artifacts (can be multiple GB): the next load re-specializes from scratch. Use it to recover from a poisoned cache or to re-measure a cold first load without reinstalling.")
+                    Text("“Record benchmark” times every analysis — throughput, per-stage timing, peak memory, thermal state, battery — and saves each run below.")
                 }
 
-                // Always visible: an empty hidden section made "toggle was
-                // off during the run" indistinguishable from "runs are gone" —
-                // which cost us the first successful Core AI run's JSON.
+                // Always visible: an empty hidden section makes "the toggle
+                // was off during the run" indistinguishable from "my runs are
+                // gone" — which has already cost one irreplaceable result.
                 if savedRuns.isEmpty {
                     Section {
                         Text(benchmarkEnabled
