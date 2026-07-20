@@ -54,7 +54,41 @@ enum CoreAIModelCatalog {
     /// contract as the engine picker.
     static let selectionKey = "coreAIModelFolder"
 
-    static var installed: [Entry] { all.filter { bundleURL(of: $0) != nil } }
+    /// Every Core AI model actually present in the app bundle: the curated
+    /// entries above (which carry readable names and sizes), plus ANY other
+    /// bundled folder that looks like an export.
+    ///
+    /// Scanning rather than hardcoding because the hardcoded list has twice
+    /// cost a device cycle — once loading the wrong 4B, once with a model the
+    /// picker couldn't see. Now a new export needs a project.yml line and a
+    /// copy; the picker can't disagree with what actually shipped.
+    static var installed: [Entry] {
+        let curated = all.filter { bundleURL(of: $0) != nil }
+        let known = Set(curated.map(\.folder))
+        return curated + discoveredFolders()
+            .filter { !known.contains($0) }
+            .map { Entry(folder: $0, displayName: $0, approxSize: "—") }
+    }
+
+    /// Bundle-root directories holding a Core AI export: a metadata.json next
+    /// to a `.aimodel` (raw) or `.aimodelc` (ahead-of-time compiled) asset.
+    private static func discoveredFolders() -> [String] {
+        let fm = FileManager.default
+        guard let root = Bundle.main.resourceURL,
+              let entries = try? fm.contentsOfDirectory(
+                  at: root, includingPropertiesForKeys: [.isDirectoryKey])
+        else { return [] }
+        return entries.filter { url in
+            var isDir: ObjCBool = false
+            guard fm.fileExists(atPath: url.path, isDirectory: &isDir), isDir.boolValue,
+                  fm.fileExists(atPath: url.appendingPathComponent("metadata.json").path)
+            else { return false }
+            let children = (try? fm.contentsOfDirectory(atPath: url.path)) ?? []
+            return children.contains { $0.hasSuffix(".aimodel") || $0.hasSuffix(".aimodelc") }
+        }
+        .map(\.lastPathComponent)
+        .sorted()
+    }
 
     static var active: Entry? {
         if let sel = UserDefaults.standard.string(forKey: selectionKey), !sel.isEmpty,
