@@ -57,6 +57,9 @@ targets:
       # makes each a FOLDER REFERENCE, so the .aimodel(/.aimodelc) and
       # tokenizer/ subdirectories survive into the bundle; a normal group
       # would flatten them and CoreAILanguageModel(resourcesAt:) would fail.
+      - path: Models/qwen2_5_1_5b_instruct_4bit_weight_palettized_group8_static
+        type: folder
+        buildPhase: resources
       - path: Models/qwen3_4b_4bit_dynamic
         type: folder
         buildPhase: resources

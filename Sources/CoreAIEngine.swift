@@ -43,6 +43,13 @@ enum CoreAIModelCatalog {
         // (+ expectFrequentReshapes) for dynamic structures on its own.
         Entry(folder: "qwen3_4b_4bit_dynamic",
               displayName: "Qwen3-4B (dynamic/GPU)", approxSize: "~2.4 GB"),
+        // Apple's officially-supported iOS preset for a 1.5B — present in
+        // model_registry.py but absent from the qwen3 README table that made
+        // 0.6B -> 4B look like the only choices. Same FAMILY as the
+        // production llama.cpp model (Qwen2.5-7B), so prompts and rubric
+        // behaviour should transfer without Qwen3's thinking-mode handling.
+        Entry(folder: "qwen2_5_1_5b_instruct_4bit_weight_palettized_group8_static",
+              displayName: "Qwen2.5-1.5B", approxSize: "~1.1 GB"),
         Entry(folder: "qwen3_4b_mixed_4bit_8bit_static",
               displayName: "Qwen3-4B", approxSize: "~2.4 GB"),
         Entry(folder: "qwen3_0_6b_mixed_4bit_8bit_static",
@@ -371,9 +378,17 @@ final class CoreAIEngine: InferenceEngine {
         // the model emit an empty think block and answer directly — which is
         // also what keeps the comparison fair, because the llama baseline
         // (Qwen2.5) doesn't think at all.
+        //
+        // Gated on the model ACTUALLY being a reasoning model: the package
+        // derives that capability from the tokenizer's <think> tokens, so
+        // Qwen2.5 reports false. Appending the switch there would just inject
+        // a literal "/no_think" line into every prompt of a model that has no
+        // idea what it means.
+        let switchesOffThinking = model?.capabilities.contains(.reasoning) ?? false
+        let text = switchesOffThinking ? prompt + "\n/no_think" : prompt
         let options = GenerationOptions(maximumResponseTokens: maxTokens)
         let t0 = Date()
-        let response = try await session.respond(to: prompt + "\n/no_think", options: options)
+        let response = try await session.respond(to: text, options: options)
         let text = response.content
         onPartial(text)
 
