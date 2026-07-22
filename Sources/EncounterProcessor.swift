@@ -74,36 +74,25 @@ final class EncounterProcessor: ObservableObject {
         //    pauses — which is where speakers change — so those are far better
         //    boundaries than re-transcribing the file into a flat blob and
         //    guessing sentence breaks (that flattening is what glued a doctor
-        //    question onto the patient's answer).
-        //
-        //    BUT the live stream can silently miss the opening/middle (it starts
-        //    asynchronously and can die mid-recording), which would score the
-        //    doctor against a partial transcript. So we ALSO transcribe the file
-        //    (the complete post-hoc pass) and only trust the live transcript when
-        //    it's about as complete as the file; otherwise the live stream
-        //    dropped content and we use the file, which covers the whole recording.
+        //    question onto the patient's answer). Fall back to re-transcribing
+        //    the file only when there's no live transcript (e.g. live failed).
+        //    (ORIGINAL behavior restored — a live-vs-file completeness check was
+        //    tried here and backed out with the perf-regression batch.)
         stage = .transcribing
         BenchmarkRecorder.shared.markStage("transcribing")
         let liveUtterances = liveSegments
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
-        let liveText = liveUtterances.joined(separator: " ")
-        let fileResult = (try? await transcriber.transcribe(url: url))
-            ?? TranscriptResult(text: "", segments: [])
-        let fileText = fileResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
-
         let utterances: [String]
         let flatTranscript: String
-        let liveLooksComplete = liveUtterances.count >= 2
-            && liveText.count >= Int(Double(fileText.count) * 0.85)
-        if liveLooksComplete {
+        if liveUtterances.count >= 2 {
             utterances = liveUtterances
-            flatTranscript = liveText
+            flatTranscript = liveUtterances.joined(separator: " ")
         } else {
-            // Live was absent or clearly short of the full recording — use the
-            // file transcription (complete, if coarser-segmented).
+            let fileResult = (try? await transcriber.transcribe(url: url))
+                ?? TranscriptResult(text: "", segments: [])
+            flatTranscript = fileResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
             utterances = SpeakerAttribution.utterances(from: fileResult)
-            flatTranscript = fileText
         }
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")

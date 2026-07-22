@@ -32,18 +32,14 @@ public final class LlamaContext: @unchecked Sendable {
         }
 
         var ctxParams = llama_context_default_params()
-        // Qwen 7B on an 8GB device (A19) is memory-tight: the model is ~4.6GB of
-        // Metal's ~5.4GB working-set budget, so the KV cache + compute buffers must
-        // stay small — cross the budget and Metal evicts/pages GPU buffers every
-        // token, collapsing decode to ~1 tok/s. n_ctx 6144 (~15-min consult) is the
-        // proven ceiling; 8192 tipped it over the edge. Overflow beyond this fails
-        // honestly via EncounterProcessor's empty-output guard, not a silent miss.
+        // Qwen 7B: consultations run up to ~15 min ≈ 3-3.5k tokens of transcript,
+        // plus the criterion prompt + output — n_ctx 6144 fits that comfortably
+        // (KV cache ~350MB; measured headroom on-device is >3GB since the weights
+        // are mmap'd and don't count against the app limit).
+        // n_batch 2048 processes the transcript prompt in a couple of passes
+        // (n_batch=512 was ~4x slower per criterion).
         ctxParams.n_ctx = 6144
         ctxParams.n_batch = 2048
-        // Flash attention: fused attention kernel that shrinks the per-token
-        // compute buffer (frees working-set headroom, the thing starving the GPU
-        // here) and speeds up attention. Force it on rather than leaving it "auto".
-        ctxParams.flash_attn_type = LLAMA_FLASH_ATTN_TYPE_ENABLED
         ctxParams.n_threads = Int32(max(1, ProcessInfo.processInfo.processorCount - 1))
         ctxParams.n_threads_batch = ctxParams.n_threads
 
@@ -61,14 +57,11 @@ public final class LlamaContext: @unchecked Sendable {
             throw NSError(domain: "LlamaError", code: 3,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to create sampler chain"])
         }
-        // DETERMINISTIC scoring: greedy (argmax) so the SAME recording always
-        // produces the SAME scores. The old temperature(0.3) + random-per-load
-        // seed made re-analysis flip verdicts, added noise to trainees' trends,
-        // and undermined the faculty-agreement eval (which needs reproducibility).
-        // The repetition penalty stays (harmless + deterministic); greedy makes
-        // top_k/top_p moot, so they're dropped.
         llama_sampler_chain_add(sampler, llama_sampler_init_penalties(64, 1.1, 0.0, 0.0))
-        llama_sampler_chain_add(sampler, llama_sampler_init_greedy())
+        llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40))
+        llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9, 1))
+        llama_sampler_chain_add(sampler, llama_sampler_init_temp(0.3))
+        llama_sampler_chain_add(sampler, llama_sampler_init_dist(UInt32.random(in: 1...UInt32.max)))
 
         self.model = model
         self.vocab = vocab
