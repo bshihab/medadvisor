@@ -32,16 +32,18 @@ public final class LlamaContext: @unchecked Sendable {
         }
 
         var ctxParams = llama_context_default_params()
-        // Qwen 7B: ~15 min ≈ 3-3.5k transcript tokens; n_ctx 8192 leaves room for
-        // ~30-min consultations plus instructions + output before the context
-        // overflows (which used to silently produce an all-"missed" scorecard —
-        // see EncounterProcessor's empty-output guard for the honest-failure path
-        // beyond this). KV cache grows to ~460MB; still well within the >3GB
-        // on-device headroom (weights are mmap'd, off the app limit).
-        // n_batch 2048 processes the transcript prompt in a couple of passes
-        // (n_batch=512 was ~4x slower per criterion).
-        ctxParams.n_ctx = 8192
+        // Qwen 7B on an 8GB device (A19) is memory-tight: the model is ~4.6GB of
+        // Metal's ~5.4GB working-set budget, so the KV cache + compute buffers must
+        // stay small — cross the budget and Metal evicts/pages GPU buffers every
+        // token, collapsing decode to ~1 tok/s. n_ctx 6144 (~15-min consult) is the
+        // proven ceiling; 8192 tipped it over the edge. Overflow beyond this fails
+        // honestly via EncounterProcessor's empty-output guard, not a silent miss.
+        ctxParams.n_ctx = 6144
         ctxParams.n_batch = 2048
+        // Flash attention: fused attention kernel that shrinks the per-token
+        // compute buffer (frees working-set headroom, the thing starving the GPU
+        // here) and speeds up attention. Force it on rather than leaving it "auto".
+        ctxParams.flash_attn_type = LLAMA_FLASH_ATTN_TYPE_ENABLED
         ctxParams.n_threads = Int32(max(1, ProcessInfo.processInfo.processorCount - 1))
         ctxParams.n_threads_batch = ctxParams.n_threads
 
