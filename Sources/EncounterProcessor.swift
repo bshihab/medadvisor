@@ -155,6 +155,7 @@ final class EncounterProcessor: ObservableObject {
             //    Publish each result as it lands so the UI fills in live.
             liveResults = []
             var results: [CriterionResult] = []
+            var producedOutput = false   // guards the silent all-"missed" overflow case
             let total = rubric.criteria.count
             let sharedPrefix = PromptBuilder.scoringPrefix(transcript: redactedTranscript)
             BenchmarkRecorder.shared.markStage("scoring")
@@ -195,6 +196,19 @@ final class EncounterProcessor: ObservableObject {
                 // Timing: criterion 0 pays the transcript prefill; 1+ should be
                 // decode-only if prefix caching is working.
                 print(String(format: "[Scoring] %@ took %.1fs", criterion.id, Date().timeIntervalSince(t0)))
+                // Overflow guard: the shared prefix (transcript) is decoded once,
+                // on the first real scoring call. If it produced NOTHING, the
+                // transcript almost certainly overran the context window — fail
+                // honestly instead of handing back an all-"missed" scorecard the
+                // trainee would rightly distrust. (Later criteria reuse the same
+                // cached prefix, so they share its fate; checking the first is enough.)
+                if !producedOutput {
+                    if raw.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        stage = .error("This consultation was too long to analyse reliably on-device. Try recording a shorter session (under about 30 minutes).")
+                        return
+                    }
+                    producedOutput = true
+                }
                 let result = FeedbackParser.parseCriterion(
                     raw: raw, criterionId: criterion.id, transcript: redactedTranscript,
                     allowsNA: criterion.responseType == "not_applicable_allowed")

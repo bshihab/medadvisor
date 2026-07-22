@@ -27,7 +27,16 @@ extension ConsultationFeedback {
     /// Applicable criteria only — N/A (e.g. no exam) is excluded so an absent
     /// exam doesn't count against the score (12/16 → 12/15).
     var total: Int { perCriterion.filter { $0.status != .notApplicable }.count }
+    /// Raw met-only "done rate" — kept for explicit "X of Y met" displays.
     var metFraction: Double { total == 0 ? 0 : Double(metCount) / Double(total) }
+    /// UNIFIED proficiency score (met=1, partial=0.5, missed=0, N/A excluded),
+    /// matching the dashboard + skill-row convention. Use THIS for band label /
+    /// color so the trainee and the mentor read the same proficiency for a
+    /// session — the old metFraction counted every partial as a miss, so the two
+    /// surfaces disagreed on the same recording.
+    var score: Double {
+        total == 0 ? 0 : (Double(metCount) + 0.5 * Double(partialCount)) / Double(total)
+    }
 }
 
 /// A thin stacked proportion bar: met (green) / partial (orange) / missed (red).

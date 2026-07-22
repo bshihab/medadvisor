@@ -84,7 +84,8 @@
     {
       "id": "include_family", "dimension": "eliciting_concerns", "responseType": "not_applicable_allowed", "weight": 1,
       "prompt": "Did the clinician gather and include patient/family input? (N/A if no family present.)",
-      "whatGoodLooksLike": "Invites the family into the conversation as appropriate."
+      "whatGoodLooksLike": "Invites the family into the conversation as appropriate.",
+      "applicabilityQuestion": "Was a family member, companion, or relative of the patient actually present or clearly participating in this consultation?"
     },
     {
       "id": "name_emotion", "dimension": "empathy", "responseType": "boolean_with_evidence", "weight": 3,

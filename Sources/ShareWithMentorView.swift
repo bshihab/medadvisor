@@ -127,13 +127,21 @@ struct ShareWithMentorView: View {
                             Button("Re-add quote") { draft.included = true }
                                 .font(.caption)
                         }
+                        // The improvement tip is part of the uploaded payload, so
+                        // it must be visible here — otherwise "only what you see is
+                        // sent" wouldn't be true. Shown labeled and redacted.
+                        if let tip = draft.tip, !tip.isEmpty {
+                            Label(tip, systemImage: "lightbulb")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .padding(.vertical, 2)
                 }
             } header: {
                 Text("Scores & evidence")
             } footer: {
-                Text("Scores are always included. Edit or remove any quote — removing a quote never changes the score.")
+                Text("Scores and the improvement tips are always included. Edit or remove any quote — removing a quote never changes the score.")
             }
 
             if let errorMessage {

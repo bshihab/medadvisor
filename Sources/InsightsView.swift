@@ -52,6 +52,7 @@ final class InsightStore {
     func save(_ insights: Insights) {
         guard let data = try? JSONEncoder().encode(insights) else { return }
         try? data.write(to: fileURL, options: [.atomic, .completeFileProtection])
+        fileURL.excludeFromBackup()   // session-derived scores — off iCloud backup
     }
 }
 

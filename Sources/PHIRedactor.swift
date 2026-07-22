@@ -8,14 +8,21 @@ enum PHIRedactor {
     static func redact(_ text: String) -> String {
         var result = text
 
-        // 1) Structured identifiers (order matters: most specific first).
+        // 1) Structured identifiers (order matters: most specific first). Numeric
+        //    catch-alls are LAST and conservative (7+ digits, hyphenated ZIP only)
+        //    so ordinary clinical values — BP 120, "150,000 platelets" — survive
+        //    for scoring while true identifiers still get scrubbed.
         let patterns: [(pattern: String, replacement: String)] = [
             ("\\b\\d{3}-\\d{2}-\\d{4}\\b", "[SSN]"),
             ("\\b\\d{1,2}[/.-]\\d{1,2}[/.-]\\d{2,4}\\b", "[DATE]"),
             ("\\b(?:\\+?\\d{1,2}[ .-]?)?\\(?\\d{3}\\)?[ .-]?\\d{3}[ .-]?\\d{4}\\b", "[PHONE]"),
             ("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b", "[EMAIL]"),
-            ("\\b[A-Z]{2,4}\\d{4,}\\b", "[ID]"), // MRN-like
-            ("\\b\\d+\\s+[A-Z][a-zA-Z]+\\s+(?:Street|St|Avenue|Ave|Road|Rd|Lane|Ln|Drive|Dr|Boulevard|Blvd)\\b", "[ADDRESS]")
+            ("(?i)\\bP\\.?\\s*O\\.?\\s*Box\\s+\\d+\\b", "[ADDRESS]"),
+            ("\\b\\d+\\s+[A-Z][a-zA-Z]+(?:\\s+[A-Z][a-zA-Z]+)?\\s+(?:Street|St|Avenue|Ave|Road|Rd|Lane|Ln|Drive|Dr|Boulevard|Blvd|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Way|Trail|Parkway|Pkwy|Highway|Hwy)\\b", "[ADDRESS]"),
+            ("\\b[A-Z]{2,4}\\d{4,}\\b", "[ID]"), // alpha-prefixed MRN
+            ("(?i)\\b(?:9\\d|1\\d\\d)[\\s-]?years?[\\s-]?old\\b", "[AGE]"), // 90+ (Safe Harbor)
+            ("\\b\\d{5}-\\d{4}\\b", "[ZIP]"),      // ZIP+4 (bare 5-digit left alone)
+            ("\\b\\d{7,}\\b", "[ID]")              // long numeric MRN / account number
         ]
         for (pattern, replacement) in patterns {
             result = result.replacingOccurrences(

@@ -102,11 +102,25 @@ enum PromptBuilder {
         """
     }
 
+    /// Draft rubrics carry author placeholders like "[Director to specify …]".
+    /// Those must NEVER reach the model as scoring guidance (they skew the very
+    /// criterion the director hasn't filled in yet). Treat bracketed / TBD text
+    /// as absent.
+    static func isPlaceholder(_ s: String) -> Bool {
+        let t = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        if t.isEmpty { return true }
+        if t.hasPrefix("[") && t.hasSuffix("]") { return true }
+        let low = t.lowercased()
+        return low.contains("to specify") || low.contains("tbd") || low.contains("director to")
+    }
+
     /// Short per-criterion suffix appended after the cached prefix.
     static func criterionSuffix(criterion c: Criterion) -> String {
         var extras = ""
-        if let good = c.whatGoodLooksLike { extras += "Good looks like: \(good)\n" }
-        if let req = c.requiredElements, !req.isEmpty {
+        if let good = c.whatGoodLooksLike, !isPlaceholder(good) {
+            extras += "Good looks like: \(good)\n"
+        }
+        if let req = c.requiredElements?.filter({ !isPlaceholder($0) }), !req.isEmpty {
             extras += "Must address: \(req.joined(separator: "; "))\n"
         }
         return """
@@ -120,20 +134,22 @@ enum PromptBuilder {
 
     /// Yes/no gate for criteria that only apply in some encounters (N/A-allowed).
     /// Reuses the cached transcript prefix. A "no" → the criterion is N/A and is
-    /// not scored (so e.g. an absent physical exam isn't marked as a failure).
+    /// not scored. The question is PER-CRITERION: it used to be hardwired to
+    /// "did a physical exam happen?", which mis-gated other N/A criteria (e.g.
+    /// inpatient "include the family" was N/A'd on whether an exam occurred).
     static func applicabilityGateSuffix(criterion c: Criterion) -> String {
-        """
+        let question = c.applicabilityQuestion
+            ?? "Considering only the transcript, did the situation this asks about — “\(c.prompt)” — actually arise in this consultation, so it could be assessed at all?"
+        return """
 
 
         Answer ONE factual question about the transcript above — ignore how well \
         anything was done.
 
-        Did a physical examination of the patient actually take place in this \
-        consultation — for example checking the pulse or blood pressure, listening to \
-        the chest, feeling the neck or abdomen, or looking in the eyes or ears?
+        \(question)
 
-        Reply with ONLY one word: "yes" if an examination clearly happened, or "no" if \
-        no examination took place.
+        Reply with ONLY one word: "yes" if it applied to this consultation, or "no" if \
+        it did not apply.
         """
     }
 
@@ -204,8 +220,11 @@ enum PromptBuilder {
         let met = results.filter { $0.status == .met }.count
         // N/A criteria (e.g. no exam) aren't part of the denominator.
         let applicable = results.filter { $0.status != .notApplicable }.count
+        // encounterType is Optional — interpolating it raw put a literal
+        // `Optional("…")` into the prompt (and "nil" when absent).
+        let encounter = rubric.encounterType ?? "clinical"
         return """
-        A doctor met \(met) of \(applicable) criteria in a \(rubric.encounterType) consultation. \
+        A doctor met \(met) of \(applicable) criteria in a \(encounter) consultation. \
         In 2 sentences, summarize how they did overall and the single most important thing to \
         improve next time. Plain prose, no lists.
         """
@@ -325,23 +344,38 @@ enum FeedbackParser {
         return v.isEmpty ? nil : v
     }
 
-    /// True only if the evidence quote is genuinely grounded in the transcript:
-    /// a normalized substring match, or at least one substantive word (≥4 chars)
-    /// shared with the transcript. Empty/none/hallucinated quotes return false.
+    /// True only if the evidence quote is genuinely grounded in the transcript.
+    /// Grounding requires ONE of: a (near-)verbatim substring; a contiguous
+    /// 4-word phrase from the quote appearing verbatim; or a MAJORITY (≥60%) of
+    /// the quote's substantive (≥4-char) words present. The old rule — a single
+    /// shared ≥4-char word — let a fabricated quote containing "patient" or
+    /// "would" pass, which is exactly the over-scoring this guardrail exists to
+    /// stop. Empty/none/short-unmatched quotes return false.
     private static func isSupported(_ evidence: String?, by transcript: String) -> Bool {
         guard let evidence, !evidence.isEmpty else { return false }
         let t = normalize(transcript)
         let e = normalize(evidence)
         guard !e.isEmpty else { return false }
-        if t.range(of: e) != nil { return true }
-        let transcriptWords = Set(t.split(separator: " ").map(String.init))
+        if t.range(of: e) != nil { return true }   // (near-)verbatim
+
         let evidenceWords = e.split(separator: " ").map(String.init)
-        let contentWords = evidenceWords.filter { $0.count >= 4 }
-        if contentWords.isEmpty {
-            // Very short quote — accept if any of its words appears verbatim.
-            return evidenceWords.contains { transcriptWords.contains($0) }
+
+        // A contiguous 4-word run of the quote appearing verbatim in the
+        // transcript is strong grounding even if the whole quote isn't verbatim.
+        if evidenceWords.count >= 4 {
+            for start in 0...(evidenceWords.count - 4) {
+                let phrase = evidenceWords[start..<start + 4].joined(separator: " ")
+                if t.range(of: phrase) != nil { return true }
+            }
         }
-        return contentWords.contains { transcriptWords.contains($0) }
+
+        // Otherwise require a majority of the substantive words to be present;
+        // one shared common word is not evidence a quote is real.
+        let transcriptWords = Set(t.split(separator: " ").map(String.init))
+        let contentWords = evidenceWords.filter { $0.count >= 4 }
+        guard contentWords.count >= 2 else { return false }
+        let present = contentWords.filter { transcriptWords.contains($0) }.count
+        return Double(present) / Double(contentWords.count) >= 0.6
     }
 
     /// Lowercase, keep only alphanumerics + spaces, collapse whitespace.

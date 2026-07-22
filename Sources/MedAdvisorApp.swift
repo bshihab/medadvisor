@@ -17,6 +17,7 @@ struct MedAdvisorApp: App {
         WindowGroup {
             RootView()
                 .task {
+                    AudioRecorder.sweepOrphanRecordings()   // privacy: no raw audio survives a launch
                     ModelDownloader.shared.resume()
                     RubricSync.refresh()   // cloud rubrics (silent, offline-safe)
                     PushManager.shared.bootstrap()

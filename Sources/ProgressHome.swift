@@ -22,7 +22,10 @@ struct ProgressHome: View {
                 VStack(spacing: 20) {
                     insightsSection
                     goalsSection
-                    if account.org != nil && !(notesStore.notes.isEmpty && notesStore.unreadCount == 0) {
+                    // Show the mentor-chat card whenever the trainee is in a
+                    // program — they can now START the conversation, so it must be
+                    // reachable before a mentor has written anything.
+                    if account.org != nil {
                         notesSection
                     }
                     historySection
@@ -174,9 +177,9 @@ struct ProgressHome: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
-            Text("\(f.metCount)/\(f.total)")
+            Text("\(f.metCount)/\(f.total) met")
                 .font(.headline).monospacedDigit()
-                .foregroundStyle(ScoreBand.color(f.metFraction))
+                .foregroundStyle(ScoreBand.color(f.score))
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)

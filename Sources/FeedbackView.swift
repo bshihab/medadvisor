@@ -324,11 +324,13 @@ struct FeedbackView: View {
     // Applicable criteria only — N/A (e.g. no exam) is left out of the score.
     private var overallTotal: Int { feedback.perCriterion.filter { $0.status != .notApplicable }.count }
 
-    private var metFraction: Double {
-        overallTotal == 0 ? 0 : Double(overallMet) / Double(overallTotal)
+    // Unified proficiency score (met=1, partial=0.5, missed=0) — the band must
+    // match what the mentor sees on the dashboard for the same session.
+    private var score: Double {
+        overallTotal == 0 ? 0 : (Double(overallMet) + 0.5 * Double(overallPartial)) / Double(overallTotal)
     }
-    private var bandLabel: String { ScoreBand.label(metFraction) }
-    private var bandColor: Color { ScoreBand.color(metFraction) }
+    private var bandLabel: String { ScoreBand.label(score) }
+    private var bandColor: Color { ScoreBand.color(score) }
 
     private func criterion(for id: String) -> Criterion? {
         rubric.criteria.first { $0.id == id }

@@ -32,10 +32,16 @@ final class FeedbackStore: ObservableObject {
     /// Current account (set by AccountStore on auth changes) — scopes visibility.
     @Published var currentUid: String?
 
-    /// What the UI shows: your own records plus anonymous/legacy ones. Another
-    /// account's sessions never leak across sign-ins on a shared device.
+    /// What the UI shows. Signed IN: only your OWN records — anonymous records
+    /// (which could have been made by a different person on a shared clinical
+    /// device) are NOT shown to a signed-in account. Signed OUT: only the
+    /// anonymous records. This closes the shared-device cross-user PHI exposure
+    /// where signing in surfaced a prior user's signed-out sessions.
     var visibleRecords: [ConsultationRecord] {
-        records.filter { $0.ownerUid == nil || $0.ownerUid == currentUid }
+        if let uid = currentUid {
+            return records.filter { $0.ownerUid == uid }
+        }
+        return records.filter { $0.ownerUid == nil }
     }
 
     private let dir: URL
@@ -44,6 +50,7 @@ final class FeedbackStore: ObservableObject {
         dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("feedback", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        dir.excludeFromBackup()   // redacted transcripts live here — keep off iCloud backup
         load()
     }
 

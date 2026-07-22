@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// The app's single entry point to on-device inference.
 ///
@@ -14,6 +15,10 @@ final class LLMEngine {
     static let shared = LLMEngine()
 
     private let engine: InferenceEngine
+
+    /// Reentrancy guard for memory-warning unloads: >0 means a generation is in
+    /// flight, so the model must NOT be freed (that would abort scoring).
+    private var inUseCount = 0
 
     /// Dev override for which backend runs. The whole point of the spike: it lets
     /// ONE phone measure llama.cpp/GPU against Core AI/Neural Engine with the
@@ -44,10 +49,27 @@ final class LLMEngine {
         #if canImport(CoreAILanguageModels)
         if pref != .llama, #available(iOS 27.0, *) {
             engine = CoreAIEngine()
+            registerMemoryWarningObserver()
             return
         }
         #endif
         engine = LlamaEngine()
+        registerMemoryWarningObserver()
+    }
+
+    /// Under memory pressure, free the resident model when idle so the app is a
+    /// smaller jetsam target in the background (the resident-model optimization
+    /// otherwise makes it the first thing iOS kills). Weights are mmap'd; this
+    /// reclaims the KV cache + context. Never fires mid-generation (inUseCount).
+    private func registerMemoryWarningObserver() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.inUseCount == 0 else { return }
+                self.unload()
+            }
+        }
     }
 
     /// Label of the active backend — stamped onto benchmark runs so a result
@@ -73,7 +95,9 @@ final class LLMEngine {
     func generate(prompt: String,
                   maxTokens: Int = 512,
                   onPartial: @escaping (String) -> Void = { _ in }) async throws -> String {
-        try await engine.generate(prompt: prompt, maxTokens: maxTokens, onPartial: onPartial)
+        inUseCount += 1
+        defer { inUseCount -= 1 }
+        return try await engine.generate(prompt: prompt, maxTokens: maxTokens, onPartial: onPartial)
     }
 
     /// Generate against a shared cached prefix + short per-call suffix — see
@@ -81,7 +105,9 @@ final class LLMEngine {
     func generate(sharedPrefix: String, suffix: String,
                   maxTokens: Int = 512,
                   onPartial: @escaping (String) -> Void = { _ in }) async throws -> String {
-        try await engine.generate(sharedPrefix: sharedPrefix, suffix: suffix,
-                                  maxTokens: maxTokens, onPartial: onPartial)
+        inUseCount += 1
+        defer { inUseCount -= 1 }
+        return try await engine.generate(sharedPrefix: sharedPrefix, suffix: suffix,
+                                        maxTokens: maxTokens, onPartial: onPartial)
     }
 }

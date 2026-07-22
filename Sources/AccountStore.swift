@@ -161,6 +161,18 @@ final class AccountStore: ObservableObject {
         }
     }
 
+    /// Self-service account deletion (App Store Review 5.1.1(v); server contract
+    /// DELETE /v1/me erases the account + all its cloud data). On success we also
+    /// scrub this user's local records, then sign out. Throws on failure so the
+    /// UI can tell the user it didn't happen (e.g. a mentor who still owns a
+    /// program with members gets 409 `owner_has_members`).
+    func deleteAccount() async throws {
+        let uid = self.uid
+        try await callVoid("v1/me", method: "DELETE")
+        FeedbackStore.shared.removeLocal(for: uid)   // no local PHI left behind
+        try? Auth.auth().signOut()
+    }
+
     // MARK: - Org membership
 
     /// Redeem an invite code. On success the server sets custom claims, so we

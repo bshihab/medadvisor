@@ -1,6 +1,7 @@
 import Foundation
 import ActivityKit
 import UIKit
+import CryptoKit
 
 /// Downloads the Qwen2.5-7B GGUF (~4.4 GB) directly over HTTPS with **byte-range
 /// resume**: bytes stream into `Documents/<name>.partial`, so any interruption —
@@ -23,6 +24,15 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
     ]
     private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+
+    /// Expected SHA-256 of the GGUF, lowercase hex. When set, a completed
+    /// download is verified before it's accepted — this is the supply-chain
+    /// guard: a re-uploaded/tampered mirror, or a cross-mirror resume splice,
+    /// can't hand a corrupt or malicious 4.3 GB blob to llama.cpp (which then
+    /// processes PHI). nil = NOT PINNED YET → verification is skipped with a
+    /// loud log. TODO(Bilal): pin this. Compute once on the built file:
+    ///   shasum -a 256 Qwen2.5-7B-Instruct-Q4_K_M.gguf
+    private static let expectedSHA256: String? = nil
 
     /// Live download state (observed by Settings).
     @Published private(set) var progress: Double = 0
@@ -54,6 +64,10 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
         config.waitsForConnectivity = true
+        // Wi-Fi only: a 4.4 GB transfer must never silently burn a trainee's
+        // cellular data plan (it auto-starts at launch). waitsForConnectivity
+        // then parks until Wi-Fi is available instead of failing.
+        config.allowsCellularAccess = false
         config.timeoutIntervalForResource = 60 * 60 * 6   // one attempt may span hours
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
@@ -66,6 +80,35 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     private var partialSize: Int64 {
         (try? FileManager.default.attributesOfItem(atPath: partialURL.path)[.size] as? Int64) ?? 0
+    }
+
+    /// Free space available for important downloads, compared to `bytes`.
+    /// Unknown capacity → don't block (returns true).
+    private static func hasEnoughFreeSpace(bytes: Int64) -> Bool {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        guard let values = try? docs.resourceValues(
+                forKeys: [.volumeAvailableCapacityForImportantUsageKey]),
+              let available = values.volumeAvailableCapacityForImportantUsage else { return true }
+        return available >= bytes
+    }
+
+    /// Stream-hash the finished file and compare to the pinned SHA-256. Returns
+    /// true (skips) when no hash is pinned — with a loud log so it's not silent.
+    private func sha256Matches(_ url: URL) -> Bool {
+        guard let expected = Self.expectedSHA256 else {
+            print("[ModelDownloader] WARNING: model SHA-256 not pinned — integrity NOT verified.")
+            return true
+        }
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return false }
+        defer { try? handle.close() }
+        var hasher = SHA256()
+        while true {
+            let chunk = handle.readData(ofLength: 8 * 1024 * 1024)
+            if chunk.isEmpty { break }
+            hasher.update(data: chunk)
+        }
+        let digest = hasher.finalize().map { String(format: "%02x", $0) }.joined()
+        return digest.caseInsensitiveCompare(expected) == .orderedSame
     }
 
     // MARK: - Lifecycle
@@ -104,6 +147,15 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Start or resume the download. No-op if already downloaded or in flight.
     func startDownload() {
         guard !isDownloaded else { return }
+        // Preflight: fail clearly up front rather than climbing to a byte-mismatch
+        // error after silently dropping writes on a full disk. ~4.4 GB + headroom.
+        guard Self.hasEnoughFreeSpace(bytes: 5_000_000_000) else {
+            DispatchQueue.main.async {
+                self.isDownloading = false
+                self.errorMessage = "Not enough free space — the model needs about 4.4 GB. Free up some space and try again."
+            }
+            return
+        }
         UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
         DispatchQueue.main.async {
             guard !self.isDownloading else { return }
@@ -178,6 +230,11 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         if mirrorIndex + 1 < mirrors.count {
             mirrorIndex += 1
             retriesLeft = 3
+            // Switching mirrors: DON'T resume across files — a different mirror's
+            // bytes spliced onto ours would corrupt the GGUF. Start this mirror
+            // fresh. (The final SHA-256 check, once pinned, is the backstop.)
+            try? FileManager.default.removeItem(at: partialURL)
+            baseOffset = 0
             beginAttempt()
             return
         }
@@ -197,9 +254,18 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             attemptFailed("Download ended early (\(size)/\(totalBytes) bytes). Tap Download to continue.")
             return
         }
+        // Integrity gate (supply-chain): reject a corrupt/tampered/spliced blob
+        // before it ever reaches llama.cpp. No-op (with a warning) until the hash
+        // is pinned — see expectedSHA256.
+        guard sha256Matches(partialURL) else {
+            try? FileManager.default.removeItem(at: partialURL)
+            attemptFailed("The downloaded model failed its integrity check — restarting.")
+            return
+        }
         try? FileManager.default.removeItem(at: localURL)
         do {
             try FileManager.default.moveItem(at: partialURL, to: localURL)
+            localURL.excludeFromBackup()   // re-downloadable — keep it out of iCloud backup
         } catch {
             DispatchQueue.main.async {
                 self.isDownloading = false
@@ -274,6 +340,16 @@ extension ModelDownloader: URLSessionDataDelegate {
             totalBytes = http.expectedContentLength > 0 ? http.expectedContentLength : 0
             try? FileManager.default.removeItem(at: partialURL)
             baseOffset = 0
+        case 416:
+            // Range Not Satisfiable: our resume offset is past EOF — the partial
+            // is corrupt/oversized. Discard it and restart from zero instead of
+            // re-requesting the same bad range forever (the old dead-loop).
+            completionHandler(.cancel)
+            try? FileManager.default.removeItem(at: partialURL)
+            baseOffset = 0
+            UserDefaults.standard.removeObject(forKey: Self.expectedTotalKey)
+            attemptFailed("Resuming from a bad point — restarting the download.")
+            return
         default:
             completionHandler(.cancel)
             attemptFailed("The model server said \(http.statusCode). Tap Download to retry.")
@@ -285,12 +361,17 @@ extension ModelDownloader: URLSessionDataDelegate {
         if !FileManager.default.fileExists(atPath: partialURL.path) {
             FileManager.default.createFile(atPath: partialURL.path, contents: nil)
         }
+        partialURL.excludeFromBackup()   // in-progress model bytes — off iCloud backup
         fileHandle = try? FileHandle(forWritingTo: partialURL)
         _ = try? fileHandle?.seekToEnd()
         completionHandler(.allow)
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        // Ignore a stale/zombie task's buffered data: writing it through the new
+        // attempt's handle could push partialSize past totalBytes (which then
+        // 416-looped forever). Matches the identity check in didCompleteWithError.
+        guard dataTask === self.task else { return }
         guard let fileHandle else { return }
         try? fileHandle.write(contentsOf: data)
         received += Int64(data.count)

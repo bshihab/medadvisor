@@ -69,6 +69,10 @@
           },
           "weight": { "type": "number", "minimum": 0 },
           "whatGoodLooksLike": { "type": "string" },
+          "applicabilityQuestion": {
+            "type": "string",
+            "description": "For responseType=not_applicable_allowed: the yes/no question deciding whether this criterion applied at all (e.g. 'did a physical exam take place?'). Omit for boolean_with_evidence."
+          },
           "requiredElements": {
             "type": "array",
             "description": "Specific things that must be addressed (director-specified, so the model checks presence rather than recalling medicine).",

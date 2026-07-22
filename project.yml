@@ -42,6 +42,11 @@ targets:
     info:
       path: MedAdvisor-Info.plist   # generated; Xcode merges with INFOPLIST_KEY_* settings
       properties:
+        # Keep capturing when the screen locks / the app backgrounds mid-encounter,
+        # so a phone set down during a 15-minute consultation isn't truncated at
+        # auto-lock. Interruptions (calls/Siri) are handled in AudioRecorder.
+        UIBackgroundModes:
+          - audio
         CFBundleURLTypes:
           - CFBundleTypeRole: Editor
             CFBundleURLSchemes:

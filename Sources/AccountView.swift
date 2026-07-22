@@ -51,6 +51,7 @@ struct AccountView: View {
     @AppStorage("privateBackupEnabled") private var backupEnabled = true
     @State private var confirmSignOut = false
     @State private var confirmWipe = false
+    @State private var confirmDelete = false
     /// Raw nonce for the in-flight Sign in with Apple request.
     @State private var appleNonce = ""
 
@@ -273,8 +274,11 @@ struct AccountView: View {
             Button("Remove my data from this device", role: .destructive) {
                 confirmWipe = true
             }
+            Button("Delete account", role: .destructive) {
+                confirmDelete = true
+            }
         } footer: {
-            Text("Removing data deletes your sessions from THIS device only (cloud copies are unaffected). Signing out keeps them on this device, hidden, until you sign back in.")
+            Text("Removing data deletes your sessions from THIS device only (cloud copies are unaffected). Signing out keeps them on this device, hidden, until you sign back in. Deleting your account permanently erases your account and everything you've shared.")
         }
         .confirmationDialog("Sign out?",
                             isPresented: $confirmSignOut, titleVisibility: .visible) {
@@ -306,7 +310,15 @@ struct AccountView: View {
                  ? "\(pending) session\(pending == 1 ? "" : "s") aren't backed up yet — removing them is permanent and can't be undone."
                  : "Your history is safely backed up. This clears it from this device; sign in on any device to get it back.")
         }
-    }
+        .confirmationDialog("Delete your account?",
+                            isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("Delete account permanently", role: .destructive) {
+                run { try await account.deleteAccount() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently erases your account, your private backup, and every session and message you've shared. This cannot be undone.")
+        }
 
     // MARK: - Helpers
 

@@ -90,9 +90,14 @@ struct RecordingView: View {
         } message: {
             Text("Enable microphone access in Settings to record consultations.")
         }
+        .alert("Couldn't start recording", isPresented: $recorder.startFailed) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("The microphone may be in use by another app or a phone call. Close it and try again.")
+        }
         .alert("Patient consent", isPresented: $showConsentDialog) {
-            Button("Reject", role: .cancel) {}
-            Button("Accept") {
+            Button("Cancel", role: .cancel) {}
+            Button("The patient consents") {
                 consentConfirmed = true
                 startRecording()
             }
@@ -531,6 +536,10 @@ struct RecordingView: View {
     /// The red Stop button: stop and finalize the recording (ready to analyze).
     private func finishRecording() {
         recorder.toggle()
+        // Consent is per ENCOUNTER: require a fresh confirmation before the next
+        // recording rather than carrying one Accept across every patient this
+        // session. (Pause/resume within a recording never re-prompt.)
+        consentConfirmed = false
     }
 
     private func timeString(_ t: TimeInterval) -> String {

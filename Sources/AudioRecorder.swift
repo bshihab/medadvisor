@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Speech
+import UIKit
 
 /// Records an encounter via AVAudioEngine. One mic tap does two things:
 ///  1. writes the audio to a file (the priority — feeds the accurate
@@ -24,6 +25,9 @@ final class AudioRecorder: NSObject, ObservableObject {
     @Published var elapsed: TimeInterval = 0
     @Published var recordings: [URL] = []
     @Published var permissionDenied = false
+    /// Set when the engine/audio session couldn't start (e.g. the mic is held by
+    /// a phone call) — the UI shows a message instead of silently doing nothing.
+    @Published var startFailed = false
     /// Live transcript while recording (Apple engine only): finalized paragraphs
     /// plus the in-progress (volatile) tail, styled separately Live Voicemail-style.
     @Published var liveFinal: String = ""
@@ -66,6 +70,12 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var analyzer: SpeechAnalyzer?
     private var recognizerTask: Task<Void, Never>?
     private var finalizedText = ""
+
+    // Audio-session interruption / route-change observers (installed only while
+    // recording). Without these, a phone call, Siri, or an unplugged headset
+    // silently stopped the engine and the rest of the encounter recorded nothing.
+    private var interruptionObserver: NSObjectProtocol?
+    private var routeObserver: NSObjectProtocol?
 
     func requestPermission() {
         AVAudioApplication.requestRecordPermission { granted in
@@ -113,6 +123,12 @@ final class AudioRecorder: NSObject, ObservableObject {
             // File to write (WAV/PCM — read reliably for post-stop transcription).
             let url = Self.makeFileURL()
             capture.file = try AVAudioFile(forWriting: url, settings: format.settings)
+            // Raw patient audio: keep it off iCloud backup and encrypt at rest
+            // (completeUnlessOpen stays writable while we're recording, protected
+            // once closed). Both best-effort so they never break a recording.
+            url.excludeFromBackup()
+            try? FileManager.default.setAttributes(
+                [.protectionKey: FileProtectionType.completeUnlessOpen], ofItemAtPath: url.path)
             capture.paused = false
             currentURL = url
 
@@ -148,12 +164,21 @@ final class AudioRecorder: NSObject, ObservableObject {
             finalizedText = ""
             isPaused = false
             isRecording = true
+            registerSessionObservers()
+            // Keep the screen awake so the live view stays up; combined with the
+            // `audio` background mode, the recording also survives a screen lock.
+            UIApplication.shared.isIdleTimerDisabled = true
         } catch {
+            // Surface the failure — a silent catch made the record button look
+            // broken (nothing happens) when the mic was unavailable (e.g. a call).
             print("Recording failed to start: \(error)")
+            startFailed = true
         }
     }
 
     private func stop() {
+        removeSessionObservers()
+        UIApplication.shared.isIdleTimerDisabled = false
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
 
@@ -162,14 +187,18 @@ final class AudioRecorder: NSObject, ObservableObject {
         if let url = currentURL { recordings.insert(url, at: 0) }
         currentURL = nil
 
-        // Finish live transcription.
+        // Finish live transcription. Finalizing ends the input, which lets the
+        // results loop drain the LAST (still-volatile) phrase before the stream
+        // closes and the task ends on its own — so we DON'T cancel it here
+        // (cancelling immediately dropped that final utterance, often the
+        // safety-net / sign-off line the rubric scores).
         capture.inputBuilder?.finish()
         capture.inputBuilder = nil
         capture.analyzerFormat = nil
         capture.converter = nil
         let analyzer = self.analyzer
         Task { try? await analyzer?.finalizeAndFinishThroughEndOfInput() }
-        recognizerTask?.cancel(); recognizerTask = nil
+        recognizerTask = nil   // drop our ref; the task runs to completion draining finals
         transcriber = nil; self.analyzer = nil
 
         isRecording = false
@@ -183,6 +212,67 @@ final class AudioRecorder: NSObject, ObservableObject {
         waveform = []
         liveVolatile = ""
         try? AVAudioSession.sharedInstance().setActive(false)
+    }
+
+    // MARK: - Interruptions & route changes
+
+    private func registerSessionObservers() {
+        let nc = NotificationCenter.default
+        interruptionObserver = nc.addObserver(
+            forName: AVAudioSession.interruptionNotification, object: nil, queue: .main
+        ) { [weak self] note in
+            Task { @MainActor in self?.handleInterruption(note) }
+        }
+        routeObserver = nc.addObserver(
+            forName: AVAudioSession.routeChangeNotification, object: nil, queue: .main
+        ) { [weak self] note in
+            Task { @MainActor in self?.handleRouteChange(note) }
+        }
+    }
+
+    private func removeSessionObservers() {
+        if let o = interruptionObserver { NotificationCenter.default.removeObserver(o) }
+        if let o = routeObserver { NotificationCenter.default.removeObserver(o) }
+        interruptionObserver = nil
+        routeObserver = nil
+    }
+
+    /// A call / Siri / alarm interrupts recording (the system stops our engine).
+    /// Freeze on `.began` so we don't count silent time, and resume on `.ended`
+    /// when the system says we may — restarting the engine into the same file.
+    private func handleInterruption(_ note: Notification) {
+        guard isRecording,
+              let info = note.userInfo,
+              let raw = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: raw) else { return }
+        switch type {
+        case .began:
+            if !isPaused { pause() }
+        case .ended:
+            let optsRaw = info[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+            guard AVAudioSession.InterruptionOptions(rawValue: optsRaw).contains(.shouldResume) else { return }
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                if !engine.isRunning { try engine.start() }
+                resume()
+            } catch {
+                startFailed = true
+                stop()   // couldn't recover — don't leave the UI stuck on "Recording"
+            }
+        @unknown default:
+            break
+        }
+    }
+
+    /// A route change that removes the device we were capturing from (headset
+    /// unplugged / AirPods disconnected) can change the input format and silently
+    /// break file writes — pause so the user notices rather than recording silence.
+    private func handleRouteChange(_ note: Notification) {
+        guard isRecording, !isPaused,
+              let info = note.userInfo,
+              let raw = info[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: raw) else { return }
+        if reason == .oldDeviceUnavailable { pause() }
     }
 
     // MARK: - UI meter (main actor; audio work stays on the tap thread)
@@ -292,5 +382,20 @@ final class AudioRecorder: NSObject, ObservableObject {
         let stamp = ISO8601DateFormatter().string(from: Date())
             .replacingOccurrences(of: ":", with: "-")
         return docs.appendingPathComponent("encounter-\(stamp).wav")
+    }
+
+    /// Delete raw recordings orphaned by a crash, a killed app, or an abandoned
+    /// analysis. After relaunch these are unreachable (the in-memory list starts
+    /// empty) yet the consent promise says audio is "deleted after analysis", so
+    /// no `encounter-*.wav` may survive a launch. Call once at startup — nothing
+    /// is recording yet, so this can never race an in-progress capture.
+    static func sweepOrphanRecordings() {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        guard let files = try? FileManager.default.contentsOfDirectory(
+            at: docs, includingPropertiesForKeys: nil) else { return }
+        for url in files
+        where url.lastPathComponent.hasPrefix("encounter-") && url.pathExtension == "wav" {
+            try? FileManager.default.removeItem(at: url)
+        }
     }
 }

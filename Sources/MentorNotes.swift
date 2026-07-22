@@ -72,6 +72,21 @@ final class NotesStore: ObservableObject {
         notes = reply.notes
     }
 
+    /// Trainee STARTS a new thread about themselves (contract: POST /v1/me/notes;
+    /// server sets authorRole=trainee and notifies the org's mentors). Optionally
+    /// anchored to one of the caller's own sessions / criteria.
+    func startThread(sessionId: String? = nil, criterionId: String? = nil, text: String) async throws {
+        struct Body: Encodable {
+            let sessionId: String?
+            let criterionId: String?
+            let text: String
+        }
+        let note: Note = try await AccountStore.shared.call(
+            "v1/me/notes", method: "POST",
+            body: Body(sessionId: sessionId, criterionId: criterionId, text: text))
+        notes.insert(note, at: 0)
+    }
+
     /// Trainee replies to a root note (contract: root's trainee only).
     func reply(orgId: String, noteId: String, text: String) async throws {
         struct Body: Encodable { let text: String }

@@ -66,6 +66,11 @@ struct Criterion: Codable, Equatable, Identifiable {
     let requiredElements: [String]?
     let exemplarQuotes: [String]?
     let criticalFail: Bool?
+    /// For `not_applicable_allowed` criteria: the yes/no question that decides
+    /// whether this criterion applied at all (e.g. "did an exam take place?").
+    /// Optional — missing decodes to nil and the analyzer falls back to a
+    /// generic applicability question derived from the prompt.
+    let applicabilityQuestion: String?
 }
 
 enum RubricLoader {

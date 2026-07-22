@@ -133,11 +133,11 @@ struct HistoryView: View {
                     .font(.headline)
                     .foregroundStyle(.primary)
                 Spacer()
-                Text(ScoreBand.label(f.metFraction))
+                Text(ScoreBand.label(f.score))
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(ScoreBand.color(f.metFraction))
+                    .foregroundStyle(ScoreBand.color(f.score))
                     .padding(.horizontal, 10).padding(.vertical, 4)
-                    .background(ScoreBand.color(f.metFraction).opacity(0.15), in: Capsule())
+                    .background(ScoreBand.color(f.score).opacity(0.15), in: Capsule())
             }
 
             ScoreBar(met: f.metCount, partial: f.partialCount, missed: f.missedCount)

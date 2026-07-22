@@ -200,21 +200,27 @@ struct TraineeChatScreen: View {
 
     @State private var openedRecord: ConsultationRecord?
     @State private var focusCriterionId: String?
+    @State private var newMessage = ""
+    @State private var sending = false
+    @State private var sendError: String?
 
     var body: some View {
-        ChatThreadList(
-            entries: ChatFlattener.entries(notes: notesStore.notes,
-                                           myUid: account.uid,
-                                           anchorInfo: anchorInfo),
-            emptyText: "No messages yet.\nYour mentor starts conversations here — often about a session you've shared — and you can reply to any of them.",
-            onReply: { noteId, text in
-                guard let orgId = account.org?.orgId else { throw AccountStore.APIError.notSignedIn }
-                try await notesStore.reply(orgId: orgId, noteId: noteId, text: text)
-            },
-            onOpenAnchor: { recordId, criterionId in
-                openedRecord = feedback.records.first { $0.id == recordId }
-                focusCriterionId = criterionId
-            })
+        VStack(spacing: 0) {
+            ChatThreadList(
+                entries: ChatFlattener.entries(notes: notesStore.notes,
+                                               myUid: account.uid,
+                                               anchorInfo: anchorInfo),
+                emptyText: "No messages yet.\nStart a conversation with your mentor below — ask about a session you've shared, or anything else — and reply to whatever they send.",
+                onReply: { noteId, text in
+                    guard let orgId = account.org?.orgId else { throw AccountStore.APIError.notSignedIn }
+                    try await notesStore.reply(orgId: orgId, noteId: noteId, text: text)
+                },
+                onOpenAnchor: { recordId, criterionId in
+                    openedRecord = feedback.records.first { $0.id == recordId }
+                    focusCriterionId = criterionId
+                })
+            composer
+        }
         .navigationTitle("Mentor chat")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -228,6 +234,43 @@ struct TraineeChatScreen: View {
                              record: record, focusCriterionId: focusCriterionId)
             }
         }
+    }
+
+    /// Bottom composer so the trainee can START a thread, not just reply.
+    private var composer: some View {
+        VStack(spacing: 4) {
+            if let sendError {
+                Text(sendError).font(.caption).foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            HStack(alignment: .bottom, spacing: 8) {
+                TextField("Message your mentor…", text: $newMessage, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(1...5)
+                Button {
+                    let text = newMessage.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !text.isEmpty else { return }
+                    sending = true
+                    sendError = nil
+                    Task {
+                        do {
+                            try await notesStore.startThread(text: text)
+                            newMessage = ""
+                            notesStore.markAllSeen()
+                        } catch {
+                            sendError = error.localizedDescription
+                        }
+                        sending = false
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill").font(.title2)
+                }
+                .disabled(sending || newMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(.bar)
     }
 
     /// Server sessionId is "{uid}__{clientSessionId}" — match local records by

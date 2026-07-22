@@ -112,7 +112,8 @@
     {
       "id": "explain_exam", "dimension": "empathy", "responseType": "not_applicable_allowed", "weight": 1,
       "prompt": "If a physical exam occurred, did the clinician explain what they were doing and check comfort? (N/A if no exam.)",
-      "whatGoodLooksLike": "Narrates the exam and minimizes surprise/discomfort verbally."
+      "whatGoodLooksLike": "Narrates the exam and minimizes surprise/discomfort verbally.",
+      "applicabilityQuestion": "Did a physical examination of the patient actually take place in this consultation — for example checking the pulse or blood pressure, listening to the chest, feeling the neck or abdomen, or looking in the eyes or ears?"
     },
     {
       "id": "plain_language", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
