@@ -319,6 +319,7 @@ struct AccountView: View {
         } message: {
             Text("This permanently erases your account, your private backup, and every session and message you've shared. This cannot be undone.")
         }
+    }
 
     // MARK: - Helpers
 
