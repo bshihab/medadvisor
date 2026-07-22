@@ -46,6 +46,9 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     private static let userDeletedKey = "modelDeletedByUser"
     private static let expectedTotalKey = "modelExpectedTotalBytes"
+    // The user must opt in once (first-run disclosure) before the ~4.4GB model
+    // auto-downloads — it no longer starts silently at first launch.
+    private static let optedInKey = "modelDownloadOptedIn"
 
     // Transfer state (touched only on the session's serial delegate queue).
     private var task: URLSessionDataTask?
@@ -138,6 +141,9 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             }
             return
         }
+        // Don't auto-start until the user has opted in via the first-run
+        // disclosure (or by tapping Download in Settings / on the record screen).
+        guard UserDefaults.standard.bool(forKey: Self.optedInKey) else { return }
         startDownload()
     }
 
@@ -157,6 +163,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             return
         }
         UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
+        UserDefaults.standard.set(true, forKey: Self.optedInKey)   // starting = opted in
         DispatchQueue.main.async {
             guard !self.isDownloading else { return }
             self.isDownloading = true

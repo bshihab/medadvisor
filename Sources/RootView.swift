@@ -27,12 +27,30 @@ enum Appearance: String, CaseIterable, Identifiable {
 struct RootView: View {
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
+    @AppStorage("modelDownloadSeen") private var modelDownloadSeen = false
     @ObservedObject private var account = AccountStore.shared
+    @State private var showDownloadDisclosure = false
 
     var body: some View {
         tabs
             .memoryHUD(showMemoryHUD)
             .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme ?? nil)
+            .onAppear {
+                // First-run disclosure: the ~4.4GB model no longer downloads
+                // silently — the user opts in here (or later in Settings).
+                if !modelDownloadSeen && !ModelDownloader.shared.isDownloaded {
+                    showDownloadDisclosure = true
+                }
+            }
+            .alert("Download the AI model", isPresented: $showDownloadDisclosure) {
+                Button("Download now") {
+                    modelDownloadSeen = true
+                    ModelDownloader.shared.startDownload()
+                }
+                Button("Later", role: .cancel) { modelDownloadSeen = true }
+            } message: {
+                Text("MedAdvisor needs a one-time ~4.4 GB AI model to score consultations privately on your device. It downloads over Wi-Fi only and never leaves your phone. You can also start this anytime from Settings.")
+            }
     }
 
     private var tabs: some View {

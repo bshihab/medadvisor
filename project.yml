@@ -95,6 +95,22 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         SKIP_INSTALL: NO
 
+  # Unit tests for the pure logic the product's correctness + privacy rest on
+  # (parser, redactor). Run in Xcode (Cmd-U) or `xcodebuild test` on the Air.
+  MedAdvisorTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+    dependencies:
+      - target: MedAdvisor
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: app.medadvisor.MedAdvisorTests
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+
 # NOTE: the Background Assets delivery path (ModelAssetsDownloader extension +
 # BA* Info.plist keys) was removed from the build after the OS daemon proved
 # unreliable (downloads that park, progress lost on force-quit). The packaging

@@ -74,23 +74,36 @@ final class EncounterProcessor: ObservableObject {
         //    pauses — which is where speakers change — so those are far better
         //    boundaries than re-transcribing the file into a flat blob and
         //    guessing sentence breaks (that flattening is what glued a doctor
-        //    question onto the patient's answer). Fall back to re-transcribing
-        //    the file only when there's no live transcript (e.g. live failed).
+        //    question onto the patient's answer).
+        //
+        //    BUT the live stream can silently miss the opening/middle (it starts
+        //    asynchronously and can die mid-recording), which would score the
+        //    doctor against a partial transcript. So we ALSO transcribe the file
+        //    (the complete post-hoc pass) and only trust the live transcript when
+        //    it's about as complete as the file; otherwise the live stream
+        //    dropped content and we use the file, which covers the whole recording.
         stage = .transcribing
         BenchmarkRecorder.shared.markStage("transcribing")
         let liveUtterances = liveSegments
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
+        let liveText = liveUtterances.joined(separator: " ")
+        let fileResult = (try? await transcriber.transcribe(url: url))
+            ?? TranscriptResult(text: "", segments: [])
+        let fileText = fileResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+
         let utterances: [String]
         let flatTranscript: String
-        if liveUtterances.count >= 2 {
+        let liveLooksComplete = liveUtterances.count >= 2
+            && liveText.count >= Int(Double(fileText.count) * 0.85)
+        if liveLooksComplete {
             utterances = liveUtterances
-            flatTranscript = liveUtterances.joined(separator: " ")
+            flatTranscript = liveText
         } else {
-            let fileResult = (try? await transcriber.transcribe(url: url))
-                ?? TranscriptResult(text: "", segments: [])
-            flatTranscript = fileResult.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            // Live was absent or clearly short of the full recording — use the
+            // file transcription (complete, if coarser-segmented).
             utterances = SpeakerAttribution.utterances(from: fileResult)
+            flatTranscript = fileText
         }
         guard !flatTranscript.isEmpty else {
             stage = .error("No speech was captured. Try recording again, a bit closer to the mic.")
@@ -160,6 +173,7 @@ final class EncounterProcessor: ObservableObject {
             let sharedPrefix = PromptBuilder.scoringPrefix(transcript: redactedTranscript)
             BenchmarkRecorder.shared.markStage("scoring")
             for (index, criterion) in rubric.criteria.enumerated() {
+                try Task.checkCancellation()   // Cancel button unwinds here between criteria
                 stage = .scoring(done: index, total: total)
                 let t0 = Date()
 
@@ -224,6 +238,10 @@ final class EncounterProcessor: ObservableObject {
 
             stage = .done(ConsultationFeedback(perCriterion: results, summary: summary))
             BenchmarkRecorder.shared.end(success: true)
+        } catch is CancellationError {
+            // User tapped Cancel — unwind quietly to idle (no error banner).
+            stage = .idle
+            BenchmarkRecorder.shared.end(success: false)
         } catch {
             // Full error, not just localizedDescription — the underlying type
             // and payload are what actually diagnose a generation failure.

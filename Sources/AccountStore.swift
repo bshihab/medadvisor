@@ -63,6 +63,17 @@ final class AccountStore: ObservableObject {
                 if user == nil {
                     self?.org = nil
                 } else {
+                    // ORDER MATTERS — do not reshuffle:
+                    //  1. refreshMe first so `org`/`uid` claims are current before
+                    //     anything reads them.
+                    //  2. SessionShare.restore BEFORE PrivateBackup.restore:
+                    //     mergeRestored keeps the first copy of a session id, and
+                    //     the shared copy carries `sharedAt` (needed so the delete
+                    //     flow offers "Delete everywhere"); the backup copy has no
+                    //     sharedAt, so restoring it first would mask that a mentor
+                    //     already has the session.
+                    //  3. syncPending after both restores so we don't re-upload a
+                    //     session the restore just re-added.
                     await self?.refreshMe()
                     await SessionShare.restore()   // shared-session history (silent)
                     await PrivateBackup.restore()  // private backup history (silent)

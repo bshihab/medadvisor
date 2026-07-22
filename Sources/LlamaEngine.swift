@@ -26,7 +26,14 @@ final class LlamaEngine: InferenceEngine {
     func ensureLoaded(progress: @escaping (Double) -> Void) async throws {
         if llama != nil { return }
         let modelURL = try await ModelDownloader.shared.ensureModel(onProgress: progress)
-        llama = try LlamaContext(modelPath: modelURL.path)
+        // Build the context OFF the main actor: LlamaContext.init loads a ~4.3GB
+        // model and allocates the Metal context + KV cache (multi-second), which
+        // froze the UI when it ran on @MainActor. LlamaContext is @unchecked
+        // Sendable, so we construct it on a background task and hop the result back.
+        let path = modelURL.path
+        llama = try await Task.detached(priority: .userInitiated) {
+            try LlamaContext(modelPath: path)
+        }.value
     }
 
     func generate(prompt: String,

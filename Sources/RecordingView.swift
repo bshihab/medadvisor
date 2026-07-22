@@ -16,6 +16,7 @@ struct RecordingView: View {
     @State private var savedRecord: ConsultationRecord?
     @State private var consentConfirmed = false
     @State private var showConsentDialog = false
+    @State private var processingTask: Task<Void, Never>?
 
     private var rubric: Rubric? { RubricLoader.load(for: location) }
     /// Whether the ACTIVE engine's model is present — llama needs the downloaded
@@ -78,11 +79,14 @@ struct RecordingView: View {
             processor.reset()
         }) {
             if case .done(let feedback) = processor.stage, let rubric {
+                // Do NOT auto-open the share cover — the trainee reads their
+                // feedback first, then taps the prominent "Share with my mentor"
+                // button when ready (consent-first, not share-first).
                 FeedbackView(feedback: feedback, rubric: rubric,
                              transcript: processor.redactedTranscript,
                              turns: processor.transcriptTurns.isEmpty ? nil : processor.transcriptTurns,
                              record: savedRecord,
-                             promptShareOnAppear: true)
+                             promptShareOnAppear: false)
             }
         }
         .alert("Microphone access needed", isPresented: $recorder.permissionDenied) {
@@ -431,6 +435,10 @@ struct RecordingView: View {
                 .glassHairline(22)
                 .padding(.horizontal)
             stageExtra
+            Button(role: .cancel) { cancelProcessing() } label: {
+                Text("Cancel").font(.subheadline.weight(.medium))
+            }
+            .padding(.top, 4)
             Spacer(minLength: 0)
         }
         .animation(.smooth(duration: 0.35), value: stageIndex)
@@ -496,12 +504,13 @@ struct RecordingView: View {
 
     private func runProcessing(url: URL) {
         guard let rubric else { return }
-        Task {
+        processingTask = Task {
             // Hand over the live transcript's pause-segmented lines — Apple's
             // streaming engine already split them at natural pauses (where
             // speakers change), which beats re-flattening the audio.
             await processor.process(url: url, rubric: rubric,
                                     liveSegments: recorder.liveLines.map(\.text))
+            if Task.isCancelled { return }
             if case .done(let feedback) = processor.stage {
                 let record = ConsultationRecord(
                     id: UUID().uuidString,
@@ -518,6 +527,15 @@ struct RecordingView: View {
                 showFeedback = true
             }
         }
+    }
+
+    /// Abort an in-flight analysis (Cancel button). The pipeline checks
+    /// cancellation between criteria and unwinds to idle; the recording is kept
+    /// so the user can retry (the launch sweep removes it if truly abandoned).
+    private func cancelProcessing() {
+        processingTask?.cancel()
+        processingTask = nil
+        processor.reset()
     }
 
     private func toggleRecording() {
