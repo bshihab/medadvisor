@@ -237,11 +237,11 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         if mirrorIndex + 1 < mirrors.count {
             mirrorIndex += 1
             retriesLeft = 3
-            // Switching mirrors: DON'T resume across files — a different mirror's
-            // bytes spliced onto ours would corrupt the GGUF. Start this mirror
-            // fresh. (The final SHA-256 check, once pinned, is the backstop.)
-            try? FileManager.default.removeItem(at: partialURL)
-            baseOffset = 0
+            // Resume from the partial on the next mirror — the file is byte-
+            // identical across mirrors, so this preserves progress (deleting it
+            // here made a transient R2 stall during backgrounding restart the
+            // whole download from 0). The pinned SHA-256 check at completion is
+            // the backstop against the rare case a mirror serves a different file.
             beginAttempt()
             return
         }
