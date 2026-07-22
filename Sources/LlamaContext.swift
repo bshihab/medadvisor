@@ -57,11 +57,14 @@ public final class LlamaContext: @unchecked Sendable {
             throw NSError(domain: "LlamaError", code: 3,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to create sampler chain"])
         }
+        // DETERMINISTIC scoring: greedy (argmax) so the same recording always
+        // produces the same scores — protects the faculty-agreement metric from
+        // sampler noise. Strictly LESS work than the old top-k/top-p/temp/dist
+        // chain (no distribution sampling), and it touches neither memory nor
+        // Metal kernels. Sole re-applied change from the reverted perf batch;
+        // device-tested in isolation per the one-change-at-a-time rule.
         llama_sampler_chain_add(sampler, llama_sampler_init_penalties(64, 1.1, 0.0, 0.0))
-        llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40))
-        llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9, 1))
-        llama_sampler_chain_add(sampler, llama_sampler_init_temp(0.3))
-        llama_sampler_chain_add(sampler, llama_sampler_init_dist(UInt32.random(in: 1...UInt32.max)))
+        llama_sampler_chain_add(sampler, llama_sampler_init_greedy())
 
         self.model = model
         self.vocab = vocab
