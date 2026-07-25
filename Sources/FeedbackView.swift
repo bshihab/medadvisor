@@ -31,6 +31,11 @@ struct FeedbackView: View {
         record != nil && record?.sharedAt == nil && !sharedNow
     }
 
+    /// This session currently has a copy on the mentor's dashboard.
+    private var isShared: Bool {
+        record != nil && ((record?.sharedAt != nil) || sharedNow)
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -42,6 +47,31 @@ struct FeedbackView: View {
                             .frame(maxWidth: .infinity, minHeight: 30)
                     }
                     .buttonStyle(.borderedProminent)
+                    .padding([.horizontal, .top])
+                } else if isShared, account.org != nil, tab == .feedback {
+                    // Sharing status is actionable where you'd actually look for
+                    // it — the session itself — instead of only being findable
+                    // in Account. Taps through to the same retraction panel.
+                    NavigationLink {
+                        SharedWithMentorView()
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("Shared with your mentor")
+                                    .font(.subheadline.weight(.semibold))
+                                Text("Manage what they can see")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption).foregroundStyle(.tertiary)
+                        }
+                        .padding(12)
+                        .background(Color.green.opacity(0.12),
+                                    in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
                     .padding([.horizontal, .top])
                 }
                 if hasTranscript {
@@ -61,7 +91,9 @@ struct FeedbackView: View {
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if record != nil, !canShare {
+                // The feedback tab shows an actionable "Shared with your mentor"
+                // banner instead; keep a passive marker on the transcript tab.
+                if isShared, tab == .transcript {
                     Label("Shared ✓", systemImage: "checkmark.seal")
                         .font(.caption).foregroundStyle(.green)
                 }
