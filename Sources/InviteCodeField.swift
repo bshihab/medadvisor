@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// Segmented invite-code entry: one box per character, like a verification code.
 /// Codes are ALWAYS 8 characters from A–Z/2–9 minus lookalikes (no I, O, 0, 1),
@@ -22,23 +21,27 @@ struct InviteCodeField: View {
 
     private var characters: [Character] { Array(code) }
 
-    /// A complete, valid-looking code sitting on the clipboard (if any).
-    private var clipboardCode: String? {
-        guard UIPasteboard.general.hasStrings,
-              let raw = UIPasteboard.general.string else { return nil }
-        let cleaned = sanitize(raw)
-        return cleaned.count == length ? cleaned : nil
-    }
-
-    private func pasteFromClipboard() {
-        guard let raw = UIPasteboard.general.string else { return }
-        let cleaned = sanitize(raw)
-        guard !cleaned.isEmpty else { return }
-        code = cleaned
-        focused = false
-    }
-
     var body: some View {
+        VStack(spacing: 8) {
+            boxes
+            // SwiftUI's PasteButton hands us the string only when the user taps
+            // it, so the clipboard is never read during rendering — that read is
+            // what made iOS show an unprompted "allow paste?" alert on open. It
+            // also means we never display clipboard contents on screen.
+            PasteButton(payloadType: String.self) { strings in
+                guard let raw = strings.first else { return }
+                Task { @MainActor in
+                    code = sanitize(raw)
+                    focused = false
+                }
+            }
+            .labelStyle(.titleAndIcon)
+            .buttonBorderShape(.capsule)
+            .controlSize(.small)
+        }
+    }
+
+    private var boxes: some View {
         ZStack {
             // Invisible but focusable — .opacity(0) still accepts input, while
             // .hidden() would remove it from the hierarchy entirely.
@@ -59,25 +62,6 @@ struct InviteCodeField: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { focused = true }
-        // Codes arrive by text/email, so pasting must work. The hidden field
-        // can't surface the system paste menu through the boxes, so offer it
-        // explicitly (long-press for the menu, and a visible button below).
-        .contextMenu {
-            Button("Paste", systemImage: "doc.on.clipboard") { pasteFromClipboard() }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if code.count < length, let pasteable = clipboardCode, !pasteable.isEmpty {
-                Button {
-                    pasteFromClipboard()
-                } label: {
-                    Label("Paste \(pasteable)", systemImage: "doc.on.clipboard")
-                        .font(.caption.weight(.semibold))
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .offset(y: 34)
-            }
-        }
         .accessibilityElement()
         .accessibilityLabel("Invite code")
         .accessibilityValue(code.isEmpty ? "empty" : code.map(String.init).joined(separator: " "))
