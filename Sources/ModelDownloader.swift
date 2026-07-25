@@ -25,14 +25,19 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     ]
     private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
 
-    /// Expected SHA-256 of the GGUF, lowercase hex. When set, a completed
-    /// download is verified before it's accepted — this is the supply-chain
-    /// guard: a re-uploaded/tampered mirror, or a cross-mirror resume splice,
-    /// can't hand a corrupt or malicious 4.3 GB blob to llama.cpp (which then
-    /// processes PHI). nil = NOT PINNED YET → verification is skipped with a
-    /// loud log. TODO(Bilal): pin this. Compute once on the built file:
-    ///   shasum -a 256 Qwen2.5-7B-Instruct-Q4_K_M.gguf
-    private static let expectedSHA256: String? = nil
+    /// Expected SHA-256 of the GGUF, lowercase hex. A completed download is
+    /// verified against this before it's accepted — the supply-chain guard: a
+    /// re-uploaded/tampered mirror, a corrupted transfer, or a cross-mirror
+    /// resume splice can't hand a bad 4.3 GB blob to llama.cpp (which then
+    /// processes PHI on-device).
+    ///
+    /// Verified 2026-07-25 from TWO independent sources that agree:
+    ///   • streamed from the R2 mirror and hashed locally
+    ///   • bartowski/Qwen2.5-7B-Instruct-GGUF LFS oid published by HuggingFace
+    /// Size: 4,683,074,240 bytes. Re-pin (both sources) if the model is ever
+    /// re-quantized or replaced.
+    private static let expectedSHA256: String? =
+        "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423"
 
     /// Live download state (observed by Settings).
     @Published private(set) var progress: Double = 0
