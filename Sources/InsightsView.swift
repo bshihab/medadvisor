@@ -259,13 +259,26 @@ struct InsightsView: View {
         let skillAreas = SkillAreas.from(records: FeedbackStore.shared.visibleRecords
             .filter { $0.date >= insights.fromDate && $0.date <= insights.toDate })
         if !skillAreas.isEmpty {
-            card {
-                Text("By skill area")
-                    .font(.subheadline.weight(.bold))
-                Text("Latest score per skill, and how it's moved across these sessions")
-                    .font(.caption).foregroundStyle(.secondary)
-                SkillAreaChart(areas: skillAreas)
+            // Tapping opens the expanded per-skill charts (scrub to a session,
+            // see met/partial/missed, jump to it) — the detail view existed but
+            // nothing navigated to it, so it was unreachable.
+            NavigationLink {
+                SkillAreasDetailView(title: "By skill area", areas: skillAreas)
+            } label: {
+                card {
+                    HStack {
+                        Text("By skill area")
+                            .font(.subheadline.weight(.bold))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption).foregroundStyle(.tertiary)
+                    }
+                    Text("Latest score per skill — tap to explore each one session by session")
+                        .font(.caption).foregroundStyle(.secondary)
+                    SkillAreaChart(areas: skillAreas)
+                }
             }
+            .buttonStyle(.plain)
         }
 
         // Narrative
