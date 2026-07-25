@@ -89,25 +89,42 @@ final class FeedbackStore: ObservableObject {
         save(records[idx])
     }
 
-    /// Sessions recorded while signed out (no owner yet).
+    /// Sessions recorded while signed out and not already declined by the user.
+    ///
+    /// Ownership policy (driven by RootView): if this is the ONLY account that
+    /// has ever signed in on this device, these are unambiguously the user's own
+    /// and get claimed automatically — which also makes them backup-eligible and
+    /// wipeable, neither of which unowned records are. If a DIFFERENT account has
+    /// used this device, ownership is genuinely ambiguous and we ask, because
+    /// auto-claiming would upload someone else's recordings into this account's
+    /// private cloud backup. (Asking is only meaningful in that second case; as a
+    /// blanket prompt it was unenforceable theater.)
     var anonymousRecords: [ConsultationRecord] {
-        records.filter { $0.ownerUid == nil }
+        let declined = Self.declinedClaims()
+        return records.filter { $0.ownerUid == nil && !declined.contains($0.id) }
     }
 
-    /// Take ownership of the signed-out sessions on sign-in.
-    ///
-    /// This is done automatically, NOT via a "only claim these if they're yours"
-    /// prompt: that question is unenforceable (anyone can answer yes) and it
-    /// protects nothing, because an unowned record is visible to ANYONE who
-    /// simply signs out. Claiming is therefore strictly BETTER for privacy —
-    /// once owned, a record is scoped to that account and disappears from
-    /// signed-out view. Wiping a shared device stays an explicit, separate
-    /// action ("Remove my data from this device").
+    /// Take ownership of the signed-out sessions (skipping any already declined).
     func claimAnonymous(for uid: String) {
-        for index in records.indices where records[index].ownerUid == nil {
+        let declined = Self.declinedClaims()
+        for index in records.indices
+        where records[index].ownerUid == nil && !declined.contains(records[index].id) {
             records[index].ownerUid = uid
             save(records[index])
         }
+    }
+
+    /// Remember a "keep separate" answer so the ambiguous prompt doesn't nag.
+    func declineClaim() {
+        var declined = Self.declinedClaims()
+        declined.formUnion(records.filter { $0.ownerUid == nil }.map(\.id))
+        UserDefaults.standard.set(Array(declined), forKey: Self.declinedClaimsKey)
+        objectWillChange.send()
+    }
+
+    private static let declinedClaimsKey = "anonymousClaimDeclined"
+    private static func declinedClaims() -> Set<String> {
+        Set(UserDefaults.standard.stringArray(forKey: declinedClaimsKey) ?? [])
     }
 
     /// Clear the shared stamp after the mentor's copy is retracted, so the local
