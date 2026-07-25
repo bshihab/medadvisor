@@ -224,8 +224,16 @@ struct TraineeChatScreen: View {
         .navigationTitle("Mentor chat")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            notesStore.markAllSeen()
-            await notesStore.refresh()
+            // Poll while this screen is on-screen so a mentor's reply lands
+            // without leaving and re-entering the chat. SwiftUI cancels .task on
+            // disappear, which ends the loop. Mark-seen runs AFTER each fetch, so
+            // we only clear the badge for messages actually on screen (the old
+            // order pre-marked notes that arrived in the same refresh).
+            while !Task.isCancelled {
+                await notesStore.refresh()
+                notesStore.markAllSeen()
+                try? await Task.sleep(for: .seconds(10))
+            }
         }
         .sheet(item: $openedRecord) { record in
             if let location = record.location, let rubric = RubricLoader.load(for: location) {

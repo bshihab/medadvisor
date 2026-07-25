@@ -89,6 +89,14 @@ final class FeedbackStore: ObservableObject {
         save(records[idx])
     }
 
+    /// Clear the shared stamp after the mentor's copy is retracted, so the local
+    /// record stops offering "Delete everywhere" for a copy that's already gone.
+    func markUnshared(_ id: String) {
+        guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
+        records[idx].sharedAt = nil
+        save(records[idx])
+    }
+
     /// Stamp a record as backed up to the owner's private cloud (persisted).
     func markBackedUp(_ id: String) {
         guard let idx = records.firstIndex(where: { $0.id == id }) else { return }

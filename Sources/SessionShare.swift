@@ -79,6 +79,40 @@ enum SessionShare {
         try await AccountStore.shared.callVoid("v1/sessions/\(clientSessionId)", method: "DELETE")
     }
 
+    // MARK: - What the mentor currently has
+
+    /// One row of "Shared with your mentor" — the SERVER's truth about what the
+    /// mentor can see right now, so the trainee can always review and retract,
+    /// even from a new phone or after deleting their local copy.
+    struct SharedSummary: Identifiable {
+        let clientSessionId: String
+        let recordedAt: Date?
+        let location: String?
+        let met: Int
+        let applicable: Int
+        var id: String { clientSessionId }
+    }
+
+    /// Fetch the caller's currently-shared sessions for review/retraction.
+    @MainActor
+    static func fetchShared() async throws -> [SharedSummary] {
+        let reply: RestoreReply = try await AccountStore.shared.call(
+            "v1/me/sessions", method: "GET", body: Optional<Int>.none)
+        return reply.sessions.compactMap { s in
+            guard let id = s.clientSessionId else { return nil }
+            let items = s.criteria ?? []
+            let applicable = items.filter { $0.result != "na" }.count
+            let met = items.filter { $0.result == "met" }.count
+            return SharedSummary(
+                clientSessionId: id,
+                recordedAt: s.recordedAt.flatMap(parseDate),
+                location: s.location,
+                met: met,
+                applicable: applicable)
+        }
+        .sorted { ($0.recordedAt ?? .distantPast) > ($1.recordedAt ?? .distantPast) }
+    }
+
     // MARK: - Cross-device restore
 
     private struct RestoredSession: Decodable {

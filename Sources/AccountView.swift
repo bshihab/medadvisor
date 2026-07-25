@@ -233,6 +233,14 @@ struct AccountView: View {
                 if org.role == "admin" {
                     Label("Your cohort lives in the Cohort tab", systemImage: "person.2")
                         .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    // Always-available retraction: what the mentor can see is
+                    // reviewable/removable here regardless of local copies.
+                    NavigationLink {
+                        SharedWithMentorView()
+                    } label: {
+                        Label("Shared with your mentor", systemImage: "eye")
+                    }
                 }
             }
         } else {
