@@ -245,14 +245,25 @@ struct AccountView: View {
             }
         } else {
             Section {
-                TextField("Invite code", text: $joinCode)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .font(.body.monospaced())
-                Button("Join") {
-                    run { try await account.redeem(code: joinCode) }
+                VStack(spacing: 14) {
+                    InviteCodeField(code: $joinCode)
+                    Button {
+                        run { try await account.redeem(code: joinCode) }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if busy { ProgressView() } else { Text("Join program").bold() }
+                            Spacer()
+                        }
+                        .frame(minHeight: 30)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    // Codes are always 8 chars — the button stays visibly
+                    // disabled until a complete one is entered.
+                    .disabled(busy || joinCode.count < 8)
                 }
-                .disabled(busy || joinCode.trimmingCharacters(in: .whitespaces).count < 4)
+                .padding(.vertical, 6)
+                .listRowBackground(Color.clear)
             } header: {
                 Text("Join my program")
             } footer: {

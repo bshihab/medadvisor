@@ -40,7 +40,10 @@ struct ShareWithMentorView: View {
                 } else if shared {
                     done
                 } else {
-                    review
+                    VStack(spacing: 0) {
+                        review
+                        shareBar
+                    }
                 }
             }
             .navigationTitle("Share with mentor")
@@ -144,23 +147,35 @@ struct ShareWithMentorView: View {
                 Text("Scores and the improvement tips are always included. Edit or remove any quote — removing a quote never changes the score.")
             }
 
-            if let errorMessage {
-                Section { Text(errorMessage).font(.caption).foregroundStyle(.red) }
-            }
-
-            Section {
-                Button {
-                    share()
-                } label: {
-                    HStack {
-                        Spacer()
-                        if busy { ProgressView() } else { Text("Share with \(account.org?.name ?? "mentor")").bold() }
-                        Spacer()
-                    }
-                }
-                .disabled(busy)
-            }
         }
+    }
+
+    /// The Share action is PINNED below the form: the review list runs to 16
+    /// criteria, so a button at the bottom of the scroll meant hunting for it
+    /// (and made the primary action feel hidden at the moment of consent).
+    private var shareBar: some View {
+        VStack(spacing: 8) {
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption).foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Button {
+                share()
+            } label: {
+                HStack {
+                    Spacer()
+                    if busy { ProgressView() } else { Text("Share with \(account.org?.name ?? "mentor")").bold() }
+                    Spacer()
+                }
+                .frame(minHeight: 32)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(busy)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(.bar)
     }
 
     // MARK: - Logic

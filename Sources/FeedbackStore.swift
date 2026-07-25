@@ -89,6 +89,35 @@ final class FeedbackStore: ObservableObject {
         save(records[idx])
     }
 
+    /// Sessions recorded while signed out. They belong to whoever was holding
+    /// the phone, which we can't know — so they're offered to the signing-in user
+    /// rather than silently absorbed (a shared clinic device must not hand one
+    /// trainee another's recordings).
+    var anonymousRecords: [ConsultationRecord] {
+        records.filter { $0.ownerUid == nil && !Self.declinedClaims().contains($0.id) }
+    }
+
+    /// Take ownership of the signed-out sessions — they join the user's history
+    /// and become eligible for private backup.
+    func claimAnonymous(for uid: String) {
+        for index in records.indices where records[index].ownerUid == nil {
+            records[index].ownerUid = uid
+            save(records[index])
+        }
+    }
+
+    /// Remember a "keep separate" answer so we don't re-ask on every sign-in.
+    func declineClaim() {
+        var declined = Self.declinedClaims()
+        declined.formUnion(records.filter { $0.ownerUid == nil }.map(\.id))
+        UserDefaults.standard.set(Array(declined), forKey: Self.declinedClaimsKey)
+    }
+
+    private static let declinedClaimsKey = "anonymousClaimDeclined"
+    private static func declinedClaims() -> Set<String> {
+        Set(UserDefaults.standard.stringArray(forKey: declinedClaimsKey) ?? [])
+    }
+
     /// Clear the shared stamp after the mentor's copy is retracted, so the local
     /// record stops offering "Delete everywhere" for a copy that's already gone.
     func markUnshared(_ id: String) {

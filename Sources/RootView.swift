@@ -30,6 +30,8 @@ struct RootView: View {
     @AppStorage("modelDownloadSeen") private var modelDownloadSeen = false
     @ObservedObject private var account = AccountStore.shared
     @State private var showDownloadDisclosure = false
+    @State private var claimCount = 0
+    @State private var showClaimPrompt = false
 
     var body: some View {
         tabs
@@ -50,6 +52,27 @@ struct RootView: View {
                 Button("Later", role: .cancel) { modelDownloadSeen = true }
             } message: {
                 Text("MedAdvisor needs a one-time ~4.4 GB AI model to score consultations privately on your device. It downloads over Wi-Fi only and never leaves your phone. You can also start this anytime from Settings.")
+            }
+            // Sessions recorded before signing in aren't silently absorbed into
+            // whoever signs in (a shared device would hand over someone else's
+            // recordings) — but they shouldn't seem to vanish either. Ask.
+            .onChange(of: account.uid) { _, uid in
+                guard uid != nil else { return }
+                let pending = FeedbackStore.shared.anonymousRecords.count
+                if pending > 0 {
+                    claimCount = pending
+                    showClaimPrompt = true
+                }
+            }
+            .alert("Add your earlier sessions?", isPresented: $showClaimPrompt) {
+                Button("Add to my account") {
+                    if let uid = account.uid { FeedbackStore.shared.claimAnonymous(for: uid) }
+                }
+                Button("Keep separate", role: .cancel) {
+                    FeedbackStore.shared.declineClaim()
+                }
+            } message: {
+                Text("\(claimCount) session\(claimCount == 1 ? " was" : "s were") recorded on this device before you signed in. Add \(claimCount == 1 ? "it" : "them") to your account so \(claimCount == 1 ? "it appears" : "they appear") in your history and back up? Only do this if \(claimCount == 1 ? "it's" : "they're") yours.")
             }
     }
 
