@@ -53,26 +53,22 @@ struct RootView: View {
             } message: {
                 Text("MedAdvisor needs a one-time ~4.4 GB AI model to score consultations privately on your device. It downloads over Wi-Fi only and never leaves your phone. You can also start this anytime from Settings.")
             }
-            // Sessions recorded before signing in aren't silently absorbed into
-            // whoever signs in (a shared device would hand over someone else's
-            // recordings) — but they shouldn't seem to vanish either. Ask.
+            // Sessions recorded before signing in follow you into the account
+            // automatically — no honor-system prompt (see claimAnonymous: it
+            // can't be enforced and claiming actually REDUCES exposure). We just
+            // tell the user it happened.
             .onChange(of: account.uid) { _, uid in
-                guard uid != nil else { return }
+                guard let uid else { return }
                 let pending = FeedbackStore.shared.anonymousRecords.count
-                if pending > 0 {
-                    claimCount = pending
-                    showClaimPrompt = true
-                }
+                guard pending > 0 else { return }
+                FeedbackStore.shared.claimAnonymous(for: uid)
+                claimCount = pending
+                showClaimPrompt = true
             }
-            .alert("Add your earlier sessions?", isPresented: $showClaimPrompt) {
-                Button("Add to my account") {
-                    if let uid = account.uid { FeedbackStore.shared.claimAnonymous(for: uid) }
-                }
-                Button("Keep separate", role: .cancel) {
-                    FeedbackStore.shared.declineClaim()
-                }
+            .alert("Earlier sessions added", isPresented: $showClaimPrompt) {
+                Button("OK", role: .cancel) {}
             } message: {
-                Text("\(claimCount) session\(claimCount == 1 ? " was" : "s were") recorded on this device before you signed in. Add \(claimCount == 1 ? "it" : "them") to your account so \(claimCount == 1 ? "it appears" : "they appear") in your history and back up? Only do this if \(claimCount == 1 ? "it's" : "they're") yours.")
+                Text("\(claimCount) session\(claimCount == 1 ? "" : "s") you recorded before signing in \(claimCount == 1 ? "is" : "are") now in your history, and \(claimCount == 1 ? "it's" : "they're") only visible to you.")
             }
     }
 

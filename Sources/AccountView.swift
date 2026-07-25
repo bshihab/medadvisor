@@ -261,6 +261,15 @@ struct AccountView: View {
                     // Codes are always 8 chars — the button stays visibly
                     // disabled until a complete one is entered.
                     .disabled(busy || joinCode.count < 8)
+
+                    // A rejected code used to fail silently here: `run` set
+                    // errorMessage but this section never rendered it.
+                    if let errorMessage {
+                        Label(errorMessage, systemImage: "exclamationmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
                 .padding(.vertical, 6)
                 .listRowBackground(Color.clear)

@@ -89,33 +89,25 @@ final class FeedbackStore: ObservableObject {
         save(records[idx])
     }
 
-    /// Sessions recorded while signed out. They belong to whoever was holding
-    /// the phone, which we can't know — so they're offered to the signing-in user
-    /// rather than silently absorbed (a shared clinic device must not hand one
-    /// trainee another's recordings).
+    /// Sessions recorded while signed out (no owner yet).
     var anonymousRecords: [ConsultationRecord] {
-        records.filter { $0.ownerUid == nil && !Self.declinedClaims().contains($0.id) }
+        records.filter { $0.ownerUid == nil }
     }
 
-    /// Take ownership of the signed-out sessions — they join the user's history
-    /// and become eligible for private backup.
+    /// Take ownership of the signed-out sessions on sign-in.
+    ///
+    /// This is done automatically, NOT via a "only claim these if they're yours"
+    /// prompt: that question is unenforceable (anyone can answer yes) and it
+    /// protects nothing, because an unowned record is visible to ANYONE who
+    /// simply signs out. Claiming is therefore strictly BETTER for privacy —
+    /// once owned, a record is scoped to that account and disappears from
+    /// signed-out view. Wiping a shared device stays an explicit, separate
+    /// action ("Remove my data from this device").
     func claimAnonymous(for uid: String) {
         for index in records.indices where records[index].ownerUid == nil {
             records[index].ownerUid = uid
             save(records[index])
         }
-    }
-
-    /// Remember a "keep separate" answer so we don't re-ask on every sign-in.
-    func declineClaim() {
-        var declined = Self.declinedClaims()
-        declined.formUnion(records.filter { $0.ownerUid == nil }.map(\.id))
-        UserDefaults.standard.set(Array(declined), forKey: Self.declinedClaimsKey)
-    }
-
-    private static let declinedClaimsKey = "anonymousClaimDeclined"
-    private static func declinedClaims() -> Set<String> {
-        Set(UserDefaults.standard.stringArray(forKey: declinedClaimsKey) ?? [])
     }
 
     /// Clear the shared stamp after the mentor's copy is retracted, so the local
