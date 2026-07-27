@@ -36,3 +36,28 @@ context/
 # Local llama package build artifacts
 llama-binary/.build/
 llama-binary/.swiftpm/
+tools/adapter-training/
+
+# ── on-device model experiment (ane-experiment) ────────────────────────────
+# Apple's adapter-training toolkit: 8.3GB, and its model assets are licensed
+# for local adapter training only. Re-download from developer.apple.com.
+# (already ignored above: tools/adapter-training/)
+
+# Trained LoRA weights — 279MB, reproducible from gen_finetune_dataset.py +
+# the documented mlx_lm.lora command in FM-RESULTS.md.
+tools/llm-benchmark/adapters/
+
+# Python venvs and caches
+tools/*/.venv/
+tools/*/__pycache__/
+tools/**/__pycache__/
+
+# Generated datasets (reproducible: gen_*_dataset.py) and run logs
+tools/llm-benchmark/data/
+tools/llm-benchmark/*.log
+
+# The iOS probe's generated Xcode project (xcodegen generate)
+tools/ios-fm-probe/*.xcodeproj/
+
+# Compiled swiftc output (rebuilt automatically by bench_fm.py)
+tools/llm-benchmark/fm_runner/fm_runner_bin

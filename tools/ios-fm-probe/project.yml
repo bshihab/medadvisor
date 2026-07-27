@@ -1,0 +1,40 @@
+# Standalone probe target — NOT part of MedAdvisor. Generate with:
+#   cd tools/ios-fm-probe && xcodegen generate && open FMProbe.xcodeproj
+# Deliberately separate so the production app keeps deploymentTarget 26.0 and
+# never links FoundationModels (the packaging wall that made the old Core AI
+# branch unmergeable).
+name: FMProbe
+options:
+  bundleIdPrefix: com.medadvisor.probe
+  deploymentTarget:
+    iOS: "26.4"          # needs SystemLanguageModel.contextSize; runs on iOS 27
+  createIntermediateGroups: true
+
+targets:
+  FMProbe:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+      # NOT a folder reference: a blue folder is copied wholesale, so the JSON
+      # would land at FMProbe.app/Resources/bench_prompts.json and
+      # Bundle.main.url(forResource:withExtension:) — which searches the bundle
+      # root — would not find it. As a group, the file lands at the root.
+      - path: Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.medadvisor.probe.fm
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        # Required: without this the INFOPLIST_KEY_* settings below are ignored,
+        # no Info.plist is produced, and code signing fails.
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        # Set this to your team on the Air if Xcode complains about signing:
+        # DEVELOPMENT_TEAM: XXXXXXXXXX
