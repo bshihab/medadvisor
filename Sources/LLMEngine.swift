@@ -85,6 +85,23 @@ final class LLMEngine {
 
     func unload() { engine.unload() }
 
+    /// Switch which GGUF the engine runs. The loaded weights are dropped so the
+    /// next generation loads the newly selected model — without this the engine
+    /// would keep serving the previous model's weights until the app restarted.
+    ///
+    /// Refuses to switch mid-analysis: `inUseCount > 0` means a generation is in
+    /// flight, and unloading under it would abort scoring. Returns false so the
+    /// caller can tell the user to wait.
+    @discardableResult
+    func selectModel(_ model: LLMModel) -> Bool {
+        guard inUseCount == 0 else { return false }
+        guard model != LLMModel.selected else { return true }
+        LLMModel.selected = model
+        engine.unload()
+        ModelManager.shared.modelChanged()
+        return true
+    }
+
     /// Ensures the model is downloaded (first run, ~4.3GB) and loaded.
     /// `progress` reports the download fraction (0...1).
     func ensureLoaded(progress: @escaping (Double) -> Void = { _ in }) async throws {

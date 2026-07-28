@@ -4,6 +4,10 @@ import SwiftUI
 /// of and delete any managed model) and pick the transcription engine.
 struct SettingsView: View {
     @State private var confirmDelete: ManagedModel?
+    @State private var confirmDeleteLLM: LLMModel?
+    @State private var switchBlocked = false
+    /// Re-read on every `models.revision` bump so rows reflect the live choice.
+    @State private var selectedLLM: LLMModel = LLMModel.selected
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
@@ -28,6 +32,14 @@ struct SettingsView: View {
                     Text("On-device Models")
                 } footer: {
                     Text("Everything runs on your device, offline. The AI model downloads once (required to record); speech-to-text uses Apple's built-in on-device engine — no download.")
+                }
+
+                Section {
+                    ForEach(LLMModel.allCases) { llmRow($0) }
+                } header: {
+                    Text("AI Model")
+                } footer: {
+                    Text("Qwen 2.5-7B is the default and is what your feedback has been graded with. A second model is available to try — it is smaller and faster, but its feedback is still being evaluated, so treat anything it says as provisional. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
                 }
 
                 Section("Appearance") {
@@ -102,6 +114,32 @@ struct SettingsView: View {
             .onChange(of: benchmark.lastReportURL) { _, _ in savedRuns = benchmark.savedRuns() }
             .confirmationDialog("Delete this model?",
                                 isPresented: Binding(
+                                    get: { confirmDeleteLLM != nil },
+                                    set: { if !$0 { confirmDeleteLLM = nil } }),
+                                titleVisibility: .visible) {
+                if let m = confirmDeleteLLM {
+                    Button("Delete \(m.title)", role: .destructive) {
+                        // If the in-use model is deleted, fall back to the
+                        // default so the app is never pointed at a missing file.
+                        if m == LLMModel.selected, m != LLMModel.fallback {
+                            LLMEngine.shared.selectModel(.fallback)
+                            selectedLLM = .fallback
+                        }
+                        downloader.delete(m)
+                        confirmDeleteLLM = nil
+                    }
+                    Button("Cancel", role: .cancel) { confirmDeleteLLM = nil }
+                }
+            } message: {
+                Text("You can download it again later. The other model on your device is not affected.")
+            }
+            .alert("Analysis in progress", isPresented: $switchBlocked) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("The model can't be changed while a consultation is being analysed. Wait for it to finish, then try again.")
+            }
+            .confirmationDialog("Delete this model?",
+                                isPresented: Binding(
                                     get: { confirmDelete != nil },
                                     set: { if !$0 { confirmDelete = nil } }),
                                 titleVisibility: .visible) {
@@ -122,6 +160,71 @@ struct SettingsView: View {
         // Re-key the sheet content when the choice changes: switching to System
         // (nil) doesn't re-resolve an already-presented sheet without it.
         .id("appearance-\(appearance)")
+    }
+
+    /// One selectable GGUF. Download, select and delete are all per-model, so
+    /// no action here can touch a model the user already has on disk.
+    @ViewBuilder
+    private func llmRow(_ model: LLMModel) -> some View {
+        let installed = downloader.isDownloaded(model)   // depends on models.revision
+        let isSelected = selectedLLM == model
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(model.title).font(.headline)
+                        if isSelected {
+                            Text("IN USE")
+                                .font(.caption2.weight(.bold))
+                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                .background(.tint, in: Capsule())
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    Text(model.blurb).font(.caption).foregroundStyle(.secondary)
+                    Text(model.approxSize).font(.caption2).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(installed ? "Installed" : "Not installed")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(installed ? .green : .secondary)
+            }
+
+            HStack(spacing: 10) {
+                if !installed {
+                    if isSelected, downloader.isDownloading {
+                        ProgressView(value: downloader.progress)
+                        Text("\(Int(downloader.progress * 100))%")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        Button("Download (\(model.approxSize))") {
+                            // Selecting first points the downloader at this model.
+                            if LLMEngine.shared.selectModel(model) {
+                                selectedLLM = model
+                                downloader.startDownload()
+                            } else { switchBlocked = true }
+                        }
+                        .buttonStyle(.borderedProminent).controlSize(.small)
+                    }
+                } else if !isSelected {
+                    Button("Use this model") {
+                        if LLMEngine.shared.selectModel(model) { selectedLLM = model }
+                        else { switchBlocked = true }
+                    }
+                    .buttonStyle(.borderedProminent).controlSize(.small)
+                }
+
+                if installed {
+                    Button(role: .destructive) { confirmDeleteLLM = model } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .buttonStyle(.bordered).controlSize(.small)
+                    .disabled(isSelected && downloader.isDownloading)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+        .onChange(of: models.revision) { selectedLLM = LLMModel.selected }
     }
 
     @ViewBuilder
