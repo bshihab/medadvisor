@@ -17,11 +17,11 @@ Built in partnership with a medical director who teaches consultation skills; hi
 | Area | Decision | Rationale |
 |---|---|---|
 | **Platform** | iOS-first, native SwiftUI. Portable C++/MediaPipe AI core so Android is a UI shell, not a rewrite. | The risk is the on-device AI; cross-platform forces native AI bindings anyway, and Android fragmentation kills a 4B-model UX. If cross-platform later: Flutter, never React Native. |
-| **STT** | WhisperKit (CoreML Whisper); Apple `SFSpeechRecognizer` on-device for the first slice | Best on-device accuracy; Metal-accelerated |
-| **LLM** | **Gemma 3n** primary; **MedGemma 4B** in reserve for Stage-1 clinical comprehension; bench **Qwen2.5-7B** too | Knowledge externalized to the rubric → reward a strong mobile generalist. Pick final model by *agreement with the director's scores*, not the "med" label |
-| **PHI redaction** | Apple `NLTagger` (names/places/orgs) + regex (MRN, DOB, phone, address, SSN), before the LLM | Deterministic, auditable, no model to ship |
-| **RAG** | Hybrid: deterministic rubric selection by encounter type + long-context stuffing for structured checklists; lightweight vector RAG (EmbeddingGemma + sqlite-vec, or brute-force cosine) only for the unstructured slide corpus. **No LangChain/LlamaIndex on-device** | Semantic retrieval mis-ranks a tiny structured corpus; deterministic selection is more reliable |
-| **Storage** | SQLite + SQLCipher; keys in Secure Enclave / Keychain. Raw audio + raw transcript deleted after processing | Encrypted-at-rest; a lost phone leaks nothing meaningful |
+| **STT** | **Apple SpeechAnalyzer / `SpeechTranscriber`** (iOS 26), live streaming with pause-segmented lines; file re-transcription as the fallback | On-device, no model to ship. *(Supersedes the original WhisperKit plan — Apple's engine matched it without the 500 MB download.)* |
+| **LLM** | **Qwen2.5-7B-Instruct Q4_K_M** (GGUF, ~4.3 GB) via llama.cpp on Metal; greedy/deterministic sampling, `n_ctx` 6144 | Chosen on measured agreement, not the "med" label: Qwen scored 96% accuracy / 3.3% over-score vs MedGemma 4B's 53% over-score. *(Supersedes the original Gemma 3n plan.)* See `tools/llm-benchmark`. **Caveat: those numbers were measured on the MLX build, not the shipping GGUF — re-run pending.** |
+| **PHI redaction** | Apple `NLTagger` (names/places/orgs) + regex (SSN, dates, phone, email, MRN incl. numeric, ZIP+4, addresses, ages 90+). Applied before scoring, and again to quotes/summary at the share gate and before private backup | Deterministic, auditable, no model to ship. **Note: both applications call the SAME `PHIRedactor.redact` — it is one mechanism run twice, not two independent nets, so they fail identically. Recall has not yet been measured (see M4).** |
+| **RAG** | Deterministic rubric selection by encounter type + long-context stuffing of the rubric's criteria. **No vector RAG, no LangChain/LlamaIndex on-device** | Semantic retrieval mis-ranks a tiny structured corpus; deterministic selection is more reliable. *(The sketched EmbeddingGemma/sqlite-vec tier for the slide corpus was never built.)* |
+| **Storage** | Per-session JSON in `Documents/feedback/`, written with iOS Data Protection (`.completeFileProtection`) and excluded from iCloud backup. Raw audio is `.completeUnlessOpen`, backup-excluded, deleted after analysis and swept at launch | Encrypted at rest by the OS, tied to the device passcode; a lost phone leaks nothing meaningful. **Note: this is iOS Data Protection, NOT the originally-planned SQLite + SQLCipher with Secure Enclave keys — no custom crypto or key management ships today.** |
 | **Consent** | Patient-consent step gates the record flow | Recording patients is a legal/ethics requirement, not a footnote |
 
 ## Business wedge
@@ -110,7 +110,8 @@ Each milestone passes or fails on an objective check — a number, a file you ca
 **Goal:** trends across encounters — makes it stick, sells to a program director.
 **Verify independently:**
 - [ ] After ≥5 encounters, per-axis trend chart renders ("empathy over time").
-- [ ] All historical data encrypted at rest (inspect on disk).
+- [ ] All historical data encrypted at rest — i.e. written with iOS Data
+      Protection and excluded from iCloud backup (inspect on disk / in a backup).
 
 ### M7 — Pilot with the director's cohort · ~Weeks 10–12
 **Goal:** real-world validation — evidence for the institutional sale and any YC conversation.
