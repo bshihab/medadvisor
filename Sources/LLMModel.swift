@@ -78,7 +78,7 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
     var approxSize: String {
         switch self {
         case .qwen25_7B: return "~4.3 GB"
-        case .qwen35_4B: return "~2.4 GB"
+        case .qwen35_4B: return "~3.0 GB"
         }
     }
 
@@ -86,7 +86,7 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
     var bytesNeeded: Int64 {
         switch self {
         case .qwen25_7B: return 5_000_000_000
-        case .qwen35_4B: return 3_000_000_000
+        case .qwen35_4B: return 4_000_000_000
         }
     }
 

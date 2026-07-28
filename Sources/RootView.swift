@@ -33,6 +33,7 @@ struct RootView: View {
     @State private var claimCount = 0
     @State private var showClaimPrompt = false
     @State private var showClaimNotice = false
+    @State private var showWhatsNew = false
 
     var body: some View {
         tabs
@@ -43,8 +44,13 @@ struct RootView: View {
                 // silently — the user opts in here (or later in Settings).
                 if !modelDownloadSeen && !ModelDownloader.shared.isDownloaded {
                     showDownloadDisclosure = true
+                } else if WhatsNewView.shouldPresent {
+                    // Only for someone who has used a previous version — a fresh
+                    // install records the current version and shows nothing.
+                    showWhatsNew = true
                 }
             }
+            .sheet(isPresented: $showWhatsNew) { WhatsNewView() }
             .alert("Download the AI model", isPresented: $showDownloadDisclosure) {
                 Button("Download now") {
                     modelDownloadSeen = true
