@@ -11,10 +11,18 @@ Everything runs on the phone. The models were chosen by **benchmarking, not by l
 | Job | Model | Why |
 |---|---|---|
 | **Rubric scoring (LLM)** | **Qwen 2.5-7B-Instruct** (Q4, ~4.3 GB, llama.cpp) | Balanced judge — **3.3% over-score / 96% accuracy** on the realistic test. Replaced MedGemma 4B, which rubber-stamped (**53% over-score**). |
-| Transcription | Apple SpeechAnalyzer (iOS 26, built-in) | On-device, no model download, live streaming with pause-segmented timestamps. WhisperKit was removed — Apple's engine matched it without the 500 MB download. |
+| Transcription | Apple SpeechAnalyzer (iOS 26, built-in) | On-device, no model download, live streaming with pause-segmented timestamps, ~40× realtime on the Neural Engine. **3.1% WER** (n=30) vs Whisper `small.en`'s 1.1% — Whisper was *more* accurate, but WhisperKit was removed anyway: ~3 vs ~9 wrong words per 300 doesn't move a rubric score that reads for meaning, and Apple costs no 480 MB download, no heat, no model management. |
 | Diarization | LLM speaker attribution (per-utterance, role-aware) | The scoring LLM labels each utterance Doctor/Patient using content + anchor phrases; replaced a separate diarization model. |
 
 **Key finding:** for rubric *scoring*, the task is judgment + instruction-following, **not** medical knowledge (the rubric supplies that) — so a strong *general* 7B (Qwen) beat the *medical* MedGemma 4B decisively. Full results + method in [`tools/llm-benchmark/README.md`](tools/llm-benchmark/README.md).
+
+**Second finding — transcription is not the bottleneck.** All engines measured
+land at 1–3% WER on clean speech, and Apple's accuracy holds flat across
+conversation length (4.0 / 3.0 / 3.1% for short / medium / long). So the engine
+choice came down to download size, speed, and thermals rather than WER, and the
+*scoring* quality is where the remaining error lives. Numbers, method, and the
+reasoning behind shipping the less-accurate engine are in
+[`tools/stt-benchmark/README.md`](tools/stt-benchmark/README.md).
 
 ## Model delivery — Apple-hosted Background Assets (iOS 26)
 
