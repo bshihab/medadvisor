@@ -36,16 +36,16 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .qwen25_7B: return "Qwen 7B (current)"
-        case .qwen35_4B: return "Qwen 4B (new — trial)"
+        case .qwen25_7B: return "Qwen 2.5-7B"
+        case .qwen35_4B: return "Qwen 3.5-4B"
         }
     }
 
     /// Shown under the title in Settings — plain language, no benchmark jargon.
     var blurb: String {
         switch self {
-        case .qwen25_7B: return "The model your feedback has always used. Qwen2.5-7B."
-        case .qwen35_4B: return "Qwen3.5-4B — smaller, faster, still being evaluated. Treat its feedback as provisional."
+        case .qwen25_7B: return "Current model — the one your feedback has always used."
+        case .qwen35_4B: return "Newer and smaller. Still being evaluated — treat its feedback as provisional."
         }
     }
 
