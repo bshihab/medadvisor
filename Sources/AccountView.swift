@@ -233,18 +233,46 @@ struct AccountView: View {
                 if org.role == "admin" {
                     Label("Your cohort lives in the Cohort tab", systemImage: "person.2")
                         .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    // Always-available retraction: what the mentor can see is
+                    // reviewable/removable here regardless of local copies.
+                    NavigationLink {
+                        SharedWithMentorView()
+                    } label: {
+                        Label("Shared with your mentor", systemImage: "eye")
+                    }
                 }
             }
         } else {
             Section {
-                TextField("Invite code", text: $joinCode)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .font(.body.monospaced())
-                Button("Join") {
-                    run { try await account.redeem(code: joinCode) }
+                VStack(spacing: 14) {
+                    InviteCodeField(code: $joinCode)
+                    Button {
+                        run { try await account.redeem(code: joinCode) }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if busy { ProgressView() } else { Text("Join program").bold() }
+                            Spacer()
+                        }
+                        .frame(minHeight: 30)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    // Codes are always 8 chars — the button stays visibly
+                    // disabled until a complete one is entered.
+                    .disabled(busy || joinCode.count < 8)
+
+                    // A rejected code used to fail silently here: `run` set
+                    // errorMessage but this section never rendered it.
+                    if let errorMessage {
+                        Label(errorMessage, systemImage: "exclamationmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
-                .disabled(busy || joinCode.trimmingCharacters(in: .whitespaces).count < 4)
+                .padding(.vertical, 6)
+                .listRowBackground(Color.clear)
             } header: {
                 Text("Join my program")
             } footer: {

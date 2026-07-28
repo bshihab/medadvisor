@@ -45,7 +45,7 @@ private struct DeleteSessionDialog: ViewModifier {
             } message: {
                 Text(target?.sharedAt == nil
                      ? "This removes the session from this device and your private backup. It was never shared, so there is no mentor copy. Permanent."
-                     : "\"Delete for me\" removes it from your device and your private backup; your mentor keeps their shared copy. \"Delete everywhere\" also removes it from their dashboard.")
+                     : "\"Delete for me\" removes it from your device and your private backup; your mentor keeps their shared copy — you can still remove that later in Account → Shared with your mentor. \"Delete everywhere\" removes both now.")
             }
             .alert("Couldn't delete the cloud copy",
                    isPresented: Binding(get: { errorMessage != nil },

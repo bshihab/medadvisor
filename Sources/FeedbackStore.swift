@@ -89,6 +89,52 @@ final class FeedbackStore: ObservableObject {
         save(records[idx])
     }
 
+    /// Sessions recorded while signed out and not already declined by the user.
+    ///
+    /// Ownership policy (driven by RootView): if this is the ONLY account that
+    /// has ever signed in on this device, these are unambiguously the user's own
+    /// and get claimed automatically — which also makes them backup-eligible and
+    /// wipeable, neither of which unowned records are. If a DIFFERENT account has
+    /// used this device, ownership is genuinely ambiguous and we ask, because
+    /// auto-claiming would upload someone else's recordings into this account's
+    /// private cloud backup. (Asking is only meaningful in that second case; as a
+    /// blanket prompt it was unenforceable theater.)
+    var anonymousRecords: [ConsultationRecord] {
+        let declined = Self.declinedClaims()
+        return records.filter { $0.ownerUid == nil && !declined.contains($0.id) }
+    }
+
+    /// Take ownership of the signed-out sessions (skipping any already declined).
+    func claimAnonymous(for uid: String) {
+        let declined = Self.declinedClaims()
+        for index in records.indices
+        where records[index].ownerUid == nil && !declined.contains(records[index].id) {
+            records[index].ownerUid = uid
+            save(records[index])
+        }
+    }
+
+    /// Remember a "keep separate" answer so the ambiguous prompt doesn't nag.
+    func declineClaim() {
+        var declined = Self.declinedClaims()
+        declined.formUnion(records.filter { $0.ownerUid == nil }.map(\.id))
+        UserDefaults.standard.set(Array(declined), forKey: Self.declinedClaimsKey)
+        objectWillChange.send()
+    }
+
+    private static let declinedClaimsKey = "anonymousClaimDeclined"
+    private static func declinedClaims() -> Set<String> {
+        Set(UserDefaults.standard.stringArray(forKey: declinedClaimsKey) ?? [])
+    }
+
+    /// Clear the shared stamp after the mentor's copy is retracted, so the local
+    /// record stops offering "Delete everywhere" for a copy that's already gone.
+    func markUnshared(_ id: String) {
+        guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
+        records[idx].sharedAt = nil
+        save(records[idx])
+    }
+
     /// Stamp a record as backed up to the owner's private cloud (persisted).
     func markBackedUp(_ id: String) {
         guard let idx = records.firstIndex(where: { $0.id == id }) else { return }

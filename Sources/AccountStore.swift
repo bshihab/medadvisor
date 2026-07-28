@@ -85,6 +85,24 @@ final class AccountStore: ObservableObject {
         }
     }
 
+    // MARK: - Device account history
+
+    private static let knownUidsKey = "knownAccountUids"
+
+    /// Record that `uid` has signed in on this device, and report whether it is
+    /// the ONLY account ever to do so. Drives the signed-out-session ownership
+    /// policy: sole account → those sessions are unambiguously theirs; a second
+    /// account appearing means ownership is genuinely ambiguous and must be asked
+    /// rather than assumed (see FeedbackStore.anonymousRecords).
+    @discardableResult
+    static func rememberAccount(_ uid: String) -> Bool {
+        var known = Set(UserDefaults.standard.stringArray(forKey: knownUidsKey) ?? [])
+        let othersSeen = !known.subtracting([uid]).isEmpty
+        known.insert(uid)
+        UserDefaults.standard.set(Array(known), forKey: knownUidsKey)
+        return !othersSeen
+    }
+
     // MARK: - Sign in / out
 
     func signIn(email: String, password: String) async throws {

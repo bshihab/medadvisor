@@ -30,6 +30,9 @@ struct RootView: View {
     @AppStorage("modelDownloadSeen") private var modelDownloadSeen = false
     @ObservedObject private var account = AccountStore.shared
     @State private var showDownloadDisclosure = false
+    @State private var claimCount = 0
+    @State private var showClaimPrompt = false
+    @State private var showClaimNotice = false
 
     var body: some View {
         tabs
@@ -50,6 +53,38 @@ struct RootView: View {
                 Button("Later", role: .cancel) { modelDownloadSeen = true }
             } message: {
                 Text("MedAdvisor needs a one-time ~4.4 GB AI model to score consultations privately on your device. It downloads over Wi-Fi only and never leaves your phone. You can also start this anytime from Settings.")
+            }
+            // Signed-out sessions: claim silently when this is the only account
+            // this device has ever seen (unambiguously the user's own), and ask
+            // ONLY when another account has used the device — the one case where
+            // the question carries real information instead of being theater.
+            .onChange(of: account.uid) { _, uid in
+                guard let uid else { return }
+                let soleAccount = AccountStore.rememberAccount(uid)
+                let pending = FeedbackStore.shared.anonymousRecords.count
+                guard pending > 0 else { return }
+                claimCount = pending
+                if soleAccount {
+                    FeedbackStore.shared.claimAnonymous(for: uid)
+                    showClaimNotice = true
+                } else {
+                    showClaimPrompt = true
+                }
+            }
+            .alert("Earlier sessions added", isPresented: $showClaimNotice) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("\(claimCount) session\(claimCount == 1 ? "" : "s") you recorded before signing in \(claimCount == 1 ? "is" : "are") now in your history, backing up privately, and visible only to you.")
+            }
+            .alert("Whose sessions are these?", isPresented: $showClaimPrompt) {
+                Button("They're mine — add them") {
+                    if let uid = account.uid { FeedbackStore.shared.claimAnonymous(for: uid) }
+                }
+                Button("Not mine — keep separate", role: .cancel) {
+                    FeedbackStore.shared.declineClaim()
+                }
+            } message: {
+                Text("\(claimCount) session\(claimCount == 1 ? " was" : "s were") recorded on this device while signed out, and another account has used this device. Adding \(claimCount == 1 ? "it" : "them") puts \(claimCount == 1 ? "it" : "them") in your history and your private backup.")
             }
     }
 
