@@ -66,9 +66,8 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
                 URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
             ]
         case .qwen35_4B:
-            // TODO(Bilal): upload to R2 and put that URL first, as with the 7B.
-            // Until then this pulls from HuggingFace only (slower, throttled).
             return [
+                URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen3.5-4B-Q4_K_M.gguf")!,
                 URL(string: "https://huggingface.co/bartowski/Qwen_Qwen3.5-4B-GGUF/resolve/main/Qwen_Qwen3.5-4B-Q4_K_M.gguf")!,
             ]
         }
@@ -92,7 +91,21 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
 
     /// Expected SHA-256, lowercase hex. nil = not pinned → verification skipped
     /// with a loud log. Pin with: shasum -a 256 <file>
-    var expectedSHA256: String? { nil }
+    ///
+    /// Both mirrors serve byte-identical files, verified before pinning: the R2
+    /// object and HuggingFace's x-linked-etag report the same digest and the same
+    /// 3_013_027_808 bytes. That matters because the downloader may resume across
+    /// mirrors mid-file, so a digest that held for only one of them would fail
+    /// intermittently and look like a network fault.
+    var expectedSHA256: String? {
+        switch self {
+        // TODO(Bilal): pin the 7B too — run `shasum -a 256` on the R2 object and
+        // confirm HuggingFace's x-linked-etag matches before filling this in.
+        case .qwen25_7B: return nil
+        case .qwen35_4B:
+            return "13c16f426047e2de38cd075bdade4a7bcbc8c774384876f677740cda65f8a983"
+        }
+    }
 
     // MARK: - Prompt format
 
