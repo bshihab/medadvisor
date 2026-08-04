@@ -21,10 +21,29 @@ let package = Package(
         )
     ],
     targets: [
+        // b7484 (2025-12-19) could not load Qwen3.5: llama.cpp only learned the
+        // `qwen35` architecture on 2026-02-10 (PR #19468), with follow-up fixes
+        // through 2026-03-05. On device that surfaced as "failed to load model"
+        // AFTER a successful download and SHA-256 check — the file was fine, the
+        // engine had simply never heard of the format.
+        //
+        // b10243 is also the build the Modal benchmarks ran on (llama.cpp master,
+        // 2026-08-03), so the measured 4B numbers describe this engine and not a
+        // different one.
+        //
+        // Verified before bumping: every llama_* symbol LlamaContext.swift calls
+        // still exists here. llama_load_model_from_file, llama_free_model and
+        // llama_new_context_with_model are deprecated upstream but not removed,
+        // so no app code changes — this is a one-line version bump.
+        //
+        // NOTE: this engine also runs the shipping Qwen2.5-7B. Backward
+        // compatibility for old architectures is never dropped, so it loads the
+        // same file; what needs checking on device is whether eight months of
+        // upstream change shifted its OUTPUT or SPEED. Test the 7B first.
         .binaryTarget(
             name: "llama-cpp",
-            url: "https://github.com/ggml-org/llama.cpp/releases/download/b7484/llama-b7484-xcframework.zip",
-            checksum: "c384d4f6a8d822884e3f14668a48c6758fe74de77bc51a443b2d5be5a7da505b"
+            url: "https://github.com/ggml-org/llama.cpp/releases/download/b10243/llama-b10243-xcframework.zip",
+            checksum: "65fc78dd8cffd71488a28ca278edae876333e4fef3aeea5c0257faf3bd4f3abe"
         )
     ]
 )
