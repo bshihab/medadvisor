@@ -211,5 +211,4 @@ struct SettingsView: View {
         .onChange(of: models.revision) { selectedLLM = LLMModel.selected }
     }
 
-    @ViewBuilder
 }
