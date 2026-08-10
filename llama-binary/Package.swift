@@ -17,7 +17,7 @@ let package = Package(
     products: [
         .library(
             name: "llama",
-            targets: ["llama-cpp"]
+            targets: ["llama-cpp-b10243"]
         )
     ],
     targets: [
@@ -41,7 +41,14 @@ let package = Package(
         // same file; what needs checking on device is whether eight months of
         // upstream change shifted its OUTPUT or SPEED. Test the 7B first.
         .binaryTarget(
-            name: "llama-cpp",
+            // Target renamed from "llama-cpp" on the b7484 -> b10243 bump.
+            // SPM names its extracted artifact directory after the TARGET, and it
+            // kept handing Xcode the cached b7484 xcframework no matter how many
+            // times DerivedData and ~/Library/Caches/org.swift.swiftpm were wiped
+            // (confirmed on device: the extracted framework's files stayed dated
+            // 2025-12-19, while b10243's zip contains files dated 2026-08-03).
+            // A new target name means a new artifact path with no cache to hit.
+            name: "llama-cpp-b10243",
             url: "https://github.com/ggml-org/llama.cpp/releases/download/b10243/llama-b10243-xcframework.zip",
             checksum: "65fc78dd8cffd71488a28ca278edae876333e4fef3aeea5c0257faf3bd4f3abe"
         )
