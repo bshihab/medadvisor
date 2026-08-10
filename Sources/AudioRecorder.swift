@@ -303,22 +303,6 @@ final class AudioRecorder: NSObject, ObservableObject {
                 try await req.downloadAndInstall()
             }
             let a = SpeechAnalyzer(modules: [t])
-
-            // Bias recognition toward clinical vocabulary. THIS is the path that
-            // matters: EncounterProcessor prefers the live transcript's own
-            // pause-segmented lines, so file transcription is only the fallback.
-            // Untouched, real recordings came back with "Parasitamo" for
-            // paracetamol, "Nexoprin" for naproxen, "I'm proven" for Ibuprofen —
-            // all inside the clinician's treatment explanation, which is what the
-            // `accurate_info` criterion is graded on.
-            //
-            // Best-effort: a failure here must not stop the recording. Live
-            // transcription is already wrapped that way (see the catch below) and
-            // an un-biased transcript is far better than a lost consultation.
-            let context = AnalysisContext()
-            context.contextualStrings = [.general: ClinicalVocabulary.all]
-            try await a.setContext(context)
-
             let fmt = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [t])
             let (stream, builder) = AsyncStream<AnalyzerInput>.makeStream()
             try await a.start(inputSequence: stream)

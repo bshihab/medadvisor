@@ -6,17 +6,11 @@ import Speech
 /// download — the OS ships/downloads the assets.
 ///
 /// Built on the exact SpeechAnalyzer flow proven in tools/stt-benchmark
-/// (AppleTranscribe.swift), which compiled and ran. Returns one whole-file
-/// segment; speaker separation does not need per-word timings, since the primary
-/// path uses the LIVE transcript's pause-segmented lines (see EncounterProcessor)
-/// and this file transcription is only the fallback.
-///
-/// CORRECTION to an earlier note here: it claimed `.audioTimeRange` "didn't
-/// resolve on the iOS SDK". It resolves fine — `SpeechTranscriber.ResultAttributeOption`
-/// has an `.audioTimeRange` case, available iOS 26.0+. The attribute was absent
-/// from results because `attributeOptions` was empty, and attributes are only
-/// attached when requested. Left unrequested here on purpose (nothing consumes
-/// timings on this path) but it is available if ever needed.
+/// (AppleTranscribe.swift), which compiled and ran. NOTE: this version does NOT
+/// extract per-word timestamps yet (the `.audioTimeRange` attribute API didn't
+/// resolve on the iOS SDK), so it returns one whole-file segment. Speaker
+/// separation no longer needs those timings — SpeakerAttribution sentence-splits
+/// the flat text and the LLM tags Doctor/Patient — so Apple is the default.
 @available(iOS 26.0, *)
 @MainActor
 final class AppleSpeechTranscriber: Transcribing {
@@ -26,22 +20,7 @@ final class AppleSpeechTranscriber: Transcribing {
             transcriptionOptions: [],
             reportingOptions: [],
             attributeOptions: [])
-
-        // Bias recognition toward clinical vocabulary. Untouched, the recogniser
-        // renders drug names as whatever common word sounds closest — measured on
-        // real recordings: "Parasitamo" for paracetamol, "Nexoprin" for naproxen,
-        // "I'm proven" for Ibuprofen, "ideology" for aetiology. Those land inside
-        // the clinician's treatment explanation, which is what `accurate_info` is
-        // graded on, so a mis-heard drug name can cost a criterion the clinician met.
-        //
-        // Set via setContext rather than the initialiser: init(modules:options:)
-        // takes no analysisContext, and the overloads that do also demand the
-        // input up front (inputAudioFile:/inputSequence:), which would mean
-        // restructuring this method.
         let analyzer = SpeechAnalyzer(modules: [transcriber])
-        let context = AnalysisContext()
-        context.contextualStrings = [.general: ClinicalVocabulary.all]
-        try await analyzer.setContext(context)
 
         // Ensure the on-device model assets are installed (one time).
         if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
