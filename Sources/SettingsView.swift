@@ -3,7 +3,6 @@ import SwiftUI
 /// Settings — manage the on-device models (download the LLM up front; see status
 /// of and delete any managed model) and pick the transcription engine.
 struct SettingsView: View {
-    @State private var confirmDelete: ManagedModel?
     @State private var confirmDeleteLLM: LLMModel?
     @State private var switchBlocked = false
     /// Re-read on every `models.revision` bump so rows reflect the live choice.
@@ -23,23 +22,23 @@ struct SettingsView: View {
                     AccountRow()
                 }
 
+                // One models section, not two. The old "On-device Models" section
+                // iterated ManagedModel, which holds a single `.llm` case with a
+                // HARDCODED "Qwen 2.5-7B" title and a hardcoded "~4.3 GB" download
+                // button. Once a second model existed that row showed the wrong
+                // name and the wrong size, and the screen listed the 7B twice with
+                // two Delete buttons — on a screen where Delete removes 4.3 GB.
+                // LLMModel.allCases drives everything now; its footer absorbed the
+                // offline/speech-to-text note that used to live here.
                 Section {
-                    ForEach(ManagedModel.allCases) { modelRow($0) }
+                    ForEach(LLMModel.allCases) { llmRow($0) }
                     if let error = downloader.errorMessage {
                         Text(error).font(.caption).foregroundStyle(.red)
                     }
                 } header: {
-                    Text("On-device Models")
-                } footer: {
-                    Text("Everything runs on your device, offline. The AI model downloads once (required to record); speech-to-text uses Apple's built-in on-device engine — no download.")
-                }
-
-                Section {
-                    ForEach(LLMModel.allCases) { llmRow($0) }
-                } header: {
                     Text("AI Model")
                 } footer: {
-                    Text("Qwen 2.5-7B is the default and is what your feedback has been graded with. A second model is available to try — it is smaller and faster, but its feedback is still being evaluated, so treat anything it says as provisional. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
+                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 2.5-7B is the default and is what your feedback has been graded with. A second model is available to try — it is smaller and faster, but its feedback is still being evaluated, so treat anything it says as provisional. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
                 }
 
                 Section("Appearance") {
@@ -138,21 +137,6 @@ struct SettingsView: View {
             } message: {
                 Text("The model can't be changed while a consultation is being analysed. Wait for it to finish, then try again.")
             }
-            .confirmationDialog("Delete this model?",
-                                isPresented: Binding(
-                                    get: { confirmDelete != nil },
-                                    set: { if !$0 { confirmDelete = nil } }),
-                                titleVisibility: .visible) {
-                if let model = confirmDelete {
-                    Button("Delete \(model.title)", role: .destructive) {
-                        models.delete(model)
-                        confirmDelete = nil
-                    }
-                    Button("Cancel", role: .cancel) { confirmDelete = nil }
-                }
-            } message: {
-                Text("This removes the ~4.4 GB AI model from your phone. You'll need to download it again before you can analyze recordings.")
-            }
         }
         // Apply the theme to the Settings sheet itself, live — a sheet doesn't
         // pick up the root's preferredColorScheme change while it's already open.
@@ -228,50 +212,4 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func modelRow(_ model: ManagedModel) -> some View {
-        let installed = models.isInstalled(model)   // depends on models.revision
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(model.title).font(.headline)
-                    Text("\(model.role) · \(model.approxSize)")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                Spacer()
-                Text(installed ? "Installed" : "Not installed")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(installed ? .green : .secondary)
-            }
-
-            if model == .llm, !installed {
-                if downloader.isDownloading {
-                    VStack(alignment: .leading, spacing: 6) {
-                        ProgressView(value: downloader.progress)
-                        Text("Downloading… \(Int(downloader.progress * 100))%")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Text("Keep the app open — the screen stays awake, so you can just set the phone down. If you do leave, nothing is lost: it resumes from the exact spot when you come back.")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
-                } else {
-                    Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
-                    Text("~4.4 GB, one time. Fastest with the app open; progress is saved continuously, so nothing is ever lost if you leave.")
-                        .font(.caption2).foregroundStyle(.secondary)
-                }
-            }
-
-            if installed, model.deletable {
-                Button(role: .destructive) { confirmDelete = model } label: {
-                    Label("Delete", systemImage: "trash")
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            } else if installed {
-                Text("Ships inside the app — nothing to download or delete.")
-                    .font(.caption2).foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 4)
-    }
 }
