@@ -55,9 +55,13 @@ struct SkillAreaChart: View {
                         .frame(width: 40, alignment: .trailing)
                     if area.trend.count >= 2 {
                         Chart(Array(area.trend.enumerated()), id: \.offset) { point in
+                            // Session index on x, so this sparkline can't hairpin the
+                            // way the date-based chart did — but catmullRom still
+                            // overshoots vertically and chartYScale(0...1) then clips
+                            // it flat. Monotone stays inside the data range.
                             LineMark(x: .value("Session", point.offset),
                                      y: .value("Score", point.element))
-                                .interpolationMethod(.catmullRom)
+                                .interpolationMethod(.monotone)
                                 .lineStyle(StrokeStyle(lineWidth: 2))
                         }
                         .chartXAxis(.hidden).chartYAxis(.hidden)
@@ -197,9 +201,16 @@ private struct AreaDetailCard: View {
 
             Chart(area.points) { point in
                 if let date = point.date {
+                    // .monotone, NOT .catmullRom. Catmull-Rom is a smoothing spline
+                    // that overshoots between close-together points, and several
+                    // sessions recorded on the SAME DAY sit at almost the same x —
+                    // so the curve looped back through them and drew a vertical
+                    // hairpin at the right edge that looked like corrupt data.
+                    // Monotone cubic is still smooth but cannot overshoot: the line
+                    // never leaves the range of the points it connects.
                     LineMark(x: .value("Date", date),
                              y: .value("Score", point.score * 100))
-                        .interpolationMethod(.catmullRom)
+                        .interpolationMethod(.monotone)
                         .foregroundStyle(ScoreBand.color(area.current))
                     PointMark(x: .value("Date", date),
                               y: .value("Score", point.score * 100))
