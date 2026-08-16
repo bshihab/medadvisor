@@ -273,7 +273,13 @@ struct FeedbackView: View {
                 }
                 Text(dimension.label).font(.headline)
                 Spacer()
-                Text("\(metCount(results))/\(results.filter { $0.status != .notApplicable }.count)")
+                // N/A shrinks the denominator silently: a section where one
+                // criterion did not apply reads "3/3" and looks identical to a
+                // perfect "3/3" out of four. Naming the excluded count makes the
+                // smaller denominator legible instead of flattering.
+                let naHere = results.filter { $0.status == .notApplicable }.count
+                Text("\(metCount(results))/\(results.count - naHere)"
+                     + (naHere > 0 ? " · \(naHere) n/a" : ""))
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
