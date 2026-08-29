@@ -38,6 +38,10 @@ struct CallResult: Codable {
     let outputTokens: Int?
     let thermalState: String
     let batteryLevel: Float
+    /// Second-pass verification, only run when pass 1 answered "done".
+    /// nil = not challenged (pass 1 was partial/missed, or the pass errored).
+    var verifyRaw: String?
+    var verifyRejected: Bool?
 }
 
 struct ProbeRun: Codable {
@@ -116,18 +120,50 @@ final class ProbeRunner: ObservableObject {
             let c0 = Date()
             do {
                 let r = try await session.respond(to: item.prompt, options: options)
-                // `usage` is iOS 27+ only (macOS exposes it from 26.0 — the
-                // platform availability differs). tok/s is a bonus metric, so
-                // guard it rather than forcing the deployment target up.
-                var outTokens: Int?
-                if #available(iOS 27.0, *) { outTokens = r.usage.output.totalTokenCount }
+
+                // Second pass: challenge every "done". Only "done" is challenged,
+                // so cost is ~1.4x calls rather than 2x, and a partial/missed
+                // verdict can only be made worse by re-litigating it.
+                //
+                // A fresh session on purpose. FoundationModels resets KV on
+                // divergence anyway, and reusing the graded session would let the
+                // model see its own answer as conversation history and simply
+                // agree with itself.
+                var verifyRaw: String? = nil
+                var verifyRejected: Bool? = nil
+                if parsedVerdict(r.content) == "done" {
+                    let evidence = parsedEvidence(r.content)
+                    let vSession = LanguageModelSession(model: model)
+                    let vOptions = GenerationOptions(sampling: .greedy,
+                                                     maximumResponseTokens: 12)
+                    do {
+                        let v = try await vSession.respond(
+                            to: verifyPrompt(scoringPrompt: item.prompt, evidence: evidence),
+                            options: vOptions)
+                        verifyRaw = v.content
+                        verifyRejected = verificationRejects(v.content)
+                    } catch {
+                        // A failed challenge must not destroy a verdict: record it
+                        // and keep pass 1 exactly as it stood.
+                        verifyRaw = "ERROR: \(error)"
+                        verifyRejected = false
+                    }
+                }
+                // Token usage is NOT stable across SDK versions: macOS 26.3
+                // exposes `response.usage`, an earlier iOS 27 SDK gated it to
+                // 27.0, and the current one has no such member at all. tok/s is
+                // a bonus metric — latency, refusals and the scores are what
+                // this probe exists to measure — so it is simply dropped rather
+                // than chased across betas.
+                let outTokens: Int? = nil
                 run.results.append(CallResult(
                     id: item.id, ok: true, text: r.content,
                     errorKind: nil, errorDetail: nil,
                     seconds: Date().timeIntervalSince(c0),
                     outputTokens: outTokens,
                     thermalState: thermalName(ProcessInfo.processInfo.thermalState),
-                    batteryLevel: UIDevice.current.batteryLevel))
+                    batteryLevel: UIDevice.current.batteryLevel,
+                    verifyRaw: verifyRaw, verifyRejected: verifyRejected))
             } catch let e as LanguageModelSession.GenerationError {
                 let kind: String
                 switch e {
@@ -177,14 +213,96 @@ final class ProbeRunner: ObservableObject {
     }
 }
 
+
+// MARK: - Verification pass
+//
+// Two-pass scoring: grade as usual, then CHALLENGE every "done". Measured on
+// Qwen 3.5-4B this cut over-scoring 31.2% -> 11.6%.
+//
+// Apple's model is the ideal shape for it: 46.7% over-score (14 of 30 absent
+// behaviours wrongly credited) with 100% recall, so there are many false credits
+// to remove and nothing correct to lose. If verification rescues it, the prize is
+// no 3GB download and the Neural Engine instead of the GPU.
+//
+// NOTE: this uses two plain sessions rather than iOS 27's DynamicProfile. Profiles
+// would share KV cache between the passes -- cheaper, NOT more accurate -- and the
+// open question here is accuracy. Optimise only if the accuracy lands.
+
+/// Pull the RESULT verdict out of a three-line reply.
+func parsedVerdict(_ raw: String) -> String {
+    for line in raw.split(whereSeparator: \.isNewline) {
+        let low = line.lowercased().trimmingCharacters(in: .whitespaces)
+        guard low.hasPrefix("result:") else { continue }
+        let v = low.dropFirst("result:".count).trimmingCharacters(in: .whitespaces)
+        if v.hasPrefix("done") || v.hasPrefix("met") { return "done" }
+        if v.hasPrefix("partial") { return "partial" }
+        return "missed"
+    }
+    return "missed"
+}
+
+/// Pull the EVIDENCE quote out of a three-line reply.
+func parsedEvidence(_ raw: String) -> String {
+    for line in raw.split(whereSeparator: \.isNewline) {
+        let low = line.lowercased().trimmingCharacters(in: .whitespaces)
+        guard low.hasPrefix("evidence:") else { continue }
+        let text = line.trimmingCharacters(in: .whitespaces)
+        return String(text.dropFirst("evidence:".count))
+            .trimmingCharacters(in: CharacterSet(charactersIn: " \"'"))
+    }
+    return ""
+}
+
+/// The scoring prompt already carries the transcript and the criterion, so the
+/// challenge is appended to it rather than rebuilt.
+func verifyPrompt(scoringPrompt: String, evidence: String) -> String {
+    scoringPrompt + """
+
+
+    ---
+    A grader judged the criterion above as "done", citing this evidence:
+    "\(evidence)"
+
+    Check that judgment strictly — your job is to catch a quote that does not \
+    actually show the specific behavior being asked about.
+    - A generic greeting, pleasantry, acknowledgement or sign-off ("take care", \
+    "okay", "right", "no problem") does NOT demonstrate a specific behavior.
+    - A quote showing a DIFFERENT behavior than the one asked about does NOT \
+    count, even if it is good practice.
+    - Something the PATIENT said never counts, whatever the speaker label claims.
+    - If the quote genuinely shows this exact behavior, CONFIRM it — do not \
+    reject a correct judgment.
+
+    Reply with ONE word: CONFIRM or REJECT.
+    """
+}
+
+/// True when the verifier rejects. Defaults to KEEPING the verdict on
+/// unparseable output — a garbled reply must never silently destroy recall.
+func verificationRejects(_ reply: String) -> Bool {
+    let low = reply.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    if low.hasPrefix("reject") || low.hasPrefix("no") { return true }
+    if low.hasPrefix("confirm") || low.hasPrefix("yes") { return false }
+    let head = String(low.prefix(40))
+    return head.contains("reject") && !head.contains("confirm")
+}
+
 struct ContentView: View {
     @StateObject private var runner = ProbeRunner()
     @State private var sharing = false
 
+    /// Read from the bundled resource so the button never claims a stale count.
+    private var promptCount: Int {
+        guard let url = Bundle.main.url(forResource: "bench_prompts", withExtension: "json"),
+              let items = try? JSONDecoder().decode([PromptItem].self, from: Data(contentsOf: url))
+        else { return 0 }
+        return items.count
+    }
+
     var body: some View {
         VStack(spacing: 22) {
             Text("Apple FM Probe").font(.largeTitle.bold())
-            Text("Replays the 48 benchmark prompts through the stock on-device model. No scoring happens here.")
+            Text("Replays \(promptCount) benchmark prompts through the stock on-device model. No scoring happens here. Keep the app open — this takes about \(max(1, promptCount * 3 / 60)) minutes.")
                 .font(.footnote).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
 
@@ -196,7 +314,7 @@ struct ContentView: View {
                     .padding().background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
             }
 
-            Button(runner.running ? "Running…" : "Run 48-decision probe") {
+            Button(runner.running ? "Running…" : "Run \(promptCount)-decision probe") {
                 Task { await runner.run() }
             }
             .buttonStyle(.borderedProminent)
