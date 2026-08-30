@@ -10,11 +10,15 @@ Everything runs on the phone. The models were chosen by **benchmarking, not by l
 
 | Job | Model | Why |
 |---|---|---|
-| **Rubric scoring (LLM)** | **Qwen 2.5-7B-Instruct** (Q4, ~4.3 GB, llama.cpp) | Balanced judge — **3.3% over-score / 96% accuracy** on the realistic test. Replaced MedGemma 4B, which rubber-stamped (**53% over-score**). |
+| **Rubric scoring (LLM)** | **Qwen 2.5-7B-Instruct** (Q4, ~4.3 GB) — default<br>**Qwen 3.5-4B** (Q4, ~3.0 GB) — selectable | Both run on llama.cpp. The 7B replaced MedGemma 4B, which rubber-stamped (**53% over-score**). A later 240-decision set — 5× the resolution of the first — then showed **Qwen 3.5-4B ahead of the 7B, 85.4% vs 79.2%**, on a 30% smaller download. Shipped as an opt-in while the director validates it. |
 | Transcription | Apple SpeechAnalyzer (iOS 26, built-in) | On-device, no model download, live streaming with pause-segmented timestamps, ~40× realtime on the Neural Engine. **3.1% WER** (n=30) vs Whisper `small.en`'s 1.1% — Whisper was *more* accurate, but WhisperKit was removed anyway: ~3 vs ~9 wrong words per 300 doesn't move a rubric score that reads for meaning, and Apple costs no 480 MB download, no heat, no model management. |
 | Diarization | LLM speaker attribution (per-utterance, role-aware) | The scoring LLM labels each utterance Doctor/Patient using content + anchor phrases; replaced a separate diarization model. |
 
-**Key finding:** for rubric *scoring*, the task is judgment + instruction-following, **not** medical knowledge (the rubric supplies that) — so a strong *general* 7B (Qwen) beat the *medical* MedGemma 4B decisively. Full results + method in [`tools/llm-benchmark/README.md`](tools/llm-benchmark/README.md).
+**Key finding:** for rubric *scoring*, the task is judgment + instruction-following, **not** medical knowledge (the rubric supplies that) — so a strong *general* model beats a *medical* one. MedGemma 4B rubber-stamped half the rubric at 53% over-score.
+
+**And bigger is not better either.** On a 48-decision set the 7B looked excellent (96% accuracy, 3.3% over-score). Widening to **240 decisions** — the same rubric, 5× the resolution — inverted the ranking: **Qwen 3.5-4B 85.4% vs the 7B's 79.2%**, at 3.0 GB instead of 4.3. The small set had been flattering every model, and the failure it hid was **over-crediting** — behaviours credited that never happened, which accuracy alone does not surface. Confirmed on real recordings read aloud on the target iPhone: across three consultations the 4B got **44/48 criteria correct to the 7B's 38/48**, and on a deliberately poor consultation (3 of 16 behaviours actually done) the 7B scored it 8/16 — crediting "conveys support and respect" while quoting the clinician saying *"shut up"* — where the 4B scored it 1/16.
+
+Full results + method in [`tools/llm-benchmark/README.md`](tools/llm-benchmark/README.md); the Apple Foundation Models evaluation, and why that path is closed, in [`tools/llm-benchmark/FM-RESULTS.md`](tools/llm-benchmark/FM-RESULTS.md).
 
 **Second finding — transcription is not the bottleneck.** All engines measured
 land at 1–3% WER on clean speech, and Apple's accuracy holds flat across
