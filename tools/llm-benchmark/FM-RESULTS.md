@@ -300,3 +300,70 @@ Every training example is authored fiction — no patient content, no app
 transcripts, nothing derived from real recordings. What left the Mac for the GPU
 was Apple's toolkit weights plus that synthetic text. The shipping path
 (llama.cpp / Qwen / `LlamaEngine`) was never modified.
+
+---
+
+# 2026-08-30 — the last lever: two-pass verification on Apple's model
+
+The remaining idea worth testing. Apple's iOS 27 model had the ideal shape for
+it: **70.8% accuracy, 46.7% over-score, 100% recall** on the 48-case set — 14 of
+30 absent behaviours wrongly credited, and nothing correct to lose. Verification
+only removes false credits, so there was a lot to remove and no downside risk.
+
+The same technique on Qwen 3.5-4B cut over-scoring **31.2% → 11.6%** at 67%
+rejection precision. If it worked here, the Apple path was live again: no 3 GB
+download, Neural Engine instead of GPU. Ran it on device via `tools/ios-fm-probe`
+(240 prompts, iPhone 17, iOS 27.0) — every "done" verdict challenged with a
+second call using the VERIFY_PROMPT wording already measured on Qwen.
+
+## Result: every single verification returned CONFIRM
+
+Zero rejections across the whole run. Accuracy unchanged, because nothing was
+removed. What it confirmed:
+
+| Criterion | Evidence the verifier CONFIRMED |
+|---|---|
+| `safety_net` | "You've done exactly the right thing coming in, and we'll work through this together." |
+| `check_understanding` | "What would you prefer?" |
+| `explain_exam` | "Please, go on and take your time — I'm listening." |
+| `accurate_info` | "You've done exactly the right thing coming in…" |
+
+The prompt explicitly warns that a generic pleasantry does not demonstrate a
+specific behaviour, and that a quote showing a DIFFERENT behaviour does not
+count. It was shown a line about working through things together, asked whether
+that demonstrates safety-netting, and said CONFIRM.
+
+Cost: **1005 s vs 577 s** for the single-pass run — 74% slower for zero gain,
+still nominal → fair → serious.
+
+## Why this closes the path rather than just failing
+
+Being inaccurate is fixable from outside; a model that **cannot challenge its own
+judgment** is not, because the second pass is the same agreeable model. On Qwen
+the identical prompt rejected with 67% precision. Here it rejected nothing.
+
+That was the last available lever. Not weights, not prompting, not guided
+generation, not Dynamic Profiles (a behaviour mechanism — it switches
+instructions and tools, which cannot fix judgment). Verification had the
+strongest prior evidence of any technique, applied to the model with the most
+room to gain, and moved nothing.
+
+## Revival trigger — unchanged, and cheap to re-check
+
+A future iOS shipping a genuinely better model. The trajectory is real:
+macOS 26.3 was 54.3% / 75.0% over-score; iOS 27 is 70.8% / 46.7% with refusals
+down to zero. Re-running the 48-case harness is ~20 minutes:
+
+```
+# rebuild tools/ios-fm-probe, run on device, then:
+python score_ios_probe.py ~/Downloads/fm_probe_ios.json
+```
+
+The prize has not changed: no 3 GB download, and the Neural Engine instead of
+the GPU — far less heat and battery than the current ~2 min GPU analysis.
+
+## What ships instead
+
+Qwen 3.5-4B. Across three real recordings read aloud on the target phone:
+**44/48 criteria correct vs the 7B's 38/48**, speaker attribution **98.3% vs
+85.0%**, and 3.0 GB instead of 4.3 GB.
