@@ -111,4 +111,4 @@ Record → transcribe → **Analyze consultation**: PHI redaction → score agai
 - [ ] Feedback sheet shows per-criterion results (met/unmet + evidence quote + tip).
 - [ ] Runs in airplane mode after the model is cached (full pipeline offline).
 
-Note: uses `rubrics/example-spikes-breaking-bad-news.json` (placeholder) until baba's mark schemes replace it. Analysis on the 2B spike model can take a while — expected; speed comes with model/runtime tuning later.
+Note: uses `rubrics/example-spikes-breaking-bad-news.json` (placeholder) until the program director's mark schemes replace it. Analysis on the 2B spike model can take a while — expected; speed comes with model/runtime tuning later.
