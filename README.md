@@ -24,6 +24,19 @@ choice came down to download size, speed, and thermals rather than WER, and the
 reasoning behind shipping the less-accurate engine are in
 [`tools/stt-benchmark/README.md`](tools/stt-benchmark/README.md).
 
+**Third finding — a dedicated ASR model is measurably better, and still
+unshippable.** Cohere Transcribe (2B open-weights conformer, Apache 2.0) was
+benchmarked on the same 30-conversation gold set on 2026-08-30: **0.00%
+recognition WER against Apple's 1.28%** (numerals and abbreviations normalized
+on both sides; 1.7% vs 3.1% as raw-scored). It did not misrecognize a single
+word of the set. It also needs **~6.9 GB of peak memory** and a conformer
+runtime this app does not have — the phone has 8 GB shared with iOS and runs
+llama.cpp, which executes decoder-only LLMs, not conformer ASR. So that number
+measures **the model's quality, not a shippable engine swap**; it ran on a Mac,
+never on the phone. Its 14-language support is the reason to keep watching it.
+Method, memory breakdown, and the port sketch are in
+[`tools/stt-benchmark/README.md`](tools/stt-benchmark/README.md).
+
 ## Model delivery — Apple-hosted Background Assets (iOS 26)
 
 The 4.3 GB LLM is too big to bundle in the app, so it's downloaded once after install.

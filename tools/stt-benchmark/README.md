@@ -26,7 +26,7 @@ Tests, on your Mac laptop, the two questions we discussed:
 | **Whisper `small.en`** (MLX) | **1.1%** | 10 convos × 3 runs | ~480 MB | 2026-07-01, MacBook Air |
 | **Apple SpeechAnalyzer** | **3.2%** | 10 convos | **none** (in-OS) | 2026-07-01, macOS 26 |
 | **Apple SpeechAnalyzer** | **3.1%** | **30 convos** | **none** (in-OS) | 2026-07-25, macOS 26.3.1 (replication) |
-| **Cohere Transcribe** (2B, transformers) | **1.7%** | **30 convos** | ~4.1 GB | 2026-08-30, Mac mini M4 (MPS) — *not runnable in the app, see below* |
+| **Cohere Transcribe** (2B, transformers) | **1.7%** (0.00% recognition-only) | **30 convos** | ~4.1 GB | 2026-08-30, Mac mini M4 (MPS) — *needs ~6.9 GB RAM; not runnable in the app, see below* |
 | Parakeet TDT | *not measured* | — | ~2.5 GB (MLX build) | run abandoned — the download alone was ~75 min |
 
 Whisper per-conversation WER: 1.6, 2.9, 0, 0.5, 0.8, 0, 1.6, 1.1, 2.8, 0.
@@ -77,6 +77,22 @@ number):** 28.5 min of audio in 103 s ≈ 17× realtime, median 3.3 s per clip
 (range 1.5–5.9 s), plus ~5 s to load the weights. All 30 clips ran on MPS; the
 CPU fallback was never needed.
 
+**Memory, Mac-side — the measurement that rules it out for the phone:**
+
+```
+baseline (python + torch imported)        193 MB RSS
+after weights loaded                      488 MB RSS  |  4,404 MB MPS driver alloc
+peak across all 30 clips                1,006 MB RSS  |  6,870 MB MPS driver alloc
+weights on disk                         4,132 MB
+```
+
+On Apple Silicon, MPS allocations come out of the same unified memory as RSS, so
+**~6.9 GB is the real peak footprint**. This Mac mini has 16 GB and absorbs it
+without swapping. An iPhone 17 has 8 GB shared with iOS, and iOS caps a single
+app well below the physical total — so the model is over budget by several
+times before the question of runtime support even arises. Apple
+SpeechAnalyzer's marginal cost is ~0: its assets are in the OS.
+
 Read this row honestly:
 
 - **It is not something MedAdvisor can run on-device today.** Apple's
@@ -85,16 +101,26 @@ Read this row honestly:
   app's iPhone inference stack is llama.cpp, which runs LLMs, not conformer ASR,
   and there is no Core ML or MLX port of this model in the app. So this measures
   **the model's quality**, not a shippable engine swap — it is a data point for
-  a future decision, not a candidate for the next build.
-- **Its residual errors are formatting, not recognition.** Of the 83 word edits
-  across 5,919 reference words, 82 are the model writing numerals and
+  a future decision, not a candidate for the next build. A port is not
+  impossible, just unbuilt: int8 conversion to Core ML or ONNX would put the
+  weights near ~2 GB (community ONNX and int8-ONNX builds of this model already
+  exist), after which the open question is whether quantization keeps the
+  accuracy advantage measured here — which is exactly what re-running this
+  harness would answer.
+- **It did not misrecognize a single word — every error is formatting.** All 83
+  word edits across 5,919 reference words are the model writing numerals and
   abbreviations where the references spell them out (`one`→`1`, `ten`→`10`,
-  `six`→`6`, `Doctor`→`Dr.`) and one is `alright`→`all right`. The scoring is
-  deliberately left identical to the other engines (Apple writes `Dr.` too and
-  pays the same penalty), so the 1.7% is comparable but overstates its real
-  miss rate on this clean audio, which is close to zero. Same caveat as
-  everything else here: synthetic `say` audio, no medical vocabulary, no
-  accents or noise.
+  `six`→`6`, `Doctor`→`Dr.`, plus one `alright`→`all right`). Normalizing
+  numerals and abbreviations on **both** sides — which can only remove
+  formatting differences, never hide a misrecognition — leaves **0.00% WER:
+  zero residual edits across all 30 clips**. The same treatment leaves Apple at
+  **1.28%**. The table above deliberately keeps the unnormalized scoring so it
+  stays comparable with the recorded Whisper and Apple runs, but the honest read
+  is that Transcribe transcribed this audio perfectly and Apple did not. Same
+  caveat as everything else here: synthetic `say` audio, no medical vocabulary,
+  no accents or noise — a 0.00% says this audio is easy, not that the model is
+  flawless. Cohere's own published figures on real speech are 5.42% mean WER on
+  open-asr-leaderboard (AMI 8.13%, Earnings22 10.86%, LibriSpeech-clean 1.25%).
 - **The thing worth watching is language coverage.** Transcribe ships one
   model for 14 languages (English, French, German, Italian, Spanish,
   Portuguese, Greek, Dutch, Polish, Mandarin, Japanese, Korean, Vietnamese,
