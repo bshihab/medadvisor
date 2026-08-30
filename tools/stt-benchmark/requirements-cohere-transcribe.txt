@@ -1,0 +1,17 @@
+# Cohere Transcribe engine only. It runs on torch + transformers, not the MLX
+# stack, so it gets its own venv (the model card says transformers>=5.4.0 for
+# native CohereAsr support; pinned here to what the recorded run used):
+#
+#   python3.13 -m venv .venv-transcribe
+#   ./.venv-transcribe/bin/pip install -r requirements-cohere-transcribe.txt
+#   ./.venv-transcribe/bin/python bench_cohere_transcribe.py --limit 1   # smoke test
+#   ./.venv-transcribe/bin/python bench_cohere_transcribe.py             # full n=30
+#
+# The model repo is gated on Hugging Face (click "agree" on the model page once,
+# then `hf auth login`). Weights are ~4.1 GB, downloaded on first run.
+transformers==5.16.1
+torch==2.13.0        # model card tested 2.10.0; 2.13.0 is what ran here (MPS)
+jiwer>=3.0           # WER metric (shared with bench_stt.py)
+soundfile>=0.12      # read WAVs
+librosa>=0.10        # mel filterbank inside CohereAsrFeatureExtractor (hard requirement)
+numpy>=1.24
