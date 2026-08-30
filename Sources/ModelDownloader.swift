@@ -19,25 +19,31 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     /// Tried in order on failure: Cloudflare R2 (fast, free egress) first,
     /// HuggingFace as the fallback mirror (throttled but always there).
-    private let mirrors = [
-        URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
-        URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
-    ]
-    private let fileName = "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+    /// Everything model-specific now comes from `LLMModel.selected`, so a
+    /// second model is a case in that enum rather than a fork of this file.
+    /// Only the selected model is ever transferred; other models' files sit
+    /// untouched on disk, which is what makes switching non-destructive.
+    private var model: LLMModel { LLMModel.selected }
+    private var mirrors: [URL] { model.mirrors }
+    private var fileName: String { model.fileName }
 
     /// Expected SHA-256 of the GGUF, lowercase hex. A completed download is
-    /// verified against this before it's accepted — the supply-chain guard: a
+    /// verified against this before it is accepted — the supply-chain guard: a
     /// re-uploaded/tampered mirror, a corrupted transfer, or a cross-mirror
-    /// resume splice can't hand a bad 4.3 GB blob to llama.cpp (which then
+    /// resume splice cannot hand a bad multi-GB blob to llama.cpp (which then
     /// processes PHI on-device).
     ///
-    /// Verified 2026-07-25 from TWO independent sources that agree:
-    ///   • streamed from the R2 mirror and hashed locally
-    ///   • bartowski/Qwen2.5-7B-Instruct-GGUF LFS oid published by HuggingFace
-    /// Size: 4,683,074,240 bytes. Re-pin (both sources) if the model is ever
-    /// re-quantized or replaced.
-    private static let expectedSHA256: String? =
-        "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423"
+    /// Now PER MODEL (see LLMModel.expectedSHA256) rather than one static
+    /// constant, because there are two models to verify. The 7B's digest —
+    /// verified 2026-07-25 from two independent sources — moved there intact.
+    /// Expected SHA-256 of the GGUF, lowercase hex. When set, a completed
+    /// download is verified before it's accepted — this is the supply-chain
+    /// guard: a re-uploaded/tampered mirror, or a cross-mirror resume splice,
+    /// can't hand a corrupt or malicious 4.3 GB blob to llama.cpp (which then
+    /// processes PHI). nil = NOT PINNED YET → verification is skipped with a
+    /// loud log. TODO(Bilal): pin this. Compute once on the built file:
+    ///   shasum -a 256 Qwen2.5-7B-Instruct-Q4_K_M.gguf
+    private var expectedSHA256: String? { model.expectedSHA256 }
 
     /// Live download state (observed by Settings).
     @Published private(set) var progress: Double = 0
@@ -49,11 +55,21 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     }
     @Published private(set) var errorMessage: String?
 
-    private static let userDeletedKey = "modelDeletedByUser"
-    private static let expectedTotalKey = "modelExpectedTotalBytes"
-    // The user must opt in once (first-run disclosure) before the ~4.4GB model
+    // Per-model keys — deleting or opting out of one model must not change the
+    // other's state. The 7B keeps the ORIGINAL unsuffixed keys so existing
+    // installs carry their state across this update untouched.
+    private var userDeletedKey: String { Self.key("modelDeletedByUser", for: model) }
+    private var optedInKeyForModel: String { Self.key("modelDownloadOptedIn", for: model) }
+    private var expectedTotalKeyForModel: String { Self.key("modelExpectedTotalBytes", for: model) }
+
+    /// One keying rule for every model and every call site. The default model
+    /// keeps the ORIGINAL unsuffixed keys, so existing installs carry their
+    /// opted-in / deleted state across this update untouched.
+    private static func key(_ base: String, for m: LLMModel) -> String {
+        m == .fallback ? base : "\(base).\(m.rawValue)"
+    }
+    // The user must opt in once (first-run disclosure) before a model
     // auto-downloads — it no longer starts silently at first launch.
-    private static let optedInKey = "modelDownloadOptedIn"
 
     // Transfer state (touched only on the session's serial delegate queue).
     private var task: URLSessionDataTask?
@@ -86,6 +102,23 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     var isDownloaded: Bool { FileManager.default.fileExists(atPath: localURL.path) }
 
+    /// Install state for any model, not just the selected one — Settings lists
+    /// every model and each row needs its own state.
+    func isDownloaded(_ m: LLMModel) -> Bool {
+        FileManager.default.fileExists(
+            atPath: docs.appendingPathComponent(m.fileName).path)
+    }
+
+    /// Delete a specific model. Only ever removes that model's own files, so
+    /// the other model on disk is unaffected.
+    func delete(_ m: LLMModel) {
+        if m == LLMModel.selected { delete(); return }
+        UserDefaults.standard.set(true, forKey: Self.key("modelDeletedByUser", for: m))
+        try? FileManager.default.removeItem(at: docs.appendingPathComponent(m.fileName))
+        try? FileManager.default.removeItem(at: docs.appendingPathComponent(m.fileName + ".partial"))
+        DispatchQueue.main.async { ModelManager.shared.modelChanged() }
+    }
+
     private var partialSize: Int64 {
         (try? FileManager.default.attributesOfItem(atPath: partialURL.path)[.size] as? Int64) ?? 0
     }
@@ -103,7 +136,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Stream-hash the finished file and compare to the pinned SHA-256. Returns
     /// true (skips) when no hash is pinned — with a loud log so it's not silent.
     private func sha256Matches(_ url: URL) -> Bool {
-        guard let expected = Self.expectedSHA256 else {
+        guard let expected = expectedSHA256 else {
             print("[ModelDownloader] WARNING: model SHA-256 not pinned — integrity NOT verified.")
             return true
         }
@@ -132,7 +165,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             }
             return
         }
-        guard !UserDefaults.standard.bool(forKey: Self.userDeletedKey) else { return }
+        guard !UserDefaults.standard.bool(forKey: userDeletedKey) else { return }
         if isDownloading {
             // Back from suspension with a transfer "in flight": the connection
             // may be a zombie (alive, delivering nothing). If no bytes arrived
@@ -148,7 +181,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         }
         // Don't auto-start until the user has opted in via the first-run
         // disclosure (or by tapping Download in Settings / on the record screen).
-        guard UserDefaults.standard.bool(forKey: Self.optedInKey) else { return }
+        guard UserDefaults.standard.bool(forKey: optedInKeyForModel) else { return }
         startDownload()
     }
 
@@ -160,15 +193,15 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         guard !isDownloaded else { return }
         // Preflight: fail clearly up front rather than climbing to a byte-mismatch
         // error after silently dropping writes on a full disk. ~4.4 GB + headroom.
-        guard Self.hasEnoughFreeSpace(bytes: 5_000_000_000) else {
+        guard Self.hasEnoughFreeSpace(bytes: model.bytesNeeded) else {
             DispatchQueue.main.async {
                 self.isDownloading = false
-                self.errorMessage = "Not enough free space — the model needs about 4.4 GB. Free up some space and try again."
+                self.errorMessage = "Not enough free space — \(self.model.title) needs about \(self.model.approxSize). Free up some space and try again."
             }
             return
         }
-        UserDefaults.standard.set(false, forKey: Self.userDeletedKey)
-        UserDefaults.standard.set(true, forKey: Self.optedInKey)   // starting = opted in
+        UserDefaults.standard.set(false, forKey: userDeletedKey)
+        UserDefaults.standard.set(true, forKey: optedInKeyForModel)   // starting = opted in
         DispatchQueue.main.async {
             guard !self.isDownloading else { return }
             self.isDownloading = true
@@ -183,7 +216,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     /// Remove the model (Settings → Delete). Remembered so the next launch
     /// doesn't immediately download it again.
     func delete() {
-        UserDefaults.standard.set(true, forKey: Self.userDeletedKey)
+        UserDefaults.standard.set(true, forKey: userDeletedKey)
         task?.cancel()
         try? FileManager.default.removeItem(at: localURL)
         try? FileManager.default.removeItem(at: partialURL)
@@ -214,7 +247,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
         baseOffset = offset
         received = 0
         lastDataAt = Date()   // fresh attempt — give it time before any nudge
-        totalBytes = Int64(UserDefaults.standard.double(forKey: Self.expectedTotalKey))
+        totalBytes = Int64(UserDefaults.standard.double(forKey: expectedTotalKeyForModel))
         if totalBytes > 0 {
             let initial = Double(offset) / Double(totalBytes)
             DispatchQueue.main.async { self.progress = initial }
@@ -359,7 +392,7 @@ extension ModelDownloader: URLSessionDataDelegate {
             completionHandler(.cancel)
             try? FileManager.default.removeItem(at: partialURL)
             baseOffset = 0
-            UserDefaults.standard.removeObject(forKey: Self.expectedTotalKey)
+            UserDefaults.standard.removeObject(forKey: expectedTotalKeyForModel)
             attemptFailed("Resuming from a bad point — restarting the download.")
             return
         default:
@@ -368,7 +401,7 @@ extension ModelDownloader: URLSessionDataDelegate {
             return
         }
         if totalBytes > 0 {
-            UserDefaults.standard.set(Double(totalBytes), forKey: Self.expectedTotalKey)
+            UserDefaults.standard.set(Double(totalBytes), forKey: expectedTotalKeyForModel)
         }
         if !FileManager.default.fileExists(atPath: partialURL.path) {
             FileManager.default.createFile(atPath: partialURL.path, contents: nil)

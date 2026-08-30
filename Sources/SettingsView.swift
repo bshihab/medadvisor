@@ -3,7 +3,10 @@ import SwiftUI
 /// Settings — manage the on-device models (download the LLM up front; see status
 /// of and delete any managed model) and pick the transcription engine.
 struct SettingsView: View {
-    @State private var confirmDelete: ManagedModel?
+    @State private var confirmDeleteLLM: LLMModel?
+    @State private var switchBlocked = false
+    /// Re-read on every `models.revision` bump so rows reflect the live choice.
+    @State private var selectedLLM: LLMModel = LLMModel.selected
     @AppStorage("showMemoryHUD") private var showMemoryHUD = false
     @AppStorage("benchmarkEnabled") private var benchmarkEnabled = false
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
@@ -19,15 +22,23 @@ struct SettingsView: View {
                     AccountRow()
                 }
 
+                // One models section, not two. The old "On-device Models" section
+                // iterated ManagedModel, which holds a single `.llm` case with a
+                // HARDCODED "Qwen 2.5-7B" title and a hardcoded "~4.3 GB" download
+                // button. Once a second model existed that row showed the wrong
+                // name and the wrong size, and the screen listed the 7B twice with
+                // two Delete buttons — on a screen where Delete removes 4.3 GB.
+                // LLMModel.allCases drives everything now; its footer absorbed the
+                // offline/speech-to-text note that used to live here.
                 Section {
-                    ForEach(ManagedModel.allCases) { modelRow($0) }
+                    ForEach(LLMModel.allCases) { llmRow($0) }
                     if let error = downloader.errorMessage {
                         Text(error).font(.caption).foregroundStyle(.red)
                     }
                 } header: {
-                    Text("On-device Models")
+                    Text("AI Model")
                 } footer: {
-                    Text("Everything runs on your device, offline. The AI model downloads once (required to record); speech-to-text uses Apple's built-in on-device engine — no download.")
+                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 2.5-7B is the default and is what your feedback has been graded with. A second model is available to try — it is smaller and faster, but its feedback is still being evaluated, so treat anything it says as provisional. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
                 }
 
                 Section("Appearance") {
@@ -102,18 +113,29 @@ struct SettingsView: View {
             .onChange(of: benchmark.lastReportURL) { _, _ in savedRuns = benchmark.savedRuns() }
             .confirmationDialog("Delete this model?",
                                 isPresented: Binding(
-                                    get: { confirmDelete != nil },
-                                    set: { if !$0 { confirmDelete = nil } }),
+                                    get: { confirmDeleteLLM != nil },
+                                    set: { if !$0 { confirmDeleteLLM = nil } }),
                                 titleVisibility: .visible) {
-                if let model = confirmDelete {
-                    Button("Delete \(model.title)", role: .destructive) {
-                        models.delete(model)
-                        confirmDelete = nil
+                if let m = confirmDeleteLLM {
+                    Button("Delete \(m.title)", role: .destructive) {
+                        // If the in-use model is deleted, fall back to the
+                        // default so the app is never pointed at a missing file.
+                        if m == LLMModel.selected, m != LLMModel.fallback {
+                            LLMEngine.shared.selectModel(.fallback)
+                            selectedLLM = .fallback
+                        }
+                        downloader.delete(m)
+                        confirmDeleteLLM = nil
                     }
-                    Button("Cancel", role: .cancel) { confirmDelete = nil }
+                    Button("Cancel", role: .cancel) { confirmDeleteLLM = nil }
                 }
             } message: {
-                Text("This removes the ~4.4 GB AI model from your phone. You'll need to download it again before you can analyze recordings.")
+                Text("You can download it again later. The other model on your device is not affected.")
+            }
+            .alert("Analysis in progress", isPresented: $switchBlocked) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("The model can't be changed while a consultation is being analysed. Wait for it to finish, then try again.")
             }
         }
         // Apply the theme to the Settings sheet itself, live — a sheet doesn't
@@ -124,15 +146,27 @@ struct SettingsView: View {
         .id("appearance-\(appearance)")
     }
 
+    /// One selectable GGUF. Download, select and delete are all per-model, so
+    /// no action here can touch a model the user already has on disk.
     @ViewBuilder
-    private func modelRow(_ model: ManagedModel) -> some View {
-        let installed = models.isInstalled(model)   // depends on models.revision
+    private func llmRow(_ model: LLMModel) -> some View {
+        let installed = downloader.isDownloaded(model)   // depends on models.revision
+        let isSelected = selectedLLM == model
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(model.title).font(.headline)
-                    Text("\(model.role) · \(model.approxSize)")
-                        .font(.caption).foregroundStyle(.secondary)
+                    HStack(spacing: 6) {
+                        Text(model.title).font(.headline)
+                        if isSelected {
+                            Text("IN USE")
+                                .font(.caption2.weight(.bold))
+                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                .background(.tint, in: Capsule())
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    Text(model.blurb).font(.caption).foregroundStyle(.secondary)
+                    Text(model.approxSize).font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Text(installed ? "Installed" : "Not installed")
@@ -140,35 +174,41 @@ struct SettingsView: View {
                     .foregroundStyle(installed ? .green : .secondary)
             }
 
-            if model == .llm, !installed {
-                if downloader.isDownloading {
-                    VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 10) {
+                if !installed {
+                    if isSelected, downloader.isDownloading {
                         ProgressView(value: downloader.progress)
-                        Text("Downloading… \(Int(downloader.progress * 100))%")
+                        Text("\(Int(downloader.progress * 100))%")
                             .font(.caption).foregroundStyle(.secondary)
-                        Text("Keep the app open — the screen stays awake, so you can just set the phone down. If you do leave, nothing is lost: it resumes from the exact spot when you come back.")
-                            .font(.caption2).foregroundStyle(.secondary)
+                    } else {
+                        Button("Download (\(model.approxSize))") {
+                            // Selecting first points the downloader at this model.
+                            if LLMEngine.shared.selectModel(model) {
+                                selectedLLM = model
+                                downloader.startDownload()
+                            } else { switchBlocked = true }
+                        }
+                        .buttonStyle(.borderedProminent).controlSize(.small)
                     }
-                } else {
-                    Button("Download (~4.3 GB, one time)") { downloader.startDownload() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
-                    Text("~4.4 GB, one time. Fastest with the app open; progress is saved continuously, so nothing is ever lost if you leave.")
-                        .font(.caption2).foregroundStyle(.secondary)
+                } else if !isSelected {
+                    Button("Use this model") {
+                        if LLMEngine.shared.selectModel(model) { selectedLLM = model }
+                        else { switchBlocked = true }
+                    }
+                    .buttonStyle(.borderedProminent).controlSize(.small)
                 }
-            }
 
-            if installed, model.deletable {
-                Button(role: .destructive) { confirmDelete = model } label: {
-                    Label("Delete", systemImage: "trash")
+                if installed {
+                    Button(role: .destructive) { confirmDeleteLLM = model } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .buttonStyle(.bordered).controlSize(.small)
+                    .disabled(isSelected && downloader.isDownloading)
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            } else if installed {
-                Text("Ships inside the app — nothing to download or delete.")
-                    .font(.caption2).foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, 4)
+        .onChange(of: models.revision) { selectedLLM = LLMModel.selected }
     }
+
 }

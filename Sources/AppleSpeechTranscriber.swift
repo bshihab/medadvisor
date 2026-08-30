@@ -6,11 +6,18 @@ import Speech
 /// download — the OS ships/downloads the assets.
 ///
 /// Built on the exact SpeechAnalyzer flow proven in tools/stt-benchmark
-/// (AppleTranscribe.swift), which compiled and ran. NOTE: this version does NOT
-/// extract per-word timestamps yet (the `.audioTimeRange` attribute API didn't
-/// resolve on the iOS SDK), so it returns one whole-file segment. Speaker
-/// separation no longer needs those timings — SpeakerAttribution sentence-splits
-/// the flat text and the LLM tags Doctor/Patient — so Apple is the default.
+/// (AppleTranscribe.swift), which compiled and ran. Returns one whole-file
+/// segment. Speaker separation does not need per-word timings here: the PRIMARY
+/// path uses the live transcript's own pause-segmented lines (see
+/// EncounterProcessor), and this file transcription is only the fallback.
+///
+/// An earlier version of this comment claimed the `.audioTimeRange` attribute
+/// API "didn't resolve on the iOS SDK". That was wrong — checked against the SDK
+/// interface, `SpeechTranscriber.ResultAttributeOption.audioTimeRange` exists and
+/// is available iOS 26.0+. The attribute was missing from results because
+/// `attributeOptions` below is empty, and attributes are only attached when
+/// requested. Left unrequested deliberately (nothing on this path consumes
+/// timings) but it is there if ever needed.
 @available(iOS 26.0, *)
 @MainActor
 final class AppleSpeechTranscriber: Transcribing {

@@ -216,17 +216,55 @@ enum PromptBuilder {
         return roles
     }
 
+    /// The closing summary shown under the scorecard.
+    ///
+    /// This used to pass ONLY counts — "met 12 of 16" — and then ask for "the
+    /// single most important thing to improve next time". The model was never
+    /// told WHICH behaviours were missed, so that advice could only be guessed.
+    /// It reliably produced plausible, generic coaching that had no connection to
+    /// the consultation, which is worse than no summary: a trainee has no way to
+    /// tell invented advice from graded advice.
+    ///
+    /// Now the actual gaps go in. Missed first (they are the real failures),
+    /// then partials, capped at 6 so the summary prompt stays small next to the
+    /// cached transcript prefix.
     static func summaryPrompt(rubric: Rubric, results: [CriterionResult]) -> String {
         let met = results.filter { $0.status == .met }.count
         // N/A criteria (e.g. no exam) aren't part of the denominator.
         let applicable = results.filter { $0.status != .notApplicable }.count
+        let naCount = results.filter { $0.status == .notApplicable }.count
         // encounterType is Optional — interpolating it raw put a literal
         // `Optional("…")` into the prompt (and "nil" when absent).
         let encounter = rubric.encounterType ?? "clinical"
+
+        let promptOf = Dictionary(rubric.criteria.map { ($0.id, $0.prompt) },
+                                  uniquingKeysWith: { a, _ in a })
+        func labels(_ status: CriterionResult.Status) -> [String] {
+            results.filter { $0.status == status }
+                .compactMap { promptOf[$0.criterionId]?.trimmingCharacters(in: CharacterSet(charactersIn: "?")) }
+        }
+        let gaps = (labels(.missed) + labels(.partial)).prefix(6)
+
+        let gapBlock = gaps.isEmpty
+            ? "They met every applicable criterion."
+            : "Behaviours they did NOT do (or only partly did):\n"
+              + gaps.map { "- \($0)" }.joined(separator: "\n")
+
+        // State N/A explicitly. The denominator silently shrinks when a criterion
+        // does not apply (12/16 becomes 12/15), so without this the summary can
+        // describe a score the trainee cannot reconcile with the scorecard.
+        let naNote = naCount > 0
+            ? "\n\(naCount) criterion did not apply to this consultation and was not scored."
+            : ""
+
         return """
-        A doctor met \(met) of \(applicable) criteria in a \(encounter) consultation. \
+        A doctor met \(met) of \(applicable) criteria in a \(encounter) consultation.\(naNote)
+
+        \(gapBlock)
+
         In 2 sentences, summarize how they did overall and the single most important thing to \
-        improve next time. Plain prose, no lists.
+        improve next time. Base the improvement on the list above — do not invent a gap that is \
+        not listed. Plain prose, no lists.
         """
     }
 }

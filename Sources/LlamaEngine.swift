@@ -14,7 +14,7 @@ import Foundation
 /// differently, which is the point of the protocol.
 @MainActor
 final class LlamaEngine: InferenceEngine {
-    let label = "llama.cpp · GPU (Metal)"
+    var label: String { "llama.cpp · GPU (Metal) · \(LLMModel.selected.title)" }
     let requiresManagedDownload = true
 
     private var llama: LlamaContext?
@@ -38,8 +38,11 @@ final class LlamaEngine: InferenceEngine {
         try await ensureLoaded(progress: { _ in })
         guard let llama else { throw InferenceError.notLoaded }
 
-        // Qwen uses the ChatML template — wrong markers = garbage output.
-        let formatted = "<|im_start|>user\n\(prompt)<|im_end|>\n<|im_start|>assistant\n"
+        // Qwen uses the ChatML template — wrong markers = garbage output. The
+        // assistant opening is model-specific: reasoning models (Qwen3/3.5) need
+        // an empty think block pre-filled or they never reach an answer inside
+        // the token budget. See LLMModel.assistantOpening.
+        let formatted = "<|im_start|>user\n\(prompt)<|im_end|>\n" + LLMModel.selected.assistantOpening
 
         var output = ""
         var tokens = 0
@@ -67,7 +70,7 @@ final class LlamaEngine: InferenceEngine {
         guard let llama else { throw InferenceError.notLoaded }
 
         let prefix = "<|im_start|>user\n" + sharedPrefix
-        let fullSuffix = suffix + "<|im_end|>\n<|im_start|>assistant\n"
+        let fullSuffix = suffix + "<|im_end|>\n" + LLMModel.selected.assistantOpening
 
         var output = ""
         var tokens = 0

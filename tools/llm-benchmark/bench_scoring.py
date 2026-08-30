@@ -10,7 +10,7 @@ Key metrics:
   over-score    — % of MISSED criteria the model wrongly marked met  (the bug we care about)
   recall (met)  — % of MET criteria the model correctly marked met
 """
-import argparse, json, time
+import argparse, json, os, time
 from pathlib import Path
 
 from mlx_lm import load, generate
@@ -27,6 +27,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="MLX model id (e.g. mlx-community/Qwen2.5-7B-Instruct-4bit)")
     ap.add_argument("--limit", type=int, default=0, help="only first N cases (0 = all)")
+    ap.add_argument("--no-think", action="store_true",
+                    help="disable reasoning mode (Qwen3/3.5). Without this they emit a long "
+                         "'Thinking Process:' block and never reach an answer inside the "
+                         "app's token budget — measured: 1 of 21 utterances labeled.")
     args = ap.parse_args()
 
     criteria = {c["id"]: c for c in json.loads(RUBRIC.read_text())["criteria"]}
@@ -39,7 +43,16 @@ def main():
 
     def run_llm(prompt: str) -> str:
         messages = [{"role": "user", "content": prompt}]
-        text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+        if args.no_think:
+            try:
+                text = tokenizer.apply_chat_template(messages, add_generation_prompt=True,
+                                                     enable_thinking=False)
+            except TypeError:
+                text = tokenizer.apply_chat_template(
+                    [{"role": "user", "content": prompt + "\n/no_think"}],
+                    add_generation_prompt=True)
+        else:
+            text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
         return generate(model, tokenizer, prompt=text, max_tokens=180, verbose=False)
 
     total_calls = sum(len(d["labels"]) for d in dataset)
@@ -65,6 +78,10 @@ def main():
 
     RESULTS.mkdir(exist_ok=True)
     safe = args.model.replace("/", "__")
+    if args.no_think:
+        safe += "__nothink"
+    if os.environ.get("APP_SCORING_FEW_SHOT") == "1":
+        safe += "__fewshot"
     (RESULTS / f"scoring_{safe}.json").write_text(json.dumps(rows, indent=2))
     summarize(args.model, rows, time.time() - t0)
 

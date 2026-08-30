@@ -125,10 +125,11 @@ final class InsightsEngine: ObservableObject {
         }
 
         let improvement = Self.improvementPoints(trend)
+        let pct = total > 0 ? Int((Double(met) / Double(total) * 100).rounded()) : 0
         let prompt = """
-        You are a supportive clinical communication coach. A doctor completed \(records.count) \
-        recorded consultations, meeting \(met) of \(total) assessed behaviors overall.
-        \(improvement.map { "Their met-rate changed by \(Int($0)) points from their earlier to later sessions in this period." } ?? "")
+        You are a clinical communication coach. A doctor completed \(records.count) \
+        recorded consultations, meeting \(met) of \(total) assessed behaviors overall (\(pct)%).
+        \(improvement.map { Self.trendPhrase(Int($0)) } ?? "")
 
         Things they did well (quotes):
         \(strengths.map { "- \"\($0)\"" }.joined(separator: "\n"))
@@ -136,8 +137,13 @@ final class InsightsEngine: ObservableObject {
         Areas flagged for improvement:
         \(improvements.map { "- \($0)" }.joined(separator: "\n"))
 
-        Write a short, encouraging summary (4-5 sentences): what they consistently do well, whether \
-        they're improving, and the 1-2 most important things to focus on next. Speak directly using "you".
+        Write a short summary (4-5 sentences) for the doctor: what they consistently do well, \
+        how their performance is trending, and the 1-2 most important things to focus on next. \
+        Speak directly using "you".
+
+        Be supportive but ACCURATE. Never describe a decline as progress. If the trend is \
+        downward or flat, say so plainly and frame it as what to work on next. Base every \
+        statement on the data above — do not invent strengths or progress that is not shown.
         """
 
         do {
@@ -156,6 +162,31 @@ final class InsightsEngine: ObservableObject {
         } catch {
             errorMessage = "Couldn't generate insights: \(error.localizedDescription)"
         }
+    }
+
+    /// The trend direction, stated in words by US rather than left to the model.
+    ///
+    /// The old prompt handed over a bare signed number ("changed by -11 points")
+    /// and asked for an "encouraging summary". Measured on a declining cohort, the
+    /// model wrote: "you've made significant progress... improved by -11 points."
+    /// It read the framing and ignored the sign — telling a doctor who is getting
+    /// worse that they are getting better, which is the one thing this feature
+    /// must never do.
+    ///
+    /// So the direction is computed here and the model only has to phrase it.
+    /// +-5 points is the dead band: below that, session-to-session noise on a
+    /// 16-criterion rubric is larger than the signal, and calling it a trend
+    /// either way would be inventing one.
+    static func trendPhrase(_ points: Int) -> String {
+        if points >= 5 {
+            return "Their met-rate improved by \(points) points from their earlier to later sessions."
+        }
+        if points <= -5 {
+            return "Their met-rate FELL by \(abs(points)) points from their earlier to later "
+                 + "sessions — performance is going backwards in this period."
+        }
+        return "Their met-rate was essentially unchanged (\(points >= 0 ? "+" : "")\(points) points) "
+             + "from their earlier to later sessions — no real movement either way."
     }
 
     /// Change in average met-fraction (percentage points) from the first half of
