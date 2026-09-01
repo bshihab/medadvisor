@@ -1,0 +1,78 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-KYKiOSsPNj1FaoRc7Hxv0G
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_recall_di
+│   ag.py
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/realistic_cas
+│   es.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+└── 🔨 Created function diag.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+==========================================================================
+RECALL REGRESSION — behaviours the tuned model wrongly calls missed
+==========================================================================
+tuned lost 3 of 18 met criteria (stock lost 0)
+
+--- 1. good_headache / avoid_interrupting ---
+  criterion : Did the clinician avoid interrupting and give the patient space to speak?
+  good looks like: Lets the patient finish; does not cut them off.
+  STOCK said: met  evidence: "Take your time and tell me more"
+  TUNED said:
+      RESULT: missed
+      EVIDENCE: none
+      TIP: This looks like it but does not satisfy the criterion. Aim for: Lets the patient finish; does not cut them off.
+
+--- 2. rushed_cough / explore_complaint ---
+  criterion : Did the clinician explore the presenting complaint thoroughly (onset, duration, severity, associated symptoms, what's been tried)?
+  good looks like: Characterizes the complaint across its key dimensions.
+  STOCK said: met  evidence: "I've had this cough for a couple of weeks and—... mostly at night."
+  TUNED said:
+      RESULT: missed
+      EVIDENCE: none
+      TIP: This looks like it but does not satisfy the criterion. Aim for: Characterizes the complaint across its key dimensions.
+
+--- 3. rushed_cough / accurate_info ---
+  criterion : Did the clinician give accurate, appropriate information about the condition and options?
+  good looks like: Information given is correct and relevant; avoids false reassurance or overstated certainty.
+  STOCK said: met  evidence: "It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management."
+  TUNED said:
+      RESULT: partial
+      EVIDENCE: It's a self-limiting condition, viral in aetiology, should resolve with conservative management.
+      TIP: Attempted but incomplete — Information given is correct and relevant; avoids false reassurance or overstated certainty
+
+TRANSCRIPT of the first failing case (for reading the verdicts):
+  Doctor: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.
+  Patient: Thank you.
+  Doctor: So, tell me in your own words — what's brought you in today?
+  Patient: I've been getting these headaches for about three weeks, and honestly it's starting to scare me a bit.
+  Doctor: I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more — when did they start, where do you feel them, and does anything make them better or worse?
+  Patient: They're at the front of my head, usually late afternoon, and worse when I've been on the computer. Paracetamol takes the edge off.
+  Doctor: Thank you. Can I ask what you think might be going on, or whether there's something in particular you're worried it could be?
+  Patient: I suppose I'm frightened it might be something serious, like a brain tumour. My aunt had one.
+  Doctor: That's a really understandable worry, and I'm glad you've told me — we'll work through this properly together.
+  Doctor: I'd like to examine you now — I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.
+  Patient: Okay, that's 
+
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-KYKiOSsPNj1FaoRc7Hxv0G

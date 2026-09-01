@@ -1,0 +1,243 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-IJZDXtUiy08qeQjqkKj59f
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_compare_m
+│   odels.py
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+└── 🔨 Created function compare.
+transcript: 1253 chars, 17 lines
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+[Qwen 2.5-7B (ships today)] intro_self             missed
+[Qwen 2.5-7B (ships today)] set_tone               missed
+[Qwen 2.5-7B (ships today)] open_questions         met
+[Qwen 2.5-7B (ships today)] explore_complaint      partial
+[Qwen 2.5-7B (ships today)] avoid_interrupting     missed
+[Qwen 2.5-7B (ships today)] what_else              missed
+[Qwen 2.5-7B (ships today)] explore_perspective    met
+[Qwen 2.5-7B (ships today)] respond_emotion        met
+[Qwen 2.5-7B (ships today)] support_respect        met
+[Qwen 2.5-7B (ships today)] explain_exam           met
+[Qwen 2.5-7B (ships today)] plain_language         partial
+[Qwen 2.5-7B (ships today)] accurate_info          met
+[Qwen 2.5-7B (ships today)] shared_plan            met
+[Qwen 2.5-7B (ships today)] check_understanding    missed
+[Qwen 2.5-7B (ships today)] safety_net             met
+[Qwen 2.5-7B (ships today)] invite_questions       missed
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[Qwen 3.5-4B (the new one)] intro_self             missed
+[Qwen 3.5-4B (the new one)] set_tone               missed
+[Qwen 3.5-4B (the new one)] open_questions         missed
+[Qwen 3.5-4B (the new one)] explore_complaint      met
+[Qwen 3.5-4B (the new one)] avoid_interrupting     missed
+[Qwen 3.5-4B (the new one)] what_else              missed
+[Qwen 3.5-4B (the new one)] explore_perspective    missed
+[Qwen 3.5-4B (the new one)] respond_emotion        missed
+[Qwen 3.5-4B (the new one)] support_respect        missed
+[Qwen 3.5-4B (the new one)] explain_exam           partial
+[Qwen 3.5-4B (the new one)] plain_language         missed
+[Qwen 3.5-4B (the new one)] accurate_info          missed
+[Qwen 3.5-4B (the new one)] shared_plan            missed
+[Qwen 3.5-4B (the new one)] check_understanding    missed
+[Qwen 3.5-4B (the new one)] safety_net             missed
+
+==============================================================================
+SAME TRANSCRIPT, BOTH MODELS
+==============================================================================
+Qwen 2.5-7B (ships today): 7s   Qwen 3.5-4B (the new one): 9s
+
+criterion              7B        4B        agree?
+------------------------------------------------------------------------------
+intro_self             missed    missed    
+set_tone               missed    missed    
+open_questions         met       missed    <-- DIFFER
+explore_complaint      partial   met       <-- DIFFER
+avoid_interrupting     missed    missed    
+what_else              missed    missed    
+explore_perspective    met       missed    <-- DIFFER
+respond_emotion        met       missed    <-- DIFFER
+support_respect        met       missed    <-- DIFFER
+explain_exam           met       partial   <-- DIFFER
+plain_language         partial   missed    <-- DIFFER
+accurate_info          met       missed    <-- DIFFER
+shared_plan            met       missed    <-- DIFFER
+check_understanding    missed    missed    
+safety_net             met       missed    <-- DIFFER
+invite_questions       missed    missed    
+
+==============================================================================
+WHERE THEY DISAGREE — read these against the answer key
+==============================================================================
+
+### open_questions — Did the clinician begin with open-ended questions and let the patient tell their story?
+  Qwen 2.5-7B (ships today): met
+     evidence: Back pain, is it?
+     tip: (none)
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: Start with an open-ended question like "Tell me about your back pain" instead of immediately asking specific yes/no questions.
+
+### explore_complaint — Did the clinician explore the presenting complaint thoroughly (onset, duration, severity, associated symptoms, what's been tried)?
+  Qwen 2.5-7B (ships today): partial
+     evidence: Back pain, is it? Back pain, started about 3 weeks ago. And three weeks, any numbness in the legs, any trouble passing water.
+     tip: Ask more detailed questions about the onset, duration, and severity of the back pain, as well as any associated symptoms.
+  Qwen 3.5-4B (the new one): met
+     evidence: Back pain, is it? ... It started about 3 weeks ago. ... How bad, one to 10. ... Have you tried anything for it?
+     tip: None
+
+### explore_perspective — Did the clinician explore the patient's perspective — their ideas, fears, and expectations?
+  Qwen 2.5-7B (ships today): met
+     evidence: I keep thinking, let me stop you there.
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: Ask the patient directly what they think is causing their pain or what they are most worried about before examining them.
+
+### respond_emotion — Did the clinician acknowledge and respond to the patient's emotions?
+  Qwen 2.5-7B (ships today): met
+     evidence: Sorry, I'm a bit emotional about all this.
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician dismissed the patient's emotional distress with "Shut up" and did not validate or explore the fear regarding their father's cancer.
+
+### support_respect — Did the clinician convey support, concern, and respect throughout?
+  Qwen 2.5-7B (ships today): met
+     evidence: I need to examine you. Shut up, bend forward. Does that hurt?
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: Use warmer, validating language instead of abrupt commands like "Shut up" to acknowledge the patient's emotional distress.
+
+### explain_exam — If a physical exam occurred, did the clinician explain what they were doing and check comfort? (N/A if no exam.)
+  Qwen 2.5-7B (ships today): met
+     evidence: Shut up, bend forward. Does that hurt?
+     tip: None
+  Qwen 3.5-4B (the new one): partial
+     evidence: Shut up, bend forward. Does that hurt?
+     tip: Replace the command "Shut up" with a polite request like "Please bend forward" and explicitly ask "Is this uncomfortable?" before proceeding.
+
+### plain_language — Did the clinician explain things in plain language, avoiding jargon?
+  Qwen 2.5-7B (ships today): partial
+     evidence: ideology rather than radicular. It means it's mus- musculoskeletal.
+     tip: Define "radicular" and provide a simple explanation for "musculoskeletal."
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician used jargon like "straight leg raise," "focal neurology," and "radicular" without explaining them before the patient asked for clarification.
+
+### accurate_info — Did the clinician give accurate, appropriate information about the condition and options?
+  Qwen 2.5-7B (ships today): met
+     evidence: It means it's mus- musculoskeletal. I'll put you on Nexoprin. That broke in, and refer you to physio, take, take it with food.
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician used vague terms like "ideology" instead of "radiculopathy" and provided no specific information about the condition or treatment options, failing to educate the patient.
+
+### shared_plan — Did the clinician discuss a clear plan and involve the patient in decisions?
+  Qwen 2.5-7B (ships today): met
+     evidence: I'll put you on Nexoprin. That broke in, and refer you to physio, take, take it with food.
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician gave a plan but failed to explain the reasoning or ask the patient about their preferences regarding treatment options.
+
+### safety_net — Did the clinician safety-net (what to watch for, when and how to seek help)?
+  Qwen 2.5-7B (ships today): met
+     evidence: Do come back the same day if you get numbness between your legs.
+     tip: None
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician gave a vague instruction to "come back" but failed to specify the exact symptoms requiring urgent return or the timeframe for seeking help.
+
+==============================================================================
+EVERY TIP, BOTH MODELS — the part no metric measures
+==============================================================================
+
+### intro_self
+  7B (missed): The clinician should have introduced themselves and explained their role, such as saying "Hello, I'm Dr. Smith, and I'll be your doctor today."
+  4B (missed): The clinician should state their name and professional role (e.g., "I am Dr. X, a GP") early in the consultation to establish trust and clarity.
+
+### set_tone
+  7B (missed): The clinician should have acknowledged the patient's feeling of being behind schedule and assured them that there was enough time for the consultation.
+  4B (missed): Acknowledge the patient's request to speak quickly and validate their feelings before proceeding with the examination.
+
+### open_questions
+  7B (met): (none)
+  4B (missed): Start with an open-ended question like "Tell me about your back pain" instead of immediately asking specific yes/no questions.
+
+### explore_complaint
+  7B (partial): Ask more detailed questions about the onset, duration, and severity of the back pain, as well as any associated symptoms.
+  4B (met): None
+
+### avoid_interrupting
+  7B (missed): Allow the patient to finish their thoughts without interrupting, such as by waiting for them to complete their sentences before responding.
+  4B (missed): The clinician interrupted the patient twice ("Shut up", "speak quick") and did not allow the patient to finish their thoughts before responding.
+
+### what_else
+  7B (missed): The clinician should have explicitly asked, "Is there anything else you'd like to discuss?" before concluding the consultation.
+  4B (missed): Explicitly ask "Is there anything else worrying you?" before concluding the consultation to ensure no concerns are left unaddressed.
+
+### explore_perspective
+  7B (met): None
+  4B (missed): Ask the patient directly what they think is causing their pain or what they are most worried about before examining them.
+
+### respond_emotion
+  7B (met): None
+  4B (missed): The clinician dismissed the patient's emotional distress with "Shut up" and did not validate or explore the fear regarding their father's cancer.
+
+### support_respect
+  7B (met): None
+  4B (missed): Use warmer, validating language instead of abrupt commands like "Shut up" to acknowledge the patient's emotional distress.
+
+### explain_exam
+  7B (met): None
+  4B (partial): Replace the command "Shut up" with a polite request like "Please bend forward" and explicitly ask "Is this uncomfortable?" before proceeding.
+
+### plain_language
+  7B (partial): Define "radicular" and provide a simple explanation for "musculoskeletal."
+  4B (missed): The clinician used jargon like "straight leg raise," "focal neurology," and "radicular" without explaining them before the patient asked for clarification.
+
+### accurate_info
+  7B (met): None
+  4B (missed): The clinician used vague terms like "ideology" instead of "radiculopathy" and provided no specific information about the condition or treatment options, failing to educate the patient.
+
+### shared_plan
+  7B (met): None
+  4B (missed): The clinician gave a plan but failed to explain the reasoning or ask the patient about their preferences regarding treatment options.
+
+### check_understanding
+  7B (missed): Ask the patient to repeat the plan in their own words.
+  4B (missed): Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+### safety_net
+  7B (met): None
+  4B (missed): The clinician gave a vague instruction to "come back" but failed to specify the exact symptoms requiring urgent return or the timeframe for seeking help.
+
+### invite_questions
+  7B (missed): Explicitly ask the patient if they have any questions before closing the consultation.
+  4B (missed): Explicitly ask the patient if they have any further questions before ending the consultation.
+[Qwen 3.5-4B (the new one)] invite_questions       missed
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-IJZDXtUiy08qeQjqkKj59f

@@ -1,0 +1,179 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-46VYrVNokDH4601BlXcV6a
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_compare_m
+│   odels.py
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+└── 🔨 Created function compare.
+transcript: 1941 chars, 19 lines
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[Qwen 2.5-7B (ships today)] intro_self             met
+[Qwen 2.5-7B (ships today)] set_tone               met
+[Qwen 2.5-7B (ships today)] open_questions         met
+[Qwen 2.5-7B (ships today)] explore_complaint      met
+[Qwen 2.5-7B (ships today)] avoid_interrupting     partial
+[Qwen 2.5-7B (ships today)] what_else              missed
+[Qwen 2.5-7B (ships today)] explore_perspective    met
+[Qwen 2.5-7B (ships today)] respond_emotion        met
+[Qwen 2.5-7B (ships today)] support_respect        met
+[Qwen 2.5-7B (ships today)] explain_exam           met
+[Qwen 2.5-7B (ships today)] plain_language         met
+[Qwen 2.5-7B (ships today)] accurate_info          met
+[Qwen 2.5-7B (ships today)] shared_plan            met
+[Qwen 2.5-7B (ships today)] check_understanding    partial
+[Qwen 2.5-7B (ships today)] safety_net             missed
+[Qwen 2.5-7B (ships today)] invite_questions       missed
+[Qwen 3.5-4B (the new one)] intro_self             met
+[Qwen 3.5-4B (the new one)] set_tone               met
+[Qwen 3.5-4B (the new one)] open_questions         met
+[Qwen 3.5-4B (the new one)] explore_complaint      met
+[Qwen 3.5-4B (the new one)] avoid_interrupting     met
+[Qwen 3.5-4B (the new one)] what_else              missed
+[Qwen 3.5-4B (the new one)] explore_perspective    met
+[Qwen 3.5-4B (the new one)] respond_emotion        met
+[Qwen 3.5-4B (the new one)] support_respect        met
+[Qwen 3.5-4B (the new one)] explain_exam           met
+[Qwen 3.5-4B (the new one)] plain_language         met
+[Qwen 3.5-4B (the new one)] accurate_info          met
+[Qwen 3.5-4B (the new one)] shared_plan            met
+[Qwen 3.5-4B (the new one)] check_understanding    missed
+[Qwen 3.5-4B (the new one)] safety_net             missed
+
+==============================================================================
+SAME TRANSCRIPT, BOTH MODELS
+==============================================================================
+Qwen 2.5-7B (ships today): 8s   Qwen 3.5-4B (the new one): 9s
+
+criterion              7B        4B        agree?
+------------------------------------------------------------------------------
+intro_self             met       met       
+set_tone               met       met       
+open_questions         met       met       
+explore_complaint      met       met       
+avoid_interrupting     partial   met       <-- DIFFER
+what_else              missed    missed    
+explore_perspective    met       met       
+respond_emotion        met       met       
+support_respect        met       met       
+explain_exam           met       met       
+plain_language         met       met       
+accurate_info          met       met       
+shared_plan            met       met       
+check_understanding    partial   missed    <-- DIFFER
+safety_net             missed    missed    
+invite_questions       missed    missed    
+
+==============================================================================
+WHERE THEY DISAGREE — read these against the answer key
+==============================================================================
+
+### avoid_interrupting — Did the clinician avoid interrupting and give the patient space to speak?
+  Qwen 2.5-7B (ships today): partial
+     evidence: Come on, tell me more.
+     tip: Allow the patient to finish their sentence before responding.
+  Qwen 3.5-4B (the new one): met
+     evidence: Come on, tell me more.
+     tip: None
+
+### check_understanding — Did the clinician check the patient's understanding (e.g. teach-back)?
+  Qwen 2.5-7B (ships today): partial
+     evidence: understood.
+     tip: Ask the patient to repeat the plan in their own words.
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+==============================================================================
+EVERY TIP, BOTH MODELS — the part no metric measures
+==============================================================================
+
+### intro_self
+  7B (met): none
+  4B (met): none
+
+### set_tone
+  7B (met): none
+  4B (met): none
+
+### open_questions
+  7B (met): none
+  4B (met): None
+
+### explore_complaint
+  7B (met): none
+  4B (met): None
+
+### avoid_interrupting
+  7B (partial): Allow the patient to finish their sentence before responding.
+  4B (met): None
+
+### what_else
+  7B (missed): The clinician could have asked, "Is there anything else you'd like to mention or any other concerns?"
+  4B (missed): Explicitly ask if there is anything else the patient would like to discuss before concluding the consultation.
+
+### explore_perspective
+  7B (met): none
+  4B (met): None
+
+### respond_emotion
+  7B (met): None
+  4B (met): None
+
+### support_respect
+  7B (met): None
+  4B (met): none
+
+### explain_exam
+  7B (met): none
+  4B (met): None
+
+### plain_language
+  7B (met): none
+  4B (met): None
+
+### accurate_info
+  7B (met): none
+  4B (met): none
+
+### shared_plan
+  7B (met): None
+  4B (met): None
+
+### check_understanding
+  7B (partial): Ask the patient to repeat the plan in their own words.
+  4B (missed): Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+### safety_net
+  7B (missed): The clinician should explicitly tell the patient what to watch for and when to seek further help, such as "If the rash gets worse or spreads, or if you develop any new symptoms, please contact the clinic right away."
+  4B (missed): Add a specific instruction on which symptoms (e.g., spreading redness, fever) require immediate return to the clinic.
+
+### invite_questions
+  7B (missed): "Did you have any other questions about your rash or concerns about work?"
+  4B (missed): Explicitly ask the patient if they have any further questions before concluding the consultation.
+Stopping app - local entrypoint completed.
+[Qwen 3.5-4B (the new one)] invite_questions       missed
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-46VYrVNokDH4601BlXcV6a

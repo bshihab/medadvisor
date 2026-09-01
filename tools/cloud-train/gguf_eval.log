@@ -1,0 +1,281 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-qgJ3ItfI5R6BwaPngT8Lbx
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_gguf_eval
+│   .py
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/data/scoring.
+│   json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/realistic_cas
+│   es.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+├── 🔨 Created function bench.
+└── 🔨 Created function prepare.
+preparing GGUFs (merge + convert + quantise Q4_K_M, Q5_K_M)…
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1090.70it/s]
+[stock] Q4_K_M: 2.59 GB
+[stock] Q5_K_M: 2.94 GB
+[tuned] copying snapshot…
+[tuned] 128 LoRA modules, scaling=2.0
+[tuned] merged 128 tensors in place
+
+=== [tuned] convert f16 ===
+$ python /llama.cpp/convert_hf_to_gguf.py /gguf/tuned-bf16 --outfile /gguf/tuned-f16.gguf --outtype f16
+   81%|████████  | 7.03G/8.65G [00:32<00:06, 257Mbyte/s]
+Writing:  82%|████████▏ | 7.07G/8.65G [00:33<00:06, 252Mbyte/s]
+Writing:  82%|████████▏ | 7.11G/8.65G [00:33<00:05, 258Mbyte/s]
+Writing:  83%|████████▎ | 7.16G/8.65G [00:33<00:05, 273Mbyte/s]
+Writing:  83%|████████▎ | 7.21G/8.65G [00:33<00:05, 283Mbyte/s]
+Writing:  84%|████████▍ | 7.26G/8.65G [00:33<00:04, 290Mbyte/s]
+Writing:  84%|████████▍ | 7.30G/8.65G [00:33<00:04, 296Mbyte/s]
+Writing:  85%|████████▍ | 7.35G/8.65G [00:34<00:04, 299Mbyte/s]
+Writing:  86%|████████▌ | 7.42G/8.65G [00:34<00:04, 303Mbyte/s]
+Writing:  86%|████████▋ | 7.47G/8.65G [00:34<00:04, 284Mbyte/s]
+Writing:  87%|████████▋ | 7.51G/8.65G [00:34<00:04, 280Mbyte/s]
+Writing:  87%|████████▋ | 7.56G/8.65G [00:34<00:03, 288Mbyte/s]
+Writing:  88%|████████▊ | 7.60G/8.65G [00:34<00:03, 293Mbyte/s]
+Writing:  88%|████████▊ | 7.65G/8.65G [00:35<00:03, 297Mbyte/s]
+Writing:  89%|████████▉ | 7.69G/8.65G [00:35<00:03, 277Mbyte/s]
+Writing:  89%|████████▉ | 7.73G/8.65G [00:35<00:03, 275Mbyte/s]
+Writing:  90%|████████▉ | 7.78G/8.65G [00:35<00:03, 285Mbyte/s]
+Writing:  90%|█████████ | 7.83G/8.65G [00:35<00:02, 291Mbyte/s]
+Writing:  91%|█████████ | 7.90G/8.65G [00:35<00:02, 295Mbyte/s]
+Writing:  92%|█████████▏| 7.94G/8.65G [00:36<00:03, 205Mbyte/s]
+Writing:  92%|█████████▏| 7.99G/8.65G [00:36<00:03, 167Mbyte/s]
+Writing:  93%|█████████▎| 8.01G/8.65G [00:37<00:05, 118Mbyte/s]
+Writing:  93%|█████████▎| 8.05G/8.65G [00:37<00:04, 144Mbyte/s]
+Writing:  94%|█████████▎| 8.10G/8.65G [00:37<00:03, 146Mbyte/s]
+Writing:  94%|█████████▍| 8.14G/8.65G [00:38<00:04, 115Mbyte/s]
+Writing:  95%|█████████▍| 8.19G/8.65G [00:38<00:04, 97.7Mbyte/s]
+Writing:  95%|█████████▌| 8.23G/8.65G [00:39<00:03, 120Mbyte/s] 
+Writing:  96%|█████████▌| 8.27G/8.65G [00:39<00:04, 94.8Mbyte/s]
+Writing:  96%|█████████▌| 8.29G/8.65G [00:39<00:03, 90.9Mbyte/s]
+Writing:  96%|█████████▌| 8.31G/8.65G [00:40<00:04, 76.6Mbyte/s]
+Writing:  97%|█████████▋| 8.38G/8.65G [00:40<00:02, 119Mbyte/s] 
+Writing:  97%|█████████▋| 8.43G/8.65G [00:40<00:01, 142Mbyte/s]
+Writing:  98%|█████████▊| 8.47G/8.65G [00:41<00:01, 139Mbyte/s]
+Writing:  98%|█████████▊| 8.51G/8.65G [00:41<00:01, 112Mbyte/s]
+Writing:  99%|█████████▉| 8.55G/8.65G [00:41<00:00, 135Mbyte/s]
+Writing:  99%|█████████▉| 8.59G/8.65G [00:42<00:00, 154Mbyte/s]
+Writing: 100%|█████████▉| 8.65G/8.65G [00:46<00:00, 31.3Mbyte/s]
+Writing: 100%|██████████| 8.65G/8.65G [00:46<00:00, 187Mbyte/s] 
+INFO:hf-to-gguf:Model successfully exported to /gguf/tuned-f16.gguf
+
+[tuned] GGUF has 441 tensors (reference: 441)
+
+=== [tuned] quantise Q4_K_M ===
+$ /llama.cpp/build/bin/llama-quantize /gguf/tuned-f16.gguf /gguf/tuned-Q4_K_M.gguf Q4_K_M
+
+llama_quantize: quantize time = 34055.19 ms
+llama_quantize:    total time = 34055.19 ms
+ lk.31.ffn_up.weight                 - [  2560,   9216,      1,      1], type =    f16, converting to q4_K .. size =    45.00 MiB ->    12.66 MiB
+[ 426/ 441] blk.31.post_attention_norm.weight    - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 427/ 441] blk.32.attn_k.weight                 - [  2560,   1024,      1,      1], type =    f16, converting to q4_K .. size =     5.00 MiB ->     1.41 MiB
+[ 428/ 441] blk.32.attn_k_norm.weight            - [   256,      1,      1,      1], type =    f32, size =    0.001 MiB
+[ 429/ 441] blk.32.attn_norm.weight              - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 430/ 441] blk.32.attn_output.weight            - [  4096,   2560,      1,      1], type =    f16, converting to q4_K .. size =    20.00 MiB ->     5.62 MiB
+[ 431/ 441] blk.32.attn_q.weight                 - [  2560,   8192,      1,      1], type =    f16, converting to q4_K .. size =    40.00 MiB ->    11.25 MiB
+[ 432/ 441] blk.32.attn_q_norm.weight            - [   256,      1,      1,      1], type =    f32, size =    0.001 MiB
+[ 433/ 441] blk.32.attn_v.weight                 - [  2560,   1024,      1,      1], type =    f16, converting to q6_K .. size =     5.00 MiB ->     2.05 MiB
+[ 434/ 441] blk.32.ffn_down.weight               - [  9216,   2560,      1,      1], type =    f16, converting to q6_K .. size =    45.00 MiB ->    18.46 MiB
+[ 435/ 441] blk.32.ffn_gate.weight               - [  2560,   9216,      1,      1], type =    f16, converting to q4_K .. size =    45.00 MiB ->    12.66 MiB
+[ 436/ 441] blk.32.ffn_up.weight                 - [  2560,   9216,      1,      1], type =    f16, converting to q4_K .. size =    45.00 MiB ->    12.66 MiB
+[ 437/ 441] blk.32.nextn.eh_proj.weight          - [  5120,   2560,      1,      1], type =    f16, converting to q4_K .. size =    25.00 MiB ->     7.03 MiB
+[ 438/ 441] blk.32.nextn.enorm.weight            - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 439/ 441] blk.32.nextn.hnorm.weight            - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 440/ 441] blk.32.nextn.shared_head_norm.weight - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 441/ 441] blk.32.post_attention_norm.weight    - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+llama_model_quantize_impl: model size  =  8253.72 MiB (16.00 BPW)
+llama_model_quantize_impl: quant size  =  2644.04 MiB (5.13 BPW)
+
+[tuned] Q4_K_M: 2.59 GB
+
+=== [tuned] quantise Q5_K_M ===
+$ /llama.cpp/build/bin/llama-quantize /gguf/tuned-f16.gguf /gguf/tuned-Q5_K_M.gguf Q5_K_M
+
+llama_quantize: quantize time = 28350.07 ms
+llama_quantize:    total time = 28350.07 ms
+ lk.31.ffn_up.weight                 - [  2560,   9216,      1,      1], type =    f16, converting to q5_K .. size =    45.00 MiB ->    15.47 MiB
+[ 426/ 441] blk.31.post_attention_norm.weight    - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 427/ 441] blk.32.attn_k.weight                 - [  2560,   1024,      1,      1], type =    f16, converting to q5_K .. size =     5.00 MiB ->     1.72 MiB
+[ 428/ 441] blk.32.attn_k_norm.weight            - [   256,      1,      1,      1], type =    f32, size =    0.001 MiB
+[ 429/ 441] blk.32.attn_norm.weight              - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 430/ 441] blk.32.attn_output.weight            - [  4096,   2560,      1,      1], type =    f16, converting to q5_K .. size =    20.00 MiB ->     6.88 MiB
+[ 431/ 441] blk.32.attn_q.weight                 - [  2560,   8192,      1,      1], type =    f16, converting to q5_K .. size =    40.00 MiB ->    13.75 MiB
+[ 432/ 441] blk.32.attn_q_norm.weight            - [   256,      1,      1,      1], type =    f32, size =    0.001 MiB
+[ 433/ 441] blk.32.attn_v.weight                 - [  2560,   1024,      1,      1], type =    f16, converting to q6_K .. size =     5.00 MiB ->     2.05 MiB
+[ 434/ 441] blk.32.ffn_down.weight               - [  9216,   2560,      1,      1], type =    f16, converting to q6_K .. size =    45.00 MiB ->    18.46 MiB
+[ 435/ 441] blk.32.ffn_gate.weight               - [  2560,   9216,      1,      1], type =    f16, converting to q5_K .. size =    45.00 MiB ->    15.47 MiB
+[ 436/ 441] blk.32.ffn_up.weight                 - [  2560,   9216,      1,      1], type =    f16, converting to q5_K .. size =    45.00 MiB ->    15.47 MiB
+[ 437/ 441] blk.32.nextn.eh_proj.weight          - [  5120,   2560,      1,      1], type =    f16, converting to q5_K .. size =    25.00 MiB ->     8.59 MiB
+[ 438/ 441] blk.32.nextn.enorm.weight            - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 439/ 441] blk.32.nextn.hnorm.weight            - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 440/ 441] blk.32.nextn.shared_head_norm.weight - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+[ 441/ 441] blk.32.post_attention_norm.weight    - [  2560,      1,      1,      1], type =    f32, size =    0.010 MiB
+llama_model_quantize_impl: model size  =  8253.72 MiB (16.00 BPW)
+llama_model_quantize_impl: quant size  =  3004.51 MiB (5.83 BPW)
+
+[tuned] Q5_K_M: 2.94 GB
+benchmarking 4 files in parallel…
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[stock Q4_K_M] 48-case  acc  89.6%  over  16.7%  recall 100.0%
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[tuned Q4_K_M] 48-case  acc  93.8%  over   0.0%  recall  83.3%
+[tuned Q5_K_M] 48-case  acc  93.8%  over   0.0%  recall  83.3%
+[stock Q5_K_M] 48-case  acc  85.4%  over  20.0%  recall  94.4%
+[stock Q4_K_M] 240      acc  84.2%  over  33.9%  recall 100.0%
+[tuned Q4_K_M] 240      acc  95.8%  over   8.9%  recall 100.0%
+[stock Q5_K_M] 240      acc  88.3%  over  25.0%  recall 100.0%
+an error occurred during closing of asynchronous generator <async_generator object async_merge at 0x10c901a20>
+asyncgen: <async_generator object async_merge at 0x10c901a20>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+an error occurred during closing of asynchronous generator <async_generator object _Function._map at 0x10c95af00>
+asyncgen: <async_generator object _Function._map at 0x10c95af00>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+an error occurred during closing of asynchronous generator <async_generator object Synchronizer._run_generator_async at 0x10c829df0>
+asyncgen: <async_generator object Synchronizer._run_generator_async at 0x10c829df0>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+
+==========================================================================
+Qwen3.5-4B v3 fine-tune — measured as the SHIPPING GGUF (llama.cpp)
+==========================================================================
+Merge and F16 conversion are lossless. Quantisation is not, so stock
+is quantised through the identical pipeline and measured alongside.
+
+--- Q4_K_M  (2.59 GB) ---
+  240 set:
+    stock   acc  84.2%  over  33.9%  recall 100.0%
+    tuned   acc  95.8%  over   8.9%  recall 100.0%
+    DELTA   acc +11.7   over -25.0   recall  +0.0
+  48-case set:
+    stock   acc  89.6%  over  16.7%  recall 100.0%
+    tuned   acc  93.8%  over   0.0%  recall  83.3%
+    DELTA   acc  +4.2   over -16.7   recall -16.7
+
+--- Q5_K_M  (2.94 GB) ---
+  240 set:
+    stock   acc  88.3%  over  25.0%  recall 100.0%
+    tuned   acc  94.6%  over   8.0%  recall  96.9%
+    DELTA   acc  +6.2   over -17.0   recall  -3.1
+  48-case set:
+    stock   acc  85.4%  over  20.0%  recall  94.4%
+    tuned   acc  93.8%  over   0.0%  recall  83.3%
+    DELTA   acc  +8.3   over -20.0   recall -11.1
+
+bf16 on GPU measured: acc +9.6, over -21.4, recall -0.8 (240 set).
+How much of that survives above is the whole question.
+
+Stopping app - local entrypoint completed.
+[tuned Q5_K_M] 240      acc  94.6%  over   8.0%  recall  96.9%
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-qgJ3ItfI5R6BwaPngT8Lbx
+Task was destroyed but it is pending!
+task: <Task pending name='Task-1656' coro=<<async_generator_athrow without __name__>()> wait_for=<Future pending cb=[Task.task_wakeup()]>>
+Task was destroyed but it is pending!
+task: <Task pending name='Task-1666' coro=<Synchronizer._run_function_async() done, defined at /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/synchronicity/synchronizer.py:499> wait_for=<Future pending cb=[shield.<locals>._outer_done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:908, Task.task_wakeup()]> cb=[shield.<locals>._inner_done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:891]>
+Task was destroyed but it is pending!
+task: <Task cancelling name='Task-871' coro=<async_merge.<locals>.producer() running at /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py:1070> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[gather.<locals>._done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:764]>

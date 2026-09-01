@@ -1,0 +1,265 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-D29V0rbPtQI6zFfbP43dF0
+Building image im-EblA0onjrlu4vPq92pA9Uc
+
+=> Step 0: FROM base
+
+=> Step 1: ENV HF_HUB_ENABLE_HF_TRANSFER=1
+
+=> Step 2: ENV PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+Saving image...
+Image saved, took 557.83ms
+
+Built image im-EblA0onjrlu4vPq92pA9Uc in 1.36s
+
+
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_qwen_v3.p
+│   y
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/data/finetune
+│   _v3/valid.jsonl
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/data/finetune
+│   _v3/train.jsonl
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/realistic_cas
+│   es.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/data/scoring.
+│   json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+└── 🔨 Created function train_and_eval.
+Qwen3.5-4B v3 fine-tune on A10G — 2 variant(s) in parallel
+cost ceiling $6.00 (timeout 163 min/container); expected actual ~$1.50
+
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+[lr5e-5] torch 2.13.0+cu130 cuda=True
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 711.26it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   0%|          | 1/426 [00:00<03:01,  2.35it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:00<00:08, 48.85it/s]
+[1ALoading weights:   8%|▊         | 34/426 [00:00<00:05, 70.54it/s]
+[1ALoading weights:  11%|█         | 46/426 [00:00<00:04, 77.02it/s]
+[1ALoading weights:  14%|█▍        | 61/426 [00:00<00:03, 93.31it/s]
+[1ALoading weights:  18%|█▊        | 77/426 [00:00<00:03, 110.70it/s]
+[1ALoading weights:  22%|██▏       | 94/426 [00:01<00:02, 115.68it/s]
+[1ALoading weights:  27%|██▋       | 116/426 [00:01<00:02, 142.81it/s]
+[1ALoading weights:  31%|███       | 133/426 [00:01<00:01, 147.67it/s]
+[1ALoading weights:  35%|███▍      | 149/426 [00:01<00:01, 140.88it/s]
+[1ALoading weights:  39%|███▉      | 168/426 [00:01<00:01, 153.38it/s]
+[1ALoading weights:  44%|████▎     | 186/426 [00:01<00:01, 149.22it/s]
+[1ALoading weights:  48%|████▊     | 204/426 [00:01<00:01, 149.16it/s]
+[1ALoading weights:  53%|█████▎    | 225/426 [00:01<00:01, 161.67it/s]
+[1ALoading weights:  57%|█████▋    | 242/426 [00:02<00:01, 162.55it/s]
+[1ALoading weights:  61%|██████    | 259/426 [00:02<00:01, 151.34it/s]
+[1ALoading weights:  67%|██████▋   | 285/426 [00:02<00:00, 176.89it/s]
+[1ALoading weights:  71%|███████▏  | 304/426 [00:02<00:00, 178.43it/s]
+[1ALoading weights:  76%|███████▌  | 323/426 [00:02<00:00, 167.59it/s]
+[1ALoading weights:  80%|████████  | 342/426 [00:02<00:00, 170.70it/s]
+[1ALoading weights:  85%|████████▍ | 360/426 [00:02<00:00, 162.37it/s]
+[1ALoading weights:  89%|████████▉ | 380/426 [00:02<00:00, 168.73it/s]
+[1ALoading weights:  93%|█████████▎| 398/426 [00:02<00:00, 165.33it/s]
+[1ALoading weights:  97%|█████████▋| 415/426 [00:03<00:00, 165.47it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:03<00:00, 137.77it/s]
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+[lr5e-5] STOCK 48-case          acc  87.5%  over  16.7%  recall  94.4%  (n=48)
+[lr5e-5] 1015 training examples
+trainable params: 21,233,664 || all params: 4,226,984,960 || trainable%: 0.5023
+[lr2e-4] torch 2.13.0+cu130 cuda=True
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 538.15it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   0%|          | 1/426 [00:00<04:35,  1.54it/s]
+[1ALoading weights:   2%|▏         | 9/426 [00:00<00:27, 15.41it/s]
+[1ALoading weights:   5%|▌         | 23/426 [00:00<00:10, 38.98it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:00<00:06, 56.47it/s]
+[1ALoading weights:  11%|█         | 45/426 [00:01<00:07, 53.19it/s]
+[1ALoading weights:  12%|█▏        | 53/426 [00:01<00:06, 58.39it/s]
+[1ALoading weights:  15%|█▍        | 63/426 [00:01<00:05, 64.52it/s]
+[1ALoading weights:  18%|█▊        | 77/426 [00:01<00:04, 80.62it/s]
+[1ALoading weights:  20%|██        | 87/426 [00:01<00:04, 78.73it/s]
+[1ALoading weights:  23%|██▎       | 99/426 [00:01<00:03, 86.90it/s]
+[1ALoading weights:  27%|██▋       | 114/426 [00:01<00:03, 102.54it/s]
+[1ALoading weights:  30%|██▉       | 126/426 [00:01<00:02, 103.53it/s]
+[1ALoading weights:  32%|███▏      | 137/426 [00:02<00:02, 101.32it/s]
+[1ALoading weights:  35%|███▍      | 148/426 [00:02<00:03, 88.06it/s] 
+[1ALoading weights:  38%|███▊      | 163/426 [00:02<00:02, 101.38it/s]
+[1ALoading weights:  41%|████      | 174/426 [00:02<00:02, 91.44it/s] 
+[1ALoading weights:  44%|████▎     | 186/426 [00:02<00:02, 96.97it/s]
+[1ALoading weights:  46%|████▌     | 197/426 [00:02<00:02, 95.76it/s]
+[1ALoading weights:  49%|████▊     | 207/426 [00:02<00:02, 86.91it/s]
+[1ALoading weights:  52%|█████▏    | 221/426 [00:03<00:02, 96.19it/s]
+[1ALoading weights:  55%|█████▌    | 236/426 [00:03<00:01, 102.72it/s]
+[1ALoading weights:  59%|█████▊    | 250/426 [00:03<00:01, 108.46it/s]
+[1ALoading weights:  62%|██████▏   | 262/426 [00:03<00:01, 106.76it/s]
+[1ALoading weights:  65%|██████▌   | 279/426 [00:03<00:01, 112.73it/s]
+[1ALoading weights:  68%|██████▊   | 291/426 [00:03<00:01, 112.31it/s]
+[1ALoading weights:  71%|███████   | 303/426 [00:03<00:01, 111.69it/s]
+[1ALoading weights:  74%|███████▍  | 315/426 [00:03<00:01, 104.13it/s]
+[1ALoading weights:  77%|███████▋  | 329/426 [00:04<00:00, 100.66it/s]
+[1ALoading weights:  81%|████████  | 345/426 [00:04<00:00, 110.15it/s]
+[1ALoading weights:  84%|████████▍ | 357/426 [00:04<00:00, 104.82it/s]
+[1ALoading weights:  86%|████████▋ | 368/426 [00:04<00:00, 98.28it/s] 
+[1ALoading weights:  89%|████████▉ | 379/426 [00:04<00:00, 100.88it/s]
+[1ALoading weights:  92%|█████████▏| 393/426 [00:04<00:00, 105.88it/s]
+[1ALoading weights:  96%|█████████▌| 408/426 [00:04<00:00, 112.17it/s]
+[1ALoading weights:  99%|█████████▊| 420/426 [00:04<00:00, 103.27it/s]Loading weights: 100%|██████████| 426/426 [00:04<00:00, 87.42it/s] 
+[lr5e-5] step   1/400  loss 1.4335  peak 11.3/22.1GB
+[lr2e-4] STOCK 48-case          acc  87.5%  over  16.7%  recall  94.4%  (n=48)
+[lr2e-4] 1015 training examples
+trainable params: 21,233,664 || all params: 4,226,984,960 || trainable%: 0.5023
+[lr2e-4] step   1/400  loss 1.4344  peak 11.3/22.1GB
+[lr5e-5] step  20/400  loss 1.1992  peak 11.7/22.1GB
+[lr2e-4] step  20/400  loss 0.5613  peak 11.7/22.1GB
+[lr5e-5] step  40/400  loss 0.0562  peak 11.7/22.1GB
+[lr2e-4] step  40/400  loss 0.0624  peak 11.7/22.1GB
+[lr5e-5] step  60/400  loss 0.0523  peak 11.7/22.1GB
+[lr2e-4] step  60/400  loss 0.0450  peak 11.7/22.1GB
+[lr5e-5] step  80/400  loss 0.0160  peak 11.7/22.1GB
+[lr2e-4] step  80/400  loss 0.0274  peak 11.7/22.1GB
+[lr5e-5] step 100/400  loss 0.1166  peak 11.7/22.1GB
+[lr2e-4] step 100/400  loss 0.0786  peak 11.7/22.1GB
+[lr5e-5] step 120/400  loss 0.0186  peak 11.7/22.1GB
+[lr5e-5] step 140/400  loss 0.0800  peak 11.7/22.1GB
+[lr2e-4] step 120/400  loss 0.0280  peak 11.7/22.1GB
+[lr5e-5] step 160/400  loss 0.0422  peak 11.7/22.1GB
+[lr2e-4] step 140/400  loss 0.0511  peak 11.7/22.1GB
+[lr5e-5] step 180/400  loss 0.0263  peak 11.7/22.1GB
+[lr2e-4] step 160/400  loss 0.0294  peak 11.7/22.1GB
+[lr5e-5] step 200/400  loss 0.0638  peak 11.7/22.1GB
+[lr2e-4] step 180/400  loss 0.0332  peak 11.7/22.1GB
+[lr5e-5] step 220/400  loss 0.0051  peak 11.7/22.1GB
+[lr2e-4] step 200/400  loss 0.0885  peak 11.7/22.1GB
+[lr5e-5] step 240/400  loss 0.0483  peak 11.7/22.1GB
+[lr2e-4] step 220/400  loss 0.0092  peak 11.7/22.1GB
+[lr5e-5] step 260/400  loss 0.0316  peak 11.7/22.1GB
+[lr2e-4] step 240/400  loss 0.0496  peak 11.7/22.1GB
+[lr5e-5] step 280/400  loss 0.0125  peak 11.7/22.1GB
+[lr2e-4] step 260/400  loss 0.0585  peak 11.7/22.1GB
+[lr5e-5] step 300/400  loss 0.0772  peak 11.7/22.1GB
+[lr5e-5] step 320/400  loss 0.0324  peak 11.7/22.1GB
+[lr2e-4] step 280/400  loss 0.0173  peak 11.7/22.1GB
+[lr5e-5] step 340/400  loss 0.0223  peak 11.7/22.1GB
+[lr2e-4] step 300/400  loss 0.0691  peak 11.7/22.1GB
+[lr5e-5] step 360/400  loss 0.0437  peak 11.7/22.1GB
+[lr2e-4] step 320/400  loss 0.0278  peak 11.7/22.1GB
+[lr5e-5] step 380/400  loss 0.0183  peak 11.7/22.1GB
+[lr2e-4] step 340/400  loss 0.0181  peak 11.7/22.1GB
+[lr2e-4] step 360/400  loss 0.0455  peak 11.7/22.1GB
+[lr5e-5] step 400/400  loss 0.0520  peak 11.7/22.1GB
+[lr5e-5] step 60 48-case        acc  85.4%  over  20.0%  recall  94.4%  (n=48)
+[lr5e-5] step 120 48-case       acc  91.7%  over   6.7%  recall  88.9%  (n=48)
+[lr5e-5] step 180 48-case       acc  93.8%  over   0.0%  recall  83.3%  (n=48)
+[lr5e-5] step 240 48-case       acc  89.6%  over   0.0%  recall  72.2%  (n=48)
+[lr5e-5] step 300 48-case       acc  91.7%  over   0.0%  recall  77.8%  (n=48)
+[lr2e-4] step 380/400  loss 0.0196  peak 11.7/22.1GB
+[lr5e-5] step 360 48-case       acc  93.8%  over   0.0%  recall  83.3%  (n=48)
+[lr5e-5] step 400 48-case       acc  93.8%  over   0.0%  recall  83.3%  (n=48)
+[lr2e-4] step 400/400  loss 0.0508  peak 11.7/22.1GB
+[lr5e-5] STOCK 240              acc  85.8%  over  30.4%  recall 100.0%  (n=240)
+[lr2e-4] step 60 48-case        acc  91.7%  over  10.0%  recall  94.4%  (n=48)
+[lr2e-4] step 120 48-case       acc  89.6%  over   0.0%  recall  72.2%  (n=48)
+[lr2e-4] step 180 48-case       acc  89.6%  over   0.0%  recall  72.2%  (n=48)
+[lr2e-4] step 240 48-case       acc  87.5%  over   3.3%  recall  72.2%  (n=48)
+[lr5e-5] step 180 240           acc  95.4%  over   8.9%  recall  99.2%  (n=240)
+[lr2e-4] step 300 48-case       acc  87.5%  over   0.0%  recall  66.7%  (n=48)
+[lr2e-4] step 360 48-case       acc  89.6%  over   0.0%  recall  72.2%  (n=48)
+[lr2e-4] step 400 48-case       acc  89.6%  over   0.0%  recall  72.2%  (n=48)
+[lr2e-4] STOCK 240              acc  85.8%  over  30.4%  recall 100.0%  (n=240)
+an error occurred during closing of asynchronous generator <async_generator object _Function._map at 0x10c665030>
+asyncgen: <async_generator object _Function._map at 0x10c665030>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+an error occurred during closing of asynchronous generator <async_generator object async_merge at 0x10c3fd2f0>
+asyncgen: <async_generator object async_merge at 0x10c3fd2f0>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+an error occurred during closing of asynchronous generator <async_generator object Synchronizer._run_generator_async at 0x10c32afc0>
+asyncgen: <async_generator object Synchronizer._run_generator_async at 0x10c32afc0>
+Traceback (most recent call last):
+  File "/Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 839, in __iter__
+    yield from run_async_gen(runner, self._async_iterable)
+GeneratorExit
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError: aclose(): asynchronous generator is already running
+
+========================================================================
+Qwen3.5-4B v3 fine-tune (Modal A10G, HF transformers bf16)
+========================================================================
+Stock is re-measured in THIS stack; the local 85.4% was MLX 4-bit on
+Metal, so only the stock-vs-tuned delta below is a fair comparison.
+
+--- lr5e-5 (lr=5e-05) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  85.4%  over  20.0%  recall  94.4%
+  step 120             acc  91.7%  over   6.7%  recall  88.9%
+  step 180             acc  93.8%  over   0.0%  recall  83.3%  <- best
+  step 240             acc  89.6%  over   0.0%  recall  72.2%
+  step 300             acc  91.7%  over   0.0%  recall  77.8%
+  step 360             acc  93.8%  over   0.0%  recall  83.3%
+  step 400             acc  93.8%  over   0.0%  recall  83.3%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  95.4%  over   8.9%  recall  99.2%
+  DELTA                  acc  +9.6   over -21.4   recall  -0.8
+
+  VERDICT: training HELPED
+
+--- lr2e-4 (lr=0.0002) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  91.7%  over  10.0%  recall  94.4%  <- best
+  step 120             acc  89.6%  over   0.0%  recall  72.2%
+  step 180             acc  89.6%  over   0.0%  recall  72.2%
+  step 240             acc  87.5%  over   3.3%  recall  72.2%
+  step 300             acc  87.5%  over   0.0%  recall  66.7%
+  step 360             acc  89.6%  over   0.0%  recall  72.2%
+  step 400             acc  89.6%  over   0.0%  recall  72.2%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  87.1%  over  27.7%  recall 100.0%
+  DELTA                  acc  +1.2   over  -2.7   recall  +0.0
+
+  VERDICT: training HELPED
+
+report -> /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/results/V3-CLOUD-REPORT.txt
+[lr2e-4] step 60 240            acc  87.1%  over  27.7%  recall 100.0%  (n=240)
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-D29V0rbPtQI6zFfbP43dF0
+Task was destroyed but it is pending!
+task: <Task cancelling name='Task-1067' coro=<async_merge.<locals>.producer() running at /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py:1070> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[gather.<locals>._done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:764]>
+Task was destroyed but it is pending!
+task: <Task pending name='Task-15677' coro=<<async_generator_athrow without __name__>()> wait_for=<Future pending cb=[Task.task_wakeup()]>>
+Task was destroyed but it is pending!
+task: <Task pending name='Task-15686' coro=<Synchronizer._run_function_async() done, defined at /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/.venv/lib/python3.11/site-packages/synchronicity/synchronizer.py:499> wait_for=<Future pending cb=[shield.<locals>._outer_done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:908, Task.task_wakeup()]> cb=[shield.<locals>._inner_done_callback() at /Users/captainbit/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py:891]>

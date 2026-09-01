@@ -1,0 +1,179 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-RZgrVrLkmjy59fpWoJepwC
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_compare_m
+│   odels.py
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/rubrics/outpatient-clinic.json
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/llm-benchmark/app_scoring.p
+│   y
+└── 🔨 Created function compare.
+transcript: 2217 chars, 25 lines
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+/usr/local/lib/python3.11/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+[Qwen 2.5-7B (ships today)] intro_self             missed
+[Qwen 2.5-7B (ships today)] set_tone               met
+[Qwen 2.5-7B (ships today)] open_questions         met
+[Qwen 2.5-7B (ships today)] explore_complaint      met
+[Qwen 2.5-7B (ships today)] avoid_interrupting     met
+[Qwen 2.5-7B (ships today)] what_else              met
+[Qwen 2.5-7B (ships today)] explore_perspective    met
+[Qwen 2.5-7B (ships today)] respond_emotion        met
+[Qwen 2.5-7B (ships today)] support_respect        met
+[Qwen 2.5-7B (ships today)] explain_exam           met
+[Qwen 2.5-7B (ships today)] plain_language         met
+[Qwen 2.5-7B (ships today)] accurate_info          met
+[Qwen 2.5-7B (ships today)] shared_plan            met
+[Qwen 2.5-7B (ships today)] check_understanding    missed
+[Qwen 2.5-7B (ships today)] safety_net             met
+[Qwen 2.5-7B (ships today)] invite_questions       met
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[Qwen 3.5-4B (the new one)] intro_self             missed
+[Qwen 3.5-4B (the new one)] set_tone               met
+[Qwen 3.5-4B (the new one)] open_questions         met
+[Qwen 3.5-4B (the new one)] explore_complaint      met
+[Qwen 3.5-4B (the new one)] avoid_interrupting     met
+[Qwen 3.5-4B (the new one)] what_else              met
+[Qwen 3.5-4B (the new one)] explore_perspective    met
+[Qwen 3.5-4B (the new one)] respond_emotion        met
+[Qwen 3.5-4B (the new one)] support_respect        met
+[Qwen 3.5-4B (the new one)] explain_exam           met
+[Qwen 3.5-4B (the new one)] plain_language         missed
+[Qwen 3.5-4B (the new one)] accurate_info          met
+[Qwen 3.5-4B (the new one)] shared_plan            met
+[Qwen 3.5-4B (the new one)] check_understanding    missed
+[Qwen 3.5-4B (the new one)] safety_net             partial
+
+==============================================================================
+SAME TRANSCRIPT, BOTH MODELS
+==============================================================================
+Qwen 2.5-7B (ships today): 8s   Qwen 3.5-4B (the new one): 9s
+
+criterion              7B        4B        agree?
+------------------------------------------------------------------------------
+intro_self             missed    missed    
+set_tone               met       met       
+open_questions         met       met       
+explore_complaint      met       met       
+avoid_interrupting     met       met       
+what_else              met       met       
+explore_perspective    met       met       
+respond_emotion        met       met       
+support_respect        met       met       
+explain_exam           met       met       
+plain_language         met       missed    <-- DIFFER
+accurate_info          met       met       
+shared_plan            met       met       
+check_understanding    missed    missed    
+safety_net             met       partial   <-- DIFFER
+invite_questions       met       met       
+
+==============================================================================
+WHERE THEY DISAGREE — read these against the answer key
+==============================================================================
+
+### plain_language — Did the clinician explain things in plain language, avoiding jargon?
+  Qwen 2.5-7B (ships today): met
+     evidence: This looks like a tension type headache. The muscle across your scalp and neck tightening up and staying tight.
+     tip: none
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: The clinician used the term "tension type headache" without defining it or explaining what it means in simple terms, which may confuse a frightened patient.
+
+### safety_net — Did the clinician safety-net (what to watch for, when and how to seek help)?
+  Qwen 2.5-7B (ships today): met
+     evidence: I won't promise you, certainly, though, if the pattern changes, I'd want to know.
+     tip: None
+  Qwen 3.5-4B (the new one): partial
+     evidence: if the pattern changes, I'd want to know
+     tip: Specify the exact symptoms that would warrant immediate review, such as "new neurological signs" or "worsening pain," rather than a vague "pattern changes."
+
+==============================================================================
+EVERY TIP, BOTH MODELS — the part no metric measures
+==============================================================================
+
+### intro_self
+  7B (missed): The clinician should have introduced themselves and explained their role, such as saying "Hello, I'm Dr. Smith, and I'll be your doctor today."
+  4B (missed): The clinician should state their name and professional role early in the consultation to build trust and clarify who they are.
+
+### set_tone
+  7B (met): none
+  4B (met): None
+
+### open_questions
+  7B (met): none
+  4B (met): None
+
+### explore_complaint
+  7B (met): none
+  4B (met): None
+
+### avoid_interrupting
+  7B (met): (none)
+  4B (met): None
+
+### what_else
+  7B (met): none
+  4B (met): None
+
+### explore_perspective
+  7B (met): none
+  4B (met): None
+
+### respond_emotion
+  7B (met): none
+  4B (met): None
+
+### support_respect
+  7B (met): none
+  4B (met): None
+
+### explain_exam
+  7B (met): none
+  4B (met): None
+
+### plain_language
+  7B (met): none
+  4B (missed): The clinician used the term "tension type headache" without defining it or explaining what it means in simple terms, which may confuse a frightened patient.
+
+### accurate_info
+  7B (met): none
+  4B (met): None
+
+### shared_plan
+  7B (met): none
+  4B (met): none
+
+### check_understanding
+  7B (missed): Ask the patient to summarize the plan in their own words.
+  4B (missed): Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+### safety_net
+  7B (met): None
+  4B (partial): Specify the exact symptoms that would warrant immediate review, such as "new neurological signs" or "worsening pain," rather than a vague "pattern changes."
+
+### invite_questions
+  7B (met): none
+  4B (met): None
+[Qwen 3.5-4B (the new one)] invite_questions       met
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-RZgrVrLkmjy59fpWoJepwC

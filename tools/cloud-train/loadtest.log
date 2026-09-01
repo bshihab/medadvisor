@@ -1,0 +1,35 @@
+✓ Initialized. View run at 
+https://modal.com/apps/bshihab/main/ap-lrADiGDAvL6Hf36hluQJ3o
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/captainbit/bilal-dev/medadvisor-ane/tools/cloud-train/modal_loadtest.
+│   py
+└── 🔨 Created function loadtest.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+engine: version: 1 (221f0f6)
+built with GNU 13.3.0 for Linux x86_64
+bartowski file: 3013027808 bytes (== the R2 object)
+
+### OURS (converted here): LOADED OK
+    0.03.268.433 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+
+### R2 (what the phone downloaded): LOADED OK
+    0.01.834.382 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/bshihab/main/ap-lrADiGDAvL6Hf36hluQJ3o
