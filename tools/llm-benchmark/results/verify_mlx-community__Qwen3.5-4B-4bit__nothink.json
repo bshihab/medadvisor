@@ -1,0 +1,2162 @@
+[
+  {
+    "case": "case000",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case000",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?\" and \"What would ",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case000",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\" and \"Tension-type headaches like ",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case000",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case001",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case001",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\" and \"There are a couple of option",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case001",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case002",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case002",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case002",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "we'll work through this together",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case003",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case003",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case004",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case004",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case004",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case005",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case005",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case005",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?\" and \"What would ",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case006",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous. Tension-type headaches like this a",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case006",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case007",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case007",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\" and \"There are a couple of option",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case007",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?\" and \"What would ",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "let me know if anything feels uncomfortable",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous. Tension-type headaches like this a",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case008",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case009",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Take breaks from screens, use paracetamol, and come back if it gets worse.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case009",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case009",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case010",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case010",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "EVIDENCE:",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case010",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case010",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "What do you think might be causing it, and is there anything in particular you're worried it could be?",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "let me know if anything feels uncomfortable",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?\" and \"Take breaks from screens, use p",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case011",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case011",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we finish up, what questions do you have for me?",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case012",
+    "criterion": "what_else",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Before we move on, is there anything else that's been worrying you that we haven't covered?",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case012",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(No evidence of exam or explanation found in transcript)",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(None)",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?\" and \"Take breaks from screens, use p",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case012",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case012",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "Please, go on and take your time \u2014 I'm listening, there's no rush.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case013",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "EVIDENCE:",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case013",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I can see this has been really frightening for you, and that's completely understandable.",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "(none)",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case013",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "When exactly did it start, how severe does it get, and is there anything that makes it better or worse?",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "So, in your own words, tell me what's been going on.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case014",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "What would you prefer?",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case014",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pass1": "met",
+    "final": "missed",
+    "evidence": "You've done exactly the right thing coming in, and we'll work through this together.",
+    "verifier": "REJECT"
+  },
+  {
+    "case": "case014",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sle",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. W",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "Just so I know I've explained it clearly, could you tell me back what the plan is?",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pass1": "met",
+    "final": "met",
+    "evidence": "If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help strai",
+    "verifier": ""
+  },
+  {
+    "case": "case014",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pass1": "missed",
+    "final": "missed",
+    "evidence": "",
+    "verifier": ""
+  }
+]

@@ -1,0 +1,34 @@
+FINE-TUNE v2 — started 2026-07-26 16:05
+fixes: label balance 40/23/37 (was 32/15/53); attribution opener randomised
+       (was 100% patient-first); 300 iters not 500; lr 5e-5 not 1e-4
+baselines to beat — grading: 3B stock 85.4%/6.7%/72.2%, 7B stock 87.5%/13.3%/88.9%
+                   attribution (hand-written): 3B stock 85.5% role, 7B stock 92.1%
+
+=== ckpt 100 — attribution, hand-written ===
+role acc:      81.0%   (correct D/P as labeled — what the app consumes)
+separation:    85.7%   (credits a consistently inverted mapping)
+unlabeled:    0/41 utterances (these silently inherit the previous speaker)
+=== ckpt 100 — grading, 48 realistic decisions ===
+accuracy:      62.5%   (30/48)
+over-score:     0.0%   (0/30 MISSED wrongly marked met)  ← lower better
+recall(met):    0.0%   (0/18 MET correctly marked met)   ← higher better
+
+=== ckpt 200 — attribution, hand-written ===
+role acc:      81.0%   (correct D/P as labeled — what the app consumes)
+separation:    85.7%   (credits a consistently inverted mapping)
+unlabeled:    0/41 utterances (these silently inherit the previous speaker)
+=== ckpt 200 — grading, 48 realistic decisions ===
+accuracy:      54.2%   (26/48)
+over-score:    73.3%   (22/30 MISSED wrongly marked met)  ← lower better
+recall(met):  100.0%   (18/18 MET correctly marked met)   ← higher better
+
+=== ckpt 300 — attribution, hand-written ===
+role acc:      81.0%   (correct D/P as labeled — what the app consumes)
+separation:    85.7%   (credits a consistently inverted mapping)
+unlabeled:    0/41 utterances (these silently inherit the previous speaker)
+=== ckpt 300 — grading, 48 realistic decisions ===
+accuracy:      52.1%   (25/48)
+over-score:    76.7%   (23/30 MISSED wrongly marked met)  ← lower better
+recall(met):  100.0%   (18/18 MET correctly marked met)   ← higher better
+
+FINISHED 2026-07-26 16:32

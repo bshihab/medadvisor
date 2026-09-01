@@ -1,0 +1,434 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Make sure to acknowledge the patient's privacy and comfort."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Start with a broad question that invites the patient to tell their story."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: partial\nEVIDENCE: I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more \u2014 when did they start, where do you feel them, and does anything make them better or worse?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Let the patient finish; does not cut them off."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if there are any other concerns before moving on."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient what they think is going on, what worries them, or what they're hoping for."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: I'm sorry to hear that, that sounds really unsettling."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Warmly acknowledge the patient's feelings and concerns."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: I'd like to examine you now \u2014 I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: partial\nEVIDENCE: Everything I'm seeing is reassuring. In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician should have given the information about tension-type headaches and the options."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: partial\nEVIDENCE: We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Tell the patient to seek help immediately if the headache suddenly becomes much worse, if they get any changes in their vision, weakness, or if it wakes them from sleep."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Introduce yourself and explain your role."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Acknowledge the patient's privacy and comfort by saying something like, \"I understand that you're concerned about this cough. I'm here to help.\""
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Start broad before narrowing; invite the patient to elaborate."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Characterize the complaint across its key dimensions."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Lets the patient finish; does not cut them off."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if there is anything else bothering them."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient what they think is going on, what worries them, or what they're hoping for."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Acknowledge the patient's concern and validate their worry."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Use warm, respectful language."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Narrate the exam and minimize surprise/discomfort verbally."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Uses the term \"viral\" to mean \"caused by a virus\" and defines \"self-limiting\" as \"getting better on its own\"."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician should have said something like:\nRESULT: partial\nEVIDENCE: It's a self-limiting condition, viral in aetiology, should resolve with conservative management."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Discuss next steps and invite the patient's preferences."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Tell the patient to come back if the cough doesn't go away in a month."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if they have any questions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Introduce yourself and explain your role."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Acknowledge the patient's feelings and concerns."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Start broad before narrowing; invite the patient to elaborate."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Characterize the complaint across its key dimensions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Lets the patient finish; does not cut them off."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if there is anything else they would like to discuss."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient what they think is going on, what worries them, or what they're hoping for."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: I'll start you on an antidepressant, take one a day."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Warmly acknowledge the patient's feelings and ask them to elaborate."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Explain what you are doing and check comfort."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Uses the word \"depression\" instead of \"low mood\""
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Tell the patient that the antidepressant is for low mood, not depression."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Involve the patient in the decision-making process."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if they have any questions about the medication or side effects."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient if they have any questions before closing."
+  }
+]

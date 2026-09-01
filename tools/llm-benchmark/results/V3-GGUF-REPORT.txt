@@ -1,0 +1,28 @@
+==========================================================================
+Qwen3.5-4B v3 fine-tune — measured as the SHIPPING GGUF (llama.cpp)
+==========================================================================
+Merge and F16 conversion are lossless. Quantisation is not, so stock
+is quantised through the identical pipeline and measured alongside.
+
+--- Q4_K_M  (2.59 GB) ---
+  240 set:
+    stock   acc  84.2%  over  33.9%  recall 100.0%
+    tuned   acc  95.8%  over   8.9%  recall 100.0%
+    DELTA   acc +11.7   over -25.0   recall  +0.0
+  48-case set:
+    stock   acc  89.6%  over  16.7%  recall 100.0%
+    tuned   acc  93.8%  over   0.0%  recall  83.3%
+    DELTA   acc  +4.2   over -16.7   recall -16.7
+
+--- Q5_K_M  (2.94 GB) ---
+  240 set:
+    stock   acc  88.3%  over  25.0%  recall 100.0%
+    tuned   acc  94.6%  over   8.0%  recall  96.9%
+    DELTA   acc  +6.2   over -17.0   recall  -3.1
+  48-case set:
+    stock   acc  85.4%  over  20.0%  recall  94.4%
+    tuned   acc  93.8%  over   0.0%  recall  83.3%
+    DELTA   acc  +8.3   over -20.0   recall -11.1
+
+bf16 on GPU measured: acc +9.6, over -21.4, recall -0.8 (240 set).
+How much of that survives above is the whole question.

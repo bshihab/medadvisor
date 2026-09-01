@@ -1,0 +1,386 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on the provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (need to infer based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer from content).\n    *   Output Format: EXACTLY three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based on "
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must judge based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Sho"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must judge based on content).\n    *   Output Format: EXACTLY three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   \"done\" = cl"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer from content).\n    *   Output Format: EXACTLY three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based on "
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Quo"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must judge based on content).\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Sho"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Sho"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must determine speaker by content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENC"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Scoring Rules:\n        *   Judge based on content, not labels.\n        *   Quote must be direct evidence of the behavior.\n        *   Generic gr"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   \"done\" = clinician clearly did it + quote.\n        "
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Sho"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer based on content).\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Sho"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer from content).\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Short d"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: EXACTLY three lines.\n        *   Line 1: RESULT (done, partial, or missed)"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Scoring Rules:\n        *   Judge based on content, not labels.\n        *   Quote must be direct evidence of the behavior.\n        *   Generic gr"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician introduce themselves and explain their role?\n    *   Scoring Rules:\n        *   \"done\" = clear evidence + quote.\n     "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer from content).\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based on "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based on content, not labels.\n        *   \"do"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication regarding a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines.\n        *   Line 1: RESULT (done, partial, or missed)\n        *   Line 2: EVIDENCE (short direct quote of clin"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript with potentially incorrect speaker labels.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partia"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician introduce themselves and explain their role?\n    *   Scoring Rules:\n        *   \"done\" = clear evidence + quote.\n     "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: A transcript with potentially incorrect speaker labels (Doctor/Patient).\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n        2.  EVIDENCE: Short direct q"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, not labels.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician avoid interrupting and give the patient space to speak?\n    *   Scoring Rules:\n        *   Judge based on content, not"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician check for additional concerns ('is there anything else?'"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (must infer based on content).\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician explain things in plain language, avoiding jargon?\n    *"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication based on a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: Exactly three lines:\n        1.  RESULT: done, partial, or missed\n   "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Evaluate the clinician's communication based on a provided transcript.\n    *   Input: Transcript with potentially incorrect speaker labels (Doctor/Patient).\n    *   Output Format: Exactly three lines (RESULT, EVIDENCE, TIP).\n    *   Scoring Rules:\n        *   Judge based on content, "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician check the patient's understanding (e.g. teach-back)?\n    *   "
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then evaluate the clinician's communication regarding a specific question.\n    *   Input: A transcript of a medical consultation.\n    *   Question: Did the clinician safety-net (what to watch for, when and how to seek hel"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Role: STRICT clinical communication examiner.\n    *   Task: Identify the speaker (clinician vs. patient) based on content, then answer a specific question about the clinician's communication.\n    *   Input: A transcript of a medical consultation.\n    *   Output Format: EXACTLY three lines:\n        1.  RESULT: done, partial, or missed\n        "
+  }
+]

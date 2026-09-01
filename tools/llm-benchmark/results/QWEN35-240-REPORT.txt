@@ -1,0 +1,19 @@
+QWEN3.5-4B no-think — 240-DECISION CONFIRMATION — started 2026-07-27 12:55
+Why 240: the 48-case set flattered Qwen2.5-3B (85.4% there -> 70.8% on 240).
+To confirm: 48-case gave 89.6% acc / 16.7% over / 100% recall
+BARS on 240:  7B stock            79.2% / 36.6% over / 93.0% recall
+              Qwen3-4B+few-shot   79.2% / 39.3% / 95.3%   (ties the 7B, 2.4GB)
+              Qwen3-4B stock      72.9% / 58.0% / 100%
+              Qwen2.5-3B stock    70.8% / 35.7% / 76.6%
+
+=== Qwen3.5-4B no-think, 240 decisions ===
+accuracy:      85.4%   (205/240)
+over-score:    31.2%   (35/112 MISSED criteria wrongly marked met)  ← lower is better
+recall(met):  100.0%   (128/128 MET criteria correctly marked met)   ← higher is better
+
+=== Qwen3.5-4B no-think + FEW-SHOT, 240 decisions ===
+accuracy:      81.7%   (196/240)
+over-score:    39.3%   (44/112 MISSED criteria wrongly marked met)  ← lower is better
+recall(met):  100.0%   (128/128 MET criteria correctly marked met)   ← higher is better
+
+FINISHED 2026-07-27 13:25

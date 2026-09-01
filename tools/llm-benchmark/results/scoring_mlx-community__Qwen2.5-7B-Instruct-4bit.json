@@ -1,0 +1,1682 @@
+[
+  {
+    "case": "case000",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case000",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case001",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false
+  },
+  {
+    "case": "case001",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case001",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case001",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case002",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case002",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case002",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case003",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case003",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case003",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case003",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case003",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case004",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case004",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case004",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case004",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case004",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case005",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case005",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case005",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case005",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case006",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false
+  },
+  {
+    "case": "case006",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case006",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case006",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case006",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case007",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case007",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case008",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case008",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case009",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case009",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case009",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case009",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case009",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case010",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case010",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case010",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case010",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case011",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case011",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case011",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case011",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case011",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case012",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case012",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case012",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case012",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case013",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false
+  },
+  {
+    "case": "case013",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case013",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case013",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case013",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false
+  },
+  {
+    "case": "case014",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false
+  },
+  {
+    "case": "case014",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true
+  },
+  {
+    "case": "case014",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true
+  }
+]

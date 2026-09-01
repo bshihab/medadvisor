@@ -1,0 +1,386 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\n\nTIP: The clinician introduced their name and role and greeted the patient."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm glad you've told me \u2014 we'll work through this properly together.\"\n\nTIP: The clinician should maintain a calm and reassuring demeanor throughout the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"Tell me in your own words \u2014 what's brought you in today?\"\n\nTIP: The clinician began with open-ended questions to allow the patient to share their story."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"I'd like to examine you now \u2014 I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\"\n\nTIP: The clinician should have asked about specific symptoms and what has been tried to thoroughly explore the presenting complaint."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more \u2014 when did they start, where do you feel them, and does anything make them better or worse?\"\n\nTIP: The clinician allowed the patient to complete their thoughts without interruption."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly invite further concerns before moving on."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not directly ask about the patient's ideas, fears, or expectations."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"That's a relief.\"\n\nTIP: The clinician validated the patient's emotion by saying \"That's a relief.\""
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, and I'm glad you've told me \u2014 we'll work through this properly together.\"\n\nTIP: Use warm, respectful language throughout the conversation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\"\n\nTIP: The clinician verbally reassured the patient about potential discomfort and explained what they were doing."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\"\nTIP: The clinician uses everyday words and avoids medical jargon."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\"\n\nTIP: The clinician provided specific and relevant treatment options without false reassurance."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\"\n\nTIP: The clinician asked the patient about their preferred approach, clearly involving the patient in the decision."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician should have asked the patient to restate the plan in their own words to check understanding."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"If the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.\"\n\nTIP: The clinician should have explicitly stated the specific symptoms to watch for and how to seek help."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Before we finish, what questions do you have for me?\n\nTIP: The clinician explicitly asked what questions the patient had for clarification."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly state their name or role."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly acknowledge privacy or comfort."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Right, what seems to be the problem?\n\nTIP: The clinician begins by asking open-ended questions to allow the patient to describe their symptoms freely."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not ask about the onset, duration, severity, or associated symptoms of the cough."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Patient: Um, no fever, no blood, just a dry cough, mostly at night.\"\n\nTIP: Allow the patient to complete their thoughts without interruption."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly invite further concerns before moving on."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not ask about the patient's perspective, ideas, fears, or expectations."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not validate or respond to the patient's emotions."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not use warm, respectful language or convey that the patient was heard."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly narrate the exam or check for comfort."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "RESULT: partial\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\n\nTIP: The clinician should use everyday words and define any necessary medical terms to ensure the patient understands the explanation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\n\nTIP: The clinician should have provided more specific information about the self-limiting nature of the condition and the importance of conservative management."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly lay out next steps or invite the patient's preferences."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician should have asked the patient to restate the plan in their own words to check for understanding."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly give return precautions."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly ask if the patient had any questions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly state their name or role."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not appear unhurried or attend to the patient's comfort and privacy."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "raw": "RESULT: partial\nEVIDENCE: \"How long?\"\nTIP: The clinician should follow up with more open-ended questions to encourage the patient to elaborate on their symptoms."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not delve into the duration, severity, or associated symptoms of the patient's complaint."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician often cuts off the patient mid-sentence."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly invite further concerns before moving on."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not ask about the patient's thoughts, fears, or expectations."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not validate or respond to the patient's emotions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not use warm, respectful language or convey that the patient's concerns were heard."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly explain what they were doing or check for comfort during the exam."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not use everyday words or define medical terms."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not provide accurate, appropriate information about the condition and options."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not lay out next steps or invite the patient's preferences."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly give explicit return precautions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: \nTIP: The clinician did not explicitly ask the patient if they have any questions."
+  }
+]

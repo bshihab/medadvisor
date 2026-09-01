@@ -1,0 +1,26 @@
+[
+  {
+    "case": "good_headache",
+    "utterances": 21,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: D  \n2: P  \n3: D  \n4: P  \n5: D  \n6: P  \n7: D  \n8: P  \n9: D  \n10: D  \n11: P  \n12: D  \n13: P  \n14: D  \n15: P  \n16: D  \n17: P  \n18: D  \n19: P  \n20: D  \n21: P"
+  },
+  {
+    "case": "rushed_cough",
+    "utterances": 11,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: D  \n2: P  \n3: D  \n4: P  \n5: D  \n6: P  \n7: D  \n8: P  \n9: D  \n10: P  \n11: D"
+  },
+  {
+    "case": "poor_lowmood",
+    "utterances": 9,
+    "separation": 0.7777777777777778,
+    "role": 0.7777777777777778,
+    "missing": 0,
+    "raw": "1: P  \n2: P  \n3: P  \n4: P  \n5: D  \n6: P  \n7: D  \n8: P  \n9: D"
+  }
+]

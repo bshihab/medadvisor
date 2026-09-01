@@ -1,0 +1,34 @@
+[
+  {
+    "cohort": "improving",
+    "met": 112,
+    "total": 160,
+    "trend_points": 14,
+    "narrative": "You've made significant progress in your clinical communication, Dr. Adeyemi, by consistently demonstrating warm and welcoming greetings and showing genuine empathy towards your patients. Your met-rate has improved by 14 points, which is a great step forward. You're doing well in creating a comfortable environment for your patients and validating their experiences. Moving forward, focus on explicitly giving return precautions and asking patients to repeat the plan in their own words. These actions will help ensure that your patients understand their care plans and feel more involved in their health journey. Keep up the excellent work!",
+    "seconds": 6.0
+  },
+  {
+    "cohort": "declining",
+    "met": 79,
+    "total": 160,
+    "trend_points": -11,
+    "narrative": "You've made significant progress in your clinical communication, Dr. Rossi, by consistently welcoming your patients with a warm introduction and showing genuine interest in their concerns. It's encouraging to see that your met-rate has improved by -11 points, indicating that you're effectively moving towards better patient engagement. To continue your growth, focus on avoiding interruptions to allow patients to fully express their thoughts and feelings. Additionally, consider translating complex medical terms into everyday language to ensure your patients fully understand their health situation. These improvements will help build stronger patient trust and enhance the overall quality of your consultations. Keep up the great work!",
+    "seconds": 6.0
+  },
+  {
+    "cohort": "plateau",
+    "met": 96,
+    "total": 160,
+    "trend_points": 1,
+    "narrative": "You've made significant progress in your clinical communication, Dr. Haddad, by consistently introducing yourself and setting a comfortable tone for the conversation. Your efforts to explain as you go and ensure the patient feels heard are truly commendable. It's great to see that you're improving, with your met-rate changing by 1 point over time. To continue your growth, focus on asking what the patient thinks is going on and what worries them, as well as checking their understanding through teach-back before closing the session. Keep up the excellent work and these small adjustments will further enhance your communication skills.",
+    "seconds": 5.9
+  },
+  {
+    "cohort": "mixed",
+    "met": 104,
+    "total": 160,
+    "trend_points": 3,
+    "narrative": "You've made significant progress in your clinical communication skills, consistently demonstrating empathy and support with phrases like \"I can hear how frightening the last few weeks have been\" and \"You won't be dealing with this on your own \u2014 we'll work through it together.\" Your met-rate has improved by 3 points, showing that you are on the right path. To continue your growth, focus on naming specific red flags and exactly when to seek help, as well as asking the patient to repeat the plan back to ensure understanding. These areas will help you build a stronger foundation of patient engagement and care. Keep up the great work!",
+    "seconds": 6.1
+  }
+]

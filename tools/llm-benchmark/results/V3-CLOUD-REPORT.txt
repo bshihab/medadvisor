@@ -1,0 +1,37 @@
+========================================================================
+Qwen3.5-4B v3 fine-tune (Modal A10G, HF transformers bf16)
+========================================================================
+Stock is re-measured in THIS stack; the local 85.4% was MLX 4-bit on
+Metal, so only the stock-vs-tuned delta below is a fair comparison.
+
+--- lr5e-5 (lr=5e-05) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  85.4%  over  20.0%  recall  94.4%
+  step 120             acc  91.7%  over   6.7%  recall  88.9%
+  step 180             acc  93.8%  over   0.0%  recall  83.3%  <- best
+  step 240             acc  89.6%  over   0.0%  recall  72.2%
+  step 300             acc  91.7%  over   0.0%  recall  77.8%
+  step 360             acc  93.8%  over   0.0%  recall  83.3%
+  step 400             acc  93.8%  over   0.0%  recall  83.3%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  95.4%  over   8.9%  recall  99.2%
+  DELTA                  acc  +9.6   over -21.4   recall  -0.8
+
+  VERDICT: training HELPED
+
+--- lr2e-4 (lr=0.0002) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  91.7%  over  10.0%  recall  94.4%  <- best
+  step 120             acc  89.6%  over   0.0%  recall  72.2%
+  step 180             acc  89.6%  over   0.0%  recall  72.2%
+  step 240             acc  87.5%  over   3.3%  recall  72.2%
+  step 300             acc  87.5%  over   0.0%  recall  66.7%
+  step 360             acc  89.6%  over   0.0%  recall  72.2%
+  step 400             acc  89.6%  over   0.0%  recall  72.2%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  87.1%  over  27.7%  recall 100.0%
+  DELTA                  acc  +1.2   over  -2.7   recall  +0.0
+
+  VERDICT: training HELPED

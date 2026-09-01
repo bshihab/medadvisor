@@ -1,0 +1,434 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Open with your name and role before the business of the visit."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: So, tell me in your own words \u2014 what's brought you in today?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more \u2014 when did they start, where do you feel them, and does anything make them better or worse?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Thank you. Can I ask what you think might be going on, or whether there's something in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: I'd like to examine you now \u2014 I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Everything I'm seeing is reassuring. In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: That's a really understandable worry, and I'm glad you've told me \u2014 we'll work through this properly together.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Perfect. And importantly \u2014 if the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Keep the focus on the patient's symptoms, and actually characterize them."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: partial\nEVIDENCE: Anything else? No? Great, take care.\nTIP: Phrase it expecting other concerns \u2014 'anything else? what other concerns do you have?' \u2014 and leave a real pause."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: done\nEVIDENCE: How long?\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  }
+]

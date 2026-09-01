@@ -1,0 +1,16 @@
+QWEN3.5-4B with reasoning DISABLED — started 2026-07-27 10:54
+Prior run (thinking ON): 6.7% role attribution, 38/41 utterances unlabeled,
+grading 62.5% with 0% recall — it never reached an answer inside the app's
+token budget. This re-tests it fairly.
+bars: 7B 87.5% grading / 92.1% attribution | Qwen3-4B-Instruct 85.4% / 92.6%
+
+=== attribution, hand-written ===
+role acc:     100.0%   (correct D/P as labeled — what the app consumes)
+separation:   100.0%   (credits a consistently inverted mapping)
+unlabeled:    0/41 utterances (these silently inherit the previous speaker)
+=== grading, 48 realistic decisions ===
+accuracy:      89.6%   (43/48)
+over-score:    16.7%   (5/30 MISSED wrongly marked met)  ← lower better
+recall(met):  100.0%   (18/18 MET correctly marked met)   ← higher better
+
+FINISHED 2026-07-27 10:57

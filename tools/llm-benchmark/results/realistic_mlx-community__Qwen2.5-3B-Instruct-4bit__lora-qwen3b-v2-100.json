@@ -1,0 +1,386 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not introduction \u2014 say who you are and what role you have."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic, unhurried greeting does not establish the tone; acknowledge privacy and comfort explicitly."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Start broad before narrowing; invite the patient to elaborate."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic greeting, sign-off, or sign-off is not exploring the complaint. Target: Characterize the complaint across its key dimensions."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A patient describing their own symptoms or feelings is not the clinician exploring them."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A throwaway 'is there anything else?' invites nothing; pause and ask it like you mean it."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The patient described their own symptoms and fears, but the clinician did not ask what the patient thinks is going on, what worries them, or what they're hoping for."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not acknowledging emotions; pause and respond rather than rushing past it."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not support \u2014 convey concern and support explicitly."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Narrates the exam and minimizes surprise/discomfort verbally"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A plain language explanation is one that uses everyday words; define any necessary medical terms."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not evidence-giving; avoid it."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A plan is good; involving the patient in decisions is essential."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not teach-back \u2014 ask what the patient thinks is going on and whether they understand."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not safety-netting \u2014 give explicit, actionable return precautions."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Explicitly asks what questions the patient has"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic greeting is not introducing yourself or your role."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A genuinely unhurried, comfort-attending tone is essential in medical consultations; build it deliberately rather than hoping it comes up naturally."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic greeting is not open-ended; invite the patient to elaborate before you ask your next question."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic yes/no question does not explore the complaint; characterize it across onset, duration, severity, and associated symptoms."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not safety-netting; let the patient finish before you move on."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Explicitly invites further concerns before moving on"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not safety-netting; ask what the patient thinks is going on, what worries them, or what they're hoping for."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not safety-netting; pause and acknowledge the patient's emotions before moving on."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not support \u2014 convey support explicitly."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of a physical exam at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not explanation; define terms when they come up."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A post-viral cough is viral in aetiology, so the term 'viral' is not necessary."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A plan is not good looks like: Lays out next steps and invites the patient's preferences."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A throwaway 'okay' at the end is not teach-back; build it in deliberately."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not safety-netting; give explicit, actionable return precautions."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not inviting questions; pause and ask explicitly before closing."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic greeting is not introducing yourself or your role; acknowledge the patient by name and role before you begin."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The one thing to change is giving honest likelihoods instead of blanket reassurance."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Start broad before narrowing; invite the patient to elaborate."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The patient described their own symptoms, feelings, and worries. The clinician did not explore them."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A patient describing their own symptoms or feelings is not the clinician exploring them."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Explicitly invites further concerns before moving on"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The patient described their own symptoms and feelings, not the clinician exploring them."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The patient's emotions were not acknowledged at all. Target: Names or validates the emotion; responds rather't than rushing past it."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The patient did not ask anything; the clinician did not convey support, concern, or respect."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Narrates the exam and minimizes surprise/discomfort verbally"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A patient description of their own symptoms or feelings is not the clinician exploring them."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic looking-healthy, asking-the-basics exam does not count as safety-netting, exploring concerns, or inviting questions. Target: Explicitly inviting questions and concerns."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A plan is not a good idea unless it involves the patient."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A generic sign-off is not teach-back; ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Gives explicit, actionable return precautions."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: No evidence of this anywhere in the consultation. Target: Explicitly asks what questions the patient has."
+  }
+]

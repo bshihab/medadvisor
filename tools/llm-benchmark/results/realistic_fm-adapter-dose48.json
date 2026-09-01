@@ -1,0 +1,434 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  }
+]

@@ -1,0 +1,386 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Good looks like: Appears unhurried; attends to the patient's comfort and privacy.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: So, tell me in your own words \u2014 what's brought you in today?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "missed",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Good looks like: Characterizes the complaint across its key dimensions.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Good looks like: Lets the patient finish; does not cut them off\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Don't assume the list is complete \u2014 explicitly invite other concerns before moving on."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: I'd like to examine you now \u2014 I'll check your blood pressure and look into the back of your eyes. Take care of yourself, then.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Sorry to hear that, I'm glad you've told me \u2014 we'll work through this properly together.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Everything I'm seeing is reassuring. In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Everything I'm seeing is reassuring. In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Here's what we should do, and what would you prefer?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: If the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Dr. Osei, the clinician looking after this clinic today.\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Is there anything else?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A friendly goodbye is not safety-netting \u2014 name the red flags and the plan to address them."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Right, what seems to be the problem?\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: It's likely a post-viral cough. I'll explain it as something the body gets from viruses; it's usually harmless but can linger for weeks.\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: It's likely a post-viral cough. Information given is correct and relevant; avoids false reassurance or overstated certainty.\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A unilateral instruction isn't a shared plan; lay out options and involve the patient in the choice."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A friendly goodbye is not safety-netting \u2014 check the plan and involve the patient in decisions."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Come back if it's not gone in a month.\nTIP: none"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Anything else? No? Great, take care.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Dr. Osei, one of the family medicine doctors at this practice.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Next. Name and date of birth?\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Next. Name and date of birth?\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: How long? Sounds like low mood. Characterizes the complaint across its key dimensions.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Next patient, please. Lets the patient finish; does not cut them off.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Don't assume the list is complete \u2014 explicitly invite other concerns before moving on."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A patient's description of their own symptoms is not the clinician exploring them \u2014 that's the patient describing their own symptoms."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: How long?\nPatient: A few months, I guess. It's been hard to\u2014\nDoctor: The patient describes their own symptoms, but the clinician does not acknowledge the emotion or respond to it.\n\nTIP: Don't just ask the question; respond to it."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: Next patient, please. Say this with concern and warmth, not cold dismissal.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A physical exam is a good idea, but it did not occur."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Low mood; antidepressant; takes one a day\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "raw": "RESULT: done\nEVIDENCE: Low mood. I'll start you on an antidepressant, take one a day.\nTIP: none"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A unilateral instruction isn't a shared plan; lay out options and involve the patient in the choice."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A friendly smile is not a check for understanding \u2014 ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A friendly goodbye is not safety-netting \u2014 name the red flags and the action to take."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "raw": "RESULT: done\nEVIDENCE: No questions? Please?\nTIP: none"
+  }
+]

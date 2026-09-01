@@ -1,0 +1,111 @@
+==============================================================================
+SAME TRANSCRIPT, BOTH MODELS
+==============================================================================
+Qwen 2.5-7B (ships today): 8s   Qwen 3.5-4B (the new one): 9s
+
+criterion              7B        4B        agree?
+------------------------------------------------------------------------------
+intro_self             met       met       
+set_tone               met       met       
+open_questions         met       met       
+explore_complaint      met       met       
+avoid_interrupting     partial   met       <-- DIFFER
+what_else              missed    missed    
+explore_perspective    met       met       
+respond_emotion        met       met       
+support_respect        met       met       
+explain_exam           met       met       
+plain_language         met       met       
+accurate_info          met       met       
+shared_plan            met       met       
+check_understanding    partial   missed    <-- DIFFER
+safety_net             missed    missed    
+invite_questions       missed    missed    
+
+==============================================================================
+WHERE THEY DISAGREE — read these against the answer key
+==============================================================================
+
+### avoid_interrupting — Did the clinician avoid interrupting and give the patient space to speak?
+  Qwen 2.5-7B (ships today): partial
+     evidence: Come on, tell me more.
+     tip: Allow the patient to finish their sentence before responding.
+  Qwen 3.5-4B (the new one): met
+     evidence: Come on, tell me more.
+     tip: None
+
+### check_understanding — Did the clinician check the patient's understanding (e.g. teach-back)?
+  Qwen 2.5-7B (ships today): partial
+     evidence: understood.
+     tip: Ask the patient to repeat the plan in their own words.
+  Qwen 3.5-4B (the new one): missed
+     evidence: (none)
+     tip: Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+==============================================================================
+EVERY TIP, BOTH MODELS — the part no metric measures
+==============================================================================
+
+### intro_self
+  7B (met): none
+  4B (met): none
+
+### set_tone
+  7B (met): none
+  4B (met): none
+
+### open_questions
+  7B (met): none
+  4B (met): None
+
+### explore_complaint
+  7B (met): none
+  4B (met): None
+
+### avoid_interrupting
+  7B (partial): Allow the patient to finish their sentence before responding.
+  4B (met): None
+
+### what_else
+  7B (missed): The clinician could have asked, "Is there anything else you'd like to mention or any other concerns?"
+  4B (missed): Explicitly ask if there is anything else the patient would like to discuss before concluding the consultation.
+
+### explore_perspective
+  7B (met): none
+  4B (met): None
+
+### respond_emotion
+  7B (met): None
+  4B (met): None
+
+### support_respect
+  7B (met): None
+  4B (met): none
+
+### explain_exam
+  7B (met): none
+  4B (met): None
+
+### plain_language
+  7B (met): none
+  4B (met): None
+
+### accurate_info
+  7B (met): none
+  4B (met): none
+
+### shared_plan
+  7B (met): None
+  4B (met): None
+
+### check_understanding
+  7B (partial): Ask the patient to repeat the plan in their own words.
+  4B (missed): Ask the patient to repeat the plan or explain it back in their own words to confirm understanding.
+
+### safety_net
+  7B (missed): The clinician should explicitly tell the patient what to watch for and when to seek further help, such as "If the rash gets worse or spreads, or if you develop any new symptoms, please contact the clinic right away."
+  4B (missed): Add a specific instruction on which symptoms (e.g., spreading redness, fever) require immediate return to the clinic.
+
+### invite_questions
+  7B (missed): "Did you have any other questions about your rash or concerns about work?"
+  4B (missed): Explicitly ask the patient if they have any further questions before concluding the consultation.

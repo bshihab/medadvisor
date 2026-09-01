@@ -1,0 +1,18 @@
+APPLE FM on the 240-DECISION set — started 2026-07-28 13:18
+Question: does the adapter's 93.8% (48-case) hold at 5x resolution?
+NOTE: this is macOS 26.3's OLDER base model, not iOS 27's rebuilt one.
+BARS on 240: Qwen3.5-4B 85.4% | Qwen2.5-7B 79.2% | Qwen2.5-3B 70.8%
+
+=== Apple FM STOCK, 240 ===
+refusals:     4/240 hard (guardrail error), 0 suspected soft; other errors: 0
+accuracy:      52.1%   (123/236 scoreable)
+over-score:    97.3%   (109/112 MISSED wrongly marked met)  ← lower better
+recall(met):   96.8%   (120/124 MET correctly marked met)   ← higher better
+
+=== Apple FM + strict-grader ADAPTER, 240 ===
+refusals:     0/240 hard (guardrail error), 0 suspected soft; other errors: 0
+accuracy:      98.3%   (236/240 scoreable)
+over-score:     3.6%   (4/112 MISSED wrongly marked met)  ← lower better
+recall(met):  100.0%   (128/128 MET correctly marked met)   ← higher better
+
+FINISHED 2026-07-28 13:29

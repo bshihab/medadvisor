@@ -1,0 +1,2398 @@
+[
+  {
+    "case": "case000",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: Ensure consistent use of name and role introduction throughout consultations."
+  },
+  {
+    "case": "case000",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: Ensure the environment is quiet and private to enhance patient comfort."
+  },
+  {
+    "case": "case000",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure questions are broad enough to allow the patient to elaborate on their symptoms."
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure follow-up questions to confirm understanding and explore further concerns."
+  },
+  {
+    "case": "case000",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: None\n\n(Note: The clinician did not interrupt the patient and allowed them to finish their responses.)"
+  },
+  {
+    "case": "case000",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure follow-up questions are specific and directed to gather more information."
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ask open-ended questions to explore more deeply."
+  },
+  {
+    "case": "case000",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case000",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to use empathetic language and acknowledge the patient's feelings throughout the consultation."
+  },
+  {
+    "case": "case000",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical examinations to maintain patient comfort."
+  },
+  {
+    "case": "case000",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure to define any medical terms used in patient explanations."
+  },
+  {
+    "case": "case000",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure information is always supported by evidence or expert consensus."
+  },
+  {
+    "case": "case000",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to ask for patient preferences and revisit them throughout the consultation."
+  },
+  {
+    "case": "case000",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure to ask questions that require the patient to restate the plan in their own words."
+  },
+  {
+    "case": "case000",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable return precautions are included in future consultations."
+  },
+  {
+    "case": "case000",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding and address any remaining concerns."
+  },
+  {
+    "case": "case001",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Doctor: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: None"
+  },
+  {
+    "case": "case001",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure the clinician maintains eye contact and listens actively to gauge patient comfort."
+  },
+  {
+    "case": "case001",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure questions are broad and allow for patient elaboration."
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure thoroughness by asking about associated symptoms and tried treatments."
+  },
+  {
+    "case": "case001",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: None"
+  },
+  {
+    "case": "case001",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: None"
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Consider asking open-ended questions to further explore their perspective."
+  },
+  {
+    "case": "case001",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case001",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure to validate patient feelings with empathetic language throughout the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical examinations."
+  },
+  {
+    "case": "case001",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure jargon is defined to enhance understanding."
+  },
+  {
+    "case": "case001",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure explanations are clear and factual, avoiding oversimplification or omission of potential risks."
+  },
+  {
+    "case": "case001",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to summarize options and ask for patient preference explicitly."
+  },
+  {
+    "case": "case001",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure to confirm understanding with a teach-back question during follow-up consultations."
+  },
+  {
+    "case": "case001",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case001",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding."
+  },
+  {
+    "case": "case002",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: None"
+  },
+  {
+    "case": "case002",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: None"
+  },
+  {
+    "case": "case002",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and allow for patient-led narratives."
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure thorough exploration by asking about associated symptoms and what's been tried."
+  },
+  {
+    "case": "case002",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: None\n\n(Note: The clinician's question allows the patient to continue speaking without interruption.)"
+  },
+  {
+    "case": "case002",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: None"
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ask open-ended questions to explore the patient's perspective further."
+  },
+  {
+    "case": "case002",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case002",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Maintain open-ended questions to encourage patient expression."
+  },
+  {
+    "case": "case002",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case002",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Avoid jargon; define terms like \"preventer.\""
+  },
+  {
+    "case": "case002",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure options are balanced and not overly simplistic."
+  },
+  {
+    "case": "case002",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to summarize options and ask for patient preference clearly."
+  },
+  {
+    "case": "case002",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to confirm understanding with follow-up questions during the plan discussion."
+  },
+  {
+    "case": "case002",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case002",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What would you prefer?\"\nTIP: Ensure to explicitly ask for questions at the end of the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: None\n\n(Note: The clinician's tone is explicitly acknowledged in the transcript.)"
+  },
+  {
+    "case": "case003",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure questions are broad and open-ended to encourage patient-led storytelling."
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure open-ended questions to fully explore each aspect."
+  },
+  {
+    "case": "case003",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Encourage asking open-ended questions to further explore concerns."
+  },
+  {
+    "case": "case003",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Ensure future interactions include empathetic language to validate patient fears."
+  },
+  {
+    "case": "case003",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Avoid jargon and use clear, everyday language."
+  },
+  {
+    "case": "case003",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure information is balanced and not overly reassuring."
+  },
+  {
+    "case": "case003",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to summarize the plan and confirm understanding with the patient."
+  },
+  {
+    "case": "case003",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to clarify understanding."
+  },
+  {
+    "case": "case003",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case003",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to confirm understanding by asking open-ended questions."
+  },
+  {
+    "case": "case004",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: None"
+  },
+  {
+    "case": "case004",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: None\n\n(Note: The clinician's tone is explicitly acknowledged in the transcript.)"
+  },
+  {
+    "case": "case004",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ensure questions are broad and open-ended to encourage patient elaboration."
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Consider asking more about the onset and duration."
+  },
+  {
+    "case": "case004",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case004",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly invite further concerns before moving on."
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ensure follow-up questions are specific to explore concerns."
+  },
+  {
+    "case": "case004",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"That's reassuring.\"\nTIP: None"
+  },
+  {
+    "case": "case004",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm listening, there's no rush.\"\nTIP: Maintain open-ended questions to encourage patient expression."
+  },
+  {
+    "case": "case004",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: None"
+  },
+  {
+    "case": "case004",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Avoid jargon; define terms if necessary."
+  },
+  {
+    "case": "case004",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Ensure to provide balanced information without over-reassuring."
+  },
+  {
+    "case": "case004",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to summarize options and ask for patient preference to reinforce decision-making."
+  },
+  {
+    "case": "case004",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What questions do you have for me?\"\nTIP: Ensure follow-up questions confirm understanding."
+  },
+  {
+    "case": "case004",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable return precautions are included in future consultations."
+  },
+  {
+    "case": "case004",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to summarize key points and confirm understanding before concluding."
+  },
+  {
+    "case": "case005",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: Ensure consistent use of name and role introduction throughout the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "case005",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and non-leading to encourage patient-led storytelling."
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure open-ended questions to fully explore the patient's experience."
+  },
+  {
+    "case": "case005",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None\n\n(Note: The clinician's response demonstrates active listening and giving the patient space to speak without interruption.)"
+  },
+  {
+    "case": "case005",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure follow-up questions are specific and directed to gather more information."
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ask open-ended questions to explore the patient's perspective further."
+  },
+  {
+    "case": "case005",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case005",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to use empathetic language and validate the patient's feelings throughout the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical examinations."
+  },
+  {
+    "case": "case005",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Avoid jargon; define terms if necessary."
+  },
+  {
+    "case": "case005",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure information is balanced and avoids over-assurance."
+  },
+  {
+    "case": "case005",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Encourage asking about preferred tests or follow-up appointments."
+  },
+  {
+    "case": "case005",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to confirm understanding by asking the patient to restate the plan in their own words."
+  },
+  {
+    "case": "case005",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable instructions for emergencies."
+  },
+  {
+    "case": "case005",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding and ensure thoroughness."
+  },
+  {
+    "case": "case006",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: Ensure consistent use of name and role introduction throughout the consultation."
+  },
+  {
+    "case": "case006",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure to maintain eye contact and provide verbal affirmations to enhance comfort."
+  },
+  {
+    "case": "case006",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure questions are broad and non-leading to encourage patient elaboration."
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure thorough exploration by asking open-ended questions about the patient's experience and associated symptoms."
+  },
+  {
+    "case": "case006",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case006",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: None"
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ensure follow-up questions are specific to explore fears and expectations."
+  },
+  {
+    "case": "case006",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Validate emotions by directly acknowledging them with phrases like \"I understand\" or \"That sounds really concerning.\""
+  },
+  {
+    "case": "case006",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Ensure to validate patient concerns with empathetic language throughout the consultation."
+  },
+  {
+    "case": "case006",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical examinations."
+  },
+  {
+    "case": "case006",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure to define any medical terms used in explanations."
+  },
+  {
+    "case": "case006",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure information is always supported by evidence and tailored to the patient's understanding."
+  },
+  {
+    "case": "case006",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm patient preferences with clear options and ask for their choice."
+  },
+  {
+    "case": "case006",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "case006",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: None"
+  },
+  {
+    "case": "case006",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure to explicitly ask for questions at the end of the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Doctor: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: None"
+  },
+  {
+    "case": "case007",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to foster a trusting environment."
+  },
+  {
+    "case": "case007",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure questions are broad and allow for patient elaboration."
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure thoroughness by asking about associated symptoms and tried treatments."
+  },
+  {
+    "case": "case007",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: None\n\n(Note: The clinician did not interrupt the patient and allowed them to finish their response.)"
+  },
+  {
+    "case": "case007",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly invite further concerns before moving on."
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ask open-ended questions to explore fears and expectations."
+  },
+  {
+    "case": "case007",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case007",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to use empathetic language like \"I understand\" or \"I see\" to enhance support."
+  },
+  {
+    "case": "case007",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None\n\n(Note: The transcript includes a physical exam, and the clinician explicitly mentions checking blood pressure and looking in the eyes while asking about discomfort.)"
+  },
+  {
+    "case": "case007",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure jargon is defined to enhance understanding."
+  },
+  {
+    "case": "case007",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure information is always fact-checked before sharing."
+  },
+  {
+    "case": "case007",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm understanding with the patient before proceeding with any treatment plan."
+  },
+  {
+    "case": "case007",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to clarify understanding."
+  },
+  {
+    "case": "case007",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable return precautions in future consultations."
+  },
+  {
+    "case": "case007",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding."
+  },
+  {
+    "case": "case008",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: Ensure consistent use of name and role introduction throughout the consultation."
+  },
+  {
+    "case": "case008",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "case008",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and allow for patient-led narratives."
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure follow-up questions cover all dimensions of the complaint."
+  },
+  {
+    "case": "case008",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure to allow the patient to fully express their thoughts without interruption."
+  },
+  {
+    "case": "case008",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure follow-up questions are specific to gather comprehensive patient concerns."
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ask open-ended questions to explore more deeply."
+  },
+  {
+    "case": "case008",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case008",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure to validate understanding by asking follow-up questions."
+  },
+  {
+    "case": "case008",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during the exam to maintain patient comfort."
+  },
+  {
+    "case": "case008",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure to define any medical terms used in patient explanations."
+  },
+  {
+    "case": "case008",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\"\nTIP: Ensure to verify all explanations with the patient for clarity."
+  },
+  {
+    "case": "case008",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm understanding by asking the patient to repeat the plan back."
+  },
+  {
+    "case": "case008",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to the plan discussed."
+  },
+  {
+    "case": "case008",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to summarize the plan in the next session to confirm understanding."
+  },
+  {
+    "case": "case008",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to confirm understanding before concluding the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: Ensure consistent use of name and role introduction throughout the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "case009",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and open-ended to encourage patient-led storytelling."
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure to ask open-ended questions to explore all dimensions of the complaint."
+  },
+  {
+    "case": "case009",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case009",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure follow-up questions are specific and open-ended to fully explore patient concerns."
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure open-ended questions to fully explore patient perspective."
+  },
+  {
+    "case": "case009",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Validate emotions by directly acknowledging them with phrases like \"I understand\" or \"That sounds really concerning.\""
+  },
+  {
+    "case": "case009",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm listening, there's no rush.\"\nTIP: Ensure to validate patient concerns with follow-up questions."
+  },
+  {
+    "case": "case009",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure verbal reassurance during physical exams to maintain patient comfort."
+  },
+  {
+    "case": "case009",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Ensure jargon is defined to enhance understanding."
+  },
+  {
+    "case": "case009",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Ensure to verify all information with reliable sources before discussing with patients."
+  },
+  {
+    "case": "case009",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to summarize the plan and confirm understanding with the patient."
+  },
+  {
+    "case": "case009",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to the plan discussed."
+  },
+  {
+    "case": "case009",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case009",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to confirm understanding by asking open-ended questions."
+  },
+  {
+    "case": "case010",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Doctor: So, in your own words, tell me what's been going on.\"\nTIP: None\n\n(Note: The transcript does not include a greeting or introduction from the clinician, so the question is answered based on the introduction of the role and greeting implied by the context.)"
+  },
+  {
+    "case": "case010",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case010",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: None\n\n(Note: The clinician's question is open-ended and invites the patient to elaborate on their symptoms.)"
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure thorough exploration by asking about associated symptoms and attempts to alleviate the issue."
+  },
+  {
+    "case": "case010",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None\n\n(Note: The clinician's response demonstrates active listening and giving the patient space to speak without interruption.)"
+  },
+  {
+    "case": "case010",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ask open-ended questions like \"What do you think might be causing your headaches?\""
+  },
+  {
+    "case": "case010",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case010",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Maintain open-ended questions to encourage patient expression."
+  },
+  {
+    "case": "case010",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case010",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Avoid jargon and use clear, everyday language."
+  },
+  {
+    "case": "case010",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to provide balanced information and acknowledge uncertainties."
+  },
+  {
+    "case": "case010",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Encourage asking about preferred tests or follow-up plans."
+  },
+  {
+    "case": "case010",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to confirm understanding with a teach-back question during follow-up consultations."
+  },
+  {
+    "case": "case010",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case010",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to explicitly ask for questions at the end of the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: None\n\n(Note: The transcript contains a clear introduction of the clinician's name and role.)"
+  },
+  {
+    "case": "case011",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure to maintain eye contact and provide verbal affirmations to reinforce comfort."
+  },
+  {
+    "case": "case011",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and allow for patient-led narratives."
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure to ask open-ended questions to fully explore the patient's concerns."
+  },
+  {
+    "case": "case011",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None\n\n(Note: The clinician's response demonstrates active listening and giving the patient space to speak without interruption.)"
+  },
+  {
+    "case": "case011",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure follow-up questions are specific and directed to the patient's concerns."
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "partial",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ask open-ended questions to explore the patient's perspective further."
+  },
+  {
+    "case": "case011",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case011",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure to maintain eye contact and nod occasionally to reinforce engagement."
+  },
+  {
+    "case": "case011",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical exams to maintain patient comfort."
+  },
+  {
+    "case": "case011",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure jargon is defined or avoided to enhance clarity."
+  },
+  {
+    "case": "case011",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure all information is accurate and tailored to the patient's specific situation."
+  },
+  {
+    "case": "case011",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"What do you think might be causing it, and is there anything in particular you're worried it could be?\"\nTIP: Ensure to ask open-ended questions to explore patient concerns and preferences."
+  },
+  {
+    "case": "case011",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to clarify understanding."
+  },
+  {
+    "case": "case011",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable return precautions in future consultations."
+  },
+  {
+    "case": "case011",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish up, what questions do you have for me?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding and ensure clarity."
+  },
+  {
+    "case": "case012",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: None\n\n(Note: The transcript contains a clear introduction of the clinician's name and role.)"
+  },
+  {
+    "case": "case012",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "case012",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure questions are broad enough to allow the patient to elaborate."
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ensure to ask open-ended questions to explore the patient's concerns thoroughly."
+  },
+  {
+    "case": "case012",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: None"
+  },
+  {
+    "case": "case012",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: None"
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we move on, is there anything else that's been worrying you that we haven't covered?\"\nTIP: Ask open-ended questions to explore the patient's perspective further."
+  },
+  {
+    "case": "case012",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Validate emotions by acknowledging them directly."
+  },
+  {
+    "case": "case012",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure future interactions maintain warmth and respect by actively listening and validating the patient's concerns."
+  },
+  {
+    "case": "case012",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\"\nTIP: None\n\n(Note: No physical exam occurred as per the transcript, so no need for comfort check.)"
+  },
+  {
+    "case": "case012",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Avoid jargon; define terms like \"A&E\" if necessary."
+  },
+  {
+    "case": "case012",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure to include a prompt for further questions if needed."
+  },
+  {
+    "case": "case012",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to confirm understanding by asking the patient to repeat the plan."
+  },
+  {
+    "case": "case012",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to the plan discussed."
+  },
+  {
+    "case": "case012",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable instructions for emergencies."
+  },
+  {
+    "case": "case012",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to confirm understanding by asking open-ended questions."
+  },
+  {
+    "case": "case013",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: None\n\n(Note: The transcript shows the clinician introducing themselves and explaining their role, which is a key part of establishing rapport and trust in the consultation.)"
+  },
+  {
+    "case": "case013",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to further explore patient concerns."
+  },
+  {
+    "case": "case013",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: None"
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure follow-up questions cover all dimensions of the complaint."
+  },
+  {
+    "case": "case013",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please, go on and take your time \u2014 I'm listening, there's no rush.\"\nTIP: None"
+  },
+  {
+    "case": "case013",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: None"
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Ensure to validate patient concerns with follow-up questions."
+  },
+  {
+    "case": "case013",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: None"
+  },
+  {
+    "case": "case013",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Ensure empathy is demonstrated consistently throughout the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure verbal reassurance during physical examinations."
+  },
+  {
+    "case": "case013",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I can see this has been really frightening for you, and that's completely understandable.\"\nTIP: Avoid jargon by defining terms like \"preventer\" if necessary."
+  },
+  {
+    "case": "case013",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure options are balanced and realistic."
+  },
+  {
+    "case": "case013",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to summarize options and ask for patient preferences clearly."
+  },
+  {
+    "case": "case013",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm understanding with follow-up questions during the plan discussion."
+  },
+  {
+    "case": "case013",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\"\nTIP: Ensure to communicate potential side effects or next steps clearly."
+  },
+  {
+    "case": "case013",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm understanding by asking, \"Is there anything else you'd like to discuss before we close?\""
+  },
+  {
+    "case": "case014",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\"\nTIP: None"
+  },
+  {
+    "case": "case014",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to foster a trusting environment."
+  },
+  {
+    "case": "case014",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure questions are broad and allow for patient elaboration."
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\"\nTIP: Ensure to ask about associated symptoms and what has been tried."
+  },
+  {
+    "case": "case014",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: None"
+  },
+  {
+    "case": "case014",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: None"
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, in your own words, tell me what's been going on.\"\nTIP: Ensure follow-up questions address specific concerns or expectations."
+  },
+  {
+    "case": "case014",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case014",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: Ensure to validate the plan with the patient to confirm understanding."
+  },
+  {
+    "case": "case014",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"You've done exactly the right thing coming in, and we'll work through this together.\"\nTIP: None"
+  },
+  {
+    "case": "case014",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Avoid using medical jargon unless necessary."
+  },
+  {
+    "case": "case014",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\"\nTIP: Ensure to verify all information with patients to confirm understanding."
+  },
+  {
+    "case": "case014",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\"\nTIP: Ensure to confirm understanding with follow-up questions."
+  },
+  {
+    "case": "case014",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to the plan discussed."
+  },
+  {
+    "case": "case014",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure clear, actionable return precautions in future consultations."
+  },
+  {
+    "case": "case014",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it clearly, could you tell me back what the plan is?\"\nTIP: Ensure to confirm understanding with a direct question like \"Is there anything else you'd like to discuss?\""
+  }
+]

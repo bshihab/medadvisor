@@ -1,0 +1,2402 @@
+[
+  {
+    "case": "case000",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Yes/no framing shuts the story down; open with 'tell me about it'."
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case000",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case000",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A leaflet doesn't confirm understanding \u2014 have the patient say the plan back."
+  },
+  {
+    "case": "case000",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case000",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Yes/no framing shuts the story down; open with 'tell me about it'."
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: Say what it is and what the options are \u2014 vague reassurance isn't information."
+  },
+  {
+    "case": "case001",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case001",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A leaflet doesn't confirm understanding \u2014 have the patient say the plan back."
+  },
+  {
+    "case": "case001",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case001",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Open with your name and role before the business of the visit."
+  },
+  {
+    "case": "case002",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case002",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case002",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case002",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case002",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case002",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case002",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "case002",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case003",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case003",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "case003",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case004",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A leaflet doesn't confirm understanding \u2014 have the patient say the plan back."
+  },
+  {
+    "case": "case004",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case004",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Keep the focus on the patient's symptoms, and actually characterize them."
+  },
+  {
+    "case": "case005",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case005",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A leaflet doesn't confirm understanding \u2014 have the patient say the plan back."
+  },
+  {
+    "case": "case005",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case005",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case006",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case006",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: A leaflet doesn't confirm understanding \u2014 have the patient say the plan back."
+  },
+  {
+    "case": "case006",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case006",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Yes/no framing shuts the story down; open with 'tell me about it'."
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Don't assume the list is complete \u2014 explicitly invite other concerns before moving on."
+  },
+  {
+    "case": "case007",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case007",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case007",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case008",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case008",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: In simple terms, it's the muscles around your head tightening up \u2014 nothing dangerous.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case008",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "case008",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: Good start defining the term \u2014 keep every explanation in everyday words, not just the diagnosis."
+  },
+  {
+    "case": "case009",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case009",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case009",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Reassurance without red flags leaves the patient with no plan if things worsen."
+  },
+  {
+    "case": "case009",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: Go further: explicitly attend to comfort or privacy, not just pace."
+  },
+  {
+    "case": "case010",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case010",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case010",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case010",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case010",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case010",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: What do you think might be causing it, and is there anything in particular you're worried it could be?\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case011",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case011",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we finish up, what questions do you have for me?\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please make yourself comfortable \u2014 we've got plenty of time and it's just the two of us in here.\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Before we move on, is there anything else that's been worrying you that we haven't covered?\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case012",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case012",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: Go further: explicitly attend to comfort or privacy, not just pace."
+  },
+  {
+    "case": "case013",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Please, go on and take your time \u2014 I'm listening, there's no rush.\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I can see this has been really frightening for you, and that's completely understandable.\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: I'm just going to check your blood pressure and look in your eyes now \u2014 let me know if anything feels uncomfortable.\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case013",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case013",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Hello, I'm Doctor Morgan, one of the doctors here in the clinic today.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: So, in your own words, tell me what's been going on.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: When exactly did it start, how severe does it get, and is there anything that makes it better or worse?\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: You've done exactly the right thing coming in, and we'll work through this together.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  },
+  {
+    "case": "case014",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Tension-type headaches like this are very common, usually harmless, and often linked to stress, screen time, or poor sleep.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: There are a couple of options \u2014 we could try regular screen breaks and simple pain relief first, or start a preventer. What would you prefer?\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: If it suddenly gets much worse, you get any vision changes, weakness, or it wakes you from sleep, please seek help straight away or go to A&E.\nTIP: none"
+  },
+  {
+    "case": "case014",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "missed",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This was not attempted at all in the consultation."
+  }
+]

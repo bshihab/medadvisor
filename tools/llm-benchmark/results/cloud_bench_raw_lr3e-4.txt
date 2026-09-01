@@ -1,0 +1,149 @@
+
+/usr/local/lib/python3.11/site-packages/tamm/layers/flash_attention.py:78: UserWarning: Failed to import flash-attn for Flash attention. Using flash attention may lead to significantly faster training. Please refer to tamm-scripts/install_flash_attn.sh for instructions.
+  _warnings.warn(
+/usr/local/lib/python3.11/site-packages/torch/nn/functional.py:3006: UserWarning: Mismatch dtype between input and weight: input dtype = float, weight dtype = c10::BFloat16, Cannot dispatch to fused implementation. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/layer_norm.cpp:346.)
+  return torch.rms_norm(input, normalized_shape, weight, eps)
+Response for prompt 0: RESULT: done
+EVIDENCE: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.
+TIP: none<turn_end>
+Response for prompt 1: RESULT: done
+EVIDENCE: Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.
+TIP: none<turn_end>
+Response for prompt 2: RESULT: done
+EVIDENCE: So, tell me in your own words — what's brought you in today?
+TIP: none<turn_end>
+Response for prompt 3: RESULT: done
+EVIDENCE: When did they start, where do you feel them, and does anything make them better or worse?
+TIP: none<turn_end>
+Response for prompt 4: RESULT: done
+EVIDENCE: Take your time and tell me more — when did they start, where do you feel them, and does anything make them better or worse?
+TIP: none<turn_end>
+Response for prompt 5: RESULT: missed
+EVIDENCE: none
+TIP: Don't assume the list is complete — explicitly invite other concerns before moving on.<turn_end>
+Response for prompt 6: RESULT: done
+EVIDENCE: Thank you. Can I ask what you think might be going on, or whether there's something in particular you're worried it could be?
+TIP: none<turn_end>
+Response for prompt 7: RESULT: done
+EVIDENCE: I'm sorry to hear that, that sounds really unsettling.
+TIP: none<turn_end>
+Response for prompt 8: RESULT: done
+EVIDENCE: That's a really understandable worry, and I'm glad you've told me — we'll work through this properly together.
+TIP: none<turn_end>
+Response for prompt 9: RESULT: done
+EVIDENCE: I'd like to examine you now — I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.
+TIP: none<turn_end>
+Response for prompt 10: RESULT: done
+EVIDENCE: In plain terms, this fits what we call tension-type headache — the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.
+TIP: none<turn_end>
+Response for prompt 11: RESULT: done
+EVIDENCE: In plain terms, this fits what we call tension-type headache — the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.
+TIP: none<turn_end>
+Response for prompt 12: RESULT: done
+EVIDENCE: We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?
+TIP: none<turn_end>
+Response for prompt 13: RESULT: done
+EVIDENCE: Just so I know I've explained it clearly, could you tell me back what the plan is?
+TIP: none<turn_end>
+Response for prompt 14: RESULT: done
+EVIDENCE: If the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.
+TIP: none<turn_end>
+Response for prompt 15: RESULT: done
+EVIDENCE: Before we finish, what questions do you have for me?
+TIP: none<turn_end>
+Response for prompt 16: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 17: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 18: RESULT: missed
+EVIDENCE: none
+TIP: Yes/no framing shuts the story down; open with 'tell me about it'.<turn_end>
+Response for prompt 19: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 20: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 21: RESULT: done
+EVIDENCE: Anything else? No? Great, take care.
+TIP: none<turn_end>
+Response for prompt 22: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 23: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 24: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 25: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 26: RESULT: done
+EVIDENCE: It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.
+TIP: none<turn_end>
+Response for prompt 27: RESULT: done
+EVIDENCE: It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.
+TIP: none<turn_end>
+Response for prompt 28: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 29: RESULT: missed
+EVIDENCE: none
+TIP: A leaflet doesn't confirm understanding — have the patient say the plan back.<turn_end>
+Response for prompt 30: RESULT: missed
+EVIDENCE: none
+TIP: Reassurance without red flags leaves the patient with no plan if things worsen.<turn_end>
+Response for prompt 31: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 32: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 33: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 34: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 35: RESULT: missed
+EVIDENCE: none
+TIP: Keep the focus on the patient's symptoms, and actually characterize them.<turn_end>
+Response for prompt 36: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 37: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 38: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 39: RESULT: done
+EVIDENCE: Sounds like low mood. I'll start you on an antidepressant, take one a day.
+TIP: none<turn_end>
+Response for prompt 40: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 41: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 42: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 43: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 44: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 45: RESULT: missed
+EVIDENCE: none
+TIP: A leaflet doesn't confirm understanding — have the patient say the plan back.<turn_end>
+Response for prompt 46: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>
+Response for prompt 47: RESULT: missed
+EVIDENCE: none
+TIP: This was not attempted at all in the consultation.<turn_end>

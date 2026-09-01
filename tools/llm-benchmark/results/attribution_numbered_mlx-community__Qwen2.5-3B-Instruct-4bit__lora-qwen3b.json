@@ -1,0 +1,66 @@
+[
+  {
+    "case": "case000",
+    "utterances": 25,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P\n18: D\n19: P\n20: D\n21: P\n22: D\n23: P\n24: D\n25: P"
+  },
+  {
+    "case": "case001",
+    "utterances": 17,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P"
+  },
+  {
+    "case": "case002",
+    "utterances": 17,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P"
+  },
+  {
+    "case": "case003",
+    "utterances": 15,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P"
+  },
+  {
+    "case": "case004",
+    "utterances": 15,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P"
+  },
+  {
+    "case": "case005",
+    "utterances": 21,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P\n18: D\n19: P\n20: D\n21: P"
+  },
+  {
+    "case": "case006",
+    "utterances": 21,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P\n18: D\n19: P\n20: D\n21: P"
+  },
+  {
+    "case": "case007",
+    "utterances": 17,
+    "separation": 1.0,
+    "role": 1.0,
+    "missing": 0,
+    "raw": "1: P\n2: D\n3: P\n4: D\n5: P\n6: D\n7: P\n8: D\n9: P\n10: D\n11: P\n12: D\n13: P\n14: D\n15: P\n16: D\n17: P"
+  }
+]

@@ -1,0 +1,4 @@
+[11:16:45] === v3 fine-tune: Qwen3.5-4B ===
+[11:16:45] train 1015 / valid 134 · 1120 distinct doctor lines · labels 47/14/39
+[11:16:45] BAR TO BEAT (stock, untrained): acc 85.4%  over 31.2%  recall 100%
+[11:16:45] training (400 iters, lr 5e-6, 8 layers, checkpoint every 60)…

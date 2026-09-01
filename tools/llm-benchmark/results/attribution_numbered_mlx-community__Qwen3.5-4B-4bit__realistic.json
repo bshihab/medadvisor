@@ -1,0 +1,26 @@
+[
+  {
+    "case": "good_headache",
+    "utterances": 21,
+    "separation": 0.047619047619047616,
+    "role": 0.0,
+    "missing": 20,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: A list of 21 numbered utterances from a doctor-patient consultation.\n    *   Task: Label each utterance as 'D' (Doctor) or 'P' (Patient).\n    *   Constraints:\n        *   Base decisions on CONTENT and clinical role, not just strict alter"
+  },
+  {
+    "case": "rushed_cough",
+    "utterances": 11,
+    "separation": 0.09090909090909091,
+    "role": 0.09090909090909091,
+    "missing": 10,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: A list of 11 numbered utterances from a doctor-patient consultation.\n    *   Task: Label each utterance as 'D' (Doctor) or 'P' (Patient).\n    *   Constraints:\n        *   Base decisions on CONTENT and clinical role.\n        *   Do NOT as"
+  },
+  {
+    "case": "poor_lowmood",
+    "utterances": 9,
+    "separation": 0.1111111111111111,
+    "role": 0.1111111111111111,
+    "missing": 8,
+    "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: A list of 9 numbered utterances from a doctor-patient consultation.\n    *   Task: Label each utterance as 'D' (Doctor) or 'P' (Patient).\n    *   Constraints:\n        *   Base decisions on CONTENT and clinical role.\n"
+  }
+]

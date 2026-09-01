@@ -1,0 +1,34 @@
+[
+  {
+    "cohort": "improving",
+    "met": 112,
+    "total": 160,
+    "trend_points": 14,
+    "narrative": "You consistently demonstrate excellent rapport-building by warmly introducing yourself, inviting patients to share their stories in their own words, and validating their concerns with empathy. Your performance is trending positively, with a notable 14-point improvement in meeting assessed behaviors between your earlier and later sessions. To further elevate your care, prioritize explicitly teaching return precautions and ensuring patients can articulate the plan back to you in their own words. Additionally, make a habit of inviting final questions before closing the consultation to ensure nothing is missed. Focusing on these two specific areas will help you reach the remaining 30% of behaviors and provide even more comprehensive care.",
+    "seconds": 4.3
+  },
+  {
+    "cohort": "declining",
+    "met": 79,
+    "total": 160,
+    "trend_points": -11,
+    "narrative": "You consistently build strong rapport by warmly introducing yourself and effectively using open-ended questions to explore the patient's concerns. However, your performance is trending downward, with your met-rate dropping by 11 points in the most recent sessions. To reverse this decline, prioritize pausing to let patients finish their thoughts before you speak and translating clinical jargon into everyday language. Additionally, shift from issuing a plan immediately to offering options that invite the patient's preference, while ensuring you explicitly state return precautions. Focusing on these two areas will help you regain the behaviors you demonstrated earlier in the month.",
+    "seconds": 4.0
+  },
+  {
+    "cohort": "plateau",
+    "met": 96,
+    "total": 160,
+    "trend_points": 1,
+    "narrative": "You consistently establish rapport by clearly introducing yourself and using open-ended questions like \"What's been happening that brought you in?\" to invite the patient into the conversation. While you are doing well with these foundational elements, your performance has remained flat, with your met-rate showing only a negligible +1 point change that does not reflect meaningful progress. To move forward, you should prioritize actively asking the patient what they think is going on and what specifically worries them, rather than relying solely on your own explanations. Additionally, ensure you check for understanding with a teach-back method before closing the session to confirm the patient truly grasps the plan. Focusing on these two areas will help you shift from simply meeting behaviors to demonstrating genuine clinical communication growth.",
+    "seconds": 4.7
+  },
+  {
+    "cohort": "mixed",
+    "met": 104,
+    "total": 160,
+    "trend_points": 3,
+    "narrative": "You consistently demonstrate strong empathy and partnership by validating your patients' fears and reassuring them that they will not face this journey alone. However, your performance has remained flat, with your met-rate showing only a negligible 3-point increase that does not reflect meaningful progress. To move forward, you need to focus on closing the gap between your supportive presence and clinical safety by explicitly naming red flags and defining exactly when to seek help. Additionally, shifting your focus to verifying understanding by asking patients to repeat their plans and inviting questions before you close will ensure your care is truly effective. Prioritizing these two specific areas will help you transition from simply listening to actively guiding your patients toward safety and recovery.",
+    "seconds": 4.5
+  }
+]

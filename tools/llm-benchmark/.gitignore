@@ -1,4 +1,15 @@
 .venv/
 data/
-results/
 __pycache__/
+
+# results/ is deliberately NOT ignored. Unlike data/ and adapters/, these are
+# measurements, not regenerable inputs: reproducing them means paying for cloud
+# GPU time again, and the README's numbers cite them. ~1MB of text reports and
+# run JSON.
+#
+# Checked before un-ignoring: no result file carries a transcript field. The
+# JSON holds per-decision verdicts whose `raw` includes the model's quoted
+# EVIDENCE span, and V3-RECALL-DIAG.txt quotes 11 lines of a test script. All
+# of it is from the written synthetic consultations (Dr Patel, Dr Morgan, Dr
+# Osei) — no recordings and no real patient encounters, so this stays inside
+# the "never commit recordings or transcripts" rule in the root .gitignore.

@@ -1,0 +1,24 @@
+SECOND-PASS VERIFICATION — started 2026-07-28 13:30
+Challenge every 'done' verdict with one extra call. No training.
+Baselines on 240: Qwen3.5-4B 85.4%/31.2% over/100% recall
+                  Qwen2.5-7B 79.2%/36.6%/93.0%
+
+=== Qwen3.5-4B (no-think) ===
+BEFORE (single pass)       acc  85.4%  over  31.2% (35/112)  recall 100.0% (128/128)
+AFTER (+ verification)     acc  90.0%  over  11.6% (13/112)  recall  91.4% (117/128)
+verifier ran on 163 'done' verdicts (68% of calls -> 1.68x cost)
+  rejected 33:  22 correct (over-score fixed)  11 WRONG (real credit destroyed)
+  precision of rejections: 67%
+Δ accuracy +4.6  Δ over-score -19.6  Δ recall -8.6
+wall-clock 1089s
+
+=== Qwen2.5-7B (what ships) ===
+BEFORE (single pass)       acc  79.2%  over  36.6% (41/112)  recall  93.0% (119/128)
+AFTER (+ verification)     acc  81.7%  over  13.4% (15/112)  recall  77.3% (99/128)
+verifier ran on 160 'done' verdicts (67% of calls -> 1.67x cost)
+  rejected 46:  26 correct (over-score fixed)  20 WRONG (real credit destroyed)
+  precision of rejections: 57%
+Δ accuracy +2.5  Δ over-score -23.2  Δ recall -15.6
+wall-clock 1642s
+
+FINISHED 2026-07-28 14:15

@@ -1,0 +1,31 @@
+QWEN3 STOCK BASELINES — started 2026-07-26 16:32
+STOCK FIRST, before any fine-tuning (the lesson from the 2.5-3B run).
+BARS TO BEAT
+  grading 48:   7B stock 87.5%/13.3% over/88.9% recall | 2.5-3B stock 85.4%/6.7%/72.2%
+  grading 240:  7B stock 79.2%/36.6%/93.0%             | 2.5-3B stock 70.8%/35.7%/76.6%
+  attribution:  7B stock 92.1% role | 2.5-3B stock 85.5% role  (hand-written)
+
+=== mlx-community/Qwen3-4B-Instruct-2507-4bit — ATTRIBUTION, hand-written ===
+role acc:      92.6%   (correct D/P as labeled — what the app consumes)
+separation:    92.6%   (credits a consistently inverted mapping)
+unlabeled:    0/41 utterances (these silently inherit the previous speaker)
+=== mlx-community/Qwen3-4B-Instruct-2507-4bit — GRADING, 48 realistic decisions ===
+accuracy:      85.4%   (41/48)
+over-score:    20.0%   (6/30 MISSED wrongly marked met)  ← lower better
+recall(met):   94.4%   (17/18 MET correctly marked met)   ← higher better
+
+=== mlx-community/Qwen3.5-4B-4bit — ATTRIBUTION, hand-written ===
+role acc:       6.7%   (correct D/P as labeled — what the app consumes)
+separation:     8.3%   (credits a consistently inverted mapping)
+unlabeled:    38/41 utterances (these silently inherit the previous speaker)
+=== mlx-community/Qwen3.5-4B-4bit — GRADING, 48 realistic decisions ===
+accuracy:      62.5%   (30/48)
+over-score:     0.0%   (0/30 MISSED wrongly marked met)  ← lower better
+recall(met):    0.0%   (0/18 MET correctly marked met)   ← higher better
+
+=== Qwen3-4B-Instruct-2507 — GRADING, 240 snippet decisions ===
+accuracy:      72.9%   (175/240)
+over-score:    58.0%   (65/112 MISSED criteria wrongly marked met)  ← lower is better
+recall(met):  100.0%   (128/128 MET criteria correctly marked met)   ← higher is better
+
+FINISHED 2026-07-26 16:57

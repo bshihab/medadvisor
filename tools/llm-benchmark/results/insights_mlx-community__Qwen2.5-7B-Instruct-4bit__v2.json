@@ -1,0 +1,34 @@
+[
+  {
+    "cohort": "improving",
+    "met": 112,
+    "total": 160,
+    "trend_points": 14,
+    "narrative": "You consistently excel in creating a welcoming and supportive environment for your patients, as evidenced by your opening statement and your empathetic responses. Your performance has shown improvement, with your met-rate increasing by 14 points from earlier sessions to an overall rate of 70%. However, to further enhance your consultations, you should focus on explicitly providing return precautions and asking patients to repeat the plan in their own words. These actions will help ensure that your patients fully understand their care plan and feel more involved in their health journey.",
+    "seconds": 6.0
+  },
+  {
+    "cohort": "declining",
+    "met": 79,
+    "total": 160,
+    "trend_points": -11,
+    "narrative": "You consistently use a warm and welcoming greeting, which helps set a positive tone for the consultation. However, your performance in meeting the assessed behaviors has shown a decline, with your met-rate falling by 11 points from earlier sessions. To improve, you should focus on avoiding interruptions and allowing patients to finish speaking before asking your next question. Additionally, consider translating clinical terms into everyday language and offering options to invite the patient's preference in decision-making. These areas need your attention to enhance the quality of your consultations.",
+    "seconds": 5.5
+  },
+  {
+    "cohort": "plateau",
+    "met": 96,
+    "total": 160,
+    "trend_points": 1,
+    "narrative": "You consistently introduce yourself and the clinical setting effectively, which helps establish rapport with your patients. Your performance in the consultations has remained relatively stable, showing no significant improvement or decline. To enhance your communication, it's crucial to start by asking what the patient thinks is going on and what worries them, as this can help build a more collaborative and patient-centered approach. Additionally, checking for understanding through teach-back before closing the consultation is essential to ensure that the patient has grasped the information and instructions provided.",
+    "seconds": 5.4
+  },
+  {
+    "cohort": "mixed",
+    "met": 104,
+    "total": 160,
+    "trend_points": 3,
+    "narrative": "You consistently demonstrate strong empathy and support in your consultations, as evidenced by your use of phrases like \"I can hear how frightening the last few weeks have been,\" which shows you are attuned to your patients' emotions. Your performance has remained relatively stable, with a met-rate of 65%, showing no significant improvement or decline. To enhance your communication further, you should focus on clearly naming specific red flags and when to seek help, as well as inviting patients to repeat the plan back to ensure understanding. These areas will help you build a stronger partnership with your patients and improve their engagement in their care.",
+    "seconds": 6.3
+  }
+]

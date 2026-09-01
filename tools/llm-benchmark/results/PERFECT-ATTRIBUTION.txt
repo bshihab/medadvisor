@@ -1,0 +1,52 @@
+==============================================================================
+DOES FIXING SPEAKER LABELS FIX GRADING?
+==============================================================================
+as-recorded = the transcript the app produced (mislabels included)
+perfect     = same words, every line correctly attributed (CEILING --
+              not shippable, nothing labels speakers flawlessly)
+
+model variant      transcript   correct  says met  truth  over  under
+------------------------------------------------------------------------------
+7B    as-recorded  rushed       11/16           6      3     4      1
+7B    as-recorded  good         14/16          11     11     1      1
+7B    as-recorded  headache     15/16          14     13     1      0
+7B    as-recorded  TOTAL        40/48                      (83%)
+
+7B    perfect      rushed       10/16           7      3     5      1
+7B    perfect      good         14/16          11     11     1      1
+7B    perfect      headache     15/16          14     13     1      0
+7B    perfect      TOTAL        39/48                      (81%)
+
+4B    as-recorded  rushed       14/16           1      3     0      2
+4B    as-recorded  good         15/16          12     11     1      0
+4B    as-recorded  headache     15/16          12     13     0      1
+4B    as-recorded  TOTAL        44/48                      (92%)
+
+4B    perfect      rushed       14/16           3      3     1      1
+4B    perfect      good         14/16          11     11     1      1
+4B    perfect      headache     15/16          12     13     0      1
+4B    perfect      TOTAL        43/48                      (90%)
+
+==============================================================================
+WHAT PERFECT ATTRIBUTION CHANGED
+==============================================================================
+
+7B / rushed: 11/16 -> 10/16
+   fixed by correct labels: explore_perspective
+   newly wrong:             explain_exam, open_questions
+
+7B / good: 14/16 -> 14/16
+   no change
+
+7B / headache: 15/16 -> 15/16
+   no change
+
+4B / rushed: 14/16 -> 14/16
+   fixed by correct labels: safety_net
+   newly wrong:             explain_exam
+
+4B / good: 15/16 -> 14/16
+   newly wrong:             avoid_interrupting
+
+4B / headache: 15/16 -> 15/16
+   no change

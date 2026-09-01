@@ -1,0 +1,14 @@
+{
+  "STOCK": {
+    "4-summary": "The doctor met 11 out of 16 criteria, indicating they performed well overall but still had room for improvement. To enhance their performance, the most important area to focus on is meeting the remaining criteria, as this would ensure they fully meet the standards set for the consultation.",
+    "5-insights": "You've shown great promise by confidently introducing yourself and encouraging patients to share their stories, which helps build rapport and trust. Your met-rate improvement of 8 points is a positive sign of growth, indicating that you're refining your skills effectively. To continue progressing, focus on providing explicit return precautions and asking patients to verbalize their understanding of the plan. These adjustments will enhance patient safety and ensure they feel more empowered and informed. Keep up the excellent work, and you'll see even greater success ahead!",
+    "2-na-gate": "RESULT: done, partial, or missed\nEVIDENCE: \"I'd like to examine you now \u2014",
+    "1-attribution": "1: D  \n2: P  \n3: P  \n4: P  \n5: D  \n6: D"
+  },
+  "ADAPTER": {
+    "4-summary": "The doctor met 11 out of 16 criteria in the outpatient clinic consultation, indicating a strong performance overall. To improve further, the single most important area to focus on is meeting the remaining 5 criteria, as this would bring the overall score to 16.",
+    "5-insights": "You've shown great promise by introducing yourself and actively listening to the patient. These are key skills that help build rapport and demonstrate empathy. To further improve, focus on clearly communicating the plan and having the patient say it back, which reinforces understanding and commitment. These adjustments will strengthen your approach and enhance patient trust and cooperation. Keep up the excellent work!",
+    "2-na-gate": "RESULT: done\nEVIDENCE: I'd like to examine you now \u2014 I'll check your blood",
+    "1-attribution": "1: D\n2: P\n3: P\n4: P\n5: D\n6: D"
+  }
+}

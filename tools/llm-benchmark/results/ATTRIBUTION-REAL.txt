@@ -1,0 +1,37 @@
+==============================================================================
+SPEAKER-LABEL ACCURACY on 3 real recordings (single-speaker chunks)
+==============================================================================
+Chunks come from the app's own sentence-splitter; the prompt is the
+app's own attribution prompt. Ground truth is hand-aligned.
+
+model                      transcript     n     acc   D->P   P->D  none
+------------------------------------------------------------------------------
+Qwen 2.5-7B (ships today)  rushed        30   90.0%      3      0     0
+Qwen 2.5-7B (ships today)  good          40   80.0%      4      4     0
+Qwen 2.5-7B (ships today)  headache      50   86.0%      4      3     0
+Qwen 2.5-7B (ships today)  ALL          120   85.0%     11      7
+
+Qwen 3.5-4B (the new one)  rushed        30  100.0%      0      0     0
+Qwen 3.5-4B (the new one)  good          40  100.0%      0      0     0
+Qwen 3.5-4B (the new one)  headache      50   96.0%      2      0     0
+Qwen 3.5-4B (the new one)  ALL          120   98.3%      2      0
+
+==============================================================================
+DOCTOR LINES CALLED PATIENT — the damaging direction
+==============================================================================
+The rubric asks 'did the CLINICIAN do X'. A doctor line handed to the
+patient can silently fail a criterion the doctor actually met.
+
+  [2.5-7B] rushed: "Back pain, is it?"
+  [2.5-7B] rushed: "And three weeks, any numbness in the legs, any trouble passing water."
+  [2.5-7B] rushed: "How bad, one to 10."
+  [2.5-7B] good: "Start on my back?"
+  [2.5-7B] good: "I just need you to roll your sleeves up."
+  [2.5-7B] good: "I can't promise it'll clear completely without something changing at work."
+  [2.5-7B] good: "I just went over all the questions."
+  [2.5-7B] headache: "Is there anything else you wanted to raise today?"
+  [2.5-7B] headache: "The muscle across your scalp and neck tightening up and staying tight."
+  [2.5-7B] headache: "Nothing."
+  [2.5-7B] headache: "What feels right to you?"
+  [3.5-4B] headache: "Nothing."
+  [3.5-4B] headache: "Thanks for listening."

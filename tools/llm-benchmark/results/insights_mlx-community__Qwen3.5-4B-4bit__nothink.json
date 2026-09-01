@@ -1,0 +1,34 @@
+[
+  {
+    "cohort": "improving",
+    "met": 112,
+    "total": 160,
+    "trend_points": 14,
+    "narrative": "You are building a truly warm and empathetic connection with your patients, as your consistent use of open-ended questions and validating statements like \"That sounds like it's been weighing on you\" creates a safe space for them to open up. Your met-rate improvement of 14 points shows a clear upward trajectory, proving that your focus on these areas is already paying off. To take your practice to the next level, I encourage you to prioritize giving explicit return precautions and asking patients to repeat the plan back to you, as these steps will significantly enhance safety and shared decision-making. Finally, make a habit of inviting final questions before closing each consultation to ensure no concerns are left unaddressed. Keep up this momentum; your growing attention to these details is making a real difference in patient care.",
+    "seconds": 5.2
+  },
+  {
+    "cohort": "declining",
+    "met": 79,
+    "total": 160,
+    "trend_points": -11,
+    "narrative": "You have built a strong foundation by consistently greeting patients warmly and actively inviting their concerns, which sets a compassionate tone for every visit. While your overall met-rate dipped slightly in the later sessions, this shift highlights a valuable opportunity to refine your approach rather than a step backward. Moving forward, I encourage you to focus on pausing briefly to let patients finish their thoughts before you respond, and to replace clinical jargon with plain language that truly resonates with them. By prioritizing these two areas, you will create a more collaborative environment where patients feel heard and empowered to share their preferences. You are clearly on a path of growth, and these targeted adjustments will help you reach even higher levels of patient-centered care.",
+    "seconds": 4.5
+  },
+  {
+    "cohort": "plateau",
+    "met": 96,
+    "total": 160,
+    "trend_points": 1,
+    "narrative": "You have built a strong foundation by consistently introducing yourself warmly and using clear, patient-centered language to set the stage for your consultations. Your ability to explain things as you go and reassure patients about comfort levels demonstrates a genuine commitment to building trust and reducing anxiety. While your overall met-rate remained stable, your slight improvement from earlier to later sessions shows you are actively refining your approach. Moving forward, your most impactful focus should be on actively inviting patients to share their own perspectives and worries, followed by using teach-back to ensure they truly understand the plan before you close. By integrating these two steps, you will further strengthen the collaborative partnership with your patients.",
+    "seconds": 4.1
+  },
+  {
+    "cohort": "mixed",
+    "met": 104,
+    "total": 160,
+    "trend_points": 3,
+    "narrative": "You consistently demonstrate exceptional empathy by validating your patients' fears and offering a clear sense of partnership, which creates a truly safe space for them to open up. Your ability to slow down the conversation and give patients permission to take their time is a powerful tool that builds trust and reduces anxiety. While your overall met-rate has shown a slight dip recently, your core strengths remain a strong foundation for your practice. Moving forward, your most impactful next steps are to proactively name specific red flags and timing for help, and to explicitly invite questions before you conclude the session. By weaving these targeted checks into your existing compassionate approach, you will further strengthen your clinical impact.",
+    "seconds": 4.2
+  }
+]

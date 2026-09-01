@@ -1,0 +1,480 @@
+[
+  {
+    "case": "good_headache",
+    "criterion": "intro_self",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Good morning, I'm Doctor Patel, one of the GPs here today. Please come in and have a seat, make yourself comfortable.\"\nTIP: Ensure consistent use of name and role throughout the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "set_tone",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Please come in and have a seat, make yourself comfortable.\"\nTIP: Ensure the environment is quiet and private to maintain comfort."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "open_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"So, tell me in your own words \u2014 what's brought you in today?\"\nTIP: Ensure questions are open-ended by avoiding yes/no questions and prompting detailed responses."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more \u2014 when did they start, where do you feel them, and does anything make them better or worse?\"\nTIP: Ensure follow-up questions cover all dimensions of the complaint."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "avoid_interrupting",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm sorry to hear that, that sounds really unsettling. Take your time and tell me more \u2014 when did they start, where do you feel them, and does anything make them better or worse?\"\nTIP: None"
+  },
+  {
+    "case": "good_headache",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish, what questions do you have for me?\"\nTIP: Ensure to explicitly invite further concerns before concluding the consultation."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explore_perspective",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, and I'm glad you've told me \u2014 we'll work through this properly together.\"\nTIP: Ensure follow-up questions address both concerns and treatment options."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "respond_emotion",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm sorry to hear that, that sounds really unsettling.\"\nTIP: Validate emotions by directly acknowledging them."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "support_respect",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'm sorry to hear that, that sounds really unsettling. That's a really understandable worry, and I'm glad you've told me \u2014 we'll work through this properly together.\"\nTIP: Ensure to validate patient concerns with empathetic language and assure them of a collaborative approach."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "explain_exam",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'd like to examine you now \u2014 I'll check your blood pressure and look into the back of your eyes. I'll explain as I go, and do say if anything's uncomfortable.\"\nTIP: Ensure verbal reassurance during the exam to maintain patient comfort."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "plain_language",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\"\nTIP: Ensure jargon is defined or avoided in future consultations."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"In plain terms, this fits what we call tension-type headache \u2014 the muscles around the head tightening up, often triggered by screen time and stress. It's very common and not dangerous.\"\nTIP: Ensure to verify all information with reliable sources before discussing with patients."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "shared_plan",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"We've got a couple of options. We could start with regular screen breaks and simple pain relief and review in a few weeks, or we could consider a daily preventer. What would you prefer?\"\nTIP: Ensure to confirm patient understanding of the plan with a teach-back question."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "check_understanding",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Could you tell me back what the plan is?\"\nTIP: Ensure follow-up questions are specific to clarify understanding."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "safety_net",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"And importantly \u2014 if the headache suddenly becomes much worse, if you get any changes in your vision, weakness, or it wakes you from your sleep, please seek help straight away or go to A&E.\"\nTIP: Ensure patient understands and asks questions about these points."
+  },
+  {
+    "case": "good_headache",
+    "criterion": "invite_questions",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Before we finish, what questions do you have for me?\"\nTIP: Ensure to summarize key points and confirm understanding before concluding."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Right, what seems to be the problem?\"\nTIP: None"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Ensure to validate patient's comfort and privacy throughout the consultation."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Right, what seems to be the problem?\"\nTIP: None\n\n(Note: The clinician's question \"Right, what seems to be the problem?\" is open-ended and invites the patient to elaborate on their symptoms.)"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_complaint",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Any fever? Chest pain? Coughing anything up?\"\nTIP: Ensure to ask about severity and associated symptoms."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Any fever? Chest pain? Coughing anything up?\"\nTIP: None"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "what_else",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Anything else? No? Great, take care.\"\nTIP: Ensure follow-up questions are specific and clear."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Any fever? Chest pain? Coughing anything up?\"\nTIP: Ask open-ended questions like \"How long have you had this cough?\" or \"What do you think might be causing it?\""
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Acknowledge the patient's concern by validating their experience and expressing understanding."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Avoid minimizing the patient's experience with reassuring language."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: None\n\n(Note: No physical exam was mentioned, so no exam explanation or comfort check occurred.)"
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Avoid jargon and define terms like \"post-viral cough\" and \"conservative management.\""
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "accurate_info",
+    "truth": "met",
+    "pred": "met",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Ensure to provide balanced reassurance without over-simplifying the condition."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"It's likely a post-viral cough. It's a self-limiting condition, viral in aetiology, should resolve with conservative management.\"\nTIP: Encourage patient to ask about specific management options."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Right... is there anything I can do?\"\nTIP: Ask the patient to restate the plan in their own words."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Come back if it's not gone in a month.\"\nTIP: Ensure follow-up plan is clear and actionable."
+  },
+  {
+    "case": "rushed_cough",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Anything else? No? Great, take care.\"\nTIP: Ensure to explicitly ask for any remaining questions before concluding."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "intro_self",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: Doctor: Next. Name and date of birth?\nTIP: None\n\n(Note: The transcript does not include a greeting or introduction of the clinician's name and role, so this is not applicable here.)"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "set_tone",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to further explore the patient's concerns."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "open_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"How long? Sleeping okay? Appetite?\"\nTIP: No need for further refinement as the clinician initiated open-ended inquiries."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_complaint",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Ensure thorough exploration of all dimensions of the complaint."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "avoid_interrupting",
+    "truth": "missed",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "what_else",
+    "truth": "missed",
+    "pred": null,
+    "correct": null,
+    "error": "guardrail",
+    "detail": "guardrailViolation(FoundationModels.LanguageModelSession.GenerationError.Context(debugDescription: \"Response may contain sensitive or unsafe content\", underlyingErrors: []))"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explore_perspective",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Ask about specific fears or expectations, e.g., \"What worries you about starting this medication?\""
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "respond_emotion",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Sounds like low mood\"\nTIP: Acknowledge the emotion by validating it with a name or phrase like \"It sounds like you're feeling really down.\""
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "support_respect",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Use more specific language like \"I understand how you're feeling\" or \"I'm here to help you through this.\""
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "explain_exam",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: None"
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "plain_language",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Avoid jargon and define terms when necessary."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "accurate_info",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Ensure to confirm patient understanding with a teach-back."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "shared_plan",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"I'll start you on an antidepressant, take one a day.\"\nTIP: Ensure to confirm patient preferences and address any concerns before proceeding."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "check_understanding",
+    "truth": "missed",
+    "pred": "partial",
+    "correct": true,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: partial\nEVIDENCE: \"Sounds like low mood. I'll start you on an antidepressant, take one a day.\"\nTIP: Ask patient to restate plan in own words."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "safety_net",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Here's the prescription. Next patient, please.\"\nTIP: Ensure patient understands prescription and next steps."
+  },
+  {
+    "case": "poor_lowmood",
+    "criterion": "invite_questions",
+    "truth": "missed",
+    "pred": "met",
+    "correct": false,
+    "error": null,
+    "soft_refusal": false,
+    "raw": "RESULT: done\nEVIDENCE: \"Next patient, please.\"\nTIP: Ensure to explicitly ask for questions before concluding."
+  }
+]
