@@ -1,0 +1,8 @@
+Doctor: Good morning, I'm Doctor Example — have a seat. What's brought you in today?
+Patient: I've had this cough that won't go away, maybe three weeks now.
+Doctor: Three weeks, okay. Tell me a bit more about it — what's it like?
+Patient: Dry, mostly at night. I was worried it might be something serious.
+Doctor: That's understandable. Let's have a listen to your chest, if that's alright.
+Patient: Sure.
+Doctor: Chest sounds clear. I think this is most likely post-viral. If it's not settling in two weeks, or you cough up blood or get breathless, come straight back.
+Patient: Okay, thank you doctor.
