@@ -90,9 +90,12 @@ class Runner:
         self.proc.wait()
 
 
-def load_data():
+def load_data(snippets=False):
     criteria = {c["id"]: c for c in json.loads(RUBRIC.read_text())["criteria"]}
-    cases = json.loads((HERE / "realistic_cases.json").read_text())
+    src = (HERE / "data" / "scoring.json") if snippets else (HERE / "realistic_cases.json")
+    cases = json.loads(src.read_text())
+    for c in cases:
+        c.setdefault("note", "snippet-assembled")
     return criteria, cases
 
 
@@ -139,8 +142,8 @@ def probe_context(runner):
             print("KILL-CRITERION HIT: a 3.5k-token transcript does NOT fit.")
 
 
-def run_bench(runner, limit=None):
-    criteria, cases = load_data()
+def run_bench(runner, limit=None, snippets=False):
+    criteria, cases = load_data(snippets)
     total = sum(len(c["labels"]) for c in cases)
     if limit:
         total = min(total, limit)
@@ -177,7 +180,7 @@ def run_bench(runner, limit=None):
                          "soft_refusal": soft, "raw": r["text"]})
 
     RESULTS.mkdir(exist_ok=True)
-    suffix = ""
+    suffix = "-240" if snippets else ""
     if _os.environ.get("APP_SCORING_FEW_SHOT") == "1":
         suffix += "-fewshot"
     if getattr(runner, "adapter", None):
@@ -221,6 +224,10 @@ def main():
     ap.add_argument("--probe-context", action="store_true")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--adapter", help="path to a trained .fmadapter package")
+    ap.add_argument("--snippets", action="store_true",
+                    help="use the 240-decision snippet set instead of the 48 realistic "
+                         "cases — 5x the resolution, and the set that exposed a model "
+                         "the 48-case test flattered")
     ap.add_argument("--permissive", action="store_true",
                     help="run with SystemLanguageModel permissive content-transformation guardrails")
     args = ap.parse_args()
@@ -230,7 +237,7 @@ def main():
         if args.probe_context:
             probe_context(runner)
         else:
-            run_bench(runner, args.limit)
+            run_bench(runner, args.limit, args.snippets)
     finally:
         runner.close()
 

@@ -144,6 +144,68 @@ In 2 sentences, summarize how they did overall and the single most important thi
 improve next time. Plain prose, no lists."""
 
 
+# --- CANDIDATE APP CHANGE: second-pass verification of "done" verdicts --------
+# Every model measured on this task fails in the SAME direction — over-crediting.
+# Over-score rates: Apple FM stock 75%, Qwen2.5-7B 36.6%, Qwen3.5-4B 31.2%.
+# The failure is not missing knowledge but insufficient scepticism: the grader
+# finds *a* quote and accepts it, even when the quote shows a different behavior
+# than the one asked about.
+#
+# So instead of changing the model, challenge its own claim. Only "done" verdicts
+# are re-checked (~40% of criteria), so the cost is ~1.4x calls, not 2x. Works on
+# any model, needs no training, and survives every OS and model update.
+#
+# The prompt is deliberately NOT a blanket sceptic: a verifier that rejects
+# everything would trade over-scoring for a recall collapse, which is the failure
+# mode that disqualified Gemma-3-4B. It names the specific ways a quote can fail
+# and explicitly instructs confirmation when the quote genuinely fits.
+VERIFY_PROMPT = """A grader reviewed the consultation below and judged ONE criterion as "done". \
+Check that judgment strictly — your job is to catch a quote that does not actually \
+show the specific behavior being asked about.
+
+TRANSCRIPT:
+{transcript}
+
+CRITERION: {criterion}
+{extras}
+THE GRADER'S EVIDENCE: "{evidence}"
+
+Does that quote, spoken by the CLINICIAN, actually demonstrate THIS SPECIFIC criterion?
+- A generic greeting, pleasantry, acknowledgement or sign-off ("take care", "okay", \
+"right", "no problem") does NOT demonstrate a specific behavior.
+- A quote showing a DIFFERENT behavior than the one asked about does NOT count, even \
+if it is good practice.
+- Something the PATIENT said never counts, whatever the speaker label claims.
+- If the quote genuinely shows this exact behavior, CONFIRM it — do not reject a \
+correct judgment.
+
+Reply with ONE word: CONFIRM or REJECT."""
+
+
+def build_verify_prompt(criterion: dict, transcript: str, evidence: str) -> str:
+    extras = ""
+    good = criterion.get("whatGoodLooksLike")
+    if good and not is_placeholder(good):
+        extras += f"Good looks like: {good}\n"
+    req = [r for r in (criterion.get("requiredElements") or []) if not is_placeholder(r)]
+    if req:
+        extras += "Must address: " + "; ".join(req) + "\n"
+    return VERIFY_PROMPT.format(transcript=transcript, criterion=criterion["prompt"],
+                                extras=extras, evidence=evidence or "")
+
+
+def verification_rejects(reply: str) -> bool:
+    """True when the verifier rejects the grader's 'done'. Defaults to KEEPING
+    the verdict on unparseable output — a garbled reply must not silently
+    destroy recall."""
+    low = reply.strip().lower()
+    if low.startswith("reject") or low.startswith("no"):
+        return True
+    if low.startswith("confirm") or low.startswith("yes"):
+        return False
+    return "reject" in low[:40] and "confirm" not in low[:40]
+
+
 def is_placeholder(s: str) -> bool:
     """PromptBuilder.isPlaceholder — draft-rubric author placeholders must never
     reach the model as scoring guidance."""
