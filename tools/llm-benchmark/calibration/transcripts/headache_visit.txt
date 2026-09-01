@@ -1,0 +1,22 @@
+Doctor: Hello hello, come in! Lovely to see you. Sit down, get comfy. How are you doing?
+Patient: I'm alright, thanks. Well — mostly alright. It's these headaches.
+Doctor: Oh no, headaches are miserable. Tell me all about it, I'm all ears.
+Patient: So it's been about a month? Maybe five weeks. It's like a band across my forehead, usually the afternoons. Some days it's barely there, other days I have to just sit in a dark room after work. I've been taking paracetamol most days.
+Doctor: You poor thing, that sounds exhausting. Go on — anything else you've noticed about them?
+Patient: Um, screens make it worse I think. And I've been really stressed at work, we're going through redundancies, so I don't know if it's connected. My sleep's been rubbish too.
+Doctor: Ohh, redundancies, that's so stressful. No wonder you're not sleeping. How are you holding up in yourself, with all of that going on?
+Patient: Honestly, not great. I keep thinking, what if it's something worse though? The headaches I mean. My colleague's sister had a brain tumour and it started with headaches, and I know that's silly but it's two in the morning and you start thinking.
+Doctor: It's not silly at all, it's completely human — everyone goes there at two in the morning. I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?
+Patient: Yeah. Yeah, it really is.
+Doctor: Have you been managing to eat okay? Drinking enough water? These things matter more than people think.
+Patient: Probably not enough water, no. Lots of coffee.
+Doctor: Ah, the classic. Well look, I'm really not worried by what you're describing, okay? I want you to hear that. These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.
+Patient: You don't think I need a scan or anything?
+Doctor: I really don't think there's anything scary going on here. Honestly, half my patients this month have headaches, it's going around with everything in the news. Your body's just telling you it's under pressure.
+Patient: Okay... so what should I do about them?
+Doctor: Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.
+Patient: Right. Should I keep taking the paracetamol? Because I read somewhere that taking painkillers all the time can actually cause headaches? Is that—
+Doctor: Mm, everything in moderation. You know your body best. Anyway — was there anything else, lovely?
+Patient: Um. No, I guess not. So, just... water and less screens, basically?
+Doctor: You've got it. And try not to worry — worry's the real enemy here. Book back in whenever you like if you need to, my door's always open. You take care of yourself, okay?
+Patient: Okay. Thanks, doctor.

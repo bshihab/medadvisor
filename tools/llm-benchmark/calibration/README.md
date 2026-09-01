@@ -16,6 +16,12 @@ the shipped judge, on fresh material.
 3. **Score blind.** Fill your sheets *before* running (or peeking at) the
    judge. If you saw the judge's output first, the comparison is worthless.
 
+**Provenance note (2026-09-01):** the four `*_visit.txt` transcripts are
+LLM-drafted (Claude) from scenario level as a v1 — written to be messy and of
+deliberately varied quality, but still model-authored. They test the judge on
+unseen, realistic-shaped material; for the full reality check, add at least
+one genuinely human role-played transcript when convenient.
+
 ## Workflow
 
 ```bash

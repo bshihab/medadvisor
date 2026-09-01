@@ -1,0 +1,23 @@
+Doctor: Hi there, I'm Dr Marsh — sorry, the system's running slow today. Right. So it's about a rash?
+Patient: Yeah. It's on my arms mostly, inside the elbows, and a bit on my neck. It's been maybe two months, on and off.
+Doctor: Okay. Itchy?
+Patient: Really itchy. Especially at night, I scratch in my sleep, I wake up and it's all raw.
+Doctor: And you said on and off — does anything set it off that you've noticed?
+Patient: Um, I thought maybe the new washing powder? We switched brands around then. But I switched back two weeks ago and it's still happening. Hot showers definitely make the itching worse after.
+Doctor: Any new soaps, perfumes, pets?
+Patient: No pets. My girlfriend did buy some scented candles but I wouldn't have thought—
+Patient: Probably not the candles, no, unless you're handling them a lot. Any of this run in the family — eczema, asthma, hay fever?
+Doctor: Sorry — that was me asking, the family history bit. Eczema, asthma, hay fever — any of those in the family?
+Patient: Oh right. Yeah, my mum has asthma, and I had eczema as a kid apparently, behind my knees. I grew out of it.
+Doctor: Well, that's quite telling. Let me have a look at your arms... okay, yes. Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.
+Patient: Sure. It looks worse than usual today actually.
+Doctor: So this looks very much like eczema — atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema — it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.
+Patient: Huh. I thought you couldn't get it again once you grew out of it.
+Doctor: It can lie low for years and come back, unfortunately. The good news is it's very treatable. So — two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine — that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams — how do you feel about that?
+Patient: I mean, if it stops the itching I'll take it. My girlfriend might have opinions but she's not the one scratching.
+Doctor: Ha — well, the doses in these creams are small and we're using it in short bursts, so I'm comfortable, and you can send her to me if she has questions. Cooler showers will help too. I'll put both on a prescription now.
+Patient: Okay, great.
+Doctor: If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected — come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.
+Patient: Weeping or crusty, come back. Okay.
+Doctor: Prescription's done. The receptionist can book your follow-up if you want one in the diary now. Bye now.
+Patient: Oh — I did have one more... never mind, it's fine. Thanks doctor.
