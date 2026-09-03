@@ -122,12 +122,16 @@ else?", "Shirt up" as exam explanation, the patient's worry monologue still
 credited as explore_perspective despite trap training). Under-credit TIPs
 parrot training phrases verbatim — the adapter fit the style hard.
 
-Untested combination: v4 adapter + scoped verifier (the verifier would
-challenge the 11 remaining over-credits but cannot fix the 5 under-credits;
-optimistically lands near the human band). One more ~$1 cloud run if ever
-worth it. The standing conclusion is unchanged: ship judge + scoped
-verifier, validate on human transcripts, keep the adapter as a research
-artifact (Modal volume medadvisor-qwen-v4-out, lr5e-5/step120).
+Stacking tested (2026-09-03, modal_verify_stack.py, same cloud stack):
+tuned + scoped verifier = **79.4%** (3 over-credits fixed, 0 destroyed) vs
+stock + scoped verifier = **81.0%** in-stack (84.1% in the MLX stack — two
+rows of stack noise on n=63; both stacks agree on the ranking). As predicted,
+the verifier cannot restore the adapter's 5 under-credits, so the stack
+starts handicapped and never catches up. **The fine-tune adds nothing on top
+of the trick.** Final ship config: stock judge + scoped verifier — ported
+into Analysis.swift/EncounterProcessor the same day (see PORT-DIFF.md).
+The adapter stays a research artifact (Modal volume medadvisor-qwen-v4-out,
+lr5e-5/step120). Remaining validation: human role-played transcripts.
 
 ## Implications (in order of cost)
 
