@@ -127,22 +127,22 @@ T = {
   partial=["I'm one of the doctors covering clinic today — come on in.",
            "You're with the duty doctor this morning. Take a seat."],
   # Bilal rule 6: a bare name — even with the title — is not an introduction.
-  near=["Hi there, I'm Dr. {dr}. Right — {sym}, is it?",
+  near=["I'm Dr. {dr}. So — this {sym}, then.",
         "Hello, I'm {dr}. Come on in.",
         "Morning, Dr. {dr}. Take a seat.",
         "Right, come in, sit yourself down. What's the problem?",
-        "Hello hello, come in! Lovely to see you. So what's going on?",
+        "Ah, come through, come through — good to see you. What's been going on?",
         "Reception will have said who I am. Let's crack on."]),
 "set_tone": dict(
   met=["There's no rush at all — the door's shut and this time is yours.",
        "Before we start, are you comfortable there? We've plenty of time and it's private in here.",
        "Take a seat and get comfortable — nobody's going to interrupt us.",
-       "Please, go on and take your time — there's no rush this morning.",
+       "We're in no hurry at all this morning — this time is yours.",
        "We've got a good stretch of time, so please don't feel hurried."],
   partial=["Have a seat — we'll try not to rush.", "Sit down, we've got a few minutes."],
   near=["I'm running about half an hour behind, so let's be quick.",
         "We've got five minutes really, so the short version please.",
-        "Sorry, the system's running slow today. Right — what is it?",
+        "Computer's playing up again, bear with me. So, quickly — what's the trouble?",
         "Busy morning — let's get straight to it."]),
 "open_questions": dict(
   met=["Tell me the whole story from the start, in your own words.",
@@ -178,7 +178,7 @@ T = {
        "Is there something else you came in about as well?",
        "We've covered the {sym} — anything else worrying you?"],
   # Bilal rule 1: the flung version is a token gesture, partial at best.
-  partial=["Anything else?", "That everything?", "Anyway — was there anything else?"],
+  partial=["Anything else?", "That everything?"],
   near=["Right, so that's everything then. Let's talk treatment.",
         "We won't have time for anything else today.",
         "Good, so just the {sym} then."]),
@@ -217,7 +217,7 @@ T = {
        "Let me check your blood pressure and have a look in your eyes — I'll talk you through it.",
        "I'll examine the {sym} now and explain as I go — let me know if anything feels off."],
   partial=["I'll examine you now, if that's all right.", "Just going to take a look."],
-  near=["Shirt up. Breathe in. And out.",
+  near=["Top up for me. Deep breath in. And again.",
         "Let me just have a quick look at you.",
         "Hop on the couch."]),
 "plain_language": dict(
@@ -268,7 +268,7 @@ T = {
   partial=["If it doesn't settle in a couple of weeks, come back and see us.",
            "Any problems, give us a ring."],
   near=["Take care of yourself then. Bye now.",
-        "Book back in whenever you like if you need to.",
+        "You can always make another appointment if you feel like it.",
         "Try not to worry about it — it'll sort itself out."]),
 "invite_questions": dict(
   met=["Before we finish — what questions do you have for me? Nothing's too small.",
@@ -277,7 +277,7 @@ T = {
        "What haven't I explained well enough?"],
   partial=["No questions? Good.", "All clear? Right."],
   near=["Right, we're done. The nurse will show you out.",
-        "I've a full waiting room, so unless it's urgent…",
+        "There's a queue building out there, so if we're done…",
         "Good. Next patient's waiting."]),
 }
 
@@ -291,7 +291,7 @@ FILLER_Q = [("And any allergies?", "Penicillin brings me out in a rash."),
             ("What sort of work do you do?", "I'm on my feet all day."),
             ("How's your sleep been?", "Broken, honestly."),
             ("Do you smoke at all?", "Gave up two years ago.")]
-DEFLECTIONS = ["Mm, everything in moderation. You know your body best.",
+DEFLECTIONS = ["We'll see how it goes before we start worrying about that.",
                "Let's not get ahead of ourselves, eh?",
                "Try not to think about it too much.",
                "We'll cross that bridge if we come to it."]

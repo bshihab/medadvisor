@@ -14,6 +14,20 @@
 #   3. Corrected 240 set (regression check via audit_recompute.py; stock is
 #      96.1% there — a big drop means the adapter learned the style, forgot
 #      the task).
+#
+# Set roles (kept disjoint, verified by check_overlap.py before training):
+#   TRAIN    data/finetune_v4 (generated)
+#   SELECT   48-case realistic screen — picks the checkpoint; its winning
+#            score is a screening statistic (max over ~7 draws), NOT a result
+#   DECIDE   calibration gold — never used for selection, reported once
+#   REGRESS  corrected 240 set
+#
+# SCOPE: this local MLX run is a DATA-VALIDATION GATE, not the ship artifact.
+# The app runs GGUF via llama.cpp; an MLX LoRA on the 4-bit base does not
+# reach it. If this run clears the bar, retrain on the cloud bf16 pipeline
+# (tools/cloud-train/modal_qwen_v3.py pointed at data/finetune_v4), merge,
+# export Q4_K_M, and RE-MEASURE the GGUF — the proven path with quantisation
+# measured alongside (see results/V3-GGUF-REPORT.txt).
 set -u
 cd "$(dirname "$0")"
 PY=.venv/bin/python
@@ -28,6 +42,12 @@ say() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
 say "=== v4 fine-tune: Qwen3.5-4B on the Bilal-standard dataset ==="
 say "regenerating data (deterministic, seed 29)…"
 $PY gen_finetune_v4.py --transcripts 200 2>&1 | tee -a "$LOG"
+
+say "contamination gate: training data vs eval sets…"
+if ! $PY check_overlap.py 2>&1 | tee -a "$LOG"; then
+  say "CONTAMINATION GATE FAILED — training data overlaps an eval set. Aborting."
+  exit 1
+fi
 
 say "training (400 iters, lr 5e-6, 8 layers, checkpoint every 60)…"
 $PY -m mlx_lm lora \
