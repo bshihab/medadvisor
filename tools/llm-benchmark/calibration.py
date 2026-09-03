@@ -75,11 +75,11 @@ def cmd_sheet(base: Path):
           else "No new sheets (no transcripts found, or all sheets exist).")
 
 
-def make_runner(model_id: str, no_think: bool):
+def make_runner(model_id: str, no_think: bool, adapter_path: str = None):
     from mlx_lm import load, generate  # lazy: sheet/report need no venv
 
-    print(f"Loading {model_id} …")
-    model, tokenizer = load(model_id)
+    print(f"Loading {model_id} …" + (f" + adapter {adapter_path}" if adapter_path else ""))
+    model, tokenizer = load(model_id, adapter_path=adapter_path)
 
     def run(prompt: str, max_tokens: int = 180) -> str:
         messages = [{"role": "user", "content": prompt}]
@@ -98,13 +98,14 @@ def make_runner(model_id: str, no_think: bool):
     return run
 
 
-def cmd_judge(base: Path, model_id: str, no_think: bool):
+def cmd_judge(base: Path, model_id: str, no_think: bool, jdir: str = "judge",
+              adapter_path: str = None):
     from app_scoring import build_prompt, parse_criterion
 
-    outdir = base / "judge"
+    outdir = base / jdir
     outdir.mkdir(parents=True, exist_ok=True)
     crits = criteria_in_order()
-    run = make_runner(model_id, no_think)
+    run = make_runner(model_id, no_think, adapter_path)
 
     for tid, text in transcripts(base):
         out = outdir / f"{tid}.json"
@@ -120,20 +121,21 @@ def cmd_judge(base: Path, model_id: str, no_think: bool):
                          "evidence": evidence, "raw": raw[:400]})
             print(f"  {tid} {c['id']:<20} {pred:<8} ({time.time() - t0:4.1f}s)")
         out.write_text(json.dumps({"model": model_id, "no_think": no_think,
-                                   "rows": rows}, indent=2))
+                                   "adapter": adapter_path, "rows": rows}, indent=2))
         print(f"  -> {out}")
 
 
-def cmd_verify(base: Path, model_id: str, no_think: bool):
+def cmd_verify(base: Path, model_id: str, no_think: bool, jdir: str = "judge",
+               adapter_path: str = None):
     """Second pass, fully automated: challenge every 'met' verdict already in
     judge/*.json with one 12-token CONFIRM/REJECT call. No human input."""
     from app_scoring import build_verify_prompt, verification_rejects
 
     crits = {c["id"]: c for c in criteria_in_order()}
     tmap = dict(transcripts(base))
-    files = sorted((base / "judge").glob("*.json"))
+    files = sorted((base / jdir).glob("*.json"))
     if not files:
-        print("No judge output found — run `judge` first.")
+        print(f"No judge output in {jdir}/ — run `judge` first.")
         return
     run = None
     for f in files:
@@ -142,7 +144,7 @@ def cmd_verify(base: Path, model_id: str, no_think: bool):
             print(f"  keeping existing verification in {f.name} (delete the file's 'final' fields to re-run)")
             continue
         if run is None:
-            run = make_runner(model_id, no_think)
+            run = make_runner(model_id, no_think, adapter_path)
         checks = 0
         for r in d["rows"]:
             if r["pred"] == "met":
@@ -179,15 +181,15 @@ def load_human(base: Path):
     return scores
 
 
-def cmd_report(base: Path):
+def cmd_report(base: Path, jdir: str = "judge"):
     human = load_human(base)
     if not human:
         print("No filled sheets found — run `sheet` and score them first.")
         return
     judged, meta = {}, set()
-    for f in sorted((base / "judge").glob("*.json")):
+    for f in sorted((base / jdir).glob("*.json")):
         d = json.loads(f.read_text())
-        meta.add((d.get("model"), d.get("no_think")))
+        meta.add((d.get("model"), d.get("no_think"), d.get("adapter")))
         for r in d["rows"]:
             judged[(r["transcript"], r["criterion"])] = r
     if not judged:
@@ -207,8 +209,11 @@ def cmd_report(base: Path):
     dis = [k for k in scored if k not in set(agree_b)]
     verified = all("final" in judged[k] for k in scored)
 
-    lines = ["# Calibration report — human vs judge", "",
-             f"Judge run(s): {', '.join(f'{m} (no_think={nt})' for m, nt in sorted(meta))}", "",
+    lines = ["# Calibration report — human vs judge"
+             + ("" if jdir == "judge" else f" ({jdir})"), "",
+             "Judge run(s): " + ", ".join(
+                 f"{m} (no_think={nt}" + (f", adapter={a}" if a else "") + ")"
+                 for m, nt, a in sorted(meta, key=str)), "",
              f"- decisions compared: {len(scored)}"
              f" (+{len(na)} human-na excluded, +{len(unscored)} unscored)",
              f"- **binary agreement (met vs not-met): "
@@ -271,7 +276,7 @@ def cmd_report(base: Path):
         lines += ["", f"## Unscored rows ({len(unscored)}) — sheet still has `?`", ""]
         lines += [f"- {t} · {c}" for t, c in unscored]
 
-    out = base / "REPORT.md"
+    out = base / ("REPORT.md" if jdir == "judge" else f"REPORT-{jdir.split('-', 1)[1]}.md")
     out.write_text("\n".join(lines) + "\n")
     print("\n".join(lines[:12]))
     print(f"\nfull report -> {out}")
@@ -284,19 +289,26 @@ def main():
     ap.add_argument("--dir", default=str(HERE / "calibration"),
                     help="calibration base directory (default: ./calibration)")
     ap.add_argument("--model", default=DEFAULT_MODEL, help="judge model id")
+    ap.add_argument("--adapter-path", help="LoRA adapter directory to load on top of --model")
+    ap.add_argument("--tag", help="label for this configuration; judge/verify write to "
+                                  "judge-<tag>/ and report reads it + writes REPORT-<tag>.md, "
+                                  "so adapter runs never clobber the stock baseline")
     ap.add_argument("--think", action="store_true",
                     help="enable reasoning mode (default off — matches the shipped config)")
     args = ap.parse_args()
     base = Path(args.dir)
     (base / "transcripts").mkdir(parents=True, exist_ok=True)
+    if args.adapter_path and not args.tag:
+        ap.error("--adapter-path requires --tag (so the stock baseline is not overwritten)")
+    jdir = "judge" + (f"-{args.tag}" if args.tag else "")
     if args.cmd == "sheet":
         cmd_sheet(base)
     elif args.cmd == "judge":
-        cmd_judge(base, args.model, not args.think)
+        cmd_judge(base, args.model, not args.think, jdir, args.adapter_path)
     elif args.cmd == "verify":
-        cmd_verify(base, args.model, not args.think)
+        cmd_verify(base, args.model, not args.think, jdir, args.adapter_path)
     else:
-        cmd_report(base)
+        cmd_report(base, jdir)
 
 
 if __name__ == "__main__":
