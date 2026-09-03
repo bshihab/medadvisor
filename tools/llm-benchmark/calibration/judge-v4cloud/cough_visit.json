@@ -1,0 +1,119 @@
+{
+  "model": "Qwen/Qwen3.5-4B (bf16 cloud)",
+  "no_think": true,
+  "adapter": "lr5e-5/step120",
+  "rows": [
+    {
+      "transcript": "cough_visit",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: States name and role and greets the patient.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Appears unhurried; attends to the patient's comfort and privacy.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Starts broad before narrowing; invites the patient to elaborate.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_complaint",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Characterizes the complaint across its key dimensions.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Lets the patient finish; does not cut them off.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: Anything else?\nTIP: none\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_perspective",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Asks what the patient thinks is going on, what worries them, or what they're hoping for.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Names or validates the emotion; responds rather than rushing past it.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "support_respect",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Warm, respectful language; conveys that the patient is heard.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.",
+      "raw": "RESULT: done\nEVIDENCE: Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.\nTIP: none\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "plain_language",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Uses everyday words; defines any necessary medical terms.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "If it's not gone in another month you can book in again and we'll think about imaging then. I've got a full waiting room, so. Prescription's sent through.",
+      "raw": "RESULT: done\nEVIDENCE: If it's not gone in another month you can book in again and we'll think about imaging then. I've got a full waiting room, so. Prescription's sent through.\nTIP: none\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "shared_plan",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Lays out next steps and invites the patient's preferences.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Asks the patient to restate the plan in their own words.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "safety_net",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Gives explicit, actionable return precautions.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: Anything else?\nTIP: none\n"
+    }
+  ]
+}

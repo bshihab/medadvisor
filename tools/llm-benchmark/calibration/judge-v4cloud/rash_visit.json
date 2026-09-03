@@ -1,0 +1,119 @@
+{
+  "model": "Qwen/Qwen3.5-4B (bf16 cloud)",
+  "no_think": true,
+  "adapter": "lr5e-5/step120",
+  "rows": [
+    {
+      "transcript": "rash_visit",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: States name and role and greets the patient.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Appears unhurried; attends to the patient's comfort and privacy.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Starts broad before narrowing; invites the patient to elaborate.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "And you said on and off \u2014 does anything set it off that you've noticed?",
+      "raw": "RESULT: done\nEVIDENCE: And you said on and off \u2014 does anything set it off that you've noticed?\nTIP: none\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Lets the patient finish; does not cut them off.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "what_else",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Explicitly invites further concerns before moving on.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_perspective",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Asks what the patient thinks is going on, what worries them, or what they're hoping for.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Names or validates the emotion; responds rather than rushing past it.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "support_respect",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Warm, respectful language; conveys that the patient is heard.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.",
+      "raw": "RESULT: done\nEVIDENCE: Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.\nTIP: none\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "plain_language",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Uses everyday words; defines any necessary medical terms.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "The good news is it's very treatable. So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: The good news is it's very treatable. So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how "
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how do you feel about that?\nTIP: none\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Asks the patient to restate the plan in their own words.\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.",
+      "raw": "RESULT: done\nEVIDENCE: If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.\nTIP: none\n"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Explicitly asks what questions the patient has.\n"
+    }
+  ]
+}

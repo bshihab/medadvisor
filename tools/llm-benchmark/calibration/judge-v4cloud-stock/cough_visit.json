@@ -1,0 +1,119 @@
+{
+  "model": "Qwen/Qwen3.5-4B (bf16 cloud)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "cough_visit",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: None\nTIP: The clinician should state their name and role (e.g., \"I'm Dr. Smith, a GP\") at the start of the consultation to build trust and clarify who they are.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": "EVIDENCE:",
+      "raw": "RESULT: missed\nEVIDENCE:\nTIP: The clinician jumped straight into symptom questioning without acknowledging the patient's anxiety about their father's cancer or offering a moment of reassurance to establish a comfortable, unrushed atmosphere.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: None\nTIP: Start with an open-ended invitation like \"Tell me about your cough\" rather than immediately asking specific yes/no questions.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "Cough, is it?\", \"Any fever?\", \"Coughing anything up? Phlegm? What colour?\", \"Short of breath? Chest pain?\", \"Any blood in what you cough up?",
+      "raw": "RESULT: done\nEVIDENCE: \"Cough, is it?\", \"Any fever?\", \"Coughing anything up? Phlegm? What colour?\", \"Short of breath? Chest pain?\", \"Any blood in what you cough up?\"\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_perspective",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient directly what they think might be wrong or what they are worried about before examining.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician acknowledged the patient's worry about lung cancer but immediately pivoted to the diagnosis without validating the fear or addressing the emotional impact of the family history.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it.\"\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.",
+      "raw": "RESULT: done\nEVIDENCE: Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "plain_language",
+      "pred": "partial",
+      "evidence": "Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: partial\nEVIDENCE: \"Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: The clinician defined the term \"irritable\" but failed to explain the specific meaning of \"hyperreactivity\" or \"bronchial\" in simpler terms before using them.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: done\nEVIDENCE: \"Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: none\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it.\"\nTIP: None\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": "EVIDENCE:",
+      "raw": "RESULT: missed\nEVIDENCE:\nTIP: Ask the patient to explain in their own words how to use the new inhaler before giving the prescription.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "safety_net",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Provide specific, actionable return precautions (e.g., \"return immediately if you develop fever, shortness of breath, or coughing up blood\") rather than vague timelines.\n"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: None\n"
+    }
+  ]
+}

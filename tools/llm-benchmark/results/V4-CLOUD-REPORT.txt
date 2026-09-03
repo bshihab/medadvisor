@@ -1,0 +1,44 @@
+========================================================================
+Qwen3.5-4B v4 fine-tune — Bilal-standard data (Modal A10G, bf16)
+========================================================================
+Recipe identical to the v3 winner; ONLY the data changed.
+48-case numbers SELECT the checkpoint (max over draws, not a result).
+The DECISION is agreement with Bilal's calibration gold, computed
+locally: python ../llm-benchmark/calibration.py report --tag v4cloud
+Bars: stock-MLX 65.1% / stock+scoped-verifier 84.1% / human 85.7%.
+
+--- lr5e-5 (lr=5e-05) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  93.8%  over   6.7%  recall  94.4%
+  step 120             acc  95.8%  over   3.3%  recall  94.4%  <- best
+  step 180             acc  93.8%  over   3.3%  recall  88.9%
+  step 240             acc  93.8%  over   0.0%  recall  83.3%
+  step 300             acc  89.6%  over   0.0%  recall  72.2%
+  step 360             acc  95.8%  over   0.0%  recall  88.9%
+  step 400             acc  95.8%  over   0.0%  recall  88.9%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  93.8%  over  12.5%  recall  99.2%
+  DELTA                  acc  +7.9   over -17.9   recall  -0.8
+
+--- lr2e-4 (lr=0.0002) ---
+  STOCK 48-case        acc  87.5%  over  16.7%  recall  94.4%
+  step 60              acc  93.8%  over   6.7%  recall  94.4%  <- best
+  step 120             acc  87.5%  over   3.3%  recall  72.2%
+  step 180             acc  91.7%  over   6.7%  recall  88.9%
+  step 240             acc  91.7%  over   0.0%  recall  77.8%
+  step 300             acc  87.5%  over   0.0%  recall  66.7%
+  step 360             acc  89.6%  over   0.0%  recall  72.2%
+  step 400             acc  89.6%  over   0.0%  recall  72.2%
+
+  FULL 240 — stock       acc  85.8%  over  30.4%  recall 100.0%
+  FULL 240 — tuned       acc  88.8%  over  24.1%  recall 100.0%
+  DELTA                  acc  +2.9   over  -6.2   recall  +0.0
+
+Calibration rows written from lr5e-5 step 120.
+DECIDE locally:
+  python ../llm-benchmark/calibration.py report --tag v4cloud-stock
+  python ../llm-benchmark/calibration.py report --tag v4cloud
+
+If the bar is met: repoint modal_gguf_eval.py at this winner to
+merge, quantise to Q4_K_M, and re-measure the shipping GGUF.

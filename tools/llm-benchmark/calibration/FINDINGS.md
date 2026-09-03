@@ -93,6 +93,42 @@ explore_complaint and plain_language, rather than hardcoded ids). Cost ~1.7x
 calls here (only 'done' verdicts are re-checked). The fine-tune stays shelved:
 after scoping, the consensus error count is ~3 rows out of 63.
 
+## v4 fine-tune result (2026-09-03, Modal run — see results/V4-CLOUD-REPORT.txt)
+
+The v4 adapter (Bilal-standard data, v3's winning recipe, lr5e-5 step 120)
+against the pre-registered bars, single pass on calibration gold:
+
+| Config | vs gold |
+|---|---|
+| Stock (MLX and bf16 cloud — identical) | 65.1% |
+| **v4 adapter, single pass** | **74.6%** |
+| Stock + scoped verifier (the free alternative) | 84.1% |
+| Human band | 85.7% |
+
+**Decision, per the bar set before training: the adapter does not ship; the
+scoped verifier does.** The fine-tune genuinely worked — +9.5 on gold, +7.9
+on the in-stack 240 with over-score halved, 95.8/3.3/94.4 on the 48-case
+screen — but it lands ~10 points short of what the second-pass verifier
+already provides for free.
+
+Failure anatomy (16 disagreements, was 22 for stock): over-credits fell 22 →
+11, but **5 under-credits appeared** (stock had zero) — the trained
+strictness now denies real credit, almost entirely on the aggregate criteria
+(plain_language ×2, explore_complaint, open_questions, set_tone), the same
+criteria the verifier damages. Third independent confirmation of the
+mechanism: quote-demanding scepticism cannot judge whole-visit criteria. The
+stubborn over-credits are also the familiar ones (the flung "Anything
+else?", "Shirt up" as exam explanation, the patient's worry monologue still
+credited as explore_perspective despite trap training). Under-credit TIPs
+parrot training phrases verbatim — the adapter fit the style hard.
+
+Untested combination: v4 adapter + scoped verifier (the verifier would
+challenge the 11 remaining over-credits but cannot fix the 5 under-credits;
+optimistically lands near the human band). One more ~$1 cloud run if ever
+worth it. The standing conclusion is unchanged: ship judge + scoped
+verifier, validate on human transcripts, keep the adapter as a research
+artifact (Modal volume medadvisor-qwen-v4-out, lr5e-5/step120).
+
 ## Implications (in order of cost)
 
 1. **The over-crediting problem is real, current, and large on realistic
