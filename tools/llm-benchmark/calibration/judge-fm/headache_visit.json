@@ -1,0 +1,142 @@
+{
+  "model": "apple-foundation-model (system, on-device)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "headache_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "Hello hello, come in! Lovely to see you. Sit down, get comfy. How are you doing?",
+      "raw": "RESULT: done\nEVIDENCE: \"Hello hello, come in! Lovely to see you. Sit down, get comfy. How are you doing?\"\nTIP: Ensure to introduce yourself and explain your role at the start of each session.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Sit down, get comfy. How are you doing?",
+      "raw": "RESULT: done\nEVIDENCE: \"Sit down, get comfy. How are you doing?\"\nTIP: Ensure the environment is quiet and private to maintain comfort.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "Tell me all about it, I'm all ears.",
+      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: Ensure questions are broad and open-ended to encourage patient storytelling.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Tell me all about it, I'm all ears.",
+      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: Avoid interrupting to give the patient space to speak.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Was there anything else, lovely?",
+      "raw": "RESULT: done\nEVIDENCE: \"Was there anything else, lovely?\"\nTIP: Always confirm understanding and explore further concerns before concluding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "It's not silly at all, it's completely human \u2014 everyone goes there at two in the morning. I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?",
+      "raw": "RESULT: done\nEVIDENCE: \"It's not silly at all, it's completely human \u2014 everyone goes there at two in the morning. I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?\"\nTIP: Ensure to validate patient concerns with empathy and reassurance throughout the consultation.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "Ohh, redundancies, that's so stressful. No wonder you're not sleeping.",
+      "raw": "RESULT: done\nEVIDENCE: \"Ohh, redundancies, that's so stressful. No wonder you're not sleeping.\"\nTIP: Validate emotions by acknowledging them directly.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "Oh no, headaches are miserable. Tell me all about it, I'm all ears.",
+      "raw": "RESULT: done\nEVIDENCE: \"Oh no, headaches are miserable. Tell me all about it, I'm all ears.\"\nTIP: Ensure to validate patient concerns with follow-up questions.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "I'm really not worried by what you're describing, okay? I want you to hear that. These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'm really not worried by what you're describing, okay? I want you to hear that. These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.\"\nTIP: Ensure verbal reassurance is consistent throughout the consultation.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.",
+      "raw": "RESULT: done\nEVIDENCE: \"Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.\"\nTIP: Avoid jargon by defining terms like \"headache\" and \"stress.\"",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "I really don't think there's anything scary going on here. Honestly, half my patients this month have headaches, it's going around with everything in the news. Your body's just telling you it's under pressure.",
+      "raw": "RESULT: done\nEVIDENCE: \"I really don't think there's anything scary going on here. Honestly, half my patients this month have headaches, it's going around with everything in the news. Your body's just telling you it's under pressure.\"\nTIP: Ensure to balance reassurance with a realistic understanding of common causes.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.",
+      "raw": "RESULT: done\nEVIDENCE: \"Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.\"\nTIP: Encourage asking about specific coping strategies or lifestyle changes.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "check_understanding",
+      "pred": "partial",
+      "evidence": "You've got it. And try not to worry \u2014 worry's the real enemy here. Book back in whenever you like if you need to, my door's always open. You take care of yourself, okay?",
+      "raw": "RESULT: partial\nEVIDENCE: \"You've got it. And try not to worry \u2014 worry's the real enemy here. Book back in whenever you like if you need to, my door's always open. You take care of yourself, okay?\"\nTIP: Ask the patient to restate the plan in their own words.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "Anyway \u2014 was there anything else, lovely? You've got it. And try not to worry \u2014 worry's the real enemy here. Book back in whenever you like if you need to, my door's always open. You take care of yourself, okay?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anyway \u2014 was there anything else, lovely? You've got it. And try not to worry \u2014 worry's the real enemy here. Book back in whenever you like if you need to, my door's always open. You take care of yourself, okay?\"\nTIP: Ensure to confirm understanding and provide reassurance about follow-up care.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Was there anything else, lovely?",
+      "raw": "RESULT: done\nEVIDENCE: \"Was there anything else, lovely?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    }
+  ]
+}

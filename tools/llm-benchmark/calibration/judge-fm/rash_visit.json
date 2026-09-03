@@ -1,0 +1,151 @@
+{
+  "model": "apple-foundation-model (system, on-device)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "rash_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.",
+      "raw": "RESULT: done\nEVIDENCE: \"Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.\"\nTIP: Ensure consistent use of name and role introduction throughout consultations.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Ha \u2014 well, the doses in these creams are small and we're using it in short bursts, so I'm comfortable, and you can send her to me if she has questions.",
+      "raw": "RESULT: done\nEVIDENCE: \"Ha \u2014 well, the doses in these creams are small and we're using it in short bursts, so I'm comfortable, and you can send her to me if she has questions.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to further explore patient concerns.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "So it's about a rash?",
+      "raw": "RESULT: done\nEVIDENCE: \"So it's about a rash?\"\nTIP: Ensure questions are broad and open-ended to encourage patient storytelling.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "Itchy? And you said on and off \u2014 does anything set it off that you've noticed?",
+      "raw": "RESULT: done\nEVIDENCE: \"Itchy? And you said on and off \u2014 does anything set it off that you've noticed?\"\nTIP: Ensure to ask about severity and associated symptoms to fully explore the complaint.",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Avoid interrupting to allow the patient to fully express the",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Any of this run in the family \u2014 eczema, asthma, hay fever?",
+      "raw": "RESULT: done\nEVIDENCE: \"Any of this run in the family \u2014 eczema, asthma, hay fever?\nTIP: Always ask 'is there anything else?' before moving on.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_perspective",
+      "pred": "partial",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: partial\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Ask about the patient's thoughts on the treatment plan or",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Validate the patient's understanding by asking, \"Does that m",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Ensure to validate patient concerns with follow-up questions",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Ensure verbal reassurance during the exam to maintain patien",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together.\"\nTIP: Avoid jargon when possible, but if necessary, define terms clearly.",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: Ensure to confirm understanding with the patient about the c",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: \"So \u2014 two-part plan, tell me what you think. First, moisturiser, a lot of it, more than feels reasonable, on the whole area twice a day even when it looks fine \u2014 that's the base layer. Second, a steroid cream for the angry patches, a mild one, thin layer once a day for a week or two at a time. Some people worry about steroid creams \u2014 how do you feel about that?\"\nTIP: Ensure ",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "check_understanding",
+      "pred": "partial",
+      "evidence": "So \u2014 two-part plan, tell me what you think.",
+      "raw": "RESULT: partial\nEVIDENCE: \"So \u2014 two-part plan, tell me what you think.\"\nTIP: Ask the patient to restate the plan in their own words.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out.",
+      "raw": "RESULT: done\nEVIDENCE: \"If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out.\"\nTIP: Ensure patient understands when to seek urgent medical attention.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "So \u2014 two-part plan, tell me what you think.",
+      "raw": "RESULT: done\nEVIDENCE: \"So \u2014 two-part plan, tell me what you think.\"\nTIP: Always summarize the plan and invite questions to ensure understanding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    }
+  ]
+}

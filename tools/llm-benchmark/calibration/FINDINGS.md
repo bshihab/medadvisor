@@ -163,3 +163,24 @@ Measured incidence in the ship config (stock + scoped verifier) on the gold:
 inventing credit. Expected value negative; not run. Revisit only if human-
 transcript validation shows the shipped config denying real credit at a
 meaningful rate.
+
+## Apple Foundation Models + verifier (2026-09-03, calibration_fm.py, macOS 26.3.1)
+
+Could the download-free system model wear the verifier and compete? Measured
+on the same gold (1 guardrail refusal excluded, never laundered):
+
+| Config | vs gold |
+|---|---|
+| Apple FM, single pass | 30/62 = **48.4%** |
+| Apple FM + scoped verifier | 44/62 = **71.0%** (17 over-credits fixed, 3 destroyed) |
+| Shipped config (Qwen stock + scoped verifier) | 81–84% |
+
+The verifier's biggest lift yet (+22.6 — its value scales with how bogus the
+credits are; FM rubber-stamps the most) and still 13 points short of the
+shipped config: the trick cannot rescue a 48% base. FM also refused a medical
+grading prompt outright once in 64 decisions — a production liability on its
+own. The download-free dream is not close today, and the adapter treadmill
+(version-locked, non-redistributable) remains the only Apple route to a
+better base. **Cheap standing check: rerun `python calibration_fm.py` +
+`calibration.py report --tag fm` after each OS update — if Apple's base model
+ever closes the gap, this one-command harness will say so.**

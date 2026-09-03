@@ -1,0 +1,151 @@
+{
+  "model": "apple-foundation-model (system, on-device)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "backpain_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "I'm Dr Okafor, I'm one of the GPs here. Sorry about the wait, the mornings get a bit hectic.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'm Dr Okafor, I'm one of the GPs here. Sorry about the wait, the mornings get a bit hectic.\"\nTIP: Ensure to confirm the patient's understanding of the plan by asking them to repeat it back.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: Ensure the clinician maintains eye contact and uses open-ended questions to encourage patient expression.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: Ensure follow-up questions are specific to gather detailed history.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: Ensure follow-up questions cover associated symptoms and tried treatments.",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: Ensure to allow the patient to finish their thoughts without interruption.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Before we go further \u2014 is there anything else bothering you that you wanted to get looked at today?",
+      "raw": "RESULT: done\nEVIDENCE: \"Before we go further \u2014 is there anything else bothering you that you wanted to get looked at today?\"\nTIP: Ensure follow-up questions are specific to the patient's concerns.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.",
+      "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.\"\nTIP: Ensure follow-up questions address both current concerns and future expectations.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.",
+      "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.\"\nTIP: Validate emotions by acknowledging them and responding thoughtfully.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.",
+      "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.\"\nTIP: Ensure to validate patient's feelings and experiences with follow-up questions.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "I'm going to press along your spine, then check the movement in your back and the strength and reflexes in your legs \u2014 it might be a bit uncomfortable but tell me and I'll ease off.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'm going to press along your spine, then check the movement in your back and the strength and reflexes in your legs \u2014 it might be a bit uncomfortable but tell me and I'll ease off.\"\nTIP: Ensure verbal reassurance and comfort checks are consistent throughout the exam.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "Everything I've found points to what we call a mechanical back pain, which is basically the muscles and joints of the back being strained and then staying irritated, partly because sitting all day keeps them stiff. The pain going into your buttock fits with that too.",
+      "raw": "RESULT: done\nEVIDENCE: \"Everything I've found points to what we call a mechanical back pain, which is basically the muscles and joints of the back being strained and then staying irritated, partly because sitting all day keeps them stiff. The pain going into your buttock fits with that too.\"\nTIP: Avoid jargon by defining \"mechanical back pain\" and explaining \"irritated\" and \"stiff.\"",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "Everything I've found points to what we call a mechanical back pain, which is basically the muscles and joints of the back being strained and then staying irritated, partly because sitting all day keeps them stiff. The pain going into your buttock fits with that too. There's nothing here that looks like a trapped nerve or anything sinister, and it is not the same situation as your uncle.",
+      "raw": "RESULT: done\nEVIDENCE: \"Everything I've found points to what we call a mechanical back pain, which is basically the muscles and joints of the back being strained and then staying irritated, partly because sitting all day keeps them stiff. The pain going into your buttock fits with that too. There's nothing here that looks like a trapped nerve or anything sinister, and it is not the same situation ",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So there are a couple of ways we can play it. The thing with the strongest evidence is movement \u2014 keeping active, short walks, and I can refer you for physiotherapy where they'd give you a proper exercise plan. Painkiller-wise, something like ibuprofen with food for a couple of weeks can take the edge off so you can move more. Or, if you'd rather, we hold off on the referral and see how you do with exercises on your own first. What sounds right to you?",
+      "raw": "RESULT: done\nEVIDENCE: \"So there are a couple of ways we can play it. The thing with the strongest evidence is movement \u2014 keeping active, short walks, and I can refer you for physiotherapy where they'd give you a proper exercise plan. Painkiller-wise, something like ibuprofen with food for a couple of weeks can take the edge off so you can move more. Or, if you'd rather, we hold off on the referra",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "check_understanding",
+      "pred": "met",
+      "evidence": "Just so I know I've explained it properly, can you tell me back what the plan is?",
+      "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it properly, can you tell me back what the plan is?\"\nTIP: Ensure to ask for verbal restatement of the plan to confirm understanding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If the pain starts waking you at night or you're losing weight, come back and see me sooner.",
+      "raw": "RESULT: done\nEVIDENCE: \"If the pain starts waking you at night or you're losing weight, come back and see me sooner.\"\nTIP: Ensure the patient understands the importance of returning if symptoms worsen or change.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Anything you wanted to ask me before we finish? Anything I haven't covered?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anything you wanted to ask me before we finish? Anything I haven't covered?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "model": "apple-foundation-model (system, on-device)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "cough_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "Yes, come in. Cough, is it?",
+      "raw": "RESULT: done\nEVIDENCE: \"Doctor: Yes, come in. Cough, is it?\"\nTIP: Ensure to introduce yourself and explain your role at the start of each consultation.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Big breaths. In. Out. Again. Right.",
+      "raw": "RESULT: done\nEVIDENCE: \"Big breaths. In. Out. Again. Right.\"\nTIP: Ensure pauses between questions to allow the patient to process and respond.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "Cough, is it?",
+      "raw": "RESULT: done\nEVIDENCE: \"Cough, is it?\"\nTIP: Ensure questions are broad and allow for patient elaboration.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "Coughing anything up? Phlegm? What colour?",
+      "raw": "RESULT: done\nEVIDENCE: \"Coughing anything up? Phlegm? What colour?\"\nTIP: Ensure to ask about severity and associated symptoms during the history-taking process.",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Shirt up, let me listen. Big breaths. In. Out. Again. Right.",
+      "raw": "RESULT: done\nEVIDENCE: \"Shirt up, let me listen. Big breaths. In. Out. Again. Right.\"\nTIP: Ensure to allow the patient to fully express their concerns without interruption.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: Ensure to explicitly ask for additional concerns before concluding the consultation.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explore_perspective",
+      "pred": "partial",
+      "evidence": "Um. I guess \u2014 no. My wife wanted me to ask about a chest X-ray but you're saying it's fine, so.",
+      "raw": "RESULT: partial\nEVIDENCE: \"Patient: Um. I guess \u2014 no. My wife wanted me to ask about a chest X-ray but you're saying it's fine, so.\"\nTIP: Ask about the patient's thoughts on the diagnosis and treatment plan.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "respond_emotion",
+      "pred": "partial",
+      "evidence": "meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: partial\nEVIDENCE: \"meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: Validate the patient's concern by acknowledging it with empathy.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: done\nEVIDENCE: \"meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: Ensure to validate patient understanding with follow-up questions.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Right. Chest's clear.",
+      "raw": "RESULT: done\nEVIDENCE: \"Right. Chest's clear.\"\nTIP: Ensure verbal reassurance during physical exams to maintain patient comfort.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: done\nEVIDENCE: \"meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: Avoid jargon when possible; define terms if necessary.",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
+      "raw": "RESULT: done\nEVIDENCE: \"meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: Ensure to confirm understanding with the patient to reinforce accuracy.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: Ensure to confirm patient understanding of prescribed medication and discuss potential side effects.",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "check_understanding",
+      "pred": "partial",
+      "evidence": "Right. Sorry, hyper-what? Is that \u2014 should I be doing anything for it?",
+      "raw": "RESULT: partial\nEVIDENCE: \"Patient: Right. Sorry, hyper-what? Is that \u2014 should I be doing anything for it?\"\nTIP: Ask the patient to restate the plan in their own words.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If it's not gone in another month you can book in again and we'll think about imaging then.",
+      "raw": "RESULT: done\nEVIDENCE: \"If it's not gone in another month you can book in again and we'll think about imaging then.\"\nTIP: Ensure follow-up plan includes imaging if symptoms persist.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "cough_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Anything else?",
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: Ensure to explicitly ask for questions to confirm understanding.",
+      "final": "met",
+      "verifier": "CONFIRM"
+    }
+  ]
+}
