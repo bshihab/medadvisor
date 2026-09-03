@@ -237,15 +237,19 @@ final class EncounterProcessor: ObservableObject {
             if !toVerify.isEmpty {
                 stage = .scoring(done: total, total: total)
                 let verifyPrefix = PromptBuilder.verifyPrefix(transcript: redactedTranscript)
+                let verifyT0 = Date()
                 for (idx, r) in toVerify {
                     try Task.checkCancellation()
                     guard let criterion = criterionById[r.criterionId] else { continue }
+                    let tCall = Date()
                     // 24 tokens, not 12: on the Core AI path Qwen3 burns ~5 on an
                     // empty <think></think> block before the word lands.
                     let reply = (try? await LLMEngine.shared.generate(
                         sharedPrefix: verifyPrefix,
                         suffix: PromptBuilder.verifySuffix(criterion: criterion, evidence: r.evidence),
                         maxTokens: 24)) ?? ""
+                    print(String(format: "[Verify] %@ call took %.1fs", r.criterionId,
+                                 Date().timeIntervalSince(tCall)))
                     if FeedbackParser.verificationRejects(reply) {
                         print("[Verify] \(r.criterionId) REJECTED → missed (reply=\"\(reply.prefix(20))\")")
                         let downgraded = CriterionResult(criterionId: r.criterionId, status: .missed,
@@ -256,6 +260,11 @@ final class EncounterProcessor: ObservableObject {
                         print("[Verify] \(r.criterionId) confirmed")
                     }
                 }
+                // The ramp-1 decision number: if this phase costs too much wall
+                // clock or battery on real hardware, single-call mode (the v4
+                // adapter GGUF, 74.6% vs stock's 65.1%) becomes the fallback.
+                print(String(format: "[Verify] TOTAL: %d checks in %.1fs",
+                             toVerify.count, Date().timeIntervalSince(verifyT0)))
             }
 
             stage = .summarizing
