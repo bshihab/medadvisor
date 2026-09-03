@@ -24,6 +24,13 @@ Built in partnership with a medical director who teaches consultation skills; hi
 | **Storage** | Per-session JSON in `Documents/feedback/`, written with iOS Data Protection (`.completeFileProtection`) and excluded from iCloud backup. Raw audio is `.completeUnlessOpen`, backup-excluded, deleted after analysis and swept at launch | Encrypted at rest by the OS, tied to the device passcode; a lost phone leaks nothing meaningful. **Note: this is iOS Data Protection, NOT the originally-planned SQLite + SQLCipher with Secure Enclave keys — no custom crypto or key management ships today.** |
 | **Consent** | Patient-consent step gates the record flow | Recording patients is a legal/ethics requirement, not a footnote |
 
+## To-do (2026-09-03 — judge-quality work, see tools/llm-benchmark/calibration/FINDINGS.md)
+
+- [ ] **iPhone FM probe run**: on the Air `git pull`, `cd tools/ios-fm-probe && xcodegen generate && open FMProbe.xcodeproj`, run on the iPhone (button must say **64**-decision probe), AirDrop `fm_probe_ios.json` to the mini, then `python3 calibration_fm_ios.py compose <file>` + `calibration.py report --tag fm-ios`. Measures iOS 27's newer system model against the calibration gold.
+- [ ] **Build + smoke the verifier port on the Air**: pull, build, run one consultation, watch `[Verify]` lines in the console; confirm a token "anything else?" gets rejected. The shipped-config evidence (84.1% vs gold) rides on this port working on-device.
+- [ ] **Human role-played transcripts** (2–3, typed is fine) through the calibration pipeline — the final validation; also raises the gold-set ceiling that gates any future fine-tune.
+- [ ] *Standing check*: after each OS update, `python3 calibration_fm.py` + `report --tag fm` (5 min) — tracks whether Apple's base model closes the gap.
+
 ## Business wedge
 
 B2B to med schools / GME programs. ACGME mandates assessing "Interpersonal & Communication Skills," currently via expensive Standardized Patient encounters and faculty observation. On-device privacy is the compliance-nervous institutional buyer's unlock. The director's program is the beachhead pilot.
