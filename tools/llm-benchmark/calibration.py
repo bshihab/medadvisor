@@ -147,6 +147,13 @@ def cmd_verify(base: Path, model_id: str, no_think: bool, jdir: str = "judge",
             run = make_runner(model_id, no_think, adapter_path)
         checks = 0
         for r in d["rows"]:
+            # Ship parity: aggregate criteria (rubric flag) are never verified —
+            # no single quote can prove a whole-visit behaviour, and the sceptic
+            # wrongly rejects real credit there (measured 1 fixed / 3 destroyed).
+            if crits[r["criterion"]].get("aggregate"):
+                r["final"] = r["pred"]
+                r["verifier"] = ""
+                continue
             if r["pred"] == "met":
                 vraw = run(build_verify_prompt(crits[r["criterion"]],
                                                tmap[r["transcript"]],

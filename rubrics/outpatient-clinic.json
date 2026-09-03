@@ -77,7 +77,7 @@
       "exemplarQuotes": ["Tell me what brought you in today.", "Can you tell me more about that?"]
     },
     {
-      "id": "explore_complaint", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 2,
+      "id": "explore_complaint", "dimension": "eliciting_concerns", "responseType": "boolean_with_evidence", "weight": 2, "aggregate": true,
       "prompt": "Did the clinician explore the presenting complaint thoroughly (onset, duration, severity, associated symptoms, what's been tried)?",
       "whatGoodLooksLike": "Characterizes the complaint across its key dimensions."
     },
@@ -116,7 +116,7 @@
       "applicabilityQuestion": "Did a physical examination of the patient actually take place in this consultation — for example checking the pulse or blood pressure, listening to the chest, feeling the neck or abdomen, or looking in the eyes or ears?"
     },
     {
-      "id": "plain_language", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2,
+      "id": "plain_language", "dimension": "plan", "responseType": "boolean_with_evidence", "weight": 2, "aggregate": true,
       "prompt": "Did the clinician explain things in plain language, avoiding jargon?",
       "whatGoodLooksLike": "Uses everyday words; defines any necessary medical terms."
     },

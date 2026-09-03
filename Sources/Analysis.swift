@@ -132,6 +132,61 @@ enum PromptBuilder {
         """
     }
 
+    /// Second-pass verification of "done" verdicts (shipped 2026-09-03).
+    ///
+    /// Every model measured on this task fails toward leniency: it finds *a*
+    /// real quote and credits it against a criterion the quote does not show
+    /// (a prescription line offered as "avoided interrupting"). The fix that
+    /// won the bake-off is not new weights but a second call: show the model
+    /// its own quote and ask one sceptical question — CONFIRM or REJECT.
+    /// Measured against blind human grading of realistic consultations:
+    /// single pass 65.1% agreement → with this pass (scoped) 84.1%, at the
+    /// human inter-rater band (85.7%). A fine-tune scored 74.6% alone and
+    /// 79.4% with this pass — the trick beats the training (FINDINGS.md in
+    /// tools/llm-benchmark/calibration).
+    ///
+    /// Split prefix/suffix like scoring so all verify calls in a consultation
+    /// share ONE cached prefill of the transcript. Byte-identical when
+    /// concatenated to the measured VERIFY_PROMPT in app_scoring.py.
+    static func verifyPrefix(transcript: String) -> String {
+        """
+        A grader reviewed the consultation below and judged ONE criterion as "done". \
+        Check that judgment strictly — your job is to catch a quote that does not actually \
+        show the specific behavior being asked about.
+
+        TRANSCRIPT:
+        \(transcript)
+        """
+    }
+
+    static func verifySuffix(criterion c: Criterion, evidence: String?) -> String {
+        var extras = ""
+        if let good = c.whatGoodLooksLike, !isPlaceholder(good) {
+            extras += "Good looks like: \(good)\n"
+        }
+        if let req = c.requiredElements?.filter({ !isPlaceholder($0) }), !req.isEmpty {
+            extras += "Must address: \(req.joined(separator: "; "))\n"
+        }
+        return """
+
+
+        CRITERION: \(c.prompt)
+        \(extras)
+        THE GRADER'S EVIDENCE: "\(evidence ?? "")"
+
+        Does that quote, spoken by the CLINICIAN, actually demonstrate THIS SPECIFIC criterion?
+        - A generic greeting, pleasantry, acknowledgement or sign-off ("take care", "okay", \
+        "right", "no problem") does NOT demonstrate a specific behavior.
+        - A quote showing a DIFFERENT behavior than the one asked about does NOT count, even \
+        if it is good practice.
+        - Something the PATIENT said never counts, whatever the speaker label claims.
+        - If the quote genuinely shows this exact behavior, CONFIRM it — do not reject a \
+        correct judgment.
+
+        Reply with ONE word: CONFIRM or REJECT.
+        """
+    }
+
     /// Yes/no gate for criteria that only apply in some encounters (N/A-allowed).
     /// Reuses the cached transcript prefix. A "no" → the criterion is N/A and is
     /// not scored. The question is PER-CRITERION: it used to be hardwired to
@@ -338,6 +393,17 @@ enum FeedbackParser {
         }
 
         return CriterionResult(criterionId: criterionId, status: status, evidence: evidence, comment: comment)
+    }
+
+    /// True when the verifier rejects the grader's "done". Defaults to KEEPING
+    /// the verdict on unparseable output — a garbled reply must not silently
+    /// destroy recall (the reject-everything failure is how Gemma-3 died).
+    static func verificationRejects(_ reply: String) -> Bool {
+        let low = reply.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if low.hasPrefix("reject") || low.hasPrefix("no") { return true }
+        if low.hasPrefix("confirm") || low.hasPrefix("yes") { return false }
+        let head = String(low.prefix(40))
+        return head.contains("reject") && !head.contains("confirm")
     }
 
     /// Remove any "Doctor:" / "Patient:" / "Speaker N:" labels from an evidence

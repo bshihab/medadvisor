@@ -219,6 +219,45 @@ final class EncounterProcessor: ObservableObject {
                 liveResults.append(result)
             }
 
+            // 5b) Second-pass verification (shipped 2026-09-03): challenge every
+            //     "done" verdict with a one-word CONFIRM/REJECT call. Measured on
+            //     blind human grading: 65.1% agreement single-pass → 84.1% with
+            //     this pass — and it beat a LoRA fine-tune (74.6%). Aggregate
+            //     criteria (rubric flag) are skipped: no single quote can prove
+            //     a whole-visit behaviour, so the sceptic wrongly rejects real
+            //     credit there. Runs as its own phase so the verify prefix (with
+            //     the transcript) is prefilled once and reused — the KV cache
+            //     switches exactly once, not per criterion. A generation error
+            //     or garbled reply keeps the original verdict (fail-open).
+            let criterionById = Dictionary(rubric.criteria.map { ($0.id, $0) },
+                                           uniquingKeysWith: { a, _ in a })
+            let toVerify = results.enumerated().filter { _, r in
+                r.status == .met && criterionById[r.criterionId]?.aggregate != true
+            }
+            if !toVerify.isEmpty {
+                stage = .scoring(done: total, total: total)
+                let verifyPrefix = PromptBuilder.verifyPrefix(transcript: redactedTranscript)
+                for (idx, r) in toVerify {
+                    try Task.checkCancellation()
+                    guard let criterion = criterionById[r.criterionId] else { continue }
+                    // 24 tokens, not 12: on the Core AI path Qwen3 burns ~5 on an
+                    // empty <think></think> block before the word lands.
+                    let reply = (try? await LLMEngine.shared.generate(
+                        sharedPrefix: verifyPrefix,
+                        suffix: PromptBuilder.verifySuffix(criterion: criterion, evidence: r.evidence),
+                        maxTokens: 24)) ?? ""
+                    if FeedbackParser.verificationRejects(reply) {
+                        print("[Verify] \(r.criterionId) REJECTED → missed (reply=\"\(reply.prefix(20))\")")
+                        let downgraded = CriterionResult(criterionId: r.criterionId, status: .missed,
+                                                         evidence: r.evidence, comment: nil)
+                        results[idx] = downgraded
+                        if idx < liveResults.count { liveResults[idx] = downgraded }
+                    } else {
+                        print("[Verify] \(r.criterionId) confirmed")
+                    }
+                }
+            }
+
             stage = .summarizing
             BenchmarkRecorder.shared.markStage("summarizing")
             let summary = try? await LLMEngine.shared.generate(

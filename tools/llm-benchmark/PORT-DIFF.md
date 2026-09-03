@@ -47,3 +47,26 @@ results live in `results/` with this date.
 cd tools/llm-benchmark
 python -m pytest test_app_scoring.py -q    # parser/guardrail unit tests
 ```
+
+## Re-sync 2026-09-03 — verify pass shipped (Python → Swift this time)
+
+The direction reversed: `VERIFY_PROMPT` / `verification_rejects` were born in
+`app_scoring.py` as a measured candidate change and are now ported INTO
+`Analysis.swift` (`PromptBuilder.verifyPrefix`/`verifySuffix`,
+`FeedbackParser.verificationRejects`) and wired in `EncounterProcessor` as a
+phase after scoring. Parity points:
+
+- Swift `verifyPrefix + verifySuffix` concatenates byte-identical to Python
+  `build_verify_prompt` (split so verify calls share one cached transcript
+  prefill; the KV cache switches once per consultation, not per criterion).
+- Scoping via the rubric's new `aggregate: true` flag (explore_complaint,
+  plain_language) — honored by BOTH `EncounterProcessor` and
+  `calibration.py verify`. `bench_verify.py` predates the flag and still
+  verifies everything (kept as the unscoped measurement tool).
+- Fail-open on both sides: generation errors / garbled replies keep the
+  grader's verdict.
+- Verify token budget: Python 12, Swift 24 (Core AI Qwen3 burns ~5 tokens on
+  an empty think block — same reason as the applicability gate's 24).
+
+Evidence for shipping this configuration: calibration/FINDINGS.md (65.1% →
+84.1% vs blind human gold; beats the v4 LoRA at 74.6% alone / 79.4% stacked).

@@ -71,6 +71,13 @@ struct Criterion: Codable, Equatable, Identifiable {
     /// Optional — missing decodes to nil and the analyzer falls back to a
     /// generic applicability question derived from the prompt.
     let applicabilityQuestion: String?
+    /// True for criteria whose proof is spread across the WHOLE visit (e.g.
+    /// "explored the complaint thoroughly", "plain language throughout") rather
+    /// than carried by one quote. The second-pass verifier skips these: no
+    /// single quote can demonstrate a whole-visit behaviour, so a quote-sceptic
+    /// wrongly rejects real credit there (measured: 1 fixed / 3 destroyed on
+    /// explore_complaint). Optional — missing decodes to nil (not aggregate).
+    let aggregate: Bool?
 }
 
 enum RubricLoader {

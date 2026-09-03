@@ -1,0 +1,151 @@
+{
+  "model": "Qwen/Qwen3.5-4B (bf16 cloud)",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "rash_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "Hi there, I'm Dr Marsh",
+      "raw": "RESULT: done\nEVIDENCE: Hi there, I'm Dr Marsh\nTIP: none\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.",
+      "raw": "RESULT: done\nEVIDENCE: \"Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.\"\nTIP: None\n",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: None\nTIP: Start with a broad open-ended question like \"Tell me about the rash\" instead of immediately asking \"Itchy?\" to allow the patient to set the narrative.\n",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "It's on my arms mostly, inside the elbows, and a bit on my neck. It's been maybe two months, on and off. Really itchy. Especially at night, I scratch in my sleep, I wake up and it's all raw.",
+      "raw": "RESULT: done\nEVIDENCE: \"It's on my arms mostly, inside the elbows, and a bit on my neck. It's been maybe two months, on and off. Really itchy. Especially at night, I scratch in my sleep, I wake up and it's all raw.\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Um, I thought maybe the new washing powder? We switched brands around then. But I switched back two weeks ago and it's still happening. Hot showers definitely make the itching worse after.",
+      "raw": "RESULT: done\nEVIDENCE: \"Um, I thought maybe the new washing powder? We switched brands around then. But I switched back two weeks ago and it's still happening. Hot showers definitely make the itching worse after.\"\nTIP: None\n",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "what_else",
+      "pred": "missed",
+      "evidence": "EVIDENCE:",
+      "raw": "RESULT: missed\nEVIDENCE:\nTIP: Explicitly ask \"Is there anything else you'd like to discuss?\" before concluding the consultation to ensure no lingering concerns are overlooked.\n",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: \"Some people worry about steroid creams \u2014 how do you feel about that?\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician explained the diagnosis and plan but never explicitly named or validated the patient's confusion or worry about eczema returning after childhood.\n",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: None\n",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Let me have a look at your arms... okay, yes. Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.",
+      "raw": "RESULT: done\nEVIDENCE: \"Let me have a look at your arms... okay, yes. Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "atopic dermatitis is the formal name",
+      "raw": "RESULT: done\nEVIDENCE: \"atopic dermatitis is the formal name\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: none\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So \u2014 two-part plan, tell me what you think. First, moisturiser... Second, a steroid cream... Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: \"So \u2014 two-part plan, tell me what you think. First, moisturiser... Second, a steroid cream... Some people worry about steroid creams \u2014 how do you feel about that?\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient to repeat the medication schedule or treatment plan in their own words to confirm understanding.\n",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.",
+      "raw": "RESULT: done\nEVIDENCE: \"If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.\"\nTIP: None\n",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": "EVIDENCE:",
+      "raw": "RESULT: missed\nEVIDENCE:\nTIP: Explicitly ask \"Do you have any final questions before we finish?\" before giving the sign-off.\n",
+      "final": "missed",
+      "verifier": ""
+    }
+  ]
+}
