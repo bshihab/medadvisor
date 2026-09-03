@@ -36,6 +36,12 @@ python calibration.py judge     # 4. runs the shipped judge (Air + benchmark ven
 #                                    ~2 min per transcript on an Air)
 
 python calibration.py report    # 5. calibration/REPORT.md — agreement + disagreements
+
+# Optional 6. AUTOMATED second pass — no human input: the model re-checks its
+# own 'met' verdicts (CONFIRM/REJECT, one 12-token call each), then re-run
+# report to see single-pass vs with-verifier against the same human gold.
+python calibration.py verify
+python calibration.py report
 ```
 
 ## Reading the result

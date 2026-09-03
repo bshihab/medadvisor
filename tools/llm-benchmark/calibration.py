@@ -75,18 +75,13 @@ def cmd_sheet(base: Path):
           else "No new sheets (no transcripts found, or all sheets exist).")
 
 
-def cmd_judge(base: Path, model_id: str, no_think: bool):
+def make_runner(model_id: str, no_think: bool):
     from mlx_lm import load, generate  # lazy: sheet/report need no venv
 
-    from app_scoring import build_prompt, parse_criterion
-
-    outdir = base / "judge"
-    outdir.mkdir(parents=True, exist_ok=True)
-    crits = criteria_in_order()
     print(f"Loading {model_id} …")
     model, tokenizer = load(model_id)
 
-    def run(prompt: str) -> str:
+    def run(prompt: str, max_tokens: int = 180) -> str:
         messages = [{"role": "user", "content": prompt}]
         if no_think:
             try:
@@ -98,7 +93,18 @@ def cmd_judge(base: Path, model_id: str, no_think: bool):
                     add_generation_prompt=True)
         else:
             text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
-        return generate(model, tokenizer, prompt=text, max_tokens=180, verbose=False)
+        return generate(model, tokenizer, prompt=text, max_tokens=max_tokens, verbose=False)
+
+    return run
+
+
+def cmd_judge(base: Path, model_id: str, no_think: bool):
+    from app_scoring import build_prompt, parse_criterion
+
+    outdir = base / "judge"
+    outdir.mkdir(parents=True, exist_ok=True)
+    crits = criteria_in_order()
+    run = make_runner(model_id, no_think)
 
     for tid, text in transcripts(base):
         out = outdir / f"{tid}.json"
@@ -116,6 +122,45 @@ def cmd_judge(base: Path, model_id: str, no_think: bool):
         out.write_text(json.dumps({"model": model_id, "no_think": no_think,
                                    "rows": rows}, indent=2))
         print(f"  -> {out}")
+
+
+def cmd_verify(base: Path, model_id: str, no_think: bool):
+    """Second pass, fully automated: challenge every 'met' verdict already in
+    judge/*.json with one 12-token CONFIRM/REJECT call. No human input."""
+    from app_scoring import build_verify_prompt, verification_rejects
+
+    crits = {c["id"]: c for c in criteria_in_order()}
+    tmap = dict(transcripts(base))
+    files = sorted((base / "judge").glob("*.json"))
+    if not files:
+        print("No judge output found — run `judge` first.")
+        return
+    run = None
+    for f in files:
+        d = json.loads(f.read_text())
+        if all("final" in r for r in d["rows"]):
+            print(f"  keeping existing verification in {f.name} (delete the file's 'final' fields to re-run)")
+            continue
+        if run is None:
+            run = make_runner(model_id, no_think)
+        checks = 0
+        for r in d["rows"]:
+            if r["pred"] == "met":
+                vraw = run(build_verify_prompt(crits[r["criterion"]],
+                                               tmap[r["transcript"]],
+                                               r.get("evidence") or ""), max_tokens=12)
+                checks += 1
+                rejected = verification_rejects(vraw)
+                r["final"] = "missed" if rejected else "met"
+                r["verifier"] = vraw.strip()[:40]
+                print(f"  {r['transcript']} {r['criterion']:<20} "
+                      f"{'REJECTED -> missed' if rejected else 'confirmed'}")
+            else:
+                r["final"] = r["pred"]
+                r["verifier"] = ""
+        d["verify_model"] = model_id
+        f.write_text(json.dumps(d, indent=2))
+        print(f"  -> {f.name} ({checks} verdicts challenged)")
 
 
 def load_human(base: Path):
@@ -160,6 +205,7 @@ def cmd_report(base: Path):
     agree_b = [k for k in scored if bin_(human[k]) == bin_(judged[k]["pred"])]
     agree_x = [k for k in scored if human[k] == judged[k]["pred"]]
     dis = [k for k in scored if k not in set(agree_b)]
+    verified = all("final" in judged[k] for k in scored)
 
     lines = ["# Calibration report — human vs judge", "",
              f"Judge run(s): {', '.join(f'{m} (no_think={nt})' for m, nt in sorted(meta))}", "",
@@ -169,6 +215,21 @@ def cmd_report(base: Path):
              f"{100 * len(agree_b) / len(scored):.1f}%  ({len(agree_b)}/{len(scored)})**",
              f"- exact-status agreement: {100 * len(agree_x) / len(scored):.1f}%"
              f"  ({len(agree_x)}/{len(scored)})", ""]
+
+    if verified:
+        agree_f = [k for k in scored if bin_(human[k]) == bin_(judged[k]["final"])]
+        flips = [k for k in scored
+                 if judged[k]["pred"] == "met" and judged[k]["final"] == "missed"]
+        good = [k for k in flips if bin_(human[k]) == "not-met"]
+        bad = [k for k in flips if bin_(human[k]) == "met"]
+        lines += [f"- **with verifier: {100 * len(agree_f) / len(scored):.1f}%"
+                  f"  ({len(agree_f)}/{len(scored)})** — verifier rejected "
+                  f"{len(flips)} credits: {len(good)} over-credits fixed, "
+                  f"{len(bad)} correct credits destroyed", ""]
+        if bad:
+            lines += ["  Correct credits destroyed (recall damage):"]
+            lines += [f"  - {t} · {c}" for t, c in bad]
+            lines += [""]
     onlyh = sorted(set(human) - set(judged))
     onlyj = sorted(set(judged) - set(human))
     if onlyh:
@@ -195,8 +256,12 @@ def cmd_report(base: Path):
         r = judged[k]
         direction = ("judge over-credits" if bin_(judged[k]["pred"]) == "met"
                      else "judge under-credits")
+        vnote = ""
+        if verified and r["pred"] == "met":
+            vnote = (" — verifier REJECTED (fixed)" if r["final"] == "missed"
+                     else " — verifier confirmed (still wrong)")
         lines += [f"### {k[0]} · {k[1]} — human: {human[k]}, judge: {r['pred']} "
-                  f"({direction})",
+                  f"({direction}){vnote}",
                   f"- judge evidence: {r['evidence'] or '(none)'}",
                   f"- judge raw: `{(r['raw'] or '').strip()[:200]}`", ""]
     if na:
@@ -215,7 +280,7 @@ def cmd_report(base: Path):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheet", "judge", "report"])
+    ap.add_argument("cmd", choices=["sheet", "judge", "verify", "report"])
     ap.add_argument("--dir", default=str(HERE / "calibration"),
                     help="calibration base directory (default: ./calibration)")
     ap.add_argument("--model", default=DEFAULT_MODEL, help="judge model id")
@@ -228,6 +293,8 @@ def main():
         cmd_sheet(base)
     elif args.cmd == "judge":
         cmd_judge(base, args.model, not args.think)
+    elif args.cmd == "verify":
+        cmd_verify(base, args.model, not args.think)
     else:
         cmd_report(base)
 
