@@ -1,0 +1,118 @@
+{
+  "model": "mlx-community/Qwen3.5-4B-4bit",
+  "no_think": true,
+  "rows": [
+    {
+      "transcript": "backpain_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "I'm Dr Okafor, I'm one of the GPs here.",
+      "raw": "RESULT: done\nEVIDENCE: \"I'm Dr Okafor, I'm one of the GPs here.\"\nTIP: none"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Door's shut, so it's just us \u2014 take your coat off if you like.",
+      "raw": "RESULT: done\nEVIDENCE: \"Door's shut, so it's just us \u2014 take your coat off if you like.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "So, tell me what's brought you in today, in your own words.",
+      "raw": "RESULT: done\nEVIDENCE: \"So, tell me what's brought you in today, in your own words.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Mm, go on \u2014 take your time, I want the whole picture.",
+      "raw": "RESULT: done\nEVIDENCE: \"Mm, go on \u2014 take your time, I want the whole picture.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Before we go further \u2014 is there anything else bothering you that you wanted to get looked at today? People often save things up.",
+      "raw": "RESULT: done\nEVIDENCE: Before we go further \u2014 is there anything else bothering you that you wanted to get looked at today? People often save things up.\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "Can I ask \u2014 what did you think was going on? Was there anything you were worried this might be?",
+      "raw": "RESULT: done\nEVIDENCE: \"Can I ask \u2014 what did you think was going on? Was there anything you were worried this might be?\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.",
+      "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.",
+      "raw": "RESULT: done\nEVIDENCE: \"That's a really understandable worry, especially with your uncle \u2014 I'd probably have been googling too.\"\nTIP: none"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Let me examine you and then I'll tell you honestly what I think, alright? I'm going to press along your spine, then check the movement in your back and the strength and reflexes in your legs \u2014 it might be a bit uncomfortable but tell me and I'll ease off.",
+      "raw": "RESULT: done\nEVIDENCE: \"Let me examine you and then I'll tell you honestly what I think, alright? I'm going to press along your spine, then check the movement in your back and the strength and reflexes in your legs \u2014 it might be a bit uncomfortable but tell me and I'll ease off.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "which is basically the muscles and joints of the back being strained and then staying irritated",
+      "raw": "RESULT: done\nEVIDENCE: \"which is basically the muscles and joints of the back being strained and then staying irritated\"\nTIP: none"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "Everything I've found points to what we call a mechanical back pain... There's nothing here that looks like a trapped nerve or anything sinister, and it is not the same situation as your uncle.",
+      "raw": "RESULT: done\nEVIDENCE: \"Everything I've found points to what we call a mechanical back pain... There's nothing here that looks like a trapped nerve or anything sinister, and it is not the same situation as your uncle.\"\nTIP: none"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So there are a couple of ways we can play it... What sounds right to you?",
+      "raw": "RESULT: done\nEVIDENCE: \"So there are a couple of ways we can play it... What sounds right to you?\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "check_understanding",
+      "pred": "met",
+      "evidence": "Just so I know I've explained it properly, can you tell me back what the plan is?",
+      "raw": "RESULT: done\nEVIDENCE: \"Just so I know I've explained it properly, can you tell me back what the plan is?\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "if you ever get numbness between your legs, problems peeing or controlling your bowels, or weakness in a leg \u2014 that's an emergency, A&E the same day, don't wait for me. And if the pain starts waking you at night or you're losing weight, come back and see me sooner.",
+      "raw": "RESULT: done\nEVIDENCE: \"if you ever get numbness between your legs, problems peeing or controlling your bowels, or weakness in a leg \u2014 that's an emergency, A&E the same day, don't wait for me. And if the pain starts waking you at night or you're losing weight, come back and see me sooner.\"\nTIP: None"
+    },
+    {
+      "transcript": "backpain_visit",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "Anything you wanted to ask me before we finish? Anything I haven't covered?",
+      "raw": "RESULT: done\nEVIDENCE: Anything you wanted to ask me before we finish? Anything I haven't covered?\nTIP: none"
+    }
+  ]
+}
