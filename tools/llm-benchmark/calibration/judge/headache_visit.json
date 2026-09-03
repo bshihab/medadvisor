@@ -7,112 +7,145 @@
       "criterion": "intro_self",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Smith, a GP\") at the very beginning of the consultation to establish trust and clarity."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Smith, a GP\") at the very beginning of the consultation to establish trust and clarity.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "headache_visit",
       "criterion": "set_tone",
       "pred": "met",
       "evidence": "Sit down, get comfy.",
-      "raw": "RESULT: done\nEVIDENCE: Sit down, get comfy.\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: Sit down, get comfy.\nTIP: none",
+      "final": "met",
+      "verifier": "CONFIRM"
     },
     {
       "transcript": "headache_visit",
       "criterion": "open_questions",
       "pred": "met",
       "evidence": "Tell me all about it, I'm all ears.",
-      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "explore_complaint",
       "pred": "met",
       "evidence": "Tell me all about it, I'm all ears.",
-      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"Tell me all about it, I'm all ears.\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "avoid_interrupting",
       "pred": "met",
       "evidence": "Go on \u2014 anything else you've noticed about them?",
-      "raw": "RESULT: done\nEVIDENCE: \"Go on \u2014 anything else you've noticed about them?\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"Go on \u2014 anything else you've noticed about them?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "what_else",
       "pred": "met",
       "evidence": "Anyway \u2014 was there anything else, lovely?",
-      "raw": "RESULT: done\nEVIDENCE: \"Anyway \u2014 was there anything else, lovely?\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Anyway \u2014 was there anything else, lovely?\"\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
     },
     {
       "transcript": "headache_visit",
       "criterion": "explore_perspective",
       "pred": "met",
       "evidence": "Honestly, not great. I keep thinking, what if it's something worse though? The headaches I mean. My colleague's sister had a brain tumour and it started with headaches, and I know that's silly but it's two in the morning and you start thinking.",
-      "raw": "RESULT: done\nEVIDENCE: \"Honestly, not great. I keep thinking, what if it's something worse though? The headaches I mean. My colleague's sister had a brain tumour and it started with headaches, and I know that's silly but it's two in the morning and you start thinking.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Honestly, not great. I keep thinking, what if it's something worse though? The headaches I mean. My colleague's sister had a brain tumour and it started with headaches, and I know that's silly but it's two in the morning and you start thinking.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "respond_emotion",
       "pred": "met",
       "evidence": "Honestly, not great. I keep thinking, what if it's something worse though... The headaches I mean. My colleague's sister had a brain tumour... and I know that's silly but it's two in the morning and you start thinking.",
-      "raw": "RESULT: done\nEVIDENCE: \"Honestly, not great. I keep thinking, what if it's something worse though... The headaches I mean. My colleague's sister had a brain tumour... and I know that's silly but it's two in the morning and you start thinking.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Honestly, not great. I keep thinking, what if it's something worse though... The headaches I mean. My colleague's sister had a brain tumour... and I know that's silly but it's two in the morning and you start thinking.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "support_respect",
       "pred": "met",
       "evidence": "It's not silly at all, it's completely human \u2014 everyone goes there at two in the morning. I hear you.",
-      "raw": "RESULT: done\nEVIDENCE: \"It's not silly at all, it's completely human \u2014 everyone goes there at two in the morning. I hear you.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"It's not silly at all, it's completely human \u2014 everyone goes there at two in the morning. I hear you.\"\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
     },
     {
       "transcript": "headache_visit",
       "criterion": "explain_exam",
       "pred": "missed",
       "evidence": "(N/A - no physical exam was described in the transcript)",
-      "raw": "RESULT: missed\nEVIDENCE: (N/A - no physical exam was described in the transcript)\nTIP: N/A"
+      "raw": "RESULT: missed\nEVIDENCE: (N/A - no physical exam was described in the transcript)\nTIP: N/A",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "headache_visit",
       "criterion": "plain_language",
       "pred": "met",
       "evidence": "Nothing you've said rings any alarm bells for me.",
-      "raw": "RESULT: done\nEVIDENCE: \"Nothing you've said rings any alarm bells for me.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Nothing you've said rings any alarm bells for me.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "accurate_info",
       "pred": "met",
       "evidence": "These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.",
-      "raw": "RESULT: done\nEVIDENCE: \"These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"These have all the hallmarks of the ordinary sort of headache that comes with stress and screens and bad sleep. Nothing you've said rings any alarm bells for me.\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "shared_plan",
       "pred": "met",
       "evidence": "Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.",
-      "raw": "RESULT: done\nEVIDENCE: \"Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Be kind to yourself, mainly. Try to ease off the screens where you can, drink some more water, maybe fewer coffees. These things usually sort themselves out once life calms down a bit.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "headache_visit",
       "criterion": "check_understanding",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the plan but never asked the patient to restate it in their own words to confirm understanding."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the plan but never asked the patient to restate it in their own words to confirm understanding.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "headache_visit",
       "criterion": "safety_net",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician reassured the patient and gave general advice but failed to explicitly state what specific symptoms or changes would require them to return for further help."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician reassured the patient and gave general advice but failed to explicitly state what specific symptoms or changes would require them to return for further help.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "headache_visit",
       "criterion": "invite_questions",
       "pred": "missed",
       "evidence": null,
-      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician used the phrase \"was there anything else\" which is a closed-ended check rather than an explicit invitation for specific questions; a direct ask like \"Do you have any questions for me?\" would be clearer."
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician used the phrase \"was there anything else\" which is a closed-ended check rather than an explicit invitation for specific questions; a direct ask like \"Do you have any questions for me?\" would be clearer.",
+      "final": "missed",
+      "verifier": ""
     }
-  ]
+  ],
+  "verify_model": "mlx-community/Qwen3.5-4B-4bit"
 }

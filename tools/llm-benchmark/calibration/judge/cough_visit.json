@@ -7,112 +7,145 @@
       "criterion": "intro_self",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Smith, a respiratory specialist\") at the very beginning of the consultation to establish trust and clarity."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Smith, a respiratory specialist\") at the very beginning of the consultation to establish trust and clarity.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "set_tone",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight into the history without offering the patient a moment to settle or explicitly acknowledging their privacy/comfort before asking questions."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight into the history without offering the patient a moment to settle or explicitly acknowledging their privacy/comfort before asking questions.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "open_questions",
       "pred": "missed",
       "evidence": "Yes, come in. Cough, is it?",
-      "raw": "RESULT: missed\nEVIDENCE: Doctor: Yes, come in. Cough, is it?\nTIP: Start with a broad, open-ended invitation like \"What brings you in today?\" rather than immediately listing specific symptoms."
+      "raw": "RESULT: missed\nEVIDENCE: Doctor: Yes, come in. Cough, is it?\nTIP: Start with a broad, open-ended invitation like \"What brings you in today?\" rather than immediately listing specific symptoms.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "explore_complaint",
       "pred": "met",
       "evidence": "It's been going on about three weeks now... A little bit in the mornings... Mostly it's dry though... I quit four years ago... Not really short of breath. Sometimes the coughing fits make my chest sore... I did want to ask about\u2014",
-      "raw": "RESULT: done\nEVIDENCE: \"It's been going on about three weeks now... A little bit in the mornings... Mostly it's dry though... I quit four years ago... Not really short of breath. Sometimes the coughing fits make my chest sore... I did want to ask about\u2014\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"It's been going on about three weeks now... A little bit in the mornings... Mostly it's dry though... I quit four years ago... Not really short of breath. Sometimes the coughing fits make my chest sore... I did want to ask about\u2014\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "cough_visit",
       "criterion": "avoid_interrupting",
       "pred": "met",
       "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?",
-      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "cough_visit",
       "criterion": "what_else",
       "pred": "met",
       "evidence": "Anything else?",
-      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: none",
+      "final": "met",
+      "verifier": "CONFIRM"
     },
     {
       "transcript": "cough_visit",
       "criterion": "explore_perspective",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight to diagnosis and treatment without explicitly asking what the patient thinks is wrong or what they are worried about, despite the patient mentioning their father's cancer and their own hesitation about a chest X-ray."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight to diagnosis and treatment without explicitly asking what the patient thinks is wrong or what they are worried about, despite the patient mentioning their father's cancer and their own hesitation about a chest X-ray.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "respond_emotion",
       "pred": "missed",
       "evidence": null,
-      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician dismissed the patient's worry about lung cancer and family history by immediately pivoting to reassurance and physical findings, rather than validating the anxiety or addressing the fear of cancer directly."
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician dismissed the patient's worry about lung cancer and family history by immediately pivoting to reassurance and physical findings, rather than validating the anxiety or addressing the fear of cancer directly.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "support_respect",
       "pred": "met",
       "evidence": "I'll put you on a salbutamol inhaler... Pharmacy will show you how to use it.",
-      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler... Pharmacy will show you how to use it.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler... Pharmacy will show you how to use it.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "cough_visit",
       "criterion": "explain_exam",
       "pred": "met",
       "evidence": "Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.",
-      "raw": "RESULT: done\nEVIDENCE: \"Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.\"\nTIP: None"
+      "raw": "RESULT: done\nEVIDENCE: \"Shirt up, let me listen. Big breaths. In. Out. Again. Right. Chest's clear.\"\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
     },
     {
       "transcript": "cough_visit",
       "criterion": "plain_language",
       "pred": "partial",
       "evidence": "Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.",
-      "raw": "RESULT: partial\nEVIDENCE: \"Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: The clinician used the term \"hyperreactivity\" without fully defining it, which caused the patient to ask for clarification; explicitly defining \"hyperreactivity\" as \"airways that are overly sensitive or easily triggered\" would improve clarity."
+      "raw": "RESULT: partial\nEVIDENCE: \"Meaning post-viral bronchial hyperreactivity most likely. Airways are irritable after the infection. It settles.\"\nTIP: The clinician used the term \"hyperreactivity\" without fully defining it, which caused the patient to ask for clarification; explicitly defining \"hyperreactivity\" as \"airways that are overly sensitive or easily triggered\" would improve clarity.",
+      "final": "partial",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "accurate_info",
       "pred": "met",
       "evidence": "Three weeks is nothing for a cough, they can go eight weeks after a virus. Airways are irritable after the infection. It settles.",
-      "raw": "RESULT: done\nEVIDENCE: \"Three weeks is nothing for a cough, they can go eight weeks after a virus. Airways are irritable after the infection. It settles.\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"Three weeks is nothing for a cough, they can go eight weeks after a virus. Airways are irritable after the infection. It settles.\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "cough_visit",
       "criterion": "shared_plan",
       "pred": "met",
       "evidence": "I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?",
-      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"I'll put you on a salbutamol inhaler, two puffs when it's bad. Pharmacy will show you how to use it. Anything else?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
     },
     {
       "transcript": "cough_visit",
       "criterion": "check_understanding",
       "pred": "missed",
       "evidence": "(None)",
-      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the plan and asked \"Anything else?\" but did not ask the patient to restate the instructions or confirm understanding in their own words."
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the plan and asked \"Anything else?\" but did not ask the patient to restate the instructions or confirm understanding in their own words.",
+      "final": "missed",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "safety_net",
       "pred": "partial",
       "evidence": "If it's not gone in another month you can book in again and we'll think about imaging then.",
-      "raw": "RESULT: partial\nEVIDENCE: \"If it's not gone in another month you can book in again and we'll think about imaging then.\"\nTIP: Add specific warning signs (e.g., \"Call immediately if you develop high fever, shortness of breath, or cough up blood\") rather than just a time-based review."
+      "raw": "RESULT: partial\nEVIDENCE: \"If it's not gone in another month you can book in again and we'll think about imaging then.\"\nTIP: Add specific warning signs (e.g., \"Call immediately if you develop high fever, shortness of breath, or cough up blood\") rather than just a time-based review.",
+      "final": "partial",
+      "verifier": ""
     },
     {
       "transcript": "cough_visit",
       "criterion": "invite_questions",
       "pred": "met",
       "evidence": "Anything else?",
-      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: none"
+      "raw": "RESULT: done\nEVIDENCE: \"Anything else?\"\nTIP: none",
+      "final": "met",
+      "verifier": "CONFIRM"
     }
-  ]
+  ],
+  "verify_model": "mlx-community/Qwen3.5-4B-4bit"
 }
