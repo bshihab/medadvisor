@@ -53,6 +53,46 @@ n=63; transcripts are LLM-authored (messier than the benchmark, still tidier
 than reality); single human gold rater with a deliberately strict partial
 standard — but the 14-row consensus subset is immune to that caveat.
 
+## Verifier results (added 2026-09-03, after the automated `verify` run)
+
+| Config | vs gold |
+|---|---|
+| Judge single pass | 41/63 = 65.1% |
+| + verifier (all criteria) | 49/63 = 77.8% (14 over-credits fixed, 6 correct credits destroyed) |
+| + verifier scoped: skip explore_complaint & plain_language | **53/63 = 84.1%** |
+| Human inter-rater band (Bilal vs Claude) | 54/63 = 85.7% |
+
+The verifier's damage is concentrated and mechanistically explainable: it
+wrongly rejects **aggregate criteria** — thorough complaint exploration,
+consistently plain language — whose proof is spread across the whole visit,
+so no single quote can demonstrate them and the sceptic rejects good credits
+(explore_complaint 1 fixed / 3 destroyed; plain_language 0/2). On every other
+criterion it ran near-pure profit (13 fixed, 1 destroyed). Skipping those two
+puts the judge **statistically inside the human-disagreement band**: of its
+10 remaining disagreements with Bilal, only ~3 are consensus errors (both
+human raters agreed the judge was wrong — all on the rushed cough visit);
+the rest are rows where the two human raters also split.
+
+Cross-checks and caveats:
+
+- On the corrected synthetic 240 set the verifier is net-negative (96.1% →
+  93.0%, scoped or not — scoping is a no-op there since synthetic evidence is
+  always one clean snippet). The two datasets disagree because they test
+  different regimes: clean omissions (synthetic) vs degraded execution
+  (realistic). Production consultations resemble the second. Notably the
+  synthetic damage lands on support_respect and avoid_interrupting — the same
+  criteria that were the verifier's biggest *wins* on realistic data: the
+  verifier's per-criterion value depends on how often credits are bogus.
+- The skip-list was chosen on these same 63 rows (overfit risk, n small). The
+  mechanism is principled, but validate on fresh human transcripts before
+  trusting the exact number.
+
+**Recommended ship config: judge + scoped verify pass** (skip the aggregate
+criteria — ideally a per-criterion rubric flag, e.g. `aggregate: true` on
+explore_complaint and plain_language, rather than hardcoded ids). Cost ~1.7x
+calls here (only 'done' verdicts are re-checked). The fine-tune stays shelved:
+after scoping, the consensus error count is ~3 rows out of 63.
+
 ## Implications (in order of cost)
 
 1. **The over-crediting problem is real, current, and large on realistic
