@@ -36,7 +36,7 @@ Patient: Okay. Thanks, doctor.
 
 **intro_self** — Did the clinician introduce themselves and explain their role?
   *good looks like: States name and role and greets the patient.*
-- [headache_visit · intro_self] SCORE: met
+- [headache_visit · intro_self] SCORE: missed
 
 **set_tone** — Did the clinician set a comfortable, unrushed tone (e.g. acknowledging privacy/comfort)?
   *good looks like: Appears unhurried; attends to the patient's comfort and privacy.*
