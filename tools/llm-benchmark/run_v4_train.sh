@@ -44,11 +44,34 @@ say "regenerating data (deterministic, seed 29)…"
 $PY gen_finetune_v4.py --transcripts 200 2>&1 | tee -a "$LOG"
 
 say "contamination gate: training data vs eval sets…"
-if ! $PY check_overlap.py 2>&1 | tee -a "$LOG"; then
+$PY check_overlap.py 2>&1 | tee -a "$LOG"
+if [ "${PIPESTATUS[0]}" -ne 0 ]; then
   say "CONTAMINATION GATE FAILED — training data overlaps an eval set. Aborting."
   exit 1
 fi
 
+say "token-length preflight: no example may exceed the training window…"
+$PY - << 'PYEOF' 2>&1 | tee -a "$LOG"
+import json, sys
+from transformers import AutoTokenizer
+tok = AutoTokenizer.from_pretrained("mlx-community/Qwen3.5-4B-4bit")
+mx = 0
+for fn in ("train", "valid"):
+    for line in open(f"data/finetune_v4/{fn}.jsonl"):
+        mx = max(mx, len(tok.apply_chat_template(json.loads(line)["messages"], tokenize=True)))
+print(f"longest example: {mx} tokens (window 1536)")
+sys.exit(0 if mx < 1536 else 1)
+PYEOF
+if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+  say "TOKEN PREFLIGHT FAILED — an example would be truncated (and truncation cuts the LABEL off the end). Aborting."
+  exit 1
+fi
+
+# Loss covers prompt+completion (mlx_lm default; v3 parity — v3 improved
+# through this same path). If this run lands close-but-under the bar, lever #1
+# before touching lr is completion-only loss: check support with
+#   $PY -m mlx_lm lora --help | grep -i mask
+# then add --mask-prompt and rerun. One variable at a time.
 say "training (400 iters, lr 5e-6, 8 layers, checkpoint every 60)…"
 $PY -m mlx_lm lora \
   --model "$MODEL" \
@@ -62,7 +85,7 @@ $PY -m mlx_lm lora \
   --steps-per-report 20 \
   --steps-per-eval 60 \
   --save-every 60 \
-  --max-seq-length 1280 \
+  --max-seq-length 1536 \
   >> "$LOG" 2>&1
 RC=$?
 if [ $RC -ne 0 ]; then
