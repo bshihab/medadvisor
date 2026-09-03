@@ -153,3 +153,13 @@ lr5e-5/step120). Remaining validation: human role-played transcripts.
    sheets (held out, never trained on) plus fresh human transcripts.
 5. **Get 2–3 genuinely human role-played transcripts** before betting weights
    on any of this.
+
+## Restore-pass idea (evaluated on paper 2026-09-03, not run)
+
+Could a symmetric second pass re-open "missed" verdicts and award credit?
+Measured incidence in the ship config (stock + scoped verifier) on the gold:
+**1 wrongly-denied credit vs 27 correctly-denied** — a restore pass needs
+>96% precision to break even, executed by a model whose known bias is
+inventing credit. Expected value negative; not run. Revisit only if human-
+transcript validation shows the shipped config denying real credit at a
+meaningful rate.
