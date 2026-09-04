@@ -1,0 +1,25 @@
+==========================================================================
+Qwen3.5-4B v4 fine-tune — measured as a would-ship GGUF (llama.cpp)
+==========================================================================
+Ramp 1 artifact: single-call mode candidate. Default ship config
+remains stock + scoped verifier; this file matters only if the
+verifier's on-device cost proves too high (see [Verify] TOTAL in
+the app console).
+
+--- Q4_K_M  (2.59 GB) ---
+  240 set:
+    stock   acc  84.2%  over  33.9%  recall 100.0%
+    tuned   acc  91.7%  over  17.9%  recall 100.0%
+    DELTA   acc  +7.5   over -16.1   recall  +0.0
+  48-case set:
+    stock   acc  89.6%  over  16.7%  recall 100.0%
+    tuned   acc  95.8%  over   0.0%  recall  88.9%
+    DELTA   acc  +6.2   over -16.7   recall -11.1
+
+DECIDE locally (bf16 bars: tuned 74.6%, stock 65.1%):
+  python ../llm-benchmark/calibration.py report --tag v4gguf
+  python ../llm-benchmark/calibration.py report --tag v4gguf-stock
+
+Artifact: v4tuned-Q4_K_M.gguf on the medadvisor-gguf volume —
+download with `modal volume get medadvisor-gguf v4tuned-Q4_K_M.gguf`
+and host on R2 if single-call mode is ever adopted.

@@ -184,3 +184,24 @@ own. The download-free dream is not close today, and the adapter treadmill
 better base. **Cheap standing check: rerun `python calibration_fm.py` +
 `calibration.py report --tag fm` after each OS update — if Apple's base model
 ever closes the gap, this one-command harness will say so.**
+
+## Exit ramps armed (2026-09-03)
+
+**Ramp 1 — single-call mode.** The v4 adapter is now a would-ship artifact:
+`v4tuned-Q4_K_M.gguf` (2.59 GB, medadvisor-gguf volume), built through the
+MTP-safe merge pipeline with a stock control. Measured in the exact shipping
+stack (llama.cpp, app's ChatML): calibration gold **tuned 73.0% vs stock
+63.5%** single-pass — the bf16 gap (+9.5) survives quantization; 240 set
++7.5 with recall 100%. Decision trigger: the app's `[Verify] TOTAL` console
+line (now instrumented) — if the verify phase is too costly on real hardware,
+this file ships for single-call mode; otherwise the default (stock + scoped
+verifier, 81–84%) stands.
+
+**Ramp 2 — v5 continuation.** Gated on the human-transcript gold set (the
+63-row exam cannot certify gains past ~85%). Pipeline loaded; nothing to run.
+
+**Ramp 3 — annotation assistant.** Measured: 68% of the tuned model's labels
+match Bilal exactly (no edit needed); fully reliable only on intro_self,
+check_understanding, safety_net; 7 criteria are coin-flips. Useful for
+pre-labeling TRAINING data at scale; never for gold, and never pre-fill
+blind sheets (anchoring contaminates the rater).

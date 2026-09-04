@@ -1,0 +1,119 @@
+{
+  "model": "Qwen3.5-4B Q4_K_M GGUF/llama.cpp",
+  "no_think": true,
+  "adapter": "v4 lr5e-5/step120 (merged)",
+  "rows": [
+    {
+      "transcript": "headache_visit",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: States name and role and greets the patient."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Appears unhurried; attends to the patient's comfort and privacy."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Starts broad before narrowing; invites the patient to elaborate."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "explore_complaint",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Characterizes the complaint across its key dimensions."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Go on \u2014 anything else you've noticed about them?",
+      "raw": "RESULT: done\nEVIDENCE: Go on \u2014 anything else you've noticed about them?\nTIP: none"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "Anyway \u2014 was there anything else, lovely?",
+      "raw": "RESULT: done\nEVIDENCE: Anyway \u2014 was there anything else, lovely?\nTIP: none"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "You don't think I need a scan or anything?",
+      "raw": "RESULT: done\nEVIDENCE: You don't think I need a scan or anything?\nTIP: none"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?",
+      "raw": "RESULT: done\nEVIDENCE: I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?\nTIP: none"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?",
+      "raw": "RESULT: done\nEVIDENCE: I hear you. And the worry itself feeds the headaches, which is such an unfair little loop, isn't it?\nTIP: none"
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "explain_exam",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Narrates the exam and minimizes surprise/discomfort verbally."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "plain_language",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Uses everyday words; defines any necessary medical terms."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "accurate_info",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Information given is correct and relevant; avoids false reassurance or overstated certainty."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "shared_plan",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Lays out next steps and invites the patient's preferences."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Asks the patient to restate the plan in their own words."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "safety_net",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Gives explicit, actionable return precautions."
+    },
+    {
+      "transcript": "headache_visit",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: This looks like it but does not satisfy the criterion. Aim for: Explicitly asks what questions the patient has."
+    }
+  ]
+}

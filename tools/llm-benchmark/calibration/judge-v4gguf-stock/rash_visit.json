@@ -1,0 +1,119 @@
+{
+  "model": "Qwen3.5-4B Q4_K_M GGUF/llama.cpp",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "rash_visit",
+      "criterion": "intro_self",
+      "pred": "met",
+      "evidence": "Hi there, I'm Dr Marsh",
+      "raw": "RESULT: done\nEVIDENCE: \"Hi there, I'm Dr Marsh\"\nTIP: none"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "set_tone",
+      "pred": "met",
+      "evidence": "Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.",
+      "raw": "RESULT: done\nEVIDENCE: \"Hi there, I'm Dr Marsh \u2014 sorry, the system's running slow today.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": "Right. So it's about a rash?",
+      "raw": "RESULT: missed\nEVIDENCE: \"Right. So it's about a rash?\"\nTIP: Start with \"How are you feeling today?\" or \"Tell me about the rash\" before narrowing to specific symptoms."
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "Itchy? ... does anything set it off that you've noticed? ... Any new soaps, perfumes, pets?",
+      "raw": "RESULT: done\nEVIDENCE: \"Itchy? ... does anything set it off that you've noticed? ... Any new soaps, perfumes, pets?\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Um, I thought maybe the new washing powder? We switched brands around then. But I switched back two weeks ago and it's still happening. Hot showers definitely make the itching worse after.",
+      "raw": "RESULT: done\nEVIDENCE: \"Um, I thought maybe the new washing powder? We switched brands around then. But I switched back two weeks ago and it's still happening. Hot showers definitely make the itching worse after.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "what_else",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Explicitly ask if there is anything else the patient would like to discuss before concluding the consultation."
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: \"Some people worry about steroid creams \u2014 how do you feel about that?\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician identified the patient's worry about steroids but dismissed it with reassurance rather than acknowledging the underlying anxiety or validating the patient's hesitation."
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Let me have a look at your arms... okay, yes. Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.",
+      "raw": "RESULT: done\nEVIDENCE: \"Let me have a look at your arms... okay, yes. Can I roll your sleeve up further? I'm just looking at the pattern of it, and I'll check your neck too.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.",
+      "raw": "RESULT: done\nEVIDENCE: \"So this looks very much like eczema \u2014 atopic dermatitis is the formal name. Dry, itchy, inflamed patches in the skin creases, the family history, the childhood eczema \u2014 it fits together. It hasn't come back because of anything you did wrong; it often resurfaces in adults, especially with stress or in winter.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "So \u2014 two-part plan, tell me what you think. First, moisturiser... Second, a steroid cream... Some people worry about steroid creams \u2014 how do you feel about that?",
+      "raw": "RESULT: done\nEVIDENCE: \"So \u2014 two-part plan, tell me what you think. First, moisturiser... Second, a steroid cream... Some people worry about steroid creams \u2014 how do you feel about that?\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Ask the patient to explain the treatment plan back to you in their own words to confirm understanding."
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.",
+      "raw": "RESULT: done\nEVIDENCE: \"If it starts weeping, crusting yellow, or gets suddenly a lot more red and painful, that can mean it's infected \u2014 come back quickly for that, don't wait it out. Same if it's not clearly better after three weeks of doing all this.\"\nTIP: None"
+    },
+    {
+      "transcript": "rash_visit",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: Explicitly ask \"Do you have any final questions before we finish?\" before signing off."
+    }
+  ]
+}
