@@ -53,11 +53,11 @@ Dr. Chen: Great. What other questions do you have for me today?
 
 **explore_perspective** — Did the clinician explore the patient's perspective — their ideas, fears, and expectations?
   *good looks like: Asks what the patient thinks is going on, what worries them, or what they're hoping for.*
-- [h3_ankle · explore_perspective] SCORE: met
+- [h3_ankle · explore_perspective] SCORE: partial
 
 **respond_emotion** — Did the clinician acknowledge and respond to the patient's emotions?
   *good looks like: Names or validates the emotion; responds rather than rushing past it.*
-- [h3_ankle · respond_emotion] SCORE: met
+- [h3_ankle · respond_emotion] SCORE: partial
 
 **support_respect** — Did the clinician convey support, concern, and respect throughout?
   *good looks like: Warm, respectful language; conveys that the patient is heard.*
@@ -69,7 +69,7 @@ Dr. Chen: Great. What other questions do you have for me today?
 
 **plain_language** — Did the clinician explain things in plain language, avoiding jargon?
   *good looks like: Uses everyday words; defines any necessary medical terms.*
-- [h3_ankle · plain_language] SCORE: missed
+- [h3_ankle · plain_language] SCORE: met
 
 **accurate_info** — Did the clinician give accurate, appropriate information about the condition and options?
   *good looks like: Information given is correct and relevant; avoids false reassurance or overstated certainty.*

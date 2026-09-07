@@ -45,7 +45,7 @@ Dr. Vance: Yeah, next year is fine. Or sooner if you're still feeling super wipe
 
 **what_else** — Did the clinician check for additional concerns ('is there anything else?')?
   *good looks like: Explicitly invites further concerns before moving on.*
-- [h2_iron · what_else] SCORE: met
+- [h2_iron · what_else] SCORE: partial
 
 **explore_perspective** — Did the clinician explore the patient's perspective — their ideas, fears, and expectations?
   *good looks like: Asks what the patient thinks is going on, what worries them, or what they're hoping for.*
