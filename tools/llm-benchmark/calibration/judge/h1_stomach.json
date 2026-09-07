@@ -1,0 +1,152 @@
+{
+  "model": "mlx-community/Qwen3.5-4B-4bit",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "h1_stomach",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Aris, your gastroenterologist\") at the very beginning of the consultation to establish trust and clarity.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician should explicitly acknowledge the patient's comfort or privacy (e.g., \"Please relax,\" \"We have a private room\") before beginning the examination to establish a calm, unhurried tone.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "open_questions",
+      "pred": "partial",
+      "evidence": "So looking at your chart, you've been having this, uh, sharp pain in your\u2014",
+      "raw": "RESULT: partial\nEVIDENCE: \"So looking at your chart, you've been having this, uh, sharp pain in your\u2014\"\nTIP: The clinician started with a closed, leading question (\"sharp pain\") which limited the patient's initial description; a better approach would be to ask \"What have you been experiencing?\" or \"Can you describe the pain you're feeling?\" before narrowing down.",
+      "final": "partial",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "explore_complaint",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician interrupted the patient's description of the pain's nature (\"pressure\") and moved too quickly to diagnosis and treatment without fully exploring the onset, duration, or specific characteristics of the pain before formulating a plan.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "avoid_interrupting",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician frequently interrupts the patient's narrative (e.g., cutting off \"toast and it still\u2014\" with \"Wait, just regular toast?\"), which prevents the patient from fully describing their experience.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "what_else",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician moved directly to the diagnosis and treatment plan without explicitly asking if the patient had any other concerns or questions before concluding the consultation.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "explore_perspective",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician jumped straight to a diagnosis and treatment plan without asking the patient what they think is causing the symptoms or what they are worried about.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician jumped straight to diagnosis and treatment without pausing to acknowledge the patient's confusion or anxiety about the diagnosis.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "support_respect",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician used a robotic, rushed tone (\"Reception has your paperwork on the way out!\") and dismissed the patient's immediate follow-up question (\"But\u2014\") without acknowledging their worry, which undermines the conveyance of respect and concern.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Lean back. Tell me if\u2014",
+      "raw": "RESULT: done\nEVIDENCE: \"Lean back. Tell me if\u2014\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "plain_language",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician used the term \"gastritis\" without defining it or explaining what it means in simple terms, leaving the patient to ask for clarification.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "accurate_info",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician stated \"it's probably gastritis\" and \"sounds like gastritis,\" which is overly certain and lacks a differential diagnosis, and failed to explain the mechanism of the prescribed omeprazole or discuss alternative options like dietary changes or further testing.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "shared_plan",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician provided a medication and a brief dietary restriction but failed to explicitly discuss the plan with the patient or invite their preferences regarding treatment options.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the medication and gave advice but failed to ask the patient to confirm understanding or restate the plan in their own words.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "safety_net",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician only said \"Call us if it gets worse\" and \"avoid spicy stuff,\" but failed to specify the exact symptoms requiring urgent care (e.g., black stools, severe pain, vomiting blood) or a specific timeframe for follow-up.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h1_stomach",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": null,
+      "raw": "RESULT: missed\nEVIDENCE: none\nTIP: The clinician should explicitly ask, \"Do you have any questions or concerns before we finish?\" before moving to the next patient.",
+      "final": "missed",
+      "verifier": ""
+    }
+  ],
+  "verify_model": "mlx-community/Qwen3.5-4B-4bit"
+}

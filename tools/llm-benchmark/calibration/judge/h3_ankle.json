@@ -1,0 +1,152 @@
+{
+  "model": "mlx-community/Qwen3.5-4B-4bit",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "h3_ankle",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Chen, your primary care physician\") at the very beginning of the consultation to establish trust and clarity.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": "(none)",
+      "raw": "RESULT: missed\nEVIDENCE: (none)\nTIP: The clinician jumped straight into the medical history without explicitly acknowledging the patient's need for privacy or confirming a comfortable, unhurried pace before beginning the exam.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "open_questions",
+      "pred": "met",
+      "evidence": "Hi there what brings you in today?",
+      "raw": "RESULT: done\nEVIDENCE: Hi there what brings you in today?\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "explore_complaint",
+      "pred": "met",
+      "evidence": "Did you fall or twist it or anything like that?\" and \"It just started yesterday morning. I just woke up and it was like a balloon. Like, super puffy and hot to the touch kind of?",
+      "raw": "RESULT: done\nEVIDENCE: \"Did you fall or twist it or anything like that?\" and \"It just started yesterday morning. I just woke up and it was like a balloon. Like, super puffy and hot to the touch kind of?\"\nTIP: none",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "No it just started yesterday morning. I just woke up and it was like a balloon. Like, super puffy and hot to the touch kind of?",
+      "raw": "RESULT: done\nEVIDENCE: \"No it just started yesterday morning. I just woke up and it was like a balloon. Like, super puffy and hot to the touch kind of?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "what_else",
+      "pred": "met",
+      "evidence": "What other questions do you have for me today?",
+      "raw": "RESULT: done\nEVIDENCE: What other questions do you have for me today?\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "Do you have a preference or any issues with steroids?",
+      "raw": "RESULT: done\nEVIDENCE: \"Do you have a preference or any issues with steroids?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "respond_emotion",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician focused entirely on the physical symptoms and treatment plan without acknowledging the patient's anxiety or confusion about the diagnosis.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "Oh wow yeah that is, that's pretty inflamed\" and \"Does that make sense?",
+      "raw": "RESULT: done\nEVIDENCE: \"Oh wow yeah that is, that's pretty inflamed\" and \"Does that make sense?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Okay let me take a look at it. Oh wow yeah that is, that's pretty inflamed. Does it hurt when I press right here?",
+      "raw": "RESULT: done\nEVIDENCE: \"Okay let me take a look at it. Oh wow yeah that is, that's pretty inflamed. Does it hurt when I press right here?\"\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "Basically it's uric acid crystals building up.",
+      "raw": "RESULT: done\nEVIDENCE: \"Basically it's uric acid crystals building up.\"\nTIP: none",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "Basically it's uric acid crystals building up. We have a couple ways to treat it so I can prescribe a steroid pack which works really fast, or we can do a strong NSAID like indomethacin.",
+      "raw": "RESULT: done\nEVIDENCE: \"Basically it's uric acid crystals building up. We have a couple ways to treat it so I can prescribe a steroid pack which works really fast, or we can do a strong NSAID like indomethacin.\"\nTIP: none",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "We have a couple ways to treat it so I can prescribe a steroid pack which works really fast, or we can do a strong NSAID like indomethacin. Do you have a preference or any issues with steroids?",
+      "raw": "RESULT: done\nEVIDENCE: \"We have a couple ways to treat it so I can prescribe a steroid pack which works really fast, or we can do a strong NSAID like indomethacin. Do you have a preference or any issues with steroids?\"\nTIP: none",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "check_understanding",
+      "pred": "met",
+      "evidence": "So just to make sure I explained everything clearly, how are you going to take this new medication?",
+      "raw": "RESULT: done\nEVIDENCE: \"So just to make sure I explained everything clearly, how are you going to take this new medication?\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "safety_net",
+      "pred": "met",
+      "evidence": "if the ankle gets even hotter, or if you run a fever over 101, or if the redness starts streaking up your leg, that could mean it's an infection and not just gout. If that happens you need to go to urgent care or the ER right away, don't wait for an appointment here.",
+      "raw": "RESULT: done\nEVIDENCE: \"if the ankle gets even hotter, or if you run a fever over 101, or if the redness starts streaking up your leg, that could mean it's an infection and not just gout. If that happens you need to go to urgent care or the ER right away, don't wait for an appointment here.\"\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
+    },
+    {
+      "transcript": "h3_ankle",
+      "criterion": "invite_questions",
+      "pred": "met",
+      "evidence": "What other questions do you have for me today?",
+      "raw": "RESULT: done\nEVIDENCE: What other questions do you have for me today?\nTIP: None",
+      "final": "met",
+      "verifier": "CONFIRM"
+    }
+  ],
+  "verify_model": "mlx-community/Qwen3.5-4B-4bit"
+}

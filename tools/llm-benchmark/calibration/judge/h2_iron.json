@@ -1,0 +1,152 @@
+{
+  "model": "mlx-community/Qwen3.5-4B-4bit",
+  "no_think": true,
+  "adapter": null,
+  "rows": [
+    {
+      "transcript": "h2_iron",
+      "criterion": "intro_self",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician should explicitly state their name and professional role (e.g., \"I'm Dr. Vance, your primary care physician\") at the very beginning of the consultation, before discussing medical findings.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "set_tone",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight into the medical explanation without pausing to acknowledge the patient's fatigue or ensure the patient feels comfortable and private before discussing the bloodwork results.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "open_questions",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight to explaining the bloodwork result and offering a solution without first asking the patient how they were feeling or what they thought was causing their fatigue.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "explore_complaint",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician jumped straight to the bloodwork result and offered a diagnosis without asking the patient about the specific timing, frequency, or other symptoms of their fatigue.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "avoid_interrupting",
+      "pred": "met",
+      "evidence": "Yeah, honestly I just thought it was work because we've been, like, doing inventory all month and I'm on my feet so much, so I just thought I was burned out.",
+      "raw": "RESULT: done\nEVIDENCE: \"Yeah, honestly I just thought it was work because we've been, like, doing inventory all month and I'm on my feet so much, so I just thought I was burned out.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "what_else",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician provided a plan and reassurance but failed to explicitly ask if the patient has any other concerns or questions before concluding the visit.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "explore_perspective",
+      "pred": "met",
+      "evidence": "Yeah, honestly I just thought it was work because we've been, like, doing inventory all month and I'm on my feet so much, so I just thought I was burned out.",
+      "raw": "RESULT: done\nEVIDENCE: \"Yeah, honestly I just thought it was work because we've been, like, doing inventory all month and I'm on my feet so much, so I just thought I was burned out.\"\nTIP: (None required as the clinician successfully acknowledged and integrated the patient's initial hypothesis into the explanation.)",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "respond_emotion",
+      "pred": "met",
+      "evidence": "Totally makes sense. I mean, it's probably a mix of both, honestly.",
+      "raw": "RESULT: done\nEVIDENCE: \"Totally makes sense. I mean, it's probably a mix of both, honestly.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "support_respect",
+      "pred": "met",
+      "evidence": "Just listen to your body, you know? Take it easy at work. Let us know if you need anything else!",
+      "raw": "RESULT: done\nEVIDENCE: \"Just listen to your body, you know? Take it easy at work. Let us know if you need anything else!\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "explain_exam",
+      "pred": "met",
+      "evidence": "Let me just check your eyes real quick\u2014just pull down your lower lid for me.",
+      "raw": "RESULT: done\nEVIDENCE: \"Let me just check your eyes real quick\u2014just pull down your lower lid for me.\"\nTIP: None",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "plain_language",
+      "pred": "met",
+      "evidence": "Just listen to your body, you know? Take it easy at work.",
+      "raw": "RESULT: done\nEVIDENCE: \"Just listen to your body, you know? Take it easy at work.\"\nTIP: none",
+      "final": "met",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "accurate_info",
+      "pred": "met",
+      "evidence": "Nothing crazy to worry about, though.",
+      "raw": "RESULT: done\nEVIDENCE: \"Nothing crazy to worry about, though.\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "shared_plan",
+      "pred": "met",
+      "evidence": "we'll just check it again at your next physical, or, you know, whenever you come back in\" and \"Honestly whatever is at the pharmacy is totally fine",
+      "raw": "RESULT: done\nEVIDENCE: \"we'll just check it again at your next physical, or, you know, whenever you come back in\" and \"Honestly whatever is at the pharmacy is totally fine\"\nTIP: none",
+      "final": "missed",
+      "verifier": "REJECT"
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "check_understanding",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician explained the plan but never asked the patient to confirm understanding or restate the instructions in their own words.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "safety_net",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician provided reassurance and a follow-up plan but failed to explicitly state specific warning signs (e.g., worsening fatigue, chest pain, or signs of bleeding) that would require immediate medical attention.",
+      "final": "missed",
+      "verifier": ""
+    },
+    {
+      "transcript": "h2_iron",
+      "criterion": "invite_questions",
+      "pred": "missed",
+      "evidence": "(None)",
+      "raw": "RESULT: missed\nEVIDENCE: (None)\nTIP: The clinician ended the conversation with a general \"Let us know if you need anything else!\" but failed to explicitly ask, \"Do you have any questions for me?\" or \"Is there anything else you'd like to discuss?\" before closing.",
+      "final": "missed",
+      "verifier": ""
+    }
+  ],
+  "verify_model": "mlx-community/Qwen3.5-4B-4bit"
+}
