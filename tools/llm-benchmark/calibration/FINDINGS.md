@@ -205,3 +205,27 @@ match Bilal exactly (no edit needed); fully reliable only on intro_self,
 check_understanding, safety_net; 7 criteria are coin-flips. Useful for
 pre-labeling TRAINING data at scale; never for gold, and never pre-fill
 blind sheets (anchoring contaminates the rater).
+
+## On-device verify cost measured (2026-09-07, iPhone18,3, iOS 27, Qwen3.5-4B GGUF)
+
+Benchmark-recorder run, ~1-min consultation, 15 of 16 criteria credited
+(worst case): scoring 101s → **verify 39s (15 checks, ~2.6s each)** → summary
+6s. Overhead 39% of scoring / 24% of the pipeline, entirely behind an
+already-filled scorecard (it delays only the summary). First verify call cost
+2.9s — the cache-switch prefill fear was unfounded. Battery <1%, peak memory
+460MB. Thermal hit "serious" at 109s — during scoring, BEFORE verify began:
+the heat is the pipeline's baseline, not the verifier's.
+
+**Decision (pre-registered bands): 25–50% = keep. The verifier ships; ramp 1
+stays holstered.**
+
+**Bug found by the run: the scoping was NOT active.** 15 verify calls is
+impossible with the aggregate skip working (max 14) — the app loaded the
+CLOUD-synced rubric (RubricSync overrides the bundle), which predates the
+`aggregate: true` flags. Until the cloud rubric source is updated with the
+flags on explore_complaint and plain_language, the app runs the UNSCOPED
+verifier — measured 6 points worse (77.8 vs 84.1). Fix: add the flags
+wherever RubricSync pulls from, or bump the bundle rubric's precedence.
+Also noted: 12 of 15 verify replies ran to the 24-token cap (model rambles
+past CONFIRM/REJECT) — parsing is prefix-based so verdicts are unaffected,
+but trimming the llama-path budget would save ~14s if wanted.
