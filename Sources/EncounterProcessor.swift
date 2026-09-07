@@ -236,6 +236,10 @@ final class EncounterProcessor: ObservableObject {
             }
             if !toVerify.isEmpty {
                 stage = .scoring(done: total, total: total)
+                // Own benchmark stage so the recorder's report separates verify
+                // cost from scoring — the ramp-1 number, captured on-device
+                // with no debugger attached (the console feed proved flaky).
+                BenchmarkRecorder.shared.markStage("verifying")
                 let verifyPrefix = PromptBuilder.verifyPrefix(transcript: redactedTranscript)
                 let verifyT0 = Date()
                 for (idx, r) in toVerify {
