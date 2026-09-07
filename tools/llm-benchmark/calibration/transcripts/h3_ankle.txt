@@ -1,0 +1,15 @@
+Dr. Chen: Hi there what brings you in today?
+Patient: Hi. Um, I need a refill on the lisinopril but I also, well actually first my ankle is really swollen.
+Dr. Chen: Your ankle? Did you fall or twist it or anything like that?
+Patient: No it just started yesterday morning. I just woke up and it was like a balloon. Like, super puffy and hot to the touch kind of?
+Dr. Chen: Okay let me take a look at it. Oh wow yeah that is, that's pretty inflamed. Does it hurt when I press right here?
+Patient: Ah! Yeah right there. It feels almost like it's throbbing.
+Dr. Chen: Okay so looking at this redness and where the swelling is concentrated right on the joint, it actually looks a lot like gout. Have you ever had a gout flare before?
+Patient: Gout? No, I thought you only got that in your big toe.
+Dr. Chen: It usually is yeah but it can definitely hit the ankle too. Basically it's uric acid crystals building up. We have a couple ways to treat it so I can prescribe a steroid pack which works really fast, or we can do a strong NSAID like indomethacin. Do you have a preference or any issues with steroids?
+Patient: Um I took steroids for a bad cough once and I couldn't sleep for days. So maybe the other one?
+Dr. Chen: Indomethacin it is. It can be rough on the stomach so make sure you take it with meals. I'll also go ahead and send that lisinopril refill you asked about earlier. So just to make sure I explained everything clearly, how are you going to take this new medication?
+Patient: With a meal. So it doesn't mess up my stomach.
+Dr. Chen: Perfect. Now the important part, if the ankle gets even hotter, or if you run a fever over 101, or if the redness starts streaking up your leg, that could mean it's an infection and not just gout. If that happens you need to go to urgent care or the ER right away, don't wait for an appointment here. Does that make sense?
+Patient: Yeah. Streaking redness or fever means ER. Got it.
+Dr. Chen: Great. What other questions do you have for me today?
