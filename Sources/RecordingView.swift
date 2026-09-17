@@ -405,7 +405,7 @@ struct RecordingView: View {
 
     private var modelHint: some View {
         Label {
-            Text("The AI model isn't downloaded yet. Open **Settings** (the gear, top-right) and download it (~4.3 GB, one time) before analyzing.")
+            Text("The AI model isn't downloaded yet. Open **Settings** (the gear, top-right) and download it (\(LLMModel.selected.approxSize), one time) before analyzing.")
         } icon: {
             Image(systemName: "arrow.down.circle")
         }

@@ -31,8 +31,7 @@ struct WhatsNewView: View {
         Release(id: "0.0.6", heading: "This update", items: [
             Item(icon: "cpu",
                  title: "Choose which AI model reviews your consultations",
-                 detail: "Settings → AI Model now lists two. Qwen 2.5-7B is the one you've been using and stays selected unless you change it. Qwen 3.5-4B is newer and about a third smaller, so it downloads faster and runs cooler — but its feedback is still being evaluated, so treat what it says as provisional. Switching keeps both on your phone; you can go back at any time, and nothing you've already recorded is affected.",
-                 provisional: true),
+                 detail: "Settings → AI Model lists two. Qwen 3.5-4B is now the default: it is about a third smaller than Qwen 2.5-7B, so it downloads faster and runs cooler, and in our testing it was the more accurate of the two. If it isn't on your phone yet it downloads once over Wi-Fi (about 3 GB). Qwen 2.5-7B stays available if you want to compare. Switching keeps both on your phone, and nothing you've already recorded is affected."),
             Item(icon: "person.2.fill",
                  title: "See and control what you've shared",
                  detail: "Each session now shows its own sharing status, and a control panel lists everything currently shared with a mentor — so you can check or withdraw access without hunting for it."),

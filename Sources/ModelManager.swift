@@ -13,7 +13,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .llm: return "Qwen 2.5-7B"
+        case .llm: return LLMModel.selected.title
         #if canImport(CoreAILanguageModels)
         case .coreAI: return "Qwen 3-0.6B (Core AI)"
         #endif
@@ -29,7 +29,7 @@ enum ManagedModel: String, CaseIterable, Identifiable {
     }
     var approxSize: String {
         switch self {
-        case .llm: return "~4.3 GB"
+        case .llm: return LLMModel.selected.approxSize
         #if canImport(CoreAILanguageModels)
         case .coreAI: return "~450 MB"
         #endif

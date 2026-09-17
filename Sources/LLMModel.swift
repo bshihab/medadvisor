@@ -4,11 +4,12 @@ import Foundation
 /// between them. Adding a model means adding a case here — nothing else in the
 /// download or inference path is model-aware.
 ///
-/// **Qwen 2.5-7B is and stays the default.** A second model is selectable so it
-/// can be evaluated on real consultations before any switch is considered; the
-/// benchmarks that motivated it measure agreement with authored labels, not
-/// clinical correctness, so the director's judgement is the deciding evidence.
-/// See tools/llm-benchmark/MODEL-COMPARISON.md.
+/// **Qwen 3.5-4B is the default** (since 2026-09-17). Qwen 2.5-7B, the original
+/// default, stays selectable for comparison. Every judge-quality measurement
+/// since August is on the 4B — it beat the 7B on the 240-decision set (85.4% vs
+/// 79.2%, tools/llm-benchmark/MODEL-COMPARISON.md) and all calibration work
+/// (calibration/FINDINGS.md) ran on it; the 7B was never run on the
+/// calibration gold. The director's gold scores are still the clinical check.
 ///
 /// Switching is non-destructive: each model has its own filename, so a model
 /// already on disk is never touched by selecting or downloading another one.
@@ -18,8 +19,10 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// The default, and what every existing install already has.
-    static let fallback: LLMModel = .qwen25_7B
+    /// The default. An install that never opened the model picker gets this;
+    /// an upgraded install that has only the 7B on disk downloads it at the
+    /// next launch on Wi-Fi (ModelDownloader.resume, opted-in state carries).
+    static let fallback: LLMModel = .qwen35_4B
 
     private static let selectedKey = "selectedLLMModel"
 
@@ -44,8 +47,8 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
     /// Shown under the title in Settings — plain language, no benchmark jargon.
     var blurb: String {
         switch self {
-        case .qwen25_7B: return "Current model — the one your feedback has always used."
-        case .qwen35_4B: return "Newer and smaller. Still being evaluated — treat its feedback as provisional."
+        case .qwen25_7B: return "Previous model. Larger and slower — kept for comparison."
+        case .qwen35_4B: return "Current model — what your feedback is graded with."
         }
     }
 

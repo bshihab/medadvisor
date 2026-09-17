@@ -56,15 +56,17 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     @Published private(set) var errorMessage: String?
 
     // Per-model keys — deleting or opting out of one model must not change the
-    // other's state. The 7B keeps the ORIGINAL unsuffixed keys so existing
-    // installs carry their state across this update untouched.
+    // other's state. The default model owns the ORIGINAL unsuffixed keys.
     private var userDeletedKey: String { Self.key("modelDeletedByUser", for: model) }
     private var optedInKeyForModel: String { Self.key("modelDownloadOptedIn", for: model) }
     private var expectedTotalKeyForModel: String { Self.key("modelExpectedTotalBytes", for: model) }
 
     /// One keying rule for every model and every call site. The default model
-    /// keeps the ORIGINAL unsuffixed keys, so existing installs carry their
-    /// opted-in / deleted state across this update untouched.
+    /// owns the ORIGINAL unsuffixed keys. Those were written while the 7B was
+    /// the default; since the 2026-09-17 flip the 4B reads them, which is the
+    /// migration we want: an install that opted in to the model download (or
+    /// deliberately deleted the model) keeps that answer for the new default,
+    /// so `resume()` fetches the 4B on Wi-Fi without asking again.
     private static func key(_ base: String, for m: LLMModel) -> String {
         m == .fallback ? base : "\(base).\(m.rawValue)"
     }

@@ -38,7 +38,7 @@ struct SettingsView: View {
                 } header: {
                     Text("AI Model")
                 } footer: {
-                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 2.5-7B is the default and is what your feedback has been graded with. A second model is available to try — it is smaller and faster, but its feedback is still being evaluated, so treat anything it says as provisional. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
+                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 3.5-4B is the default and grades your feedback. Qwen 2.5-7B, the previous model, is still available if you want to compare — it is larger and slower. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
                 }
 
                 Section("Appearance") {
