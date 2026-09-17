@@ -28,10 +28,16 @@ struct WhatsNewView: View {
 
     /// Newest first. Add a Release here when you ship; the sheet handles the rest.
     static let releases: [Release] = [
-        Release(id: "0.0.6", heading: "This update", items: [
+        Release(id: "0.1.1", heading: "This update", items: [
             Item(icon: "cpu",
-                 title: "Choose which AI model reviews your consultations",
-                 detail: "Settings → AI Model lists two. Qwen 3.5-4B is now the default: it is about a third smaller than Qwen 2.5-7B, so it downloads faster and runs cooler, and in our testing it was the more accurate of the two. If it isn't on your phone yet it downloads once over Wi-Fi (about 3 GB). Qwen 2.5-7B stays available if you want to compare. Switching keeps both on your phone, and nothing you've already recorded is affected."),
+                 title: "One AI model now",
+                 detail: "Qwen 3.5-4B has replaced Qwen 2.5-7B as the model that grades your feedback. It is about a third smaller, so it downloads faster and runs cooler, and in our testing it was the more accurate of the two. The old model's file is removed from your phone, freeing about 4.3 GB; the new one downloads once over Wi-Fi (about 3 GB) if it isn't there yet. Nothing you've already recorded is affected."),
+        ]),
+        // The two-model picker this release listed never reached a tester (the
+        // last TestFlight predates it) and is gone again above, so its entry
+        // is not kept — a sheet saying "lists two" under "one model now" would
+        // simply be wrong for the reader.
+        Release(id: "0.0.6", heading: "Earlier", items: [
             Item(icon: "person.2.fill",
                  title: "See and control what you've shared",
                  detail: "Each session now shows its own sharing status, and a control panel lists everything currently shared with a mentor — so you can check or withdraw access without hunting for it."),
@@ -45,7 +51,7 @@ struct WhatsNewView: View {
                  title: "Skill charts open properly",
                  detail: "The expanded charts on the Progress screen are reachable again."),
         ]),
-        Release(id: "0.0.5", heading: "Earlier", items: [
+        Release(id: "0.0.5", heading: "Before that", items: [
             Item(icon: "icloud.fill",
                  title: "Accounts and mentor sharing",
                  detail: "Sign in to keep your sessions across devices and share a session with a mentor. Signing in stays optional — the app works fully offline without an account."),

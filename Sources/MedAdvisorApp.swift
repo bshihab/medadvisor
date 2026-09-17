@@ -18,6 +18,7 @@ struct MedAdvisorApp: App {
             RootView()
                 .task {
                     AudioRecorder.sweepOrphanRecordings()   // privacy: no raw audio survives a launch
+                    ModelDownloader.sweepRetiredModels()    // one-time: drop the retired 7B file
                     ModelDownloader.shared.resume()
                     RubricSync.refresh()   // cloud rubrics (silent, offline-safe)
                     PushManager.shared.bootstrap()

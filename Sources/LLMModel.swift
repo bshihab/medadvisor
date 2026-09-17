@@ -1,33 +1,37 @@
 import Foundation
 
-/// The GGUF language models the app can run, and everything that differs
-/// between them. Adding a model means adding a case here — nothing else in the
+/// The GGUF language model the app runs, and everything the download and
+/// inference paths need to know about it. Adding a model means adding a case
+/// here and switching the properties below on it — nothing else in the
 /// download or inference path is model-aware.
 ///
-/// **Qwen 3.5-4B is the default** (since 2026-09-17). Qwen 2.5-7B, the original
-/// default, stays selectable for comparison. Every judge-quality measurement
-/// since August is on the 4B — it beat the 7B on the 240-decision set (85.4% vs
-/// 79.2%, tools/llm-benchmark/MODEL-COMPARISON.md) and all calibration work
+/// **Qwen 3.5-4B is the only model** (since 2026-09-17). Qwen 2.5-7B, the
+/// original default, was removed: every judge-quality measurement since August
+/// is on the 4B — it beat the 7B on the 240-decision set (85.4% vs 79.2%,
+/// tools/llm-benchmark/MODEL-COMPARISON.md) and all calibration work
 /// (calibration/FINDINGS.md) ran on it; the 7B was never run on the
 /// calibration gold. The director's gold scores are still the clinical check.
 ///
-/// Switching is non-destructive: each model has its own filename, so a model
-/// already on disk is never touched by selecting or downloading another one.
+/// An upgraded install: `ModelDownloader.sweepRetiredModels` deletes the 7B's
+/// file once at launch, and a stored selection naming the retired case decodes
+/// to `fallback` (see `selected`) — `qwen25_7B` is no longer a raw value, so
+/// `LLMModel(rawValue:)` returns nil for it rather than trapping.
 enum LLMModel: String, CaseIterable, Identifiable, Sendable {
-    case qwen25_7B
     case qwen35_4B
 
     var id: String { rawValue }
 
-    /// The default. An install that never opened the model picker gets this;
-    /// an upgraded install that has only the 7B on disk downloads it at the
-    /// next launch on Wi-Fi (ModelDownloader.resume, opted-in state carries).
+    /// The default, and today the only case. An install that has never
+    /// downloaded it fetches it at the next launch on Wi-Fi
+    /// (ModelDownloader.resume, once the user has opted in).
     static let fallback: LLMModel = .qwen35_4B
 
     private static let selectedKey = "selectedLLMModel"
 
     /// Which model the engine uses. Changing this unloads the engine so the next
     /// generation picks up the new weights (see `LLMEngine.selectModel`).
+    /// A stored value that is not a current case (the retired `qwen25_7B`)
+    /// reads as `fallback`.
     static var selected: LLMModel {
         get {
             guard let raw = UserDefaults.standard.string(forKey: selectedKey),
@@ -37,60 +41,37 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
         set { UserDefaults.standard.set(newValue.rawValue, forKey: selectedKey) }
     }
 
-    var title: String {
-        switch self {
-        case .qwen25_7B: return "Qwen 2.5-7B"
-        case .qwen35_4B: return "Qwen 3.5-4B"
-        }
+    /// Clear a stored selection that names a model this build no longer has,
+    /// so the console says so once instead of `selected` deciding silently on
+    /// every read. Called from the launch sweep.
+    static func dropRetiredSelection() {
+        guard let raw = UserDefaults.standard.string(forKey: selectedKey),
+              LLMModel(rawValue: raw) == nil else { return }
+        UserDefaults.standard.removeObject(forKey: selectedKey)
+        print("[LLMModel] Stored selection '\(raw)' is no longer a model — using \(fallback.title).")
     }
+
+    var title: String { "Qwen 3.5-4B" }
 
     /// Shown under the title in Settings — plain language, no benchmark jargon.
-    var blurb: String {
-        switch self {
-        case .qwen25_7B: return "Previous model. Larger and slower — kept for comparison."
-        case .qwen35_4B: return "Current model — what your feedback is graded with."
-        }
-    }
+    var blurb: String { "The model that grades your feedback." }
 
-    var fileName: String {
-        switch self {
-        case .qwen25_7B: return "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
-        case .qwen35_4B: return "Qwen3.5-4B-Q4_K_M.gguf"
-        }
-    }
+    var fileName: String { "Qwen3.5-4B-Q4_K_M.gguf" }
 
     /// Tried in order: R2 primary (fast, free egress), HuggingFace as fallback.
     /// The file is byte-identical across mirrors so a resume may switch mid-file.
     var mirrors: [URL] {
-        switch self {
-        case .qwen25_7B:
-            return [
-                URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
-                URL(string: "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf")!,
-            ]
-        case .qwen35_4B:
-            return [
-                URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen3.5-4B-Q4_K_M.gguf")!,
-                URL(string: "https://huggingface.co/bartowski/Qwen_Qwen3.5-4B-GGUF/resolve/main/Qwen_Qwen3.5-4B-Q4_K_M.gguf")!,
-            ]
-        }
+        [
+            URL(string: "https://pub-911d7a5254944de984f1c95e6b8ddcdd.r2.dev/Qwen3.5-4B-Q4_K_M.gguf")!,
+            URL(string: "https://huggingface.co/bartowski/Qwen_Qwen3.5-4B-GGUF/resolve/main/Qwen_Qwen3.5-4B-Q4_K_M.gguf")!,
+        ]
     }
 
     /// Human-readable, for the Settings row and the download button.
-    var approxSize: String {
-        switch self {
-        case .qwen25_7B: return "~4.3 GB"
-        case .qwen35_4B: return "~3.0 GB"
-        }
-    }
+    var approxSize: String { "~3.0 GB" }
 
     /// Free space required before starting, with headroom for the .partial file.
-    var bytesNeeded: Int64 {
-        switch self {
-        case .qwen25_7B: return 5_000_000_000
-        case .qwen35_4B: return 4_000_000_000
-        }
-    }
+    var bytesNeeded: Int64 { 4_000_000_000 }
 
     /// Expected SHA-256, lowercase hex. nil = not pinned → verification skipped
     /// with a loud log. Pin with: shasum -a 256 <file>
@@ -99,20 +80,10 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
     /// object and HuggingFace's x-linked-etag report the same digest and the same
     /// 3_013_027_808 bytes. That matters because the downloader may resume across
     /// mirrors mid-file, so a digest that held for only one of them would fail
-    /// intermittently and look like a network fault.
+    /// intermittently and look like a network fault. Re-pin from both sources
+    /// if the model is ever re-quantized.
     var expectedSHA256: String? {
-        switch self {
-        // Verified 2026-07-25 from TWO independent sources that agree: streamed
-        // from the R2 mirror and hashed locally, and the LFS oid published by
-        // HuggingFace for bartowski/Qwen2.5-7B-Instruct-GGUF. 4,683,074,240
-        // bytes. Re-pin from both sources if the model is ever re-quantized.
-        // (Carried over from main, where it lived as a single static constant
-        // before there was a second model to verify.)
-        case .qwen25_7B:
-            return "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423"
-        case .qwen35_4B:
-            return "13c16f426047e2de38cd075bdade4a7bcbc8c774384876f677740cda65f8a983"
-        }
+        "13c16f426047e2de38cd075bdade4a7bcbc8c774384876f677740cda65f8a983"
     }
 
     // MARK: - Prompt format
@@ -125,11 +96,7 @@ enum LLMModel: String, CaseIterable, Identifiable, Sendable {
     /// Pre-filling an EMPTY think block is the documented way to suppress that,
     /// and it is purely textual: it needs no llama.cpp flag, no Jinja template
     /// support, and no minimum runtime version, because this app builds ChatML
-    /// itself. Qwen2.5 has no thinking mode and must NOT get the block.
-    var assistantOpening: String {
-        switch self {
-        case .qwen25_7B: return "<|im_start|>assistant\n"
-        case .qwen35_4B: return "<|im_start|>assistant\n<think>\n\n</think>\n\n"
-        }
-    }
+    /// itself. (A model without a thinking mode, like the retired Qwen2.5,
+    /// must NOT get the block.)
+    var assistantOpening: String { "<|im_start|>assistant\n<think>\n\n</think>\n\n" }
 }

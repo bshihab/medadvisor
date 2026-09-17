@@ -3,9 +3,10 @@ import ActivityKit
 import UIKit
 import CryptoKit
 
-/// Downloads the Qwen2.5-7B GGUF (~4.4 GB) directly over HTTPS with **byte-range
-/// resume**: bytes stream into `Documents/<name>.partial`, so any interruption —
-/// force-quit, reboot, network drop — resumes from the exact byte next time.
+/// Downloads the judge GGUF (`LLMModel.fileName`, ~3 GB) directly over HTTPS
+/// with **byte-range resume**: bytes stream into `Documents/<name>.partial`, so
+/// any interruption — force-quit, reboot, network drop — resumes from the exact
+/// byte next time.
 /// Mirrors are tried in order (Cloudflare R2 primary, HuggingFace fallback); the
 /// file is identical on every mirror, so a resume can switch mirrors mid-file.
 ///
@@ -19,30 +20,18 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
 
     /// Tried in order on failure: Cloudflare R2 (fast, free egress) first,
     /// HuggingFace as the fallback mirror (throttled but always there).
-    /// Everything model-specific now comes from `LLMModel.selected`, so a
-    /// second model is a case in that enum rather than a fork of this file.
-    /// Only the selected model is ever transferred; other models' files sit
-    /// untouched on disk, which is what makes switching non-destructive.
+    /// Everything model-specific comes from `LLMModel.selected`, so another
+    /// model is a case in that enum rather than a fork of this file.
     private var model: LLMModel { LLMModel.selected }
     private var mirrors: [URL] { model.mirrors }
     private var fileName: String { model.fileName }
 
-    /// Expected SHA-256 of the GGUF, lowercase hex. A completed download is
-    /// verified against this before it is accepted — the supply-chain guard: a
-    /// re-uploaded/tampered mirror, a corrupted transfer, or a cross-mirror
-    /// resume splice cannot hand a bad multi-GB blob to llama.cpp (which then
-    /// processes PHI on-device).
-    ///
-    /// Now PER MODEL (see LLMModel.expectedSHA256) rather than one static
-    /// constant, because there are two models to verify. The 7B's digest —
-    /// verified 2026-07-25 from two independent sources — moved there intact.
-    /// Expected SHA-256 of the GGUF, lowercase hex. When set, a completed
-    /// download is verified before it's accepted — this is the supply-chain
-    /// guard: a re-uploaded/tampered mirror, or a cross-mirror resume splice,
-    /// can't hand a corrupt or malicious 4.3 GB blob to llama.cpp (which then
-    /// processes PHI). nil = NOT PINNED YET → verification is skipped with a
-    /// loud log. TODO(Bilal): pin this. Compute once on the built file:
-    ///   shasum -a 256 Qwen2.5-7B-Instruct-Q4_K_M.gguf
+    /// Expected SHA-256 of the GGUF, lowercase hex (pinned per model in
+    /// `LLMModel.expectedSHA256`). A completed download is verified against
+    /// this before it is accepted — the supply-chain guard: a re-uploaded/
+    /// tampered mirror, a corrupted transfer, or a cross-mirror resume splice
+    /// cannot hand a bad multi-GB blob to llama.cpp (which then processes PHI
+    /// on-device). nil = not pinned → verification is skipped with a loud log.
     private var expectedSHA256: String? { model.expectedSHA256 }
 
     /// Live download state (observed by Settings).
@@ -55,21 +44,15 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     }
     @Published private(set) var errorMessage: String?
 
-    // Per-model keys — deleting or opting out of one model must not change the
-    // other's state. The default model owns the ORIGINAL unsuffixed keys.
-    private var userDeletedKey: String { Self.key("modelDeletedByUser", for: model) }
-    private var optedInKeyForModel: String { Self.key("modelDownloadOptedIn", for: model) }
-    private var expectedTotalKeyForModel: String { Self.key("modelExpectedTotalBytes", for: model) }
-
-    /// One keying rule for every model and every call site. The default model
-    /// owns the ORIGINAL unsuffixed keys. Those were written while the 7B was
-    /// the default; since the 2026-09-17 flip the 4B reads them, which is the
-    /// migration we want: an install that opted in to the model download (or
-    /// deliberately deleted the model) keeps that answer for the new default,
-    /// so `resume()` fetches the 4B on Wi-Fi without asking again.
-    private static func key(_ base: String, for m: LLMModel) -> String {
-        m == .fallback ? base : "\(base).\(m.rawValue)"
-    }
+    // UserDefaults keys — unsuffixed, as they have been since the first release.
+    // An install's opted-in / deleted answer is about "the model", whichever
+    // GGUF that is: written while Qwen 2.5-7B was the model, read by Qwen 3.5-4B
+    // since 2026-09-17, so `resume()` fetches the 4B on Wi-Fi without asking
+    // again. (While two models coexisted, the non-default one used these keys
+    // with a ".<rawValue>" suffix; those entries are orphaned and harmless.)
+    private let userDeletedKey = "modelDeletedByUser"
+    private let optedInKeyForModel = "modelDownloadOptedIn"
+    private let expectedTotalKeyForModel = "modelExpectedTotalBytes"
     // The user must opt in once (first-run disclosure) before a model
     // auto-downloads — it no longer starts silently at first launch.
 
@@ -90,7 +73,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
         config.waitsForConnectivity = true
-        // Wi-Fi only: a 4.4 GB transfer must never silently burn a trainee's
+        // Wi-Fi only: a multi-GB transfer must never silently burn a trainee's
         // cellular data plan (it auto-starts at launch). waitsForConnectivity
         // then parks until Wi-Fi is available instead of failing.
         config.allowsCellularAccess = false
@@ -111,14 +94,52 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
             atPath: docs.appendingPathComponent(m.fileName).path)
     }
 
-    /// Delete a specific model. Only ever removes that model's own files, so
-    /// the other model on disk is unaffected.
-    func delete(_ m: LLMModel) {
-        if m == LLMModel.selected { delete(); return }
-        UserDefaults.standard.set(true, forKey: Self.key("modelDeletedByUser", for: m))
-        try? FileManager.default.removeItem(at: docs.appendingPathComponent(m.fileName))
-        try? FileManager.default.removeItem(at: docs.appendingPathComponent(m.fileName + ".partial"))
-        DispatchQueue.main.async { ModelManager.shared.modelChanged() }
+    /// Delete a specific model (Settings passes the row's model). With one
+    /// model that is always the selected one.
+    func delete(_ m: LLMModel) { delete() }
+
+    // MARK: - Retired models
+
+    /// GGUFs the app no longer ships, by filename. Deleted once at launch so a
+    /// retired model does not sit in Documents for the life of the install.
+    /// Qwen2.5-7B-Instruct: the default until 2026-09-17, removed when Qwen
+    /// 3.5-4B became the only model. Only the on-device file goes; the R2
+    /// object stays.
+    private static let retiredFileNames = ["Qwen2.5-7B-Instruct-Q4_K_M.gguf"]
+    private static let retiredSweepKey = "retiredModelsSwept.1"
+
+    /// One-time launch sweep: delete retired models (and any `.partial` of
+    /// theirs) from Documents, and drop a stored selection that names one.
+    /// Runs before `resume()` so the space is back before the current model's
+    /// download starts. The flag only saves the file checks on later launches;
+    /// it is left unset if a delete fails, so the next launch retries.
+    static func sweepRetiredModels() {
+        LLMModel.dropRetiredSelection()
+        let defaults = UserDefaults.standard
+        guard !defaults.bool(forKey: retiredSweepKey) else { return }
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        var swept = 0
+        for name in retiredFileNames {
+            for path in [name, name + ".partial"] {
+                let url = docs.appendingPathComponent(path)
+                guard FileManager.default.fileExists(atPath: url.path) else { continue }
+                let bytes = (try? FileManager.default.attributesOfItem(atPath: url.path)[.size] as? Int64) ?? 0
+                do {
+                    try FileManager.default.removeItem(at: url)
+                    swept += 1
+                    print("[ModelDownloader] Swept retired model \(path) (\(bytes) bytes)")
+                } catch {
+                    print("[ModelDownloader] Could not delete retired model \(path): \(error.localizedDescription) — will retry next launch")
+                    return
+                }
+            }
+        }
+        // The expected-total cache under the unsuffixed key was the 7B's byte
+        // count on an upgraded install; it is only used for the initial
+        // progress figure and is re-learned from the first response.
+        defaults.removeObject(forKey: shared.expectedTotalKeyForModel)
+        defaults.set(true, forKey: retiredSweepKey)
+        print("[ModelDownloader] Retired-model sweep done (\(swept) file(s) removed)")
     }
 
     private var partialSize: Int64 {
@@ -194,7 +215,7 @@ final class ModelDownloader: NSObject, ObservableObject, @unchecked Sendable {
     func startDownload() {
         guard !isDownloaded else { return }
         // Preflight: fail clearly up front rather than climbing to a byte-mismatch
-        // error after silently dropping writes on a full disk. ~4.4 GB + headroom.
+        // error after silently dropping writes on a full disk. File + headroom.
         guard Self.hasEnoughFreeSpace(bytes: model.bytesNeeded) else {
             DispatchQueue.main.async {
                 self.isDownloading = false

@@ -38,7 +38,7 @@ struct SettingsView: View {
                 } header: {
                     Text("AI Model")
                 } footer: {
-                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 3.5-4B is the default and grades your feedback. Qwen 2.5-7B, the previous model, is still available if you want to compare — it is larger and slower. Switching never deletes the other model: each is kept separately, and you can switch back at any time.")
+                    Text("Everything runs on your device, offline. Speech-to-text uses Apple's built-in on-device engine — no download.\n\nQwen 3.5-4B is the model that grades your feedback. Deleting it frees about 3 GB; you can download it again at any time.")
                 }
 
                 Section("Appearance") {
@@ -118,19 +118,13 @@ struct SettingsView: View {
                                 titleVisibility: .visible) {
                 if let m = confirmDeleteLLM {
                     Button("Delete \(m.title)", role: .destructive) {
-                        // If the in-use model is deleted, fall back to the
-                        // default so the app is never pointed at a missing file.
-                        if m == LLMModel.selected, m != LLMModel.fallback {
-                            LLMEngine.shared.selectModel(.fallback)
-                            selectedLLM = .fallback
-                        }
                         downloader.delete(m)
                         confirmDeleteLLM = nil
                     }
                     Button("Cancel", role: .cancel) { confirmDeleteLLM = nil }
                 }
             } message: {
-                Text("You can download it again later. The other model on your device is not affected.")
+                Text("You can download it again later.")
             }
             .alert("Analysis in progress", isPresented: $switchBlocked) {
                 Button("OK", role: .cancel) { }
@@ -146,8 +140,8 @@ struct SettingsView: View {
         .id("appearance-\(appearance)")
     }
 
-    /// One selectable GGUF. Download, select and delete are all per-model, so
-    /// no action here can touch a model the user already has on disk.
+    /// One GGUF row. Download, select and delete are per-model, so the row
+    /// works unchanged if a second model is ever added to `LLMModel` again.
     @ViewBuilder
     private func llmRow(_ model: LLMModel) -> some View {
         let installed = downloader.isDownloaded(model)   // depends on models.revision
